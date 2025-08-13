@@ -1,0 +1,209 @@
+@font-face {
+    font-family: 'vazir';
+    src: url('./assets/Vazir.woff2');
+}
+
+.login_container{
+    height: 100vh;
+    background:url('./assets/louis-reed-pwcKF7L4-no-unsplash.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.form_card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1); /* semi-transparent white */
+    backdrop-filter: blur(12px); /* glass blur effect */
+    -webkit-backdrop-filter: blur(12px); /* for Safari */
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2) , -5px -5px 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 320px;
+}
+
+.login_form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.inp{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 1rem;
+}
+.login_title{
+    font-size: 1.7rem;
+    font-weight: 1500;
+    color: black;
+    font-family: 'vazir';
+    color:#47002d ;
+}
+
+.inp > input{
+    width: 80%;
+    height: 1rem;
+    font-size: 1.3rem;
+    padding: 1rem 2rem;
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+    transition: 0.3s ease;
+}
+
+.inp > input:focus{
+    transform: translateY(-10px);
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.4);
+}
+
+
+.inp > label {
+    font-size: 1.2rem;
+}
+
+.login_form > button { 
+    background-color: #47002d;
+    color: white;
+    width: 80%;
+    padding: 0.5rem;
+    font-size: 1.3rem;
+    margin-top: 2rem;
+    transition: 0.3s ease;
+}
+
+.login_form > button:hover{
+    background: #8f005a;
+}
+
+.support_call {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: #47002d;
+    /* backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px); */
+    color: white;
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    /* border: 1px solid rgba(255, 255, 255, 0.3); */
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: 0.3s ease;
+    z-index: 1000; /* always above other elements */
+}
+
+.support_call:hover {
+    /* background: rgba(255, 255, 255, 0.35); */
+    background: #8f005a;
+
+}
+
+.copy_right{
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    color: white;
+    padding: 0.8rem 1.2rem;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+    .form_card {
+        padding: 1.5rem;
+    }
+    .btn_login, .support_call {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .form_card {
+        padding: 1rem;
+        max-width: 90%;
+    }
+    .support_call {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+        bottom: 15px;
+        left: 15px;
+    }
+}
+
+@media (max-width: 425px) {
+    .form_card {
+        padding: 1rem;
+        max-width: 80%;
+    }
+    .support_call {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+        bottom: 5px;
+        left: 5px;
+    }
+    .copy_right{
+        bottom: 0px;
+        right: 0px;
+        font-size: 0.85rem;
+        padding: 0rem 0.6rem;
+    }
+    .copy_right{
+        bottom: 0px;
+        right: 0px;
+        font-size: 0.7rem;
+        padding: 0rem 0.6rem;
+    }
+    .inp > label{
+        font-size: 1rem;
+    }
+    .login_form > button{
+        font-size: 1rem;
+    }
+    .login_title{
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 330px) {
+    .form_card {
+        padding: 1rem;
+        max-width: 70%;
+    }
+    .support_call {
+        padding: 0.6rem 1rem;
+        font-size: 0.7rem;
+        bottom: 2px;
+        left: 2px;
+    }
+    .copy_right{
+        bottom: 0px;
+        right: 0px;
+        font-size: 0.7rem;
+        padding: 0rem 0.6rem;
+    }
+    .inp > input { 
+        width: 70%;
+    }
+    .inp > label{
+        font-size: 1rem;
+    }
+    .login_form > button{
+        font-size: 1rem;
+    }
+    .login_title{
+        font-size: 1.2rem;
+    }
+}

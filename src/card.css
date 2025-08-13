@@ -1,0 +1,46 @@
+.card{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;    
+
+}
+
+.name{
+    font-size: 1.3rem;
+}
+.btn-holder{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.btn-holder button {
+    background-color: black;
+    color: white;
+}
+.btn-holder button:hover{
+    background-color: white;
+    color: black;
+    border: 1px solid black ;
+    transition: all 200ms ease;
+}
+.card_tot{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin: 1rem 0rem;
+    border: 1px solid black;
+    width: 80%;
+    padding: 1rem 2rem;
+    box-shadow: 5px 5px 10px rgba(0,0,0,0.20);
+    background-color: #eeeeee;
+    color:black;
+    border-radius: 10px;
+}
+.hist_level{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

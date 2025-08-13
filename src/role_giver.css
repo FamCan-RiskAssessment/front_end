@@ -1,0 +1,32 @@
+.card-holder{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.title-holder{
+    padding:1rem;
+    border-bottom: 1px solid white;
+    margin: 1rem;
+    border-bottom: 1px solid black;
+}
+div > .identifiers {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 80%;
+    padding: 1rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid black;
+}
+.idholder{
+    display: flex;
+    justify-content: center;
+}
+.code_and_shomare{
+    display: flex;
+    justify-content: center;
+    gap: 21rem;
+}
