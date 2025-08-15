@@ -10,9 +10,11 @@
     background-repeat: no-repeat;
     background-size: cover;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
+    gap: 1rem;
 }
 
 .form_card {
@@ -84,9 +86,15 @@
     transition: 0.3s ease;
 }
 
-.login_form > button:hover{
+.login_form > .btn_login:hover{
     background: #8f005a;
 }
+
+.btn_disabled{
+    /* background-color: #47002d48 !important; */
+    animation: scaler 0.3s ease;
+}
+
 
 .support_call {
     position: fixed;
@@ -119,6 +127,50 @@
     color: white;
     padding: 0.8rem 1.2rem;
 }
+
+/* error box */
+
+.error_container{
+    /* border: 1px solid; */
+    border-radius: 10px;
+    background-color: rgb(240, 105, 105);
+    padding: 2rem;
+    color: white;
+    position: absolute;
+    top: 10%;
+    right: 5%;
+    /* animation: fader 0.3 ease forwards; */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+}
+.error_container > i {
+    font-size: 1.5rem;
+}
+
+.fader{
+    animation: fader 1s 2s ease;
+}
+
+@keyframes fader {
+    from{
+        opacity: 1;
+    }
+    to{
+        opacity: 0;
+    }
+}
+
+@keyframes scaler {
+    from{
+        transform: scale(0);
+    }to{
+        transform: scale(1);
+    }
+}
+
+
 
 /* --- Responsive Design --- */
 @media (max-width: 768px) {
