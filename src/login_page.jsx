@@ -1,8 +1,10 @@
 import { useState } from "react";
 import './login_page.css'
+import { useLocation , useNavigate } from "react-router-dom";
 function Login_page(){
     const [phone , setphone] = useState('')
     const [Err  , setError] = useState('')
+    const navigate = useNavigate();
     const form_submitted = async (e) =>{
         e.preventDefault();        
         try{
@@ -14,7 +16,9 @@ function Login_page(){
             const data = await res.json()
             if (!res.ok) throw new Error(data.message || "Login failed");
             localStorage.setItem("token", data.token);
-            window.location.href = "/otp";
+            if(res.ok){
+                navigate("/otp", { state: { phone } });;
+            }
         }catch(err){
             setError(err.message)
             setTimeout(() => {
