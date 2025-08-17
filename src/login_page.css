@@ -150,7 +150,7 @@
 }
 
 .fader{
-    animation: fader 1s 2s ease;
+    animation: fader 1s 2s ease forwards;
 }
 
 @keyframes fader {

@@ -4,11 +4,14 @@ function Options({data}){
     return(
         <>
         <div className="form_element">
-            <select name={data.Optname} id={data.Optname} className="select_options">
+            <div className="option_holder">
+                <span>{data.Oname}</span>
+            <select name={data.Oname} id={data.Oname} className="select_options">
                 {data.options.map((opt , index) => 
                     <option value={opt}>{opt}</option>
                 )}
             </select>
+            </div>
         </div>
         </>
     )

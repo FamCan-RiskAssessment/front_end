@@ -3,9 +3,11 @@ import InputBox from "./input_box";
 import Radio from "./radio";
 import CheckBox from "./checkbox";
 import Options from "./option";
+import part1 from './questions/P1.json'
 
 import "./form_elements.css"
 function Questions(){
+    const [atba , setatba] = useState(false)
     let test_data = {
         inpName:"سن",
         type:"number",
@@ -26,16 +28,36 @@ function Questions(){
         options:["دی" , "آذر"],
         Oname:"ماه"
     }
+
+    const atba_checker = (val) =>{
+        setatba(val)
+    } 
+
+
+
+
     return(
         <>
         <div className="question_container">
             <h2 className="question_title">سامانه ریسک سنجی آنلاین</h2>
             <div className="question_form_container">
-            <form action="" className="question_form">
-                <InputBox data={test_data}></InputBox>
-                <Radio data={radio_opts}></Radio>
-                <CheckBox data={check_opts}></CheckBox>
-                <Options data={combine_option}></Options>
+            <form action="" className="question_form P1">
+                {part1.map((ele , idx) =>
+                    <> 
+                    {ele.input_type == "radio_input" && (
+                        <Radio data={ele}></Radio>
+                    )}
+                    {ele.input_type == "selection_input" && (
+                        <Options data={ele}></Options>
+                    )}
+                    {ele.input_type == "checkbox_input" && (
+                        <CheckBox data={ele}></CheckBox>
+                    )}
+                    {ele.input_type == "input_text" && (
+                        <InputBox data={ele}></InputBox>
+                    )}
+                    </>
+                )}
             </form>
             </div>
             <div className="btn_holder_next_prev">
