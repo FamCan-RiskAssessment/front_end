@@ -1,0 +1,97 @@
+{
+    "radio_opts_testGen": {
+      "Rname": "testGen",
+      "ask": "آیا شما تا به حال تست ژنتیک انجام داده اید؟",
+      "options": [
+        "بله",
+        "خیر",
+        "احتمال دارد اما دقیق اطلاع ندارم"
+      ]
+    },
+    "attachment_testGen": {
+      "fieldName": "لطفاً تصویر گزارش تست ژنتیک خود را بارگذاری کنید.",
+      "inputType": "file",
+      "name": "testGenFiles",
+      "required": true
+    },
+    "radio_opts_fmTestGen": {
+      "Rname": "fmTestGen",
+      "ask": "آیا تا به حال در خانواده شما از طرف پدری یا مادری کسی تست ژنتیک انجام داده است ؟",
+      "options": [
+        "بله",
+        "خیر",
+        "احتمال دارد اما دقیق اطلاع ندارم"
+      ]
+    },
+    "attachment_fmTestGen": {
+      "fieldName": "لطفاً تصویر گزارش تست ژنتیک آنها را بارگذاری کنید.",
+      "inputType": "file",
+      "name": "fmTestGenFiles",
+      "required": true
+    },
+    "radio_opts_callExpert": {
+      "Rname": "callExpert",
+      "ask": "آیا تمایل دارید مشاوران ما با استفاده از اطلاعات وارد شده جهت پیگیری با شما تماس بگیرند ؟",
+      "options": [
+        "بله",
+        "خیر"
+      ]
+    },
+    "personalInfo": {
+      "fullName": {
+        "inpName": "نام و نام خانوادگی",
+        "type": "text",
+        "placeHolder": "نام و نام خانوادگی"
+      },
+      "mobileNumber1": {
+        "inpName": "شماره تلفن همراه",
+        "type": "text",
+        "placeHolder": "شماره موبایل"
+      },
+      "mobileNumber2": {
+        "inpName": "شماره تلفن همراه دوم",
+        "type": "text",
+        "placeHolder": "شماره موبایل"
+      },
+      "birthCountry": {
+        "Rname": "IranBirthCountry",
+        "ask": "محل تولد",
+        "options": [
+          "ایران",
+          "خارج از کشور"
+        ]
+      },
+      "province": {
+        "inpName": "استان",
+        "type": "text",
+        "placeHolder": "استان"
+      },
+      "city": {
+        "inpName": "شهر",
+        "type": "text",
+        "placeHolder": "شهر"
+      },
+      "country": {
+        "Rname": "محل تولد",
+        "type": "text",
+        "placeHolder": "نام کشور"
+      },
+      "postalCode": {
+        "inpName": "کد پستی",
+        "type": "text",
+        "placeHolder": "کد پستی"
+      },
+      "address": {
+        "inpName": "آدرس",
+        "type": "text",
+        "placeHolder": "آدرس"
+      },
+      "confidentialityAgreement": {
+        "ask": "اینجانب با تمایل شخصی پرسشنامه فوق را تکمیل نموده و اطلاعات پزشکی و شخصی خود را جهت ریسک سنجی و پیگیری های آتی در اختیار فمکن قرار می دهم. فمکن متعهد میشود که اطلاعات ارسالی نزد ایشان محفوظ خواهند ماند.",
+        "inputType": "checkbox",
+        "options":["قبول می کنم"],
+        "name": "ConfidentialityAgreement",
+        "required": true
+      }
+    }
+  }

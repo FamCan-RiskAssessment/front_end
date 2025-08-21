@@ -28,6 +28,8 @@
     background-color: white;
     border: 1px solid rgba(255, 255, 255, 0.2);
     width: 80%;
+    overflow-y: scroll;
+    max-height: 60%;
 }
 
 .question_title{
@@ -44,15 +46,33 @@
 }
 
 .form_element{
-    width:calc(25% - 1rem);
+
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    /* justify-content: center; */
+    background-color: #eee;
+    padding: 1rem;
+    border-radius: 20px;
 }
-/* .P1{
-    
-} */
+.P1{
+    background-color: #eee;
+    border-radius: 20px;   
+}
+.P1 .form_element{
+    width:calc(25% - 3rem); 
+}
+
+.P2{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.P2_inner{
+    justify-content: unset !important;
+}
 
 .btn_holder_next_prev{
     display: flex;
@@ -181,4 +201,88 @@
     height: 2.5rem;
     font-family: 'vazir';
     font-size: 1.3rem;
+}
+
+/* file uploader */
+
+.color_changer{
+    background-color: #dfb1ce !important;
+}
+
+
+
+/* cancer Element */
+
+.cancer_element{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    background-color: #dfb1ce;
+    padding: 1rem;
+    border-radius: 20px;
+}
+.total_cancer_holder .form_element{
+    background-color: transparent;
+}
+.total_cancer_holder{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.tah_holder{
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+}
+.file_uploader{
+    background-color: transparent;
+    color: black;
+    padding: 1rem;
+    outline: none;
+    border-radius: 20px;
+}
+
+.file_uploader > button{
+    padding: 1rem;
+}
+.total_file_uploader{
+    display: flex;
+    flex-direction: column;
+
+}
+.jadval_and_form{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;  
+    width: 100%;
+}
+.sar_jadval tr th{
+    width: 50rem;
+}
+.sar_jadval > tr{
+    background-color: #eee;
+}
+td{
+    text-align: center;
+}
+td img{
+    width: 5rem;
+    height: 5rem;
+}
+
+
+/* Personal element */
+
+.grider{
+    width: calc(33.33% - 1rem);
+}
+.personal_element{
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #eee;
+    border-radius: 20px;
+}
+.personal_element .form_element{
+    background-color: transparent;
 }

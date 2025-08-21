@@ -42,19 +42,30 @@
       "input_type": "input_text",
       "inpName": "کد اتباع",
       "type": "number",
-      "placeHolder": "کد اتباع"
+      "placeHolder": "کد اتباع",
+      "condition":"atba=true"
+      
+    },
+    {
+      "input_type": "input_text",
+      "inpName": "کد ملی",
+      "type": "number",
+      "placeHolder": "کد ملی",
+      "condition":"atba=false"
     },
     {
       "input_type": "input_text",
       "inpName": "قد",
       "type": "number",
-      "placeHolder": "قد"
+      "placeHolder": "قد",
+      "condition":null
     },
     {
       "input_type": "input_text",
       "inpName": "وزن",
       "type": "number",
-      "placeHolder": "وزن"
+      "placeHolder": "وزن",
+      "condition":null
     }
   ]
   
