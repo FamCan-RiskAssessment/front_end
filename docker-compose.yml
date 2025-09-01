@@ -1,0 +1,10 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ghcr.io/famcan-riskassessment/frontend:latest
+    ports:
+      - "5173:5173"
+    container_name: risk-prediction-frontend
+    restart: unless-stopped
