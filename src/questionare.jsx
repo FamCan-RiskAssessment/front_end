@@ -17,7 +17,32 @@ import part6 from './questions/P6.json'
 import "./form_elements.css"
 function Questions(){
     const [step , setStep] = useState(1)
+    // step 1
     const [atba , setatba] = useState(false)
+    // step 2
+    const [isAlchol , setIsAlchol] = useState('')
+    const [isSabzi , setIsSabzi] = useState('')
+    const [isActivity , setIsActivity] = useState('')
+    const [isHardActivity , setIsHardActivity] = useState('')
+    const [isSmoke , setIsSmoke] = useState('')
+    const [isSmokeAge , setIsSmokeAge] = useState('')
+    const [isSmokingNow , setIsSmokingNow] = useState('')
+    // step 3 
+    const [isChild , setIsChild] = useState('') 
+    const [isAdat , setIsAdat] = useState('')
+    const [isHRT , setIsHRT] = useState('')
+    const [isHRT5 , setIsHRT5] = useState('')
+    const [isOral , setIsOral] = useState('')
+    const [isColon , setIsColon] = useState('')
+    // step 4
+   const [isCancer , setIsCancer] = useState('') 
+   //step 5
+   const [isChildCancer , setIsChildCncer] = useState('')
+   const [isMotherCancer , setIsMotherCncer] = useState('')
+   const [isFatherCancer , setIsFatherCncer] = useState('')
+
+
+
     let test_data = {
         inpName:"سن",
         type:"number",
@@ -79,46 +104,98 @@ function Questions(){
             )}
             {step == 2 && (
             <form action="" className="question_form P2">
-                <Radio data={part2.radio_opts_alcohol} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                <Radio data={part2.radio_opts_alcohol} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsAlchol}></Radio>
+                {isAlchol == "بله" && (
                 <Options data={part2.combine_option_amountAlcohol} class_change1={"P2"} class_change2={"P2_inner"}></Options>
-                <Options data={part2.combine_option_lastMonthSabzijatMeal} class_change1={"P2"} class_change2={"P2_inner"}></Options>
+                )}
+
+                <Options data={part2.combine_option_lastMonthSabzijatMeal} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsSabzi}></Options>
+                {isSabzi != "انتخاب کنید" && isSabzi != '' && (
                 <Options data={part2.combine_option_lastMonthSabzijatWeight} class_change1={"P2"} class_change2={"P2_inner"}></Options>
-                <Options data={part2.combine_option_mediumActivityMonthInYear} class_change1={"P2"} class_change2={"P2_inner"}></Options>
+                )}
+
+                <Options data={part2.combine_option_mediumActivityMonthInYear} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsActivity}></Options>
+                {isActivity != "انتخاب کنید" && isActivity != '' && (
                 <Options data={part2.combine_option_mediumActivityHourInWeek} class_change1={"P2"} class_change2={"P2_inner"}></Options>
-                <Options data={part2.combine_option_hardActivityMonthInYear} class_change1={"P2"} class_change2={"P2_inner"}></Options>
+                )}
+
+                <Options data={part2.combine_option_hardActivityMonthInYear} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHardActivity}></Options>
+                {isHardActivity != "انتخاب کنید" && isHardActivity != '0' && (
                 <Options data={part2.combine_option_hardActivityHourInWeek} class_change1={"P2"} class_change2={"P2_inner"}></Options>
-                <Radio data={part2.radio_opts_smoking100} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
-                <Options data={part2.combine_option_smokingAge} class_change1={"P2"} class_change2={"P2_inner"}></Options>
-                <Radio data={part2.radio_opts_smokingNow} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
-                <Options data={part2.combine_option_leaveSmokingAge} class_change1={"P2"} class_change2={"P2_inner"}></Options>
-                <Options data={part2.combine_option_countSmokingDaily} class_change1={"P2"} class_change2={"P2_inner"}></Options>
-                <Options data={part2.combine_option_t_gh_daily} class_change1={"P2"} class_change2={"P2_inner"}></Options>
+                )}
+                
+                <Radio data={part2.radio_opts_smoking100} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsSmoke}></Radio>
+                {isSmoke == 'بله' && (
+                    <>
+                        <Options data={part2.combine_option_smokingAge} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsSmokeAge}></Options>
+                        {isSmokeAge != "انتخاب کنید" && isSmokeAge != "" && isSmokeAge != "هیچوقت به طور منظم سیگار یا قلیان نکشیده ام" && (
+                        <>
+                            <Radio data={part2.radio_opts_smokingNow} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsSmokingNow}></Radio>
+                            {isSmokingNow == 'بله' && (
+                            <>
+                            <Options data={part2.combine_option_countSmokingDaily} class_change1={"P2"} class_change2={"P2_inner"}></Options>
+                            <Options data={part2.combine_option_t_gh_daily} class_change1={"P2"} class_change2={"P2_inner"}></Options>
+                            </>
+                            )}
+                            {isSmokingNow == 'خیر' && (
+                                <>
+                                <Options data={part2.combine_option_leaveSmokingAge} class_change1={"P2"} class_change2={"P2_inner"}></Options>
+                                <Options data={part2.combine_option_countSmokingDaily_past} class_change1={"P2"} class_change2={"P2_inner"}></Options>
+                                <Options data={part2.combine_option_t_gh_daily_past} class_change1={"P2"} class_change2={"P2_inner"}></Options>
+                                </>
+                            )}
+                        </>
+                        )}
+                    </>
+                )}
+
         </form>
             )}
 
             {step == 3 && (
             <form action="" className="question_form P2">
                 <Options data={part3.combine_option_ghaedeAge} class_change1={"P2"} class_change2={"P2_inner"}></Options>
-                <Radio data={part3.radio_opts_children} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+
+                <Radio data={part3.radio_opts_children} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChild}></Radio>
+                {isChild == "بله" && (
                 <Options data={part3.combine_option_firstChildBirthAge} class_change1={"P2"} class_change2={"P2_inner"}></Options>
-                <Radio data={part3.radio_opts_menopausal_status} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                )}
+
+                <Radio data={part3.radio_opts_menopausal_status} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsAdat}></Radio>
+                {isAdat == "بله" && (
                 <Options data={part3.combine_option_menopause} class_change1={"P2"} class_change2={"P2_inner"}></Options>
-                <Radio data={part3.radio_opts_hrt} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                )}
+
+                <Radio data={part3.radio_opts_hrt} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT}></Radio>
+                {isHRT == "بله" && (
                 <Options data={part3.combine_option_hrt_use_length} class_change1={"P2"} class_change2={"P2_inner"}></Options>
-                <Radio data={part3.radio_opts_lastFiveYears_HRT_use} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
-                <Radio data={part3.radio_opts_HRT_current_use} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
-                <Options data={part3.combine_option_intended_HRT_use} class_change1={"P2"} class_change2={"P2_inner"}></Options>
-                <Radio data={part3.radio_opts_hrt_Type} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
-                <Radio data={part3.radio_opts_oral} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                )}                
+ 
+                <Radio data={part3.radio_opts_lastFiveYears_HRT_use} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT5}></Radio>
+                {isHRT5 == "بله" && (
+                    <>
+                    <Radio data={part3.radio_opts_HRT_current_use} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                    <Options data={part3.combine_option_intended_HRT_use} class_change1={"P2"} class_change2={"P2_inner"}></Options>
+                    <Radio data={part3.radio_opts_hrt_Type} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                    </>
+                )}
+
+                <Radio data={part3.radio_opts_oral} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsOral}></Radio>
+                {isOral == "بله" && (
                 <Options data={part3.combine_option_oralDuration} class_change1={"P2"} class_change2={"P2_inner"}></Options>
+                )}
                 <Radio data={part3.radio_opts_oral2LastYears} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                 <Radio data={part3.radio_opts_mamoGraphy} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                 <Radio data={part3.radio_opts_falop} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                 <Radio data={part3.radio_opts_andometrioz} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                 <Radio data={part3.radio_opts_leavePestan} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                 <Radio data={part3.radio_opts_leaveTokhmdan} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
-                <Radio data={part3.radio_opts_laDe_colon} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+    
+                <Radio data={part3.radio_opts_laDe_colon} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsColon}></Radio>
+                {isColon == "بله" && (
                 <Radio data={part3.radio_opts_laDe_pol} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                )}
+
                 <Radio data={part3.radio_opts_asp_la_mo} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                 <Radio data={part3.radio_opts_nsaiD_la_mo} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                 <Radio data={part3.radio_opts_lastFiveYearBloodTestInStool} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
@@ -126,18 +203,30 @@ function Questions(){
             )}
             {step == 4 && (
             <form action="" className="question_form P2">
-                    <Radio class_change1={"P2"} class_change2={"P2_inner"} data={part4.radio_opts_cancer}></Radio>
+                    <Radio class_change1={"P2"} class_change2={"P2_inner"} data={part4.radio_opts_cancer} valueSetter={setIsCancer}></Radio>
+                    {isCancer == "بله" && (
                     <CancerField data_Inp1={null} data_Options={part4.cancerCard.cancerType} data_Radio={null} data_Inp2={part4.cancerCard.cancerAge}></CancerField>
+                    )}
             </form>
             )}
             {step == 5 && (
             <form action="" className="question_form P2">
-                    <Radio data={part5.radio_opts_childCancer} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                    
+                    <Radio data={part5.radio_opts_childCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChildCncer}></Radio>
+                    {isChildCancer=="بله" && (
                     <CancerField data_Inp1={part5.childCard.childName} data_Inp2={part5.childCard.childCancerAge} data_Options={part5.childCard.childCancerType} data_Radio={part5.childCard.childLifeStatus}></CancerField> 
-                    <Radio data={part5.radio_opts_motherCancer} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                    )}
+
+                    <Radio data={part5.radio_opts_motherCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsMotherCncer}></Radio>
+                    {isMotherCancer=="بله" && (
                     <CancerField data_Inp1={part5.motherCard.motherName} data_Inp2={part5.motherCard.motherCancerAge} data_Options={part5.motherCard.motherCancerType} data_Radio={part5.motherCard.motherLifeStatus}></CancerField> 
-                    <Radio data={part5.radio_opts_fatherCancer} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                    )}
+
+                    <Radio data={part5.radio_opts_fatherCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsFatherCncer}></Radio>
+                    {isFatherCancer=="بله" && (
                     <CancerField data_Inp1={part5.fatherCard.fatherName} data_Inp2={part5.fatherCard.fatherCancerAge} data_Options={part5.fatherCard.fatherCancerType} data_Radio={part5.fatherCard.fatherLifeStatus}></CancerField> 
+                    )}
+                    
                     <Radio data={part5.radio_opts_bsCancer} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                     <CancerField data_Inp1={part5.siblingCard.siblingName} data_Inp2={part5.siblingCard.siblingCancerAge} data_Options={part5.siblingCard.siblingCancerType} data_Radio={part5.siblingCard.siblingLifeStatus}></CancerField> 
                     <Radio data={part5.radio_opts_ameAmoCancer} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
