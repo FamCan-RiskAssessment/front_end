@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState , useRef } from "react";
 import InputBox from "./input_box";
 import Radio from "./radio";
 import CheckBox from "./checkbox";
@@ -15,6 +15,7 @@ import part5 from './questions/P5.json'
 import part6 from './questions/P6.json'
 
 import "./form_elements.css"
+// import { set } from "animejs";
 function Questions(){
     const [step , setStep] = useState(1)
     // step 1
@@ -40,6 +41,53 @@ function Questions(){
    const [isChildCancer , setIsChildCncer] = useState('')
    const [isMotherCancer , setIsMotherCncer] = useState('')
    const [isFatherCancer , setIsFatherCncer] = useState('')
+   const [isSibsCancer , setIsSibsCncer] = useState('')
+   const [isUncAuntCancer , setIsUncAuntCncer] = useState('')
+   const [isUncAunt2Cancer , setIsUncAunt2Cncer] = useState('')
+
+   const [isGeneTest , setIsGeneTest] = useState('')
+   const [isFamGeneTest , setIsFamGeneTest] = useState('')
+
+
+    // form refrences
+    const formRefs = {
+        1: useRef(null),
+        2: useRef(null),
+        3: useRef(null),
+        4: useRef(null),
+        5: useRef(null),
+        6: useRef(null),
+        };
+
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+    
+        const allData = {};
+    
+        // Collect data from all forms
+        Object.values(formRefs).forEach((formRef) => {
+            const form = formRef.current;
+            if (form) {
+            const formData = new FormData(form);
+            for (let [name, value] of formData) {
+                allData[name] = value;
+            }
+            }
+        });
+    
+        console.log('Final ', allData);
+    
+        // 🚀 Send to server
+        fetch('/api/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(allData),
+        })
+            .then(() => alert('Success!'))
+            .catch(() => alert('Error!'));
+        };
+
 
 
 
@@ -86,9 +134,9 @@ function Questions(){
         <div className="question_container">
             <h2 className="question_title">سامانه ریسک سنجی آنلاین</h2>
             <div className="question_form_container">
-            {step == 1 && (
+                {/* form part 1*/}
 
-            <form action="" className="question_form P1">
+            <form ref={formRefs[1]} style={step==1 ? null : {display:"none "}}  className="question_form P1">
                 <Radio data={part1[0]}></Radio>
                 <Options data={part1[1]}></Options>
                 <Options data={part1[2]}></Options>
@@ -99,11 +147,8 @@ function Questions(){
                 <InputBox data={part1[7]}></InputBox>
                 <InputBox data={part1[8]}></InputBox>
             </form>
-
-
-            )}
-            {step == 2 && (
-            <form action="" className="question_form P2">
+                {/* form part 2 */}
+            <form ref={formRefs[2]} style={step==2 ? null : {display:"none "}}  className="question_form P2">
                 <Radio data={part2.radio_opts_alcohol} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsAlchol}></Radio>
                 {isAlchol == "بله" && (
                 <Options data={part2.combine_option_amountAlcohol} class_change1={"P2"} class_change2={"P2_inner"}></Options>
@@ -150,10 +195,9 @@ function Questions(){
                 )}
 
         </form>
-            )}
+                {/* form part 3 */}
 
-            {step == 3 && (
-            <form action="" className="question_form P2">
+            <form ref={formRefs[3]} style={step==3 ? null : {display:"none "}}  className="question_form P2">
                 <Options data={part3.combine_option_ghaedeAge} class_change1={"P2"} class_change2={"P2_inner"}></Options>
 
                 <Radio data={part3.radio_opts_children} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChild}></Radio>
@@ -200,17 +244,17 @@ function Questions(){
                 <Radio data={part3.radio_opts_nsaiD_la_mo} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                 <Radio data={part3.radio_opts_lastFiveYearBloodTestInStool} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
             </form>
-            )}
-            {step == 4 && (
-            <form action="" className="question_form P2">
+                {/* form part 4 */}
+
+            <form ref={formRefs[4]} style={step==4 ? null : {display:"none "}}  className="question_form P2">
                     <Radio class_change1={"P2"} class_change2={"P2_inner"} data={part4.radio_opts_cancer} valueSetter={setIsCancer}></Radio>
                     {isCancer == "بله" && (
                     <CancerField data_Inp1={null} data_Options={part4.cancerCard.cancerType} data_Radio={null} data_Inp2={part4.cancerCard.cancerAge}></CancerField>
                     )}
             </form>
-            )}
-            {step == 5 && (
-            <form action="" className="question_form P2">
+                {/* form part 5 */}
+
+            <form ref={formRefs[5]} style={step==5 ? null : {display:"none "}}  className="question_form P2">
                     
                     <Radio data={part5.radio_opts_childCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChildCncer}></Radio>
                     {isChildCancer=="بله" && (
@@ -226,32 +270,46 @@ function Questions(){
                     {isFatherCancer=="بله" && (
                     <CancerField data_Inp1={part5.fatherCard.fatherName} data_Inp2={part5.fatherCard.fatherCancerAge} data_Options={part5.fatherCard.fatherCancerType} data_Radio={part5.fatherCard.fatherLifeStatus}></CancerField> 
                     )}
-                    
-                    <Radio data={part5.radio_opts_bsCancer} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+
+                    <Radio data={part5.radio_opts_bsCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsSibsCncer}></Radio>
+                    {isSibsCancer == "بله" && (
                     <CancerField data_Inp1={part5.siblingCard.siblingName} data_Inp2={part5.siblingCard.siblingCancerAge} data_Options={part5.siblingCard.siblingCancerType} data_Radio={part5.siblingCard.siblingLifeStatus}></CancerField> 
-                    <Radio data={part5.radio_opts_ameAmoCancer} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                    )}
+                    
+                    <Radio data={part5.radio_opts_ameAmoCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsUncAuntCncer}></Radio>
+                    {isUncAuntCancer == "بله" && (
                     <CancerField data_Inp1={part5.uncleAuntCard.uncleAuntName} data_Inp2={part5.uncleAuntCard.uncleAuntCancerAge} data_Options={part5.uncleAuntCard.uncleAuntCancerType} data_Radio={part5.uncleAuntCard.uncleAuntLifeStatus}></CancerField> 
-                    <Radio data={part5.radio_opts_khaleDaeiCancer} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                    )}
+
+                    <Radio data={part5.radio_opts_khaleDaeiCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsUncAunt2Cncer}></Radio>
+                    {isUncAunt2Cancer == "بله" && (
                     <CancerField data_Inp1={part5.khaleDaeiCard.khaleDaeiName} data_Inp2={part5.khaleDaeiCard.khaleDaeiCancerAge} data_Options={part5.khaleDaeiCard.khaleDaeiCancerType} data_Radio={part5.khaleDaeiCard.khaleDaeiLifeStatus}></CancerField> 
+                    )}
                     <CancerField data_Inp1={part5.otherRelativeCard.otherRelation} data_Inp2={part5.otherRelativeCard.otherCancerAge} data_Options={part5.otherRelativeCard.otherCancerType} data_Radio={part5.otherRelativeCard.otherLifeStatus}></CancerField> 
             </form>
-            )}
-            {step == 6 && (
-                <form action="" className="question_form P2">
-                    <Radio data={part6.radio_opts_testGen} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                {/* form part 6 */}
+                <form ref={formRefs[6]} id="form6" style={step==6 ? null : {display:"none"}}  className="question_form P2">
+                    <Radio data={part6.radio_opts_testGen} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsGeneTest}></Radio>
+                    {isGeneTest == "بله" && (
                     <FileUploader data={part6.attachment_testGen} class_change1={"P2"} class_change2={"P2_inner"}></FileUploader>
-                    <Radio data={part6.radio_opts_fmTestGen} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                    )}
+                    <Radio data={part6.radio_opts_fmTestGen} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsFamGeneTest}></Radio>
+                    {isFamGeneTest=="بله" && (
                     <FileUploader data={part6.attachment_fmTestGen} class_change1={"P2"} class_change2={"P2_inner"}></FileUploader>
+                    )}
                     <Radio data={part6.radio_opts_callExpert} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                     <PersonalInfo data_inp1={part6.personalInfo.fullName} data_inp2={part6.personalInfo.mobileNumber1} data_inp3={part6.personalInfo.mobileNumber2} data_inp4={part6.personalInfo.province}
                                   data_inp5={part6.personalInfo.city} data_inp6={part6.personalInfo.postalCode} data_opt={part6.personalInfo.birthCountry} data_inp7={part6.personalInfo.address}
                                   data_check={part6.personalInfo.confidentialityAgreement}
                     ></PersonalInfo>
             </form>
-            )}
             </div>
             <div className="btn_holder_next_prev">
+                {step == 6 ? (
+                    <button className="btn_question" onClick={handleSubmit}>ارسال</button>
+                ) : (
                 <button className="btn_question" onClick={nexter}>بعدی</button>
+                )}
                 <button className="btn_question" onClick={prever}>قبلی</button>
             </div>
             <button className="support_call ">تماس با پشتیبانی</button>

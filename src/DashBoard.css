@@ -1,0 +1,68 @@
+.tool_holder{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 4rem;
+    justify-content: center;
+    align-items: center;
+    height: 100vh ;
+}
+
+.tool_card{
+    width: calc(33.33% - 8rem);
+    border: 1px solid #ccc ;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 5px 5px 10px rgb(0,0,0,0.2);
+}
+.tool_card:hover{
+    transform: translateY(-20px);
+    box-shadow: 10px 10px 20px rgb(0, 0, 0 , 0.2);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.tool_image{
+    background: url("./assets/setting.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 10rem ;
+    height: 10rem;
+}
+.tool_name{
+    background-color: rgb(172, 0, 109);
+    color: white;
+    width: 100%;
+    text-align: center;
+}
+.perm_holder{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4rem;
+    justify-content: space-between;
+    width: 80%;
+    /* margin: 1rem; */
+    padding: 1rem;
+}
+.permCard{
+    width: calc(33.33% - 8rem);
+    border: 1px solid black;
+    border-radius: 10px ;
+    background-color: #eee;
+    padding: 1rem;
+    cursor: pointer;
+}
+.permCard:hover{
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+.form_column_perm{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

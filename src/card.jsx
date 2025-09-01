@@ -1,13 +1,15 @@
 import { useState , useEffect } from "react";
 import "./card.css"
 import {animate} from "animejs"
-function PersonCard({person, index} ){
+function PersonCard({person, index , clicker , opener} ){
     const [admin , setadmin] = useState(false)
     const [userType , setUserType] = useState("کاربر معمولی")
     console.log(index)
     const admin_maker = () => {
         setadmin(a => true)
         setUserType(u => "ادمین")
+        clicker(a => person.name)
+        opener(true)
     }
     useEffect(() => {
         if(admin){

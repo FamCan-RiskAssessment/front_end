@@ -23,14 +23,38 @@
     /* backdrop-filter: blur(20px); glass blur effect */
     /* -webkit-backdrop-filter: blur(20px); for Safari */
     border-radius: 16px;
-    padding: 2rem;
+    padding: 2rem 3rem;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2) , -5px -5px 10px rgba(0, 0, 0, 0.2);
     background-color: white;
     border: 1px solid rgba(255, 255, 255, 0.2);
     width: 80%;
     overflow-y: scroll;
     max-height: 60%;
+    /* padding-left: 1rem; */
 }
+
+.question_form_container::-webkit-scrollbar{
+    width: 10px;
+}
+
+.question_form_container::-webkit-scrollbar-button {
+    visibility: hidden; /* This removes the arrows at the top and bottom */
+
+}
+
+.question_form_container::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px; /* Rounded corners for the track */
+    margin-left: 20px; /* Creates a gap between the left edge of container and the scrollbar */
+    /* padding: 1rem 0rem; */
+
+}
+.question_form_container::-webkit-scrollbar-thumb {
+    background: #47002d;
+    border-radius: 10px;
+  }
+
+
 
 .question_title{
     color: #8f005a;
