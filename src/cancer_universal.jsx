@@ -11,7 +11,7 @@ function CancerField({data_Inp1 , data_Options , data_Radio , data_Inp2}){
     const [opt , setOpt] = useState("")
     const [rad , setRad] = useState("")
     const [image , setImage] = useState(null)
-    console.log(cancerArray)
+    // console.log(cancerArray)
     const inpSetter1 = (val) => {
         setInp1(v => val)
     }
@@ -61,7 +61,7 @@ function CancerField({data_Inp1 , data_Options , data_Radio , data_Inp2}){
                         <input type="file" className="file_uploader" accept="image/*" onChange={handleFileChange} />
                         </div>
                     </div>
-                    <button type="button" className="btn_question" onClick={add_row}>اضافه</button>
+                    <button type="button" className="btn_question jadval_adder" onClick={add_row}>اضافه</button>
                 </div>
             </div>
             <div className="table_holder">
@@ -96,7 +96,7 @@ function CancerField({data_Inp1 , data_Options , data_Radio , data_Inp2}){
                             setCancerArray((prev) => prev.filter((_, i) => i !== index))
                         }
                         >
-                        ❌ Delete
+                        حذف
                         </button>
                     </td>
                     </tr>

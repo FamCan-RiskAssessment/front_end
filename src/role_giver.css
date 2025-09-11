@@ -7,12 +7,12 @@
 }
 .all_holder{
     height: 100vh;
-    background: linear-gradient(45deg, rgb(0 255 140 / 50%), rgb(0 100 255 / 71%));
+    background: linear-gradient(135deg, #f8f5ff, #e5d4f9);
 }
 
 .title-holder{
     padding:1rem;
-    border-bottom: 1px solid white;
+    /* border-bottom: 1px solid white; */
     margin:  0rem 1rem 1rem 1rem;
     border-bottom: 1px solid black;
 }
@@ -102,4 +102,16 @@ div > .identifiers {
     cursor: pointer;
     padding: 0.5rem;
     border-radius: 10px;
+}
+.checkBox_column{
+    flex-direction:column !important;
+    gap: 2rem;
+}
+.total_check_holder{
+    flex-wrap: wrap;
+}
+.width_and_centerer{
+    width: calc(33.33% - 3rem);
+    align-items: center;
+    justify-content: center !important;
 }

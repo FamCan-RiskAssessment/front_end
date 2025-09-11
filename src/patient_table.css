@@ -1,0 +1,28 @@
+.lower_width{
+    width: 80%;
+}
+.total_patients_holder{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: flex-start;
+    flex-direction: column;
+    margin-top: 3rem;
+    gap:2rem ;
+}
+.filter_holder{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.select_filter{
+    width: 20rem;
+}
+
+.cell_choose:hover{
+    cursor: cell;
+    background-color: #eee;
+}

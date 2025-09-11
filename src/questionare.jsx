@@ -13,8 +13,10 @@ import part3 from './questions/P3.json'
 import part4 from './questions/P4.json'
 import part5 from './questions/P5.json'
 import part6 from './questions/P6.json'
+import part7 from './questions/P7.json'
 
 import "./form_elements.css"
+import "./responsive_questionare.css"
 // import { set } from "animejs";
 function Questions(){
     const [step , setStep] = useState(1)
@@ -48,6 +50,13 @@ function Questions(){
    const [isGeneTest , setIsGeneTest] = useState('')
    const [isFamGeneTest , setIsFamGeneTest] = useState('')
 
+    //step 6
+
+    //step 7
+    const [smokeType , setSmokeType] = useState('')
+    const [smokeTypePast , setSmokeTypePast] = useState('')
+
+
 
     // form refrences
     const formRefs = {
@@ -59,7 +68,7 @@ function Questions(){
         6: useRef(null),
         };
 
-
+    // const smokes
     const handleSubmit = (e) => {
         e.preventDefault();
     
@@ -116,7 +125,7 @@ function Questions(){
         setatba(val)        
     } 
     const nexter = () => {
-        if(step != 6){
+        if(step != 7){
             setStep(s => s + 1)
         }
     }
@@ -125,8 +134,53 @@ function Questions(){
             setStep(s => s - 1)
         }
     }
-    
+    const smokeTypeQuestion = (ST) => {
+        // console.log("maraz nadaram ke bebin: " , ST)
+        let the_chooseVal
+        if(ST == "سیگار"){
+            the_chooseVal =  part7.text_cigarettesPerDay_current 
+        }else if(ST == "سیگار برگ"){
+            the_chooseVal =  part7.text_cigarPerDay_current
+        }else if(ST == "پیپ"){
+            the_chooseVal =  part7.text_pipePerDay_current
+        }else if(ST == "قلیان"){
+            the_chooseVal =  part7.text_hookahPerWeek_current
+        }else if(ST == "چپق"){
+            the_chooseVal =  part7.text_chapoghPerDay_current
+        }else if(ST == "سیگار الکترونیک و محصولات مشابه"){
+            the_chooseVal =  part7.text_eCigPerDay_current
+        }else if(ST == "تریاک"){
+            the_chooseVal =  part7.text_smokedOpiumPerDay_current
+        }else{
+            the_chooseVal = null
+        }
+        return the_chooseVal
+    }
 
+    const smokeTypePastQuestion = (ST) => {
+        // console.log("maraz nadaram ke bebin: " , ST)
+        let the_chooseVal
+        if(ST == "سیگار"){
+            the_chooseVal =  part7.text_cigarettesPerDay_past 
+        }else if(ST == "سیگار برگ"){
+            the_chooseVal =  part7.text_cigarPerDay_past
+        }else if(ST == "پیپ"){
+            the_chooseVal =  part7.text_pipePerDay_past
+        }else if(ST == "قلیان"){
+            the_chooseVal =  part7.text_hookahPerWeek_past
+        }else if(ST == "چپق"){
+            the_chooseVal =  part7.text_chapoghPerDay_past
+        }else if(ST == "سیگار الکترونیک و محصولات مشابه"){
+            the_chooseVal =  part7.text_eCigPerDay_past
+        }else if(ST == "تریاک"){
+            the_chooseVal =  part7.text_smokedOpiumPerDay_past
+        }else{
+            the_chooseVal = null
+        }
+        return the_chooseVal
+    }
+    const smokesNow = smokeTypeQuestion(smokeType)
+    const smokesPast = smokeTypePastQuestion(smokeTypePast)
 
 
     return(
@@ -303,9 +357,46 @@ function Questions(){
                                   data_check={part6.personalInfo.confidentialityAgreement}
                     ></PersonalInfo>
             </form>
+                {/* form part 7 */}
+                <form ref={formRefs[7]} id="form7" style={step==7 ? null : {display:"none"}} action="" className="question_form P2">
+                        <Options data={part7.combine_option_insurance} class_change1={"P2"} class_change2={"P2_inner"}></Options>
+                        <Radio data={part7.radio_hypertension} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                        <Radio data={part7.radio_hypertension_treatment} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                        <Radio data={part7.radio_heartDisease} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                        <Radio data={part7.radio_heartDisease_treatment} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                        <Radio data={part7.radio_diabetes} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                        <Radio data={part7.radio_diabetes_treatment} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                        <Radio data={part7.radio_chronicLungDisease} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                        <Radio data={part7.radio_lungCancerHistory} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                        <Radio data={part7.radio_lungCancerFamily} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                        <Options data={part7.combine_option_lungCancerFamilyRelation} class_change1={"P2"} class_change2={"P2_inner"}></Options>
+                        <Options data={part7.combine_option_occupationalExposure} class_change1={"P2"} class_change2={"P2_inner"}></Options>
+                        <Radio data={part7.radio_currentSmoking} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                        <Radio data={part7.radio_currentSmoking} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                        <Options data={part7.combine_option_smokingTypes_current} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setSmokeType}></Options>
+                        {smokeType.length != 0 && smokeType != "انتخاب کنید" && (
+                        <InputBox data={smokesNow} class_change1={"P2"} class_change2={"P2_inner"}></InputBox> 
+                        )}
+                        {smokeType == "تریاک" && (
+                        <InputBox data={part7.text_chewedOpiumPerDay_past} class_change1={"P2"} class_change2={"P2_inner"}></InputBox> 
+                        )}
+                        <Radio data={part7.radio_pastSmoking} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                        <InputBox data={part7.text_smokingStartAge_past} class_change1={"P2"} class_change2={"P2_inner"}></InputBox>
+                        <Options data={part7.combine_option_smokingTypes_past} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setSmokeTypePast}></Options>
+                        {smokeTypePast.length != 0 && smokeTypePast != "انتخاب کنید" && (
+                        <InputBox data={smokesPast} class_change1={"P2"} class_change2={"P2_inner"}></InputBox> 
+                        )}
+                        {smokeTypePast == "تریاک" && (
+                        <InputBox data={part7.text_chewedOpiumPerDay_past} class_change1={"P2"} class_change2={"P2_inner"}></InputBox> 
+                        )}
+
+
+
+                </form>
+
             </div>
             <div className="btn_holder_next_prev">
-                {step == 6 ? (
+                {step == 7 ? (
                     <button className="btn_question" onClick={handleSubmit}>ارسال</button>
                 ) : (
                 <button className="btn_question" onClick={nexter}>بعدی</button>
