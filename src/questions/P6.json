@@ -39,22 +39,25 @@
     },
     "personalInfo": {
       "fullName": {
+        "engName":"name",
         "inpName": "نام و نام خانوادگی",
         "type": "text",
         "placeHolder": "نام و نام خانوادگی"
       },
       "mobileNumber1": {
+        "engName":"sa",
         "inpName": "شماره تلفن همراه",
         "type": "text",
         "placeHolder": "شماره موبایل"
       },
       "mobileNumber2": {
+        "engName":"sa",
         "inpName": "شماره تلفن همراه دوم",
         "type": "text",
         "placeHolder": "شماره موبایل"
       },
       "birthCountry": {
-        "Rname": "IranBirthCountry",
+        "Rname": "birthCountry",
         "ask": "محل تولد",
         "options": [
           "ایران",
@@ -62,26 +65,31 @@
         ]
       },
       "province": {
+        "engName":"province",
         "inpName": "استان",
         "type": "text",
         "placeHolder": "استان"
       },
       "city": {
+        "engName":"city",
         "inpName": "شهر",
         "type": "text",
         "placeHolder": "شهر"
       },
       "country": {
-        "Rname": "محل تولد",
+        "Rname": "country",
+        "ask":"نام کشور",
         "type": "text",
         "placeHolder": "نام کشور"
       },
       "postalCode": {
+        "engName":"postalCode",
         "inpName": "کد پستی",
         "type": "text",
         "placeHolder": "کد پستی"
       },
       "address": {
+        "engName":"address",
         "inpName": "آدرس",
         "type": "text",
         "placeHolder": "آدرس"

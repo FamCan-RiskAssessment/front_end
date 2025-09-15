@@ -56,7 +56,7 @@ function Questions(){
     const [smokeType , setSmokeType] = useState('')
     const [smokeTypePast , setSmokeTypePast] = useState('')
 
-
+    const isNumber = (str) => str.trim() !== "" && !isNaN(str);
 
     // form refrences
     const formRefs = {
@@ -78,26 +78,39 @@ function Questions(){
         Object.values(formRefs).forEach((formRef) => {
             const form = formRef.current;
             if (form) {
-            const formData = new FormData(form);
-            for (let [name, value] of formData) {
-                allData[name] = value;
-            }
+              const formData = new FormData(form);
+              for (let [name, value] of formData) {
+                // ✅ Convert "true" / "false" / "null" strings back
+                if (value === "true") {
+                  allData[name] = true;
+                } else if (value === "false") {
+                  allData[name] = false;
+                } else if (value === "null") {
+                  allData[name] = null;
+                } else if (isNumber(value)) {
+                  allData[name] = parseInt(value);
+                }else{
+                  allData[name] = value
+                }
+              }
             }
         });
     
         console.log('Final ', allData);
-    
+        const token_auth = localStorage.getItem("token")
         // 🚀 Send to server
-        fetch('/api/submit', {
+        fetch('http://192.168.1.151:8080/form', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 
+                        'Authorization': `Bearer ${token_auth}`
+                    },
             body: JSON.stringify(allData),
         })
             .then(() => alert('Success!'))
-            .catch(() => alert('Error!'));
+            .catch((e) => console.log(e));
         };
 
-
+    console.log(localStorage.getItem("token"))
 
 
     let test_data = {

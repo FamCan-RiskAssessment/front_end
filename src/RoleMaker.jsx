@@ -7,8 +7,8 @@ function RoleMaker(){
     const [permArray , setPermArray] = useState([])
     const [permData, setPermData] = useState([]);
     const [loading, setLoading] = useState(true);
-    useEffect(() => {
-        fetch("http://185.231.115.28:8080/admin/permissions")
+    useEffect(async () => {
+        await fetch("http://192.168.1.151:8080/admin/permissions")
           .then((res) => res.json())
           .then((json) => {
             setPermData(json);

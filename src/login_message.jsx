@@ -14,12 +14,12 @@ function LoginMessage(){
         e.preventDefault(); // ✅ correct spelling
       
         try {
-          const res = await fetch("http://185.231.115.28:8080/auth/verify-otp", {
+          const res = await fetch("http://192.168.1.151:8080/auth/verify-otp", {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               phone: phone,  // ✅ send phone
-              otp: message   // ✅ send OTP with correct key
+              otp: message   // ✅ send OTP with correct key 
             }),
           });
       
@@ -27,7 +27,7 @@ function LoginMessage(){
       
           if (!res.ok) throw new Error(data.message || "Login failed");
       
-          localStorage.setItem("token", data.token);
+          localStorage.setItem("token", data.data.access_token);
           navigate("/questions")
       
         } catch (err) {

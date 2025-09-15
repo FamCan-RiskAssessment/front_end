@@ -27,7 +27,7 @@ function InputBox({data , valueSetter , class_change1 , class_change2}){
             
             <label htmlFor={data.inpName}>{data.inpName}</label>
             <input type="text" className={`inp_question ${class_change2}`} placeholder={data.placeHolder} value={Itext} onChange={(e) => validator(e.target.value)}
-             name={data.inpName} id={data.inpName} 
+             name={data.engName} id={data.inpName} 
              style={inpError.length != 0 ? {"border":"1px solid red"} : null}
              />
         </div>

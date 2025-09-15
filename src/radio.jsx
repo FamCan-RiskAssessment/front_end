@@ -25,7 +25,18 @@ function Radio({data , class_change1 , class_change2 , valueSetter}){
             {data.options.map((opt , index) => 
             <div className="radio_holder">
                 <label htmlFor={data.Rname}>{opt}</label>
-                <input type="radio" className="radio" name={data.Rname} id={opt} onChange={(e) => valueSetter(e.target.id)} />
+                {opt == "بله" && data.options.length != 4 && (
+                <input type="radio" className="radio" name={data.Rname} value={true} id={opt} onChange={(e) => valueSetter(e.target.id)} />
+                )}
+                {opt == "خیر" && data.options.length != 4 && (
+                <input type="radio" className="radio" name={data.Rname} value={false} id={opt} onChange={(e) => valueSetter(e.target.id)} />
+                )}
+                {opt != "خیر" && opt != "بله" && data.options.length != 4 && (
+                <input type="radio" className="radio" name={data.Rname} value={null} id={opt} onChange={(e) => valueSetter(e.target.id)} />
+                )}
+                {data.options.length >= 4 && (
+                <input type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
+                )}
             </div>
             )}
             </div>

@@ -6,12 +6,14 @@
     },
     "childCard": {
       "childName": {
+        "engName": "childName",
         "inpName": "نام فرزند",
         "type": "text",
         "placeHolder": "نام فرزند"
       },
       "childCancerType": {
-        "Oname": "نوع یا انواع سرطان",
+        "ask": "نوع یا انواع سرطان",
+        "Oname": "childCancerType",
         "options": [
           "انتخاب کنید",
           "سرطان پستان",
@@ -24,12 +26,13 @@
         ]
       },
       "childCancerAge": {
+        "engName": "childCancerAge",
         "inpName": "سن ابتلا",
         "type": "number",
         "placeHolder": "سن ابتلا"
       },
       "childLifeStatus": {
-        "Rname": "lifeStatusChild",
+        "Rname": "childLifeStatus",
         "ask": "وضعیت فعلی",
         "options": ["در قید حیات", "فوت شده"]
       },
@@ -47,17 +50,19 @@
     },
     "motherCard": {
       "motherName": {
+        "engName": "motherName",
         "inpName": "نام مادر",
         "type": "text",
         "placeHolder": "نام مادر"
       },
       "motherLifeStatus": {
-        "Rname": "lifeStatusMother",
+        "Rname": "motherLifeStatus",
         "ask": "وضعیت فعلی",
         "options": ["در قید حیات", "فوت شده"]
       },
       "motherCancerType": {
-        "Oname": "نوع یا انواع سرطان",
+        "ask": "نوع یا انواع سرطان",
+        "Oname": "motherCancerType",
         "options": [
           "انتخاب کنید",
           "سرطان پستان",
@@ -70,6 +75,7 @@
         ]
       },
       "motherCancerAge": {
+        "engName": "motherCancerAge",
         "inpName": "سن ابتلا",
         "type": "number",
         "placeHolder": "سن ابتلا"
@@ -88,17 +94,19 @@
     },
     "fatherCard": {
       "fatherName": {
+        "engName": "fatherName",
         "inpName": "نام پدر",
         "type": "text",
         "placeHolder": "نام پدر"
       },
       "fatherLifeStatus": {
-        "Rname": "lifeStatusFather",
+        "Rname": "fatherLifeStatus",
         "ask": "وضعیت فعلی",
         "options": ["در قید حیات", "فوت شده"]
       },
       "fatherCancerType": {
-        "Oname": "نوع یا انواع سرطان",
+        "ask": "نوع یا انواع سرطان",
+        "Oname": "fatherCancerType",
         "options": [
           "انتخاب کنید",
           "سرطان پستان",
@@ -111,6 +119,7 @@
         ]
       },
       "fatherCancerAge": {
+        "engName": "fatherCancerAge",
         "inpName": "سن ابتلا",
         "type": "number",
         "placeHolder": "سن ابتلا"
@@ -123,23 +132,25 @@
       }
     },
     "radio_opts_bsCancer": {
-      "Rname": "bsCancer",
+      "Rname": "siblingCancer",
       "ask": "آیا از میان خواهران یا برادران شما تا به حال برای کسی سرطان تشخیص داده اند؟",
       "options": ["بله", "خیر"]
     },
     "siblingCard": {
       "siblingName": {
+        "engName": "siblingName",
         "inpName": "نام خواهر یا برادر",
         "type": "text",
         "placeHolder": "نام خواهر یا برادر"
       },
       "siblingLifeStatus": {
-        "Rname": "lifeStatusBs",
+        "Rname": "siblingLifeStatus",
         "ask": "وضعیت فعلی",
         "options": ["در قید حیات", "فوت شده"]
       },
       "siblingCancerType": {
-        "Oname": "نوع یا انواع سرطان",
+        "ask": "نوع یا انواع سرطان",
+        "Oname": "siblingCancerType",
         "options": [
           "انتخاب کنید",
           "سرطان پستان",
@@ -152,6 +163,7 @@
         ]
       },
       "siblingCancerAge": {
+        "engName": "siblingCancerAge",
         "inpName": "سن ابتلا",
         "type": "number",
         "placeHolder": "سن ابتلا"
@@ -170,17 +182,19 @@
     },
     "uncleAuntCard": {
       "uncleAuntName": {
+        "engName": "ameAmoName",
         "inpName": "نام عمه یا عمو",
         "type": "text",
         "placeHolder": "نام عمه یا عمو"
       },
       "uncleAuntLifeStatus": {
-        "Rname": "lifeStatusAmeAmo",
+        "Rname": "ameAmoLifeStatus",
         "ask": "وضعیت فعلی",
         "options": ["در قید حیات", "فوت شده"]
       },
       "uncleAuntCancerType": {
-        "Oname": "نوع یا انواع سرطان",
+        "ask": "نوع یا انواع سرطان",
+        "Oname": "ameAmoCancerType",
         "options": [
           "انتخاب کنید",
           "سرطان پستان",
@@ -193,6 +207,7 @@
         ]
       },
       "uncleAuntCancerAge": {
+        "engName": "ameAmoCancerAge",
         "inpName": "سن ابتلا",
         "type": "number",
         "placeHolder": "سن ابتلا"
@@ -211,17 +226,19 @@
     },
     "khaleDaeiCard": {
       "khaleDaeiName": {
+        "engName": "khaleDaeiName",
         "inpName": "نام خاله یا دایی",
         "type": "text",
         "placeHolder": "نام خاله یا دایی"
       },
       "khaleDaeiLifeStatus": {
-        "Rname": "lifeStatusKhaleDaei",
+        "Rname": "khaleDaeiLifeStatusx",
         "ask": "وضعیت فعلی",
         "options": ["در قید حیات", "فوت شده"]
       },
       "khaleDaeiCancerType": {
-        "Oname": "نوع یا انواع سرطان",
+        "ask": "نوع یا انواع سرطان",
+        "Oname": "khaleDaeiCancerType",
         "options": [
           "انتخاب کنید",
           "سرطان پستان",
@@ -234,6 +251,7 @@
         ]
       },
       "khaleDaeiCancerAge": {
+        "engName": "khaleDaeiCancerAge",
         "inpName": "سن ابتلا",
         "type": "number",
         "placeHolder": "سن ابتلا"
@@ -247,26 +265,30 @@
     },
     "otherRelativeCard": {
       "otherName": {
+        "engName": "otherRelativeName",
         "inpName": "نام شخص",
         "type": "text",
         "placeHolder": "نام شخص"
       },
       "otherRelation": {
+        "engName": "otherRelativeRelation",
         "inpName": "نسبت",
         "type": "text",
         "placeHolder": "نسبت"
       },
       "otherBirthYear": {
+        "engName": "otherRelativeCancerAge",
         "inpName": "سال تولد",
         "type": "number",
         "placeHolder": "____"
       },
       "otherLifeStatus": {
-        "Rname": "lifeStatusOther",
+        "Rname": "otherRelativeLifeStatus",
         "ask": "وضعیت فعلی",
         "options": ["در قید حیات", "فوت شده"]
       },
       "otherCancerType": {
+        "ask": "نوع یا انواع سرطان",
         "Oname": "نوع یا انواع سرطان",
         "options": [
           "انتخاب کنید",
@@ -280,6 +302,7 @@
         ]
       },
       "otherCancerAge": {
+        "engName": "otherRelativeCancerAge",
         "inpName": "سن ابتلا",
         "type": "number",
         "placeHolder": "سن ابتلا"
