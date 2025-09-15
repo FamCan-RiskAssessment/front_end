@@ -69,12 +69,12 @@ function CancerField({data_Inp1 , data_Options , data_Radio , data_Inp2}){
                 <thead className="sar_jadval">
                 <tr>
 
-                    <th>{data_Inp1 != null && "Input 1"}</th>
-                    <th>{data_Options != null && "options"}</th>
-                    <th>{data_Inp2 != null && "Input 2"}</th>
-                    <th>{data_Radio != null && "radio"}</th>
-                    <th>image</th>
-                    <th>Action</th>
+                    <th>{data_Inp1 != null && "ارتباط"}</th>
+                    <th>{data_Options != null && "سرطان"}</th>
+                    <th>{data_Inp2 != null && "سن"}</th>
+                    <th>{data_Radio != null && "در قید حیات"}</th>
+                    <th>تصویر</th>
+                    <th>عمل</th>
 
                 </tr>
                 </thead>
