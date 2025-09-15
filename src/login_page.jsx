@@ -8,14 +8,13 @@ function Login_page(){
     const form_submitted = async (e) =>{
         e.preventDefault();        
         try{
-            const res = await fetch("http://192.168.1.151:8080/auth/login", {
+            const res = await fetch("http://185.231.115.28:8080/auth/login", {
                 method:'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({phone}),
             })
             const data = await res.json()
             if (!res.ok) throw new Error(data.message || "Login failed");
-            localStorage.setItem("token", data.token);
             if(res.ok){
                 navigate("/otp", { state: { phone } });;
             }

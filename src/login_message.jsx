@@ -8,13 +8,15 @@ function LoginMessage(){
     const navigate = useNavigate();
     const phone = location.state?.phone || ""; // ✅ get phone from state
     const [timeLeft, setTimeLeft] = useState(10); // 2 minutes = 120 seconds
+    const adminNumber = "09123456789"
+
 
 
     const OTP = async (e) => {
         e.preventDefault(); // ✅ correct spelling
       
         try {
-          const res = await fetch("http://192.168.1.151:8080/auth/verify-otp", {
+          const res = await fetch("http://185.231.115.28:8080/auth/verify-otp", {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -28,7 +30,11 @@ function LoginMessage(){
           if (!res.ok) throw new Error(data.message || "Login failed");
       
           localStorage.setItem("token", data.data.access_token);
-          navigate("/questions")
+          if(phone != adminNumber){
+            navigate("/questions")
+          }else if(phone == adminNumber){
+            navigate("/DashBoard")
+          }
       
         } catch (err) {
           setError(err.message);

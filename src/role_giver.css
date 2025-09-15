@@ -115,3 +115,139 @@ div > .identifiers {
     align-items: center;
     justify-content: center !important;
 }
+
+
+
+/* the role maker page  */
+
+/* Background wrapper */
+.all_holder {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f5ff, #e5d4f9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 1rem;
+  }
+  
+  /* Title */
+  .title-holder {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #4b006e;
+  }
+  
+  .title-holder h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .title-holder .subtitle {
+    font-size: 1.1rem;
+    color: #7a4ca0;
+  }
+  
+  /* Form container */
+  .role_form {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  /* Input group */
+  .form_group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .form_label {
+    font-size: 1.1rem;
+    color: #4b006e;
+  }
+  
+  .form_input {
+    padding: 0.8rem 1rem;
+    border-radius: 0.8rem;
+    border: 1px solid #aaa;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+    font-family: 'vazir';
+  }
+  
+  .form_input:focus {
+    border-color: #7a4ca0;
+    box-shadow: 0 0 6px rgba(122, 76, 160, 0.3);
+  }
+  
+  /* Permissions section */
+  .perm_section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .perm_title {
+    font-size: 1.3rem;
+    color: #4b006e;
+    margin-bottom: 0.5rem;
+  }
+  
+  .perm_holder {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: flex-start;
+    width: unset !important;
+  }
+  
+  /* CheckBox layout refinements */
+  .checkBox_column {
+    flex-direction: column !important;
+    gap: 1rem;
+    padding: 2rem;
+  }
+  
+  .checkBox_column > .total_check_holder {
+    padding: 1rem;
+  }
+
+  .width_and_centerer {
+    width: calc(33.33% - 1rem);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start !important;
+  }
+  
+  /* Submit button */
+  .btn_submit {
+    align-self: center;
+    background-color: #7a4ca0;
+    color: white;
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .btn_submit:hover {
+    background-color: #9a5cc0;
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+  }
+  
+
+
+
+
+
