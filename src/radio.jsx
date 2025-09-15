@@ -34,8 +34,14 @@ function Radio({data , class_change1 , class_change2 , valueSetter}){
                 {(opt == "نمی دانم" || opt=="نمیدانم" || opt == "نامعین") && data.options.length != 4 && (
                 <input type="radio" className="radio" name={data.Rname} value="null" id={opt} onChange={(e) => valueSetter(e.target.id)} />
                 )}
-                {(opt == "مرد" || opt == "زن") && data.options.length == 2 && (
+                {(opt == "مرد" || opt == "زن") && (
                 <input type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
+                )}
+                {(opt == "سابقاً مصرف می کرده ام اما کمتر از ۱۵ سال است که ترک کرده ام" || opt == "سابقاً مصرف می کردم اما بیش از ۱۵ سال است که ترک کرده ام") && (
+                <input type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
+                )}
+                {(opt == "خارج از کشور" || opt == "ایران") && (
+                    <input type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
                 )}
                 {data.options.length >= 4 && (
                 <input type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />

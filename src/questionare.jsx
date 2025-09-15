@@ -139,6 +139,7 @@ function Questions(){
         setatba(val)        
     } 
     const nexter = () => {
+        
         if(step != 7){
             setStep(s => s + 1)
         }        

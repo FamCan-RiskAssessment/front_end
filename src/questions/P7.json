@@ -309,8 +309,8 @@
       "condition": "if pastSmoking != 'خیر'"
     },
     "combine_option_smokingTypes_past": {
-      "ask": "smokingTypesPast",
-      "Oname": "انواع مواد دخانی که مورد استفاده قرار میداید را انتخاب کنید",
+      "ask": "انواع مواد دخانی که مورد استفاده قرار میداید را انتخاب کنید",
+      "Oname": "smokingTypesPast",
       "options": [
         "انتخاب کنید",
         "سیگار",
