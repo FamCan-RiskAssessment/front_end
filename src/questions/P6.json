@@ -47,13 +47,13 @@
       "mobileNumber1": {
         "engName":"sa",
         "inpName": "شماره تلفن همراه",
-        "type": "text",
+        "type": "number",
         "placeHolder": "شماره موبایل"
       },
       "mobileNumber2": {
         "engName":"sa",
         "inpName": "شماره تلفن همراه دوم",
-        "type": "text",
+        "type": "number",
         "placeHolder": "شماره موبایل"
       },
       "birthCountry": {
@@ -85,7 +85,7 @@
       "postalCode": {
         "engName":"postalCode",
         "inpName": "کد پستی",
-        "type": "text",
+        "type": "number",
         "placeHolder": "کد پستی"
       },
       "address": {

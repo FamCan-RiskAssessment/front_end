@@ -15,7 +15,6 @@ function PersonalInfo({data_inp1 , data_inp2 , data_inp3 , data_inp4 , data_inp5
                 <Radio data={data_opt} class_change1={"grider"} class_change2={"grider_inner"}></Radio>
                 <InputBox data={data_inp5} class_change1={"grider"} class_change2={"grider_inner"}></InputBox>
                 <InputBox data={data_inp6} class_change1={"grider"} class_change2={"grider_inner"}></InputBox>       
-                <InputBox data={data_inp6} class_change1={"grider"} class_change2={"grider_inner"}></InputBox>
                 <InputBox data={data_inp7} class_change1={"grider"} class_change2={"grider_inner_spec"}></InputBox>
                 <CheckBox data={data_check}></CheckBox>
 

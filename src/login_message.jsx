@@ -31,7 +31,7 @@ function LoginMessage(){
       
           localStorage.setItem("token", data.data.access_token);
           if(phone != adminNumber){
-            navigate("/questions")
+            navigate("/forms")
           }else if(phone == adminNumber){
             navigate("/DashBoard")
           }

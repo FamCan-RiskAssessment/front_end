@@ -99,7 +99,7 @@ function Questions(){
         console.log('Final ', allData);
         const token_auth = localStorage.getItem("token")
         // 🚀 Send to server
-        fetch('http://192.168.1.151:8080/form', {
+        fetch('http://185.231.115.28:8080/form', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 
                         'Authorization': `Bearer ${token_auth}`
@@ -209,8 +209,8 @@ function Questions(){
                 <Options data={part1[2]}></Options>
                 <Options data={part1[3]}></Options>
                 <CheckBox data={part1[4]} atba={atba} checker={atba_checker}></CheckBox>
-                {!atba && <InputBox data={part1[5]}></InputBox>}
-                {atba && <InputBox data={part1[6]}></InputBox>}
+                {atba && <InputBox data={part1[5]}></InputBox>}
+                {!atba && <InputBox data={part1[6]}></InputBox>}
                 <InputBox data={part1[7]}></InputBox>
                 <InputBox data={part1[8]}></InputBox>
             </form>
@@ -384,7 +384,6 @@ function Questions(){
                         <Radio data={part7.radio_lungCancerFamily} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                         <Options data={part7.combine_option_lungCancerFamilyRelation} class_change1={"P2"} class_change2={"P2_inner"}></Options>
                         <Options data={part7.combine_option_occupationalExposure} class_change1={"P2"} class_change2={"P2_inner"}></Options>
-                        <Radio data={part7.radio_currentSmoking} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                         <Radio data={part7.radio_currentSmoking} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                         <Options data={part7.combine_option_smokingTypes_current} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setSmokeType}></Options>
                         {smokeType.length != 0 && smokeType != "انتخاب کنید" && (
