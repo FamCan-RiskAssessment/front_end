@@ -31,8 +31,8 @@ function Radio({data , class_change1 , class_change2 , valueSetter}){
                 {opt == "خیر" && data.options.length != 4 && (
                 <input type="radio" className="radio" name={data.Rname} value={false} id={opt} onChange={(e) => valueSetter(e.target.id)} />
                 )}
-                {opt == "نمیدانم" && opt == "نمی دانم" && opt == "نامعین" && data.options.length != 4 && (
-                <input type="radio" className="radio" name={data.Rname} value={null} id={opt} onChange={(e) => valueSetter(e.target.id)} />
+                {opt != "بله" && opt != "خیر" && data.options.length != 4 && (
+                <input type="radio" className="radio" name={data.Rname} value={null} id={opt} onChange={(e) => valueSetter(e.target.value)} />
                 )}
                 {data.options.length >= 4 && (
                 <input type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
