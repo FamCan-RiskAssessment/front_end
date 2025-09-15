@@ -3,6 +3,7 @@ import { useState } from "react";
 function InputBox({data , valueSetter , class_change1 , class_change2}){
     const [Itext , setIText] = useState('')
     const [inpError , setInpError] = useState('')
+    const [empErr , setEmpErr] = useState(false)
     const validator = (val) => {
         if (data.type == "number" && Number.isFinite(Number(val))){
             setIText(val)
@@ -16,7 +17,9 @@ function InputBox({data , valueSetter , class_change1 , class_change2}){
             setInpError('!لطفا فرم را به درستی پر کنید')
         }
     }
-
+    // if(req[2] && Itext.length == 0 && req[1]){
+    //     setEmpErr(true)
+    // }
     return(
         <>
         <div className={`form_element ${class_change1}`}>
@@ -28,7 +31,7 @@ function InputBox({data , valueSetter , class_change1 , class_change2}){
             <label htmlFor={data.inpName}>{data.inpName}</label>
             <input type="text" className={`inp_question ${class_change2}`} placeholder={data.placeHolder} value={Itext} onChange={(e) => validator(e.target.value)}
              name={data.engName} id={data.inpName} 
-             style={inpError.length != 0 && empErr ? {"border":"1px solid red"} : null}
+             style={inpError.length != 0 ? {"border":"1px solid red"} : null}
              />
         </div>
         </div>

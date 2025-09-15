@@ -20,6 +20,7 @@ import "./responsive_questionare.css"
 // import { set } from "animejs";
 function Questions(){
     const [step , setStep] = useState(1)
+    const [checkEmp , setCheckEmp] = useState(false)
     // step 1
     const [atba , setatba] = useState(false)
     // step 2
@@ -89,7 +90,7 @@ function Questions(){
                   allData[name] = null;
                 } else if (isNumber(value)) {
                   allData[name] = parseInt(value);
-                }else{
+                } else{
                   allData[name] = value
                 }
               }
@@ -140,7 +141,7 @@ function Questions(){
     const nexter = () => {
         if(step != 7){
             setStep(s => s + 1)
-        }
+        }        
     }
     const prever = () => {
         if (step != 1){
