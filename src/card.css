@@ -1,46 +1,88 @@
-.card{
+.card_tot {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #f0f0f0;
+  }
+  
+  .card_tot:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 18px rgba(0,0,0,0.12);
+  }
+  
+  .card_header {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
-    align-items: center;    
-
-}
-
-.name{
-    font-size: 1.3rem;
-}
-.btn-holder{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    gap: 2rem;
-}
-
-.btn-holder button {
-    background-color: black;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .card_header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+  }
+  
+  .badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
     color: white;
-}
-.btn-holder button:hover{
-    background-color: white;
-    color: black;
-    border: 1px solid black ;
-    transition: all 200ms ease;
-}
-.card_tot{
+  }
+  
+  .badge.user {
+    background: #60a5fa; /* blue */
+  }
+  
+  .badge.admin {
+    background: #34d399; /* green */
+  }
+  
+  .card_body {
+    font-size: 0.95rem;
+    color: #374151;
+    margin-bottom: 1.25rem;
+  }
+  
+  .card_body p {
+    margin: 0.4rem 0;
+  }
+  
+  .btn_holder {
     display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    margin: 1rem 0rem;
-    border: 1px solid black;
-    width: 80%;
-    padding: 1rem 2rem;
-    box-shadow: 5px 5px 10px rgba(0,0,0,0.20);
-    background-color: #eeeeee;
-    color:black;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+  
+  .btn {
+    padding: 0.6rem 1.2rem;
     border-radius: 10px;
-}
-.hist_level{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  
+  .btn.promote {
+    background-color: #10b981;
+    color: white;
+  }
+  
+  .btn.promote:hover {
+    background-color: #059669;
+  }
+  
+  .btn.kick {
+    background-color: #ef4444;
+    color: white;
+  }
+  
+  .btn.kick:hover {
+    background-color: #b91c1c;
+  }
+  
