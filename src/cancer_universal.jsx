@@ -4,7 +4,7 @@ import Options from "./option";
 import Radio from "./radio";
 import { data } from "react-router-dom";
 
-function CancerField({data_Inp1 , data_Options , data_Radio , data_Inp2}){
+function CancerField({data_req , data_Inp1 , data_Options , data_Radio , data_Inp2}){
     const [cancerArray , setCancerArray] = useState([])
     const [inp1 , setInp1] = useState("")
     const [inp2 , setInp2] = useState("")
@@ -50,10 +50,10 @@ function CancerField({data_Inp1 , data_Options , data_Radio , data_Inp2}){
             </div>
             <div className="jadval_and_form">
             <div className="total_cancer_holder">
-                {data_Inp1 != null && <InputBox data={data_Inp1} valueSetter={inpSetter1}></InputBox>}
-                {data_Options != null && <Options data={data_Options} valueSetter={setOpt}></Options>}
-                {data_Inp2 != null && <InputBox data={data_Inp2} valueSetter={inpSetter2}></InputBox>}
-                {data_Radio != null && <Radio data={data_Radio} valueSetter={radSetter}></Radio>}
+                {data_Inp1 != null && <InputBox data_req={data_req} data={data_Inp1} valueSetter={inpSetter1}></InputBox>}
+                {data_Options != null && <Options data_req={data_req} data={data_Options} valueSetter={setOpt}></Options>}
+                {data_Inp2 != null && <InputBox data_req={data_req} data={data_Inp2} valueSetter={inpSetter2}></InputBox>}
+                {data_Radio != null && <Radio data_req={data_req} data={data_Radio} valueSetter={radSetter}></Radio>}
                 <div className="tah_holder">
                     <div className="form_element">
                         <div className="total_file_uploader">

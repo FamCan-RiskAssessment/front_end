@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function InputBox({data , valueSetter , class_change1 , class_change2}){
+function InputBox({data_req , data , valueSetter , class_change1 , class_change2}){
     const [Itext , setIText] = useState('')
     const [inpError , setInpError] = useState('')
     const [empErr , setEmpErr] = useState(false)
@@ -29,7 +29,7 @@ function InputBox({data , valueSetter , class_change1 , class_change2}){
             )}
             
             <label htmlFor={data.inpName}>{data.inpName}</label>
-            <input type="text" className={`inp_question ${class_change2}`} placeholder={data.placeHolder} value={Itext} onChange={(e) => validator(e.target.value)}
+            <input data_req={data_req} type="text" className={`inp_question ${class_change2}`} placeholder={data.placeHolder} value={Itext} onChange={(e) => validator(e.target.value)}
              name={data.engName} id={data.inpName} 
              style={inpError.length != 0 ? {"border":"1px solid red"} : null}
              />

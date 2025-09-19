@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function Radio({data , class_change1 , class_change2 , valueSetter}){
+function Radio({data_req , data , class_change1 , class_change2 , valueSetter}){
     // const [Itext , setIText] = useState('')
     // const [inpError , setInpError] = useState('')
 
@@ -26,28 +26,28 @@ function Radio({data , class_change1 , class_change2 , valueSetter}){
             <div className="radio_holder">
                 <label htmlFor={data.Rname}>{opt}</label>
                 {opt == "بله" && data.options.length != 4 && (
-                <input type="radio" className="radio" name={data.Rname} value={true} id={opt} onChange={(e) => valueSetter(e.target.id)} />
+                <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={true} id={opt} onChange={(e) => valueSetter(e.target.id)} />
                 )}
                 {opt == "خیر" && data.options.length != 4 && (
-                <input type="radio" className="radio" name={data.Rname} value={false} id={opt} onChange={(e) => valueSetter(e.target.id)} />
+                <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={false} id={opt} onChange={(e) => valueSetter(e.target.id)} />
                 )}
                 {(opt == "نمی دانم" || opt=="نمیدانم" || opt == "نامعین" || opt == "احتمال دارد اما دقیق اطلاع ندارم") && data.options.length != 4 && (
-                <input type="radio" className="radio" name={data.Rname} value="null" id={opt} onChange={(e) => valueSetter(e.target.id)} />
+                <input data_req={data_req} type="radio" className="radio" name={data.Rname} value="null" id={opt} onChange={(e) => valueSetter(e.target.id)} />
                 )}
                 {(opt == "مرد" || opt == "زن") && (
-                <input type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
+                <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
                 )}
                 {(opt == "سابقاً مصرف می کرده ام اما کمتر از ۱۵ سال است که ترک کرده ام" || opt == "سابقاً مصرف می کردم اما بیش از ۱۵ سال است که ترک کرده ام") && (
-                <input type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
+                <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
                 )}
                 {(opt == "خارج از کشور" || opt == "ایران") && (
-                    <input type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
+                    <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
                 )}
                 {(opt == "فوت شده" || opt == "در قید حیات") && (
-                    <input type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
+                    <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
                 )}
                 {data.options.length >= 4 && (
-                <input type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
+                <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
                 )}
             </div>
             )}

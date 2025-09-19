@@ -204,12 +204,14 @@
     justify-content: space-around;
     gap: 1rem ;
     width: 100%;
+    /* transition: all 0.3s ease-in-out; */
 }
 
 
 .radio{
     width: 20px;
     height: 20px;
+    transition: all 0.5s ease-in-out;
 }
 
 /* options */
@@ -226,6 +228,7 @@
     height: 2.5rem;
     font-family: 'vazir';
     font-size: 1.3rem;
+    /* transition: all 0.5s ease-in-out; */
 }
 
 /* file uploader */
