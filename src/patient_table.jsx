@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import NavBar from "./navBar";
 import "./patient_table.css";
+import { APIARR } from "./utils/config";
+import { fetchDataGET } from "./utils/tools";
 import PERSIAN_HEADERS from "./assets/table_header.json"
 import { useLocation } from "react-router-dom";
 export default function FilterableTable() {
@@ -13,37 +15,42 @@ export default function FilterableTable() {
   const [editedId , setEditedId] = useState(0)
   const location = useLocation();
   const userPhone = location.state?.phone;
+  console.log("here it comes : " , data)
+
   useEffect(() => {
-    const fetchformDatas = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch("http://185.231.115.28:8080/admin/forms", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+    const fetchformIds = async () => {
+    let token = localStorage.getItem("token")
+    let pre_forms = await fetchDataGET("admin/forms" , token)
+    if (pre_forms.status === 200) {
+      // Create a new array to hold the updated forms
+      const updatedForms = [];
+      
+      // Process each form sequentially (or use Promise.all for parallel)
+      for (const pf of pre_forms.data.data) {
+        let updatedForm = { ...pf }; // Start with a copy of the original form
+        
+        // Process each API endpoint
+        for (const ar of APIARR) {
+          try {
+            let user_part_form = await fetchDataGET(`form/${pf.id}/${ar}`, token);
+            updatedForm = { ...updatedForm, ...user_part_form.data };
+          } catch (error) {
+            console.error(`Error fetching form ${pf.id} for ${ar}:`, error);
           }
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        const json = await response.json();
-        const dataArray = Array.isArray(json.data) ? json.data : [json.data];
-        console.log(dataArray)
-        setData(dataArray[0].data);
-        setFilteredData2(dataArray[0].data);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-      } finally {
-        setLoading(false);
+        
+        updatedForms.push(updatedForm);
       }
-    };
+      
+      // Update state with the fully updated array
+      setData(updatedForms);
+      setLoading(false);
+    }
+  };
 
-    fetchformDatas();
+  fetchformIds();   
   }, []);
-
+  
   // Filter by 'status'
   useEffect(() => {
     if (data.length === 0) {

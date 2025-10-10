@@ -16,7 +16,8 @@ import part6 from './questions/P6.json'
 import part7 from './questions/P7.json'
 import { useLocation , useNavigate } from "react-router-dom";
 import { APIURL } from "./utils/config";
-
+import { useToast } from "./toaster";
+import ToastProvider from "./toaster";
 import "./form_elements.css"
 import "./responsive_questionare.css"
 // import { set } from "animejs";
@@ -26,6 +27,8 @@ function Questions(){
     const [requiredMap, setRequiredMap] = useState({});
     const [createdFormId , setCreatedFormId] = useState(0)
     const navigate = useNavigate();
+    const { addToast } = useToast()
+
     // step 1
     const [atba , setatba] = useState(false)
     // step 2
@@ -65,7 +68,8 @@ function Questions(){
     const ArrofVals = [isAlchol , isSabzi , isActivity , isHardActivity , isSmoke , isSmokeAge , isSmokingNow , isChild , isAdat ,isHRT , isHRT5 , isOral , isColon , isCancer
     ,isChildCancer,isMotherCancer,isFatherCancer,isSibsCancer,isUncAuntCancer,isUncAunt2Cancer,isGeneTest,isFamGeneTest
     ]
-
+    // console.log("the alchol we masraf" , isAlchol)
+    // console.log("the sigar we smoke " ,isSmoke)
     // form refrences
     const formRefs = {
         1: useRef(null),
@@ -101,6 +105,7 @@ function Questions(){
                     formElems.push(fR)
                 });
             })
+            console.log("########################################" , presetform)
             formElems.forEach(fE  => {
                 Object.keys(presetform).forEach(pfk => {
                     if(fE.name == pfk && (fE.type == "text" || fE.type == "number" || fE.nodeName === 'SELECT')){
@@ -109,15 +114,11 @@ function Questions(){
                         if(fE.id == presetform[pfk]){
                             fE.checked = true
                         }
-                        if(fE.id == "بله" && presetform[pfk] == true){
+                        if(fE.id == "بله" && (presetform[pfk] == true || presetform[pfk] == "true")){
                             fE.checked = true
-                        }else if(fE.id == "خیر" && presetform[pfk] == false){
+                        }else if(fE.id == "خیر" && (presetform[pfk] == false ||  presetform[pfk] == "false")){
                             fE.checked = true
                         }
-                    }else{
-                        console.log("the left overs: ")
-                        console.log(fE.name ,  pfk)
-                        console.log(fE)
                     }
                 })
             });
@@ -132,7 +133,7 @@ function Questions(){
         }
     }
     const relator_R = (state) =>{
-        if(state == "بله"){
+        if(state == "بله" || state == true){
             return true
         }else{
             return false
@@ -156,6 +157,7 @@ function Questions(){
         let rads = {};
         let go1  = []
         let go2 = []
+        let reqErr = false
         form_inps.forEach(fi => {
           const Name = fi.name;
           const isRequired = getValue(requiredMap, st, Name);
@@ -169,7 +171,7 @@ function Questions(){
             if (isRequired) {
               if (fi.value.trim() === "" || fi.value.trim() === "انتخاب کنید") {
                 fi.style.border = "2px solid red";
-                console.log("Empty required field:", Name);
+                reqErr = true
                 go1.push(false)
               }else{
                 fi.style.border = "";
@@ -190,6 +192,7 @@ function Questions(){
                 r.parentElement.parentElement.style.border = "2px solid red";
               });
               go2.push(false)
+              reqErr = true
             }else{
                 rads[groupName].forEach(r => {
                     r.parentElement.parentElement.style.border = "";
@@ -198,6 +201,13 @@ function Questions(){
             }
           }
         });
+        if(reqErr){
+            addToast({
+                title: "لطفا تمامی سوال ها را پر کنید",
+                type: 'error',
+                duration: 4000
+              })
+        }
         let pass1 = go1.some((el) => el == false)
         let pass2 = go2.some((el) => el == false) 
         // console.log(go1 , go2)
@@ -282,7 +292,6 @@ function Questions(){
                     setCreatedFormId(json.data.form.id)
                 })
                 .catch((e) => console.log(e));
-                // navigate("/forms")
         }else{
             fetch(presetform != null && id_form != null ? `http://${APIURL}/form/${id_form}/${APIARR[step - 1]}` : `http://${APIURL}/form/${createdFormId}/${APIARR[step - 1]}`, {
                 method:'PUT',
@@ -291,7 +300,6 @@ function Questions(){
                         },
                 body: JSON.stringify(allData),
             })
-                .then(() => alert('Success!'))
                 .catch((e) => console.log(e));
                 // navigate("/forms")
         }
@@ -621,6 +629,13 @@ function Questions(){
                 {step == 7 ? (
                     <button className="btn_question" onClick={(e) => {
                             handleSubmit(e)
+                            addToast({
+                                title: 'پاسخ های شما با موفقیت ذخیره شد',
+                                type: 'success',
+                                duration: 4000
+                              })
+                            navigate("/forms")
+
                     }}>ارسال</button>
                 ) : (
                 <button className="btn_question" onClick={(e) => {

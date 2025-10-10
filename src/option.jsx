@@ -6,6 +6,10 @@ function Options({data_req , data , class_change1 , class_change2 , valueSetter 
     }
     if(!relation){
         data_req = "false"
+    }
+    if(data.Oname == "cupsPerWeek"){
+        console.log("found that !")
+        console.log(relation)
     }    
     return(
         <>

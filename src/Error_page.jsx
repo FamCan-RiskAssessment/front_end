@@ -1,11 +1,16 @@
 import { useState } from "react";
 import "./error_style.css"
-import { useNavigate } from "react-router-dom";
+import { useLocation , useNavigate } from "react-router-dom";
 
 function ErrorShower({errorType}){
   const navigate = useNavigate();
+  const location = useLocation();
   if(errorType == undefined){
         errorType = 404
+    }
+    let e_type = location.state?.error_type || "";
+    if(e_type != ""){
+        errorType = e_type 
     }
     return(
         <div className="error_holder">

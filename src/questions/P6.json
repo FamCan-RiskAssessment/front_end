@@ -45,14 +45,14 @@
         "placeHolder": "نام و نام خانوادگی"
       },
       "mobileNumber1": {
-        "engName":"sa",
-        "inpName": "شماره تلفن همراه",
+        "engName":"phone2",
+        "inpName": "شماره تلفن همراه دوم",
         "type": "number",
         "placeHolder": "شماره موبایل"
       },
       "mobileNumber2": {
-        "engName":"sa",
-        "inpName": "شماره تلفن همراه دوم",
+        "engName":"phone3",
+        "inpName": "شماره تلفن همراه سوم",
         "type": "number",
         "placeHolder": "شماره موبایل"
       },

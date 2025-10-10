@@ -10,24 +10,38 @@ function DashBoard(){
     const [perms , setPerms] = useState([])
     const permissions = location.state?.permissions;
     const [userPhone , setUserPhone] = useState("")
-
     useEffect(() => {
-        const loadUser = async () =>{
-            let token = localStorage.getItem("token")
-            let phone = localStorage.getItem("number")
-            let data = await fetchDataGET("admin/users" , token)
-            let users = data.data.data
-            users.forEach(async u => {
-                if(u.phone == phone){
-                    let permsRaw = await fetchDataGET(`admin/users/${u.id}/roles` , token)
-                    // console.log(permsRaw.data[0].permissions)
-                    setPerms(permsRaw.data[0].permissions)
-                    setUserPhone(u.phone)
-                }
-            });
+        let checkPerms = JSON.parse(localStorage.getItem("permissions"))
+        if(checkPerms.length <= 1){
+            navigate("/error_page"  , {state: {error_type : 401}})
         }
-        loadUser()
     } , [])
+
+    // useEffect(() => {
+    //     const loadUser = async () =>{
+    //         let token = localStorage.getItem("token")
+    //         let phone = localStorage.getItem("number")
+    //         let data = await fetchDataGET("admin/users" , token)
+    //         let users = data.data.data
+    //         users.forEach(async u => {
+    //             if(u.phone == phone){
+    //                 let permsRaw = await fetchDataGET(`admin/users/${u.id}/roles` , token)
+    //                 // console.log(permsRaw.data[0].permissions)
+    //                 setPerms(permsRaw.data[0].permissions)
+    //                 setUserPhone(u.phone)
+    //             }
+    //         });
+    //     }
+    //     loadUser()
+    // } , [])
+    
+    
+    useEffect(() => {
+        let permissions = JSON.parse(localStorage.getItem("permissions"))
+        let phone = localStorage.getItem("number")
+        setUserPhone(phone)
+        setPerms(permissions)
+       } , [])
 
     const navigate = useNavigate();
     const tool_chooser = () =>{

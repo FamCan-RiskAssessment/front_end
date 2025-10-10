@@ -32,6 +32,8 @@ function App() {
         <Route path='/DashBoard/patients' element={<FilterableTable></FilterableTable>}></Route>
         <Route path="/DashBoard/passChange" element={<ChangePass></ChangePass>}></Route>
         <Route path='/DashBoard/usersTree' element={<RoleHierarchyTree></RoleHierarchyTree>}></Route>
+
+        <Route path='*' element={<ErrorShower errorType={404}></ErrorShower>}></Route>
       </Routes>
     </Router>
         {/* <RoleChanger></RoleChanger> */}

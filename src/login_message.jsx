@@ -29,7 +29,7 @@ function LoginMessage(){
           });
           
           const data = await res.json(); // ✅ await
-      
+          console.log(data)
           if (!res.ok){
             addToast({
               title: data.message || "لطفا کد ارسال شده را به درستی وارد کنید",
@@ -38,17 +38,16 @@ function LoginMessage(){
             })
           };
           
-          // localStorage.setItem("userPermissions" , JSON.stringify(data.data.permissions))
-          console.log(data)
           localStorage.setItem("token", data.data.access_token);
           localStorage.setItem("number" , phone)
+          localStorage.setItem("permissions" , JSON.stringify(data.data.permissions))
           if(phone != adminNumber){
             addToast({
               title: 'با موفقیت وارد شدید',
               type: 'success',
               duration: 4000
             })
-            navigate("/forms", { state: { permissions: data.data.permissions } });
+            navigate("/forms");
           }else if(phone == adminNumber){
             navigate("/DashBoard")
           }

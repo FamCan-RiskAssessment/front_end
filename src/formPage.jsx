@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { APIURL } from "./utils/config";
-import { permExtractor } from "./utils/tools";
+import { permExtractor , fetchDataGET } from "./utils/tools";
 import "./client_forms.css"
 
 function FormsPage() {
@@ -10,10 +10,14 @@ function FormsPage() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const permissions = location.state?.permissions;
-  // print(permissions)
-  // console.log("Permissions:", permissions);
+  const [perms , setPerms] = useState([])
 
+  // user info
+ useEffect(() => {
+  let permissions = JSON.parse(localStorage.getItem("permissions"))
+  setPerms(permissions)
+ } , [])
+ 
   // 🔹 fetch user's forms on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -119,8 +123,8 @@ function FormsPage() {
 
   return (
     <>
-    {permissions.length > 1 ? (<button className="btn_submit place_independently" onClick={() => {
-      navigate('/DashBoard' , { state: { permissions: permissions } })
+    {perms.length > 1 ? (<button className="btn_submit place_independently" onClick={() => {
+      navigate('/DashBoard' , { state: { permissions: perms } })
       }}>ورود به پنل</button>) : null}
     <div className="forms-page-wrapper">
       <div className="forms-container">
