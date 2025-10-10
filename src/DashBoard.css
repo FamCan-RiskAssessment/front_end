@@ -5,6 +5,12 @@
     padding: 2rem;
   }
   
+.place_independently{
+  position: absolute;
+  top: 20px ;
+  left: 20px;
+}
+
   /* Title section */
   .title-holder {
     text-align: center;

@@ -1,16 +1,14 @@
 import { useState } from "react";
 
 function InputBox({data_req , data , valueSetter , class_change1 , class_change2}){
-    const [Itext , setIText] = useState('')
+    // const [Itext , setIText] = useState('')
     const [inpError , setInpError] = useState('')
     const [empErr , setEmpErr] = useState(false)
     const validator = (val) => {
         if (data.type == "number" && Number.isFinite(Number(val))){
-            setIText(val)
             valueSetter(val)
             setInpError("")
         }else if(data.type == "text" && !Number.isFinite(Number(val))){
-            setIText(val)
             valueSetter(val)
             setInpError("")
         }else{
@@ -29,7 +27,7 @@ function InputBox({data_req , data , valueSetter , class_change1 , class_change2
             )}
             
             <label htmlFor={data.inpName}>{data.inpName}</label>
-            <input data_req={data_req} type="text" className={`inp_question ${class_change2}`} placeholder={data.placeHolder} value={Itext} onChange={(e) => validator(e.target.value)}
+            <input data_req={data_req} type="text" className={`inp_question ${class_change2}`} placeholder={data.placeHolder} onChange={(e) => validator(e.target.value)}
              name={data.engName} id={data.inpName} 
              style={inpError.length != 0 ? {"border":"1px solid red"} : null}
              />

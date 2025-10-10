@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function Radio({data_req , data , class_change1 , class_change2 , valueSetter}){
+function Radio({data_req , data , class_change1 , class_change2 , valueSetter , relation}){
     // const [Itext , setIText] = useState('')
     // const [inpError , setInpError] = useState('')
 
@@ -14,10 +14,15 @@ function Radio({data_req , data , class_change1 , class_change2 , valueSetter}){
     //     }
     // }
     // console.log(class_change[1])
-
+    if(relation == undefined){
+        relation = true
+    }
+    if(!relation){
+        data_req = "false"
+    }
     return(
         <>
-        <div className={`form_element ${class_change1}`}>
+        <div className={`form_element ${class_change1}`} style={relation ? null : {display:"none"}}>
             <div className="radio_question">
                 <p>{data.ask}</p>
             </div>

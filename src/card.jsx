@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 // import anime from "animejs";
 import "./card.css";
 
-function PersonCard({ person ,index, idP ,clicker, opener}) {
+function PersonCard({ person ,index, idP ,clicker, opener , role}) {
   const [admin, setAdmin] = useState(false);
-  const [userType, setUserType] = useState("کاربر معمولی");
+  // const [userType, setUserType] = useState("کاربر معمولی");
 
   const admin_maker = () => {
     setAdmin(true);
@@ -25,16 +25,16 @@ function PersonCard({ person ,index, idP ,clicker, opener}) {
 //   }, [admin, index]);
   return (
     <div className="card_tot" index={index}>
-      <div className="card_header">
+      <div className="`12 `">
         <h3>{person.name}</h3>
         <span className={`badge ${admin ? "admin" : "user"}`}>
-          {userType}
+          {role}
         </span>
       </div>
 
       <div className="card_body">
         <p><strong>کدملی:</strong> {person.meli_code}</p>
-        <p><strong>تلفن همراه:</strong> {person.telephone}</p>
+        <p><strong>تلفن همراه:</strong> {person.phone}</p>
         <p><strong>تاریخ عضویت:</strong> {person.hist}</p>
       </div>
 

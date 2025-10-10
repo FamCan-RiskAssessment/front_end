@@ -1,6 +1,8 @@
 import { useState  , useEffect ,  } from "react";
 import { useLocation ,  useNavigate } from "react-router-dom";
-
+import { APIURL } from "./utils/config";
+import { useToast } from "./toaster";
+import ToastProvider from "./toaster";
 function LoginMessage(){
     const [message , setMessage] = useState('')
     const [Err  , setError] = useState('')
@@ -9,6 +11,7 @@ function LoginMessage(){
     const phone = location.state?.phone || ""; // ✅ get phone from state
     const [timeLeft, setTimeLeft] = useState(10); // 2 minutes = 120 seconds
     const adminNumber = "09123456789"
+    const { addToast } = useToast()
 
 
 
@@ -16,7 +19,7 @@ function LoginMessage(){
         e.preventDefault(); // ✅ correct spelling
       
         try {
-          const res = await fetch("http://185.231.115.28:8080/auth/verify-otp", {
+          const res = await fetch(`http://${APIURL}/auth/verify-otp`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -24,14 +27,28 @@ function LoginMessage(){
               otp: message   // ✅ send OTP with correct key 
             }),
           });
-      
+          
           const data = await res.json(); // ✅ await
       
-          if (!res.ok) throw new Error(data.message || "Login failed");
-      
+          if (!res.ok){
+            addToast({
+              title: data.message || "لطفا کد ارسال شده را به درستی وارد کنید",
+              type: 'error',
+              duration: 4000
+            })
+          };
+          
+          // localStorage.setItem("userPermissions" , JSON.stringify(data.data.permissions))
+          console.log(data)
           localStorage.setItem("token", data.data.access_token);
+          localStorage.setItem("number" , phone)
           if(phone != adminNumber){
-            navigate("/forms")
+            addToast({
+              title: 'با موفقیت وارد شدید',
+              type: 'success',
+              duration: 4000
+            })
+            navigate("/forms", { state: { permissions: data.data.permissions } });
           }else if(phone == adminNumber){
             navigate("/DashBoard")
           }
@@ -56,11 +73,11 @@ function LoginMessage(){
 
     return(
         <>
-        {Err.length != 0 &&
+        {/* {Err.length != 0 &&
         <div className= {Err.length != 0 ? "error_container fader" : null}>
         <span>{Err}</span>
         </div>
-        }
+        } */}
         <div className="login_container">            
         <div className="form_card">
             <h3 className="login_title">سامانه ریسک سنجی آنلاین</h3>

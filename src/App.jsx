@@ -8,6 +8,10 @@ import DashBoard from './Dashboard'
 import RoleMaker from './RoleMaker'
 import FormsPage from './formPage'
 import FilterableTable from './patient_table'
+import RoleHierarchyTree from './users_tree'
+import AdminLogin_page from './admins_login'
+import ChangePass from './password_change'
+import ErrorShower from './Error_page'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 function App() {
 
@@ -16,6 +20,9 @@ function App() {
     <Router>
       <Routes> 
         <Route path="/" element={<Login_page></Login_page>}></Route>
+        <Route path="/adminLogin" element={<AdminLogin_page></AdminLogin_page>}></Route>
+        <Route path="/error" element={<ErrorShower></ErrorShower>}></Route>
+
         <Route path="/otp" element={<LoginMessage></LoginMessage>}></Route>
         <Route path="/forms" element={<FormsPage></FormsPage>}></Route>  
         <Route path='/forms/new' element={<Questions></Questions>}></Route>
@@ -23,6 +30,8 @@ function App() {
         <Route path='/DashBoard/RoleMaker' element={<RoleMaker></RoleMaker>}></Route>
         <Route path='/DashBoard' element={<DashBoard></DashBoard>}></Route>
         <Route path='/DashBoard/patients' element={<FilterableTable></FilterableTable>}></Route>
+        <Route path="/DashBoard/passChange" element={<ChangePass></ChangePass>}></Route>
+        <Route path='/DashBoard/usersTree' element={<RoleHierarchyTree></RoleHierarchyTree>}></Route>
       </Routes>
     </Router>
         {/* <RoleChanger></RoleChanger> */}

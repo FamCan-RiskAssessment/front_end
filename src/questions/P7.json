@@ -223,7 +223,7 @@
     },
     "combine_option_smokingTypes_current": {
       "ask": "انواع مواد دخانی که مورد استفاده قرار میدهید را انتخاب کنید",
-      "Oname": "smokingTypes_current",
+      "Oname": "smokingTypesCurrent",
       "options": [
         "انتخاب کنید",
         "سیگار",

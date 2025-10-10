@@ -1,0 +1,49 @@
+.tree_holder{
+    direction: ltr;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem;
+}
+
+.tree_holder > div {
+    width: 80%;
+}
+.tree_link{
+    color: black;
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-start;
+    transition: all 0.3s ease;
+    gap: 1rem;
+    border-radius: 10px;
+}
+
+.tree_link:hover{
+    background-color: #dddddd;
+    padding: 0.5rem;
+}
+
+.tree_link > div > svg {
+    /* padding: 1rem; */
+    width: 20px;
+    height: 20px;
+}
+
+.li_in_tree{
+    list-style: none;
+    border-top: 1px solid #eeeeee;
+    border-bottom: 1px solid #eeeeee;    
+    padding: 0.5rem 0rem;
+
+}
+
+.user_search{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.user_search > input{
+    width: 80% !important;
+    direction: ltr;
+}

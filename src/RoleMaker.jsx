@@ -2,7 +2,8 @@ import { useState , useEffect , useRef } from 'react'
 import { useLocation ,  useNavigate } from "react-router-dom";
 import NavBar from './navBar'
 import CheckBox from './checkbox';
-
+import { useToast } from "./toaster";
+import ToastProvider from "./toaster";
 function RoleMaker(){
     const [clicked , setClicked] = useState(false)
     const [roleName, setRoleName] = useState("");
@@ -12,6 +13,9 @@ function RoleMaker(){
     const navigate = useNavigate();
     const [Err , setError] = useState("")
     const roleMakerForm = useRef(null)
+    const location = useLocation();
+    const { addToast } = useToast()
+    const userPhone = location.state?.phone;    
     useEffect(() => {
         const fetchPermissions = async () => {
           try {
@@ -92,6 +96,13 @@ function RoleMaker(){
     let data;
     try {
       data = await res.json(); // <-- might fail if response has no JSON
+      if(res.ok){
+        addToast({
+          title: 'نقش با موفقیت ساخته شد',
+          type: 'success',
+          duration: 4000
+        })
+      }
     } catch {
       data = {};
     }
@@ -113,7 +124,7 @@ function RoleMaker(){
 
     return(
         <>
-            <NavBar account={person}></NavBar>
+            <NavBar account={userPhone}></NavBar>
             <div className="all_holder">
             {Err.length != 0 &&
             <div className= {Err.length != 0 ? "error_container fader" : null}>

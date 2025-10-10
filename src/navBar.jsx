@@ -1,11 +1,14 @@
 import React from "react";
+import { useLocation ,  useNavigate } from "react-router-dom";
 import "./defnav.css"
 
 function NavBar({account}){
+  const navigate = useNavigate();
     return(
         <nav>
-            <div>
-                <h2 className="account_name">{account.name}</h2>
+            <div className="account-holder">
+                <h2 className="account_name">{account}</h2>
+                <h2 className="quit-btn" onClick={() => navigate("/")}>خروج</h2>
             </div>
             <div className="item-holder">
                 <ul className="nav-list">

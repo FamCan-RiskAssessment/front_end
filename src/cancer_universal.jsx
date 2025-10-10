@@ -4,7 +4,7 @@ import Options from "./option";
 import Radio from "./radio";
 import { data } from "react-router-dom";
 
-function CancerField({data_req , data_Inp1 , data_Options , data_Radio , data_Inp2}){
+function CancerField({data_req , data_Inp1 , data_Options , data_Radio , data_Inp2 , relation}){
     const [cancerArray , setCancerArray] = useState([])
     const [inp1 , setInp1] = useState("")
     const [inp2 , setInp2] = useState("")
@@ -41,10 +41,15 @@ function CancerField({data_req , data_Inp1 , data_Options , data_Radio , data_In
         setRad("");
         setImage(null)
     }
-
+    if(relation == undefined){
+        relation = true
+    }
+    if(!relation){
+        data_req = "false"
+    }
     return(
         <>
-        <div className="cancer_element">
+        <div className="cancer_element" style={relation ? null : {display:"none"}}>
             <div className="cancer_title">
                 <p>در جدول نام، نوع یا انواع سرطان و سن ابتلا را درج کنید</p>
             </div>

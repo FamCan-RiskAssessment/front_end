@@ -22,7 +22,30 @@
     width: 20rem;
 }
 
+th{
+    width: 8rem  !important;
+    height: auto;
+}
+td {
+    width: 8rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 280px; /* Set your desired max width */
+}
 .cell_choose:hover{
     cursor: cell;
     background-color: #eee;
+}
+.table_holder{
+    overflow: scroll;
+}
+.table_holder table{
+table-layout: fixed;
+width: 100%    
+}
+
+.excel_input_holder{
+    display: flex;
+    flex-direction: column;
 }

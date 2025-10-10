@@ -1,132 +1,191 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NavBar from "./navBar";
-import "./patient_table.css"
-
+import "./patient_table.css";
+import PERSIAN_HEADERS from "./assets/table_header.json"
+import { useLocation } from "react-router-dom";
 export default function FilterableTable() {
-  // Sample JSON-like dictionary
-  const initialData  = [
-    { id: 1, name: "Item A", type: "Fruit", price: 2 },
-    { id: 2, name: "Item B", type: "Vegetable", price: 4 },
-    { id: 3, name: "Item C", type: "Fruit", price: 3 },
-    { id: 4, name: "Item D", type: "Dairy", price: 5 },
-    { id: 5, name: "Item E", type: "Vegetable", price: 6 },
-  ];
-
-  const [data, setData] = useState(initialData);
+  const [data, setData] = useState([]);
   const [filter, setFilter] = useState("All");
-  const [editingCell, setEditingCell] = useState(null); // {rowId, field}
+  const [editingCell, setEditingCell] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [editedData, setEditedData] = useState({});
+  const [filteredData2, setFilteredData2] = useState([]);
+  const [editedId , setEditedId] = useState(0)
+  const location = useLocation();
+  const userPhone = location.state?.phone;
+  useEffect(() => {
+    const fetchformDatas = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://185.231.115.28:8080/admin/forms", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
+        });
 
-  // Apply filter
-  const types = [...new Set(data.map((item) => item.type))];
-  const filteredData =
-    filter === "All" ? data : data.filter((item) => item.type === filter);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-  let person = {
-        name:"امیر",
-        number:"09338666836"
+        const json = await response.json();
+        const dataArray = Array.isArray(json.data) ? json.data : [json.data];
+        console.log(dataArray)
+        setData(dataArray[0].data);
+        setFilteredData2(dataArray[0].data);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchformDatas();
+  }, []);
+
+  // Filter by 'status'
+  useEffect(() => {
+    if (data.length === 0) {
+      setFilteredData2([]);
+      return;
     }
 
+    if (filter === "All") {
+      setFilteredData2(data);
+    } else {
+      setFilteredData2(data.filter(item => item.status === filter));
+    }
+  }, [filter, data]);
 
+  const statusOptions = [...new Set(data.map(item => item.status).filter(Boolean))];
 
-  // Handle editing
+  const person = {
+    name: "امیر",
+    number: "09338666836"
+  };
+
   const handleDoubleClick = (rowId, field, value) => {
     setEditingCell({ rowId, field });
-    setEditedData({ ...editedData, [rowId]: { ...editedData[rowId], [field]: value } });
+    setEditedData(prev => ({
+      ...prev,
+      [rowId]: { ...prev[rowId], [field]: value }
+    }));
   };
 
   const handleChange = (e, rowId, field) => {
-    setEditedData({
-      ...editedData,
-      [rowId]: { ...editedData[rowId], [field]: e.target.value },
-    });
+    setEditedData(prev => ({
+      ...prev,
+      [rowId]: { ...prev[rowId], [field]: e.target.value }
+    }));
+    setEditedId(parseInt(rowId))
   };
-
+//  TO DO : Ask kian about that and let him change how data is managed
   const handleSave = () => {
-    const updatedData = data.map((row) =>
+    const updatedData = data.map(row =>
       editedData[row.id] ? { ...row, ...editedData[row.id] } : row
     );
+    console.log(updatedData)
     setData(updatedData);
+    setFilteredData2(updatedData);
     setEditingCell(null);
     setEditedData({});
-    console.log("Saving to DB:", updatedData); // simulate DB save
+    // console.log("Saving to DB:", updatedData);
+    const token_auth = localStorage.getItem("token")
+    const data_to_send = []
+    // 🚀 Send to server
+    fetch(`http://185.231.115.28:8080/admin/forms/${editedId}/accept`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 
+                    'Authorization': `Bearer ${token_auth}`
+                },
+        // body: JSON.stringify(data_to_send),
+    })
+        .then(() => alert('Success!'))
+        .catch((e) => console.log(e));
   };
 
+  if (loading) {
+    return <div className="loading">در حال بارگذاری...</div>;
+  }
 
   return (
     <>
-    <NavBar account={person}></NavBar>
-    <div className="total_patients_holder">
-      {/* Filter Dropdown */}
-      <div className="filter_holder">
-        <div className="select_filter">
-        <label className="label_title">فیلتر وضعیت</label>
-        <select
-          className="select_options"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        >
-          <option value="All">All</option>
-          {types.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
-        </div>
-        <button
-          onClick={handleSave}
-          className="btn_question"
-        >
-          ذخیره تغییرات
-        </button>
-        <p>برای تغییر دادن هر فیلد دابل کلیک کنید . </p>
-      </div>
-
-      {/* Table */}
-      <div className="table_holder lower_width">
-      <table border="0.5" cellSpacing="0" cellPadding="8" dir="ltr">
-        <thead className="sar_jadval">
-          <tr>
-            <th>وضعیت</th>
-            <th>نام</th>
-            <th>سن</th>
-            <th>وزن</th>
-          </tr>
-        </thead>
-        <tbody>
-        {filteredData.map((row) => (
-            <tr key={row.id}>
-              {["id", "name", "type", "price"].map((field) => (
-                <td
-                  className="cell_choose"
-                  key={field}
-                  onDoubleClick={() => handleDoubleClick(row.id, field, row[field])}
-                >
-                  {editingCell?.rowId === row.id && editingCell?.field === field ? (
-                    <input
-                      type="text"
-                      value={
-                        editedData[row.id]?.[field] !== undefined
-                          ? editedData[row.id][field]
-                          : row[field]
-                      }
-                      onChange={(e) => handleChange(e, row.id, field)}
-                      className="w-full border rounded p-1"
-                      autoFocus
-                    />
-                  ) : (
-                    row[field]
-                  )}
-                </td>
+      <NavBar account={userPhone} />
+      <div className="total_patients_holder">
+        <div className="filter_holder">
+          <div className="select_filter">
+            <label className="label_title">فیلتر وضعیت</label>
+            <select
+              className="select_options"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+            >
+              <option value="All">همه</option>
+              {statusOptions.map(status => (
+                <option key={status} value={status}>
+                  {status}
+                </option>
               ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      </div>
-    </div>
-    </>
+            </select>
+          </div>
+          <button onClick={handleSave} className="btn_question">
+            ذخیره تغییرات
+          </button>
+          <p>برای تغییر دادن هر فیلد دابل کلیک کنید.</p>
+        </div>
 
+        <div className="table_holder lower_width">
+          <table border="1" cellSpacing="0" cellPadding="8" dir="rtl" borderColor="#ddd">
+            <thead className="sar_jadval">
+              <tr>
+                {PERSIAN_HEADERS.map(({ key, label }) => (
+                  <th key={key}>{label}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filteredData2.length > 0 ? (
+                filteredData2.map(row => (
+                  <tr key={row.id || row.user_id || Math.random()}>
+                    {PERSIAN_HEADERS.map(({ key }) => (
+                      <td
+                        className="cell_choose"
+                        key={key}
+                        onDoubleClick={() => handleDoubleClick(row.id, key, row[key])}
+                      >
+                        {editingCell?.rowId === row.id && editingCell?.field === key ? (
+                          <div className="excel_input_holder">
+                            <input
+                              type="text"
+                              value={
+                                editedData[row.id]?.[key] !== undefined
+                                  ? editedData[row.id][key]
+                                  : row[key] ?? ""
+                              }
+                              onChange={(e) => handleChange(e, row.id, key)}
+                              className="w-full border rounded p-1"
+                              autoFocus
+                            />
+                          </div>
+                        ) : (
+                          row[key] != null ? String(row[key]) : ""
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={PERSIAN_HEADERS.length} style={{ textAlign: "center" }}>
+                    داده‌ای موجود نیست
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </>
   );
 }
