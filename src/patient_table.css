@@ -49,3 +49,8 @@ width: 100%
     display: flex;
     flex-direction: column;
 }
+
+.space-UD{
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+}

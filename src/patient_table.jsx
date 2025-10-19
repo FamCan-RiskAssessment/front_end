@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import NavBar from "./navBar";
 import "./patient_table.css";
-import { APIARR } from "./utils/config";
-import { fetchDataGET } from "./utils/tools";
+import { APIARR , APIURL } from "./utils/config";
+import { fetchDataGET , key_stage_matcher , stageMatcher} from "./utils/tools";
 import PERSIAN_HEADERS from "./assets/table_header.json"
 import { useLocation } from "react-router-dom";
+import { useToast } from "./toaster";
+import ToastProvider from "./toaster";
+import { isNumber } from "./utils/tools";
 export default function FilterableTable() {
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState("All");
@@ -13,14 +16,18 @@ export default function FilterableTable() {
   const [editedData, setEditedData] = useState({});
   const [filteredData2, setFilteredData2] = useState([]);
   const [editedId , setEditedId] = useState(0)
+  const [page , setPage]=  useState(2)
+  const { addToast } = useToast()
   const location = useLocation();
   const userPhone = location.state?.phone;
-  console.log("here it comes : " , data)
+  // debugs 
+  // console.log("here it comes : " , data)
+  // console.log("maybe the answer : " , editedData)
 
   useEffect(() => {
     const fetchformIds = async () => {
     let token = localStorage.getItem("token")
-    let pre_forms = await fetchDataGET("admin/forms" , token)
+    let pre_forms = await fetchDataGET("admin/form" , token)
     if (pre_forms.status === 200) {
       // Create a new array to hold the updated forms
       const updatedForms = [];
@@ -50,6 +57,42 @@ export default function FilterableTable() {
 
   fetchformIds();   
   }, []);
+
+  // show me more 
+  const showMore = async () => {
+    setPage(p => p + 1)
+    let token = localStorage.getItem("token")
+    let pre_forms = await fetchDataGET(`admin/form?page=${page}&pageSize=10` , token)
+    if (pre_forms.status === 200) {
+      // Create a new array to hold the updated forms
+      const updatedForms = [];
+      
+      // Process each form sequentially (or use Promise.all for parallel)
+      for (const pf of pre_forms.data.data) {
+        let updatedForm = { ...pf }; // Start with a copy of the original form
+        
+        // Process each API endpoint
+        for (const ar of APIARR) {
+          try {
+            let user_part_form = await fetchDataGET(`form/${pf.id}/${ar}`, token);
+            setLoading(true)
+            if(user_part_form.ok){
+              setLoading(false) 
+            }
+            updatedForm = { ...updatedForm, ...user_part_form.data };
+          } catch (error) {
+            console.error(`Error fetching form ${pf.id} for ${ar}:`, error);
+          }
+        }
+        
+        updatedForms.push(updatedForm);
+      }
+      
+      // Update state with the fully updated array
+      setData(updatedForms);
+      setLoading(false);
+    }
+  }
   
   // Filter by 'status'
   useEffect(() => {
@@ -81,11 +124,19 @@ export default function FilterableTable() {
   };
 
   const handleChange = (e, rowId, field) => {
+    // Optional: update editedData if you're tracking per-row edits separately
     setEditedData(prev => ({
       ...prev,
       [rowId]: { ...prev[rowId], [field]: e.target.value }
     }));
-    setEditedId(parseInt(rowId))
+    setEditedId(parseInt(rowId));
+  
+    // Update the main data array
+    setData(prevData =>
+      prevData.map(item =>
+        item.id === rowId ? { ...item, [field]: e.target.value } : item
+      )
+    );
   };
 //  TO DO : Ask kian about that and let him change how data is managed
   const handleSave = () => {
@@ -95,26 +146,67 @@ export default function FilterableTable() {
     console.log(updatedData)
     setData(updatedData);
     setFilteredData2(updatedData);
-    setEditingCell(null);
-    setEditedData({});
     // console.log("Saving to DB:", updatedData);
-    const token_auth = localStorage.getItem("token")
-    const data_to_send = []
-    // 🚀 Send to server
-    fetch(`http://185.231.115.28:8080/admin/forms/${editedId}/accept`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 
-                    'Authorization': `Bearer ${token_auth}`
-                },
-        // body: JSON.stringify(data_to_send),
-    })
-        .then(() => alert('Success!'))
-        .catch((e) => console.log(e));
+    let token_auth = localStorage.getItem("token")
+    console.log("this is the token man : " , token_auth)
+    const matchAndSend = async () =>{
+      for (const ar of APIARR) {
+        for(const form_id of Object.keys(editedData)){
+          let temporal_data = await fetchDataGET(`form/${form_id}/${ar}`, token_auth)
+          for(const field of Object.keys(editedData[form_id])){
+            let res = key_stage_matcher(field , temporal_data.data)
+            if(res){
+              if (editedData[form_id][field] === "true" && field != "pastSmoking") {
+                  editedData[form_id][field] = true;
+              } else if (editedData[form_id][field] === "false" && field != "pastSmoking") {
+                  editedData[form_id][field] = false;
+              } else if (editedData[form_id][field] === "null" && field != "pastSmoking") {
+                  editedData[form_id][field] = null;
+              } else if (isNumber(editedData[form_id][field]) && field != "socialSecurityNumber" && field != "postalCode") {
+                  editedData[form_id][field] = parseInt(editedData[form_id][field]);
+              } else if(editedData[form_id][field] == "انتخاب کنید" || editedData[form_id][field] == "انتخاب نمایید" || editedData[form_id][field] == ""){
+                  continue
+              }
+              const payload = {
+                [field]:editedData[form_id][`${field}`]
+              }
+              try {
+                const response = await fetch(`http://${APIURL}/admin/form/${form_id}/${ar}`, {
+                  method: 'PATCH',
+                  headers: { "Content-Type": "application/json",
+                            'Authorization': `Bearer ${token_auth}`},
+                  body: JSON.stringify(payload),
+                });
+  
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }else{
+                  const result = await response.json();
+                  setEditingCell(null)
+                  addToast({
+                    title: result.message,
+                    type: 'success',
+                    duration: 4000
+                  })
+                  console.log('PUT success:', result);
+                }
+              } catch (error) {
+                console.error('PUT request failed:', error);
+              }
+            }
+
+          }
+        }
+      }
+    }
+
+    matchAndSend()
   };
 
   if (loading) {
     return <div className="loading">در حال بارگذاری...</div>;
   }
+  
 
   return (
     <>
@@ -192,6 +284,8 @@ export default function FilterableTable() {
             </tbody>
           </table>
         </div>
+        <button className="btn_submit space-UD" onClick={showMore}>صفحه ی بعدی</button>
+
       </div>
     </>
   );

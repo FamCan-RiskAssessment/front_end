@@ -21,7 +21,7 @@ function RoleMaker(){
           try {
             // ✅ Get token from localStorage (or context)
             const token = localStorage.getItem("token");
-            const response = await fetch("http://185.231.115.28:8080/admin/permissions", {
+            const response = await fetch("http://185.231.115.28:8080/admin/permission", {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
@@ -84,7 +84,7 @@ function RoleMaker(){
       permissionIDs: permArray.map((id) => Number(id)), // ensure numbers
     };
 
-    const res = await fetch("http://185.231.115.28:8080/admin/roles", {
+    const res = await fetch("http://185.231.115.28:8080/admin/role", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

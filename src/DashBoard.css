@@ -37,6 +37,12 @@
   }
   
   /* Card design */
+
+  .tool_card_holder{
+    width: calc(33.33% - 10rem);
+    display: flex;
+    justify-content: center;
+  }
   .tool_card {
     width: 250px;
     height: 280px;

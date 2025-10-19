@@ -59,6 +59,10 @@ function DashBoard(){
     const tool_chooser5 = () =>{
         navigate("/DashBoard/passChange" , { state: { phone: userPhone } })
     }
+    const tool_chooser6 = () =>{
+        navigate("/DashBoard/supervisorForms" , { state: { phone: userPhone } })
+    }
+
 
     return(
         <>
@@ -70,43 +74,62 @@ function DashBoard(){
             </div>
                 <div className="tool_holder">
                 {(permExtractor(perms,  "دسترسی کامل") || permExtractor(perms , "ویرایش نقش")) && (
+                    <div className="tool_card_holder">
                 <div className="tool_card" onClick={tool_chooser}>
                 <div className="tool_image around_image role"></div>
                 <div className="tool_name">
                     <span>تغییر نقش</span>
                 </div>
                 </div>
+                </div>
                 )}
 
                 {(permExtractor(perms,  "دسترسی کامل") || permExtractor(perms , "ایجاد نقش")) && (
+                    <div className="tool_card_holder">
                 <div className="tool_card" onClick={tool_chooser2}>
                 <div className="tool_image around_image create"></div>
                 <div className="tool_name">
                     <span>ساخت نقش</span>
                 </div>
                 </div>
+                </div>
                 )}
 
                 {(permExtractor(perms,  "دسترسی کامل") || permExtractor(perms , "مشاهده بیماران")) && (
+                    <div className="tool_card_holder">
                 <div className="tool_card" onClick={tool_chooser3}>
                 <div className="tool_image around_image patients"></div>
                 <div className="tool_name">
                     <span>بیماران ثبت‌نام شده</span>
                 </div>
                 </div>
+                </div>
                 )}
+                <div className="tool_card_holder">
                 <div className="tool_card" onClick={tool_chooser4}>
                 <div className="tool_image around_image patients"></div>
                 <div className="tool_name">
                     <span>مدیریت کاربران</span>
                 </div>
                 </div>
+                </div>
                 {(permExtractor(perms,  "دسترسی کامل") || permExtractor(perms , "تنظیم پسورد")) && (
-
+                    <div className="tool_card_holder">
                 <div className="tool_card" onClick={tool_chooser5}>
                 <div className="tool_image around_image patients"></div>
                 <div className="tool_name">
                     <span>تغییر رمز</span>
+                </div>
+                </div>
+                </div>
+                )}
+                {(permExtractor(perms,  "دسترسی کامل") || permExtractor(perms , "تنظیم پسورد")) && (
+                    <div className="tool_card_holder">
+                <div className="tool_card" onClick={tool_chooser6}>
+                <div className="tool_image around_image patients"></div>
+                <div className="tool_name">
+                    <span>ارجاع فرم</span>
+                </div>
                 </div>
                 </div>
                 )}

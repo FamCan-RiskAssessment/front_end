@@ -44,7 +44,7 @@ useEffect(() => {
     try {
       // ✅ Get token from localStorage (or context)
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://${APIURL}/admin/users`, {
+      const response = await fetch(`http://${APIURL}/admin/user`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -75,7 +75,7 @@ useEffect(() => {
       try {
         // ✅ Get token from localStorage (or context)
         const token = localStorage.getItem("token");
-        const response = await fetch(`http://${APIURL}/admin/roles`, {
+        const response = await fetch(`http://${APIURL}/admin/role`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -105,7 +105,7 @@ const fetchUserRole = async (user_id) => {
   try {
     const token = localStorage.getItem("token");
     const response = await fetch(
-      `http://${APIURL}/admin/users/${parseInt(user_id)}/roles`,
+      `http://${APIURL}/admin/user/${parseInt(user_id)}/role`,
       {
         method: "GET",
         headers: {

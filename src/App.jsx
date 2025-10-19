@@ -12,6 +12,7 @@ import RoleHierarchyTree from './users_tree'
 import AdminLogin_page from './admins_login'
 import ChangePass from './password_change'
 import ErrorShower from './Error_page'
+import SupervisorPage from './supervisor_page'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
         <Route path='/DashBoard/patients' element={<FilterableTable></FilterableTable>}></Route>
         <Route path="/DashBoard/passChange" element={<ChangePass></ChangePass>}></Route>
         <Route path='/DashBoard/usersTree' element={<RoleHierarchyTree></RoleHierarchyTree>}></Route>
+        <Route path='/DashBoard/supervisorForms' element={<SupervisorPage></SupervisorPage>}></Route>
 
         <Route path='*' element={<ErrorShower errorType={404}></ErrorShower>}></Route>
       </Routes>
