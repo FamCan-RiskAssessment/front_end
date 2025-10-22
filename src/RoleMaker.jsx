@@ -4,18 +4,49 @@ import NavBar from './navBar'
 import CheckBox from './checkbox';
 import { useToast } from "./toaster";
 import ToastProvider from "./toaster";
+import { fetchDataGET , fetchDataDELETE} from './utils/tools';
 function RoleMaker(){
     const [clicked , setClicked] = useState(false)
     const [roleName, setRoleName] = useState("");
     const [permArray, setPermArray] = useState([]);    
     const [permData, setPermData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [newRole , setNewRole] = useState(null)
     const navigate = useNavigate();
     const [Err , setError] = useState("")
+    const [roles , setRoles] = useState([])
+    const [deletedRole , setDeletedRole] = useState(0)
     const roleMakerForm = useRef(null)
     const location = useLocation();
     const { addToast } = useToast()
-    const userPhone = location.state?.phone;    
+    const userPhone = location.state?.phone;
+    
+    useEffect(() => {
+      const fetchRoles = async () => {
+        let token = localStorage.getItem("token")
+        let roles = await fetchDataGET("admin/role" , token)
+        setRoles(roles.data)
+      }
+      fetchRoles()
+      setNewRole(null)
+      setDeletedRole(0)
+    } , [newRole , deletedRole]) 
+    
+    const deleteRole = async (role_id) => {
+      let token = localStorage.getItem("token")
+      let res = await fetchDataDELETE(`admin/role/${role_id}` , token)
+      if(res.status == 200){
+        addToast({
+          title: res.message,
+          type: 'success',
+          duration: 4000
+        })
+        setDeletedRole(role_id)
+      }
+    }
+
+
+
     useEffect(() => {
         const fetchPermissions = async () => {
           try {
@@ -97,8 +128,9 @@ function RoleMaker(){
     try {
       data = await res.json(); // <-- might fail if response has no JSON
       if(res.ok){
+        setNewRole(bodyData)
         addToast({
-          title: 'نقش با موفقیت ساخته شد',
+          title: data.message,
           type: 'success',
           duration: 4000
         })
@@ -114,7 +146,7 @@ function RoleMaker(){
       throw new Error(data.message || "Request failed");
     }
 
-    navigate("/DashBoard");
+    // navigate("/DashBoard");
   } catch (err) {
     console.error("Error in collectAndSend:", err);
     setError(err.message);
@@ -132,6 +164,18 @@ function RoleMaker(){
             <i className="fa fa-ban"></i>
             </div>
             }
+            <div className='role_holder'>
+              {roles.map((r , index) => {
+                return(
+                  <>
+                  <div key={index} className='role_card'>
+                    <div className='role_name'>{r.name}</div>
+                    <button className='delete_btn' onClick={() => deleteRole(r.id)}>حذف نقش</button>
+                  </div>
+                  </>
+                )
+              })}
+            </div>
             <div className="title-holder">
                 <h1>ساخت نقش جدید</h1>
                 <p className="subtitle">انتخاب دسترسی‌ها و ایجاد نقش برای مدیریت بهتر</p>

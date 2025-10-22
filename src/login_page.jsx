@@ -71,9 +71,9 @@ function Login_page(){
                 </form>
             </div>
         </div>
-        <button className="support_call ">تماس با پشتیبانی</button>
+        <button className="support_call fixed_in_login">تماس با پشتیبانی</button>
         <div className="admin_enter">
-        <button className="support_call2" onClick={adminLoginNav}>ورود اعضا</button>
+        <button className="support_call2" onClick={adminLoginNav} style={{display:"none"}}>ورود اعضا</button>
         </div>
         <p className="copy_right">
             شرکت سرطان های ارثی و فامیلی فم کن

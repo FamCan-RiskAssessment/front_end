@@ -6,6 +6,7 @@ import Options from "./option";
 import CancerField from "./cancer_universal";
 import FileUploader from "./file_uploader";
 import PersonalInfo from "./personal_info";
+import Loader from "./utils/loader";
 
 import part1 from './questions/P1.json'
 import part2 from './questions/P2.json'
@@ -26,6 +27,7 @@ function Questions(){
     const [checkEmp , setCheckEmp] = useState(false)
     const [requiredMap, setRequiredMap] = useState({});
     const [createdFormId , setCreatedFormId] = useState(0)
+    // const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const { addToast } = useToast()
 
@@ -290,6 +292,7 @@ function Questions(){
                 .then(res => res.json())
                 .then((json) => {
                     setCreatedFormId(json.data.form.id)
+                    // setLoading(false)
                 })
                 .catch((e) => console.log(e));
         }else{
@@ -302,6 +305,7 @@ function Questions(){
             })
                 .catch((e) => console.log(e));
                 // navigate("/forms")
+                // setLoading(false)
         }
 
         };
@@ -447,6 +451,9 @@ function Questions(){
     const smokesNow = smokeTypeQuestion(smokeType)
     const smokesPast = smokeTypePastQuestion(smokeTypePast)
 
+    // if(loading){
+    //     return <Loader></Loader>;
+    // }
 
     return(
         <>

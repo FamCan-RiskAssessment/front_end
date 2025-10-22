@@ -98,3 +98,27 @@
     margin-top: 3rem;
   }
   
+  .delete_btn2{
+    color: white;
+    background-color: #ff2f2f;
+    /* padding: 0.8rem 2rem; */
+    border-radius: 1rem;
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  .delete_btn2:hover{
+    background-color: #ff4949;
+    transform: scale(1.05);
+  }
+
+  .btn_formPage_holder{
+    display: flex;
+    gap: 1rem;
+  }
+
+  .spider{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }

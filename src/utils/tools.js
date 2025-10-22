@@ -13,6 +13,7 @@ export const form_ids_finder = (form_array) => {
     let inner_obj = {}
     inner_obj["status"] = fa.status
     inner_obj["user_id"] = fa.user_id
+    inner_obj["operatorId"] = fa.operatorId
     ids[fa.id] = inner_obj
   });
   return ids
@@ -57,6 +58,28 @@ export const fetchDataGET = async (endpoint , token_auth) => {
   };
 
 
+export const fetchDataDELETE = async (endpoint, token_auth) => {
+    const res = await fetch(`http://${APIURL}/${endpoint}`, {
+      method: "DELETE",
+      headers: {
+        'Authorization': `Bearer ${token_auth}`,
+      },
+    });
+  
+    // Note: DELETE responses may or may not have a body.
+    // We try to parse JSON, but handle cases where it might be empty.
+    let data = {};
+    if (res.headers.get("content-type")?.includes("application/json")) {
+      data = await res.json();
+    }
+  
+    if (!res.ok) {
+      throw new Error(data.message || "DELETE request failed");
+    }
+  
+    return data; // May be empty object if no JSON response
+  };
+
 
 
 export const fetchDataPUT = async (endpoint, token_auth, bodyData) => {
@@ -72,6 +95,16 @@ export const fetchDataPUT = async (endpoint, token_auth, bodyData) => {
   
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || "PUT request failed");
-  
+    console.log("this is th data in the tools : " , data)
     return data;
   };
+
+
+
+// const showMore = async (setPage) => {
+//     setPage(p => p + 1)
+//     let token = localStorage.getItem("token")
+//     let data = await fetchDataGET(`admin/form?page=${page}&pageSize=20` , token)
+//     let form_ids = form_ids_finder(data.data.data)
+//     setFormInfos(form_ids) 
+//   }

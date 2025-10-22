@@ -1,7 +1,7 @@
 @media (max-width: 768px) {
     .question_form_container{
         padding: 2rem 0.5rem;
-        width: 90%;
+        width: 85%;
         overflow-y: unset;
         max-height: 60%;
     }
@@ -24,9 +24,13 @@
         height: unset;
     }
     body{
-        background: linear-gradient(45deg, rgb(0 255 140 / 50%), rgb(0 100 255 / 71%));
+        background: linear-gradient(135deg, #f8f5ff, #e5d4f9);
         background-repeat: no-repeat;
         background-size: cover;
+    }
+    table{
+        background-color: white;
+        /* overflow-y: unset; */
     }
     td > button{
         padding: unset;
@@ -49,7 +53,58 @@
     .jadval_adder{
         margin-bottom: 1rem;
     }
-    /* .support_call{
-        position: relative;
-    } */
+    .support_call{
+        position: unset;
+    }
+    .question_title{
+        text-align: center;
+    }
+    .fixed_in_login{
+        position: fixed;
+    }
+    .spider{
+        position: unset !important;
+        margin: 1rem;
+    }
+    .place_independently{
+        position: unset !important;
+        margin: 1rem;
+    }
+    .delete_btn2 , .btn-view-form{
+        font-size: 0.8rem;
+    }
+    .form-item{
+        gap: 1rem;
+    }
+    .item-holder{
+        display: none;
+    }
+    .search_bar{
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+    .card-holder{
+        flex-direction: column;
+    }
+    .account-holder{
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        font-size: 1rem;
+        width: 100%;
+    }
+    .mob{
+        display: block;
+    }
+    .account_name , .quit-btn{
+        font-size: 1rem;
+    }
+    .mob_sup_table{
+        align-items: unset !important;
+    }
+    .mob_btn{
+        font-size: 0.8rem;
+    }
 }

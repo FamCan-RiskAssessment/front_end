@@ -2,22 +2,40 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { APIURL } from "./utils/config";
-import { permExtractor , fetchDataGET } from "./utils/tools";
+import { permExtractor , fetchDataGET , fetchDataDELETE } from "./utils/tools";
 import "./client_forms.css"
+import ToastProvider from "./toaster";
+import { useToast } from "./toaster";
 
 function FormsPage() {
   const [forms, setForms] = useState([]);
+  const [deletedForm , setDeletedForm] = useState(0)
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const [perms , setPerms] = useState([])
+  const { addToast } = useToast()
 
   // user info
  useEffect(() => {
   let permissions = JSON.parse(localStorage.getItem("permissions"))
   setPerms(permissions)
  } , [])
- 
+
+
+ const deleteForm = async (form_id) =>{
+    let token = localStorage.getItem("token")
+    let res = await fetchDataDELETE(`form/${form_id}` , token)
+    if(res.status == 200){
+      addToast({
+        title: res.message,
+        type: 'success',
+        duration: 4000
+      })
+      setDeletedForm(form_id)
+    }
+ }
+
   // 🔹 fetch user's forms on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -32,13 +50,14 @@ function FormsPage() {
       .then((json) => {
         // console.log("fucking data : " , json)
         setForms(json.data.data || []); // assuming API returns { data: [...] }
+        setDeletedForm(0)
         setLoading(false);
       })
       .catch((err) => {
         console.error("Error fetching forms:", err);
         setLoading(false);
       });
-  }, []);
+  }, [deletedForm]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -126,6 +145,7 @@ function FormsPage() {
     {perms.length > 1 ? (<button className="btn_submit place_independently" onClick={() => {
       navigate('/DashBoard' , { state: { permissions: perms } })
       }}>ورود به پنل</button>) : null}
+    <button className="btn_submit spider" onClick={() => navigate("/")}>خروج</button>
     <div className="forms-page-wrapper">
       <div className="forms-container">
         <h1 className="forms-title">لیست فرم‌های شما</h1>
@@ -137,12 +157,15 @@ function FormsPage() {
             {forms.map((form) => (
               <li key={form.id} className="form-item">
                 <span className="form-name">{form.id}</span>
+                <div className="btn_formPage_holder">
                 <button
                   className="btn-view-form"
                   onClick={() => userSelectedForm(form.id)}
                 >
                   مشاهده
                 </button>
+                <button className="delete_btn2" onClick={() => deleteForm(form.id)}>حذف فرم</button>
+                </div>
               </li>
             ))}
           </ul>

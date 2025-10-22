@@ -33,3 +33,7 @@ nav{
     font-size: 1.3rem;
     cursor: pointer;
 }
+
+.mob{
+    display: none;
+}

@@ -5,6 +5,7 @@ import { fetchDataGET , form_ids_finder, fetchDataPUT} from "./utils/tools";
 import ToastProvider from "./toaster";
 import { useToast } from "./toaster";
 import { isNumber } from "./utils/tools";
+import Loader from "./utils/loader";
 
 function SupervisorPage(){
     let userPhone = localStorage.getItem("number")
@@ -13,21 +14,31 @@ function SupervisorPage(){
     const [openModal , setOpenModal] = useState(false)
     const [OPArr , setOPArr] = useState([])
     const [selectedFormId , setSelectedFormId] = useState(0)
-    const [page , setPage] = useState(2)
+    const [changedOPId , setChangedOPId] = useState(0)
+    const [page , setPage] = useState(1)
+    const [loading, setLoading] = useState(true);
+    const [pagiPrev , setPagiPrev] = useState(false)
+    const [pagiNext , setPagiNext] = useState(false)
     const { addToast } = useToast()
   // console.log(OPRoleId)
     // console.log(formInfos)
     useEffect(() => {
         let token = localStorage.getItem("token")
         const get_forms = async () =>{
-            let data = await fetchDataGET("admin/form" , token)
+            let data = await fetchDataGET(`admin/form?page=${page}&pageSize=10` , token)
             console.log("this is the data : " , data)
+            setPagiNext(data.data.pagination.hasNextPage)
+            setPagiPrev(data.data.pagination.hasPrevPage)
             let form_ids = form_ids_finder(data.data.data)
             console.log("this is the form_ids : " , form_ids)
             setFormInfos(form_ids) 
         }
         get_forms()
-    } , [])
+        setLoading(false)
+    } , [changedOPId, page])
+
+
+
     useEffect(() => {
         let token = localStorage.getItem("token")
         const OPRoleIdFetch = async () => {
@@ -55,32 +66,38 @@ function SupervisorPage(){
             operatorId:OA.id
         }
         let Opchange = await fetchDataPUT(`admin/form/${selectedFormId}/operator` , token , payload)
-        if(Opchange.ok){
+        setChangedOPId(OA.id)
+        if(Opchange.status == 200){
         addToast({
                 title: Opchange.message,
                 type: 'success',
                 duration: 4000
               })
         console.log(Opchange)
-
         }
     }
 
-const showMore = async () => {
+const showMore = () => {
+    if(pagiNext){
         setPage(p => p + 1)
-        let token = localStorage.getItem("token")
-        let data = await fetchDataGET(`admin/form?page=${page}&pageSize=20` , token)
-        let form_ids = form_ids_finder(data.data.data)
-        setFormInfos(form_ids) 
-      }
+    }
+}
 
+const showPrev = () => {
+    if(pagiPrev){
+        setPage(p => p - 1)
+    }
+}
 
+if (loading) {
+    return <Loader></Loader>;
+  }
 
 return(
     <>
     <NavBar account={userPhone}></NavBar>
     <div className="total_holder_sup_form">
-    <div className="table_holder lower_width total_patients_holder">
+    <div className="table_holder lower_width total_patients_holder mob_sup_table">
     <table border="1" cellSpacing="0" cellPadding="8" dir="rtl" borderColor="#ddd">
     <thead className="sar_jadval">
         <tr>
@@ -95,8 +112,8 @@ return(
             return(
                 <tr key={fi}>
                 <td>{fi}</td>
-                <td>_</td>
-                <td><button className="btn_submit" onClick={() => openOpers(fi)}>تغییر اپراتور</button></td>
+                <td>{formInfos[fi].operatorId ? formInfos[fi].operatorId : "-" }</td>
+                <td><button className="btn_submit mob_btn" onClick={() => openOpers(fi)}>تغییر اپراتور</button></td>
                 <td>{formInfos[fi].status}</td>
                 </tr>
             )
@@ -124,7 +141,10 @@ return(
             </div>
         </div>
         )}
-        <button className="btn_submit space-UD" onClick={showMore}>صفحه ی بعدی</button>
+            <div className="btn_holder_next_prev">
+            <button className="btn_submit space-UD mob_btn" onClick={showMore}>صفحه ی بعدی</button>
+            <button className="btn_submit space-UD mob_btn" onClick={showPrev}>صفحه ی قبلی</button>
+            </div>
     </div>
     </>
 )

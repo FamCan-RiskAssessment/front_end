@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom";
 import { APIURL } from "./utils/config";
 import { useToast } from "./toaster";
 import ToastProvider from "./toaster";
+import { fetchDataGET } from "./utils/tools";
 import "./role_giver.css"
 function RoleChanger(){
     const [searchedUser , setSearchedUser] = useState('')
@@ -17,6 +18,8 @@ function RoleChanger(){
     const [loading, setLoading] = useState(true);
     const [idchose , setIdchose] = useState("")
     const [users , setUsers] = useState([])
+    const [page , setPage] = useState(1)
+    const [pagiPrev , setPagiPrev] = useState(false)
     const location = useLocation();
     const { addToast } = useToast()
     const userPhone = location.state?.phone;
@@ -38,13 +41,25 @@ function RoleChanger(){
 //     level:Roles[1],
 //     admin:false
 // }]
+
+
+const showMore = () => {
+  setPage(p => p + 1)
+}
+
+const showPrev = () => {
+  if(pagiPrev){
+    setPage(p => p - 1)
+  }
+}
+
 // users fetching
 useEffect(() => {
   const fetchRoles = async () => {
     try {
       // ✅ Get token from localStorage (or context)
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://${APIURL}/admin/user`, {
+      const response = await fetch(`http://${APIURL}/admin/user?page=${page}&pageSize=20`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -57,7 +72,9 @@ useEffect(() => {
       }
 
       const json = await response.json();
+      console.log("basic data temp : " , json.data)
       setUsers(json.data.data);
+      setPagiPrev(json.data.pagination.hasPrevPage)
       setIdchose(0)
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -67,7 +84,7 @@ useEffect(() => {
   };
 
   fetchRoles();
-}, []); // run once on mount
+}, [page]); // run once on mount
 
 // getting the roles present now
 useEffect(() => {
@@ -167,7 +184,7 @@ useEffect(() => {
 const updateUserRole = async (role) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://${APIURL}/admin/users/${parseInt(idchose)}/roles`, {
+      const res = await fetch(`http://${APIURL}/admin/user/${parseInt(idchose)}/role`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -224,6 +241,10 @@ const role_holder = (e) =>{
                   <PersonCard person={p} key={index} index={index} idP={p.id} clicker={setIdchose} opener={setOpenModal} role={userRoles[p.id]}></PersonCard> 
               )}
             </div>
+            <div className="btn_holder_next_prev">
+            <button className="btn_submit space-UD" onClick={showMore}>صفحه ی بعدی</button>
+            <button className="btn_submit space-UD" onClick={showPrev}>صفحه ی قبلی</button>
+            </div>
         </div>
         {openModal && (
         <div className="role_modal">
@@ -245,7 +266,7 @@ const role_holder = (e) =>{
         </div>
         )}
 
-
+              {/* <div style={{fontSize:"10rem"}}>fuck U</div> */}
         </>
 
     )

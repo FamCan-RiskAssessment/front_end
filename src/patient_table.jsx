@@ -8,6 +8,9 @@ import { useLocation } from "react-router-dom";
 import { useToast } from "./toaster";
 import ToastProvider from "./toaster";
 import { isNumber } from "./utils/tools";
+import Loader from "./utils/loader";
+
+
 export default function FilterableTable() {
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState("All");
@@ -16,18 +19,22 @@ export default function FilterableTable() {
   const [editedData, setEditedData] = useState({});
   const [filteredData2, setFilteredData2] = useState([]);
   const [editedId , setEditedId] = useState(0)
-  const [page , setPage]=  useState(2)
+  const [page , setPage]=  useState(1)
+  const [pagiPrev , setPagiPrev] = useState(false)
+  const [pagiNext , setPagiNext] = useState(false)
   const { addToast } = useToast()
   const location = useLocation();
   const userPhone = location.state?.phone;
   // debugs 
-  // console.log("here it comes : " , data)
+  console.log("here it comes : " , data)
   // console.log("maybe the answer : " , editedData)
 
   useEffect(() => {
     const fetchformIds = async () => {
     let token = localStorage.getItem("token")
-    let pre_forms = await fetchDataGET("admin/form" , token)
+    let pre_forms = await fetchDataGET(`admin/form?page=${page}&pageSize=20` , token)
+    setPagiNext(pre_forms.data.pagination.hasNextPage)
+    setPagiPrev(pre_forms.data.pagination.hasPrevPage)
     if (pre_forms.status === 200) {
       // Create a new array to hold the updated forms
       const updatedForms = [];
@@ -56,43 +63,20 @@ export default function FilterableTable() {
   };
 
   fetchformIds();   
-  }, []);
+  }, [page]);
 
   // show me more 
-  const showMore = async () => {
-    setPage(p => p + 1)
-    let token = localStorage.getItem("token")
-    let pre_forms = await fetchDataGET(`admin/form?page=${page}&pageSize=10` , token)
-    if (pre_forms.status === 200) {
-      // Create a new array to hold the updated forms
-      const updatedForms = [];
-      
-      // Process each form sequentially (or use Promise.all for parallel)
-      for (const pf of pre_forms.data.data) {
-        let updatedForm = { ...pf }; // Start with a copy of the original form
-        
-        // Process each API endpoint
-        for (const ar of APIARR) {
-          try {
-            let user_part_form = await fetchDataGET(`form/${pf.id}/${ar}`, token);
-            setLoading(true)
-            if(user_part_form.ok){
-              setLoading(false) 
-            }
-            updatedForm = { ...updatedForm, ...user_part_form.data };
-          } catch (error) {
-            console.error(`Error fetching form ${pf.id} for ${ar}:`, error);
-          }
-        }
-        
-        updatedForms.push(updatedForm);
-      }
-      
-      // Update state with the fully updated array
-      setData(updatedForms);
-      setLoading(false);
+const showMore = () => {
+    if(pagiNext){
+        setPage(p => p + 1)
     }
-  }
+}
+
+const showPrev = () => {
+    if(pagiPrev){
+        setPage(p => p - 1)
+    }
+}
   
   // Filter by 'status'
   useEffect(() => {
@@ -204,7 +188,7 @@ export default function FilterableTable() {
   };
 
   if (loading) {
-    return <div className="loading">در حال بارگذاری...</div>;
+    return <Loader></Loader>;
   }
   
 
@@ -284,8 +268,10 @@ export default function FilterableTable() {
             </tbody>
           </table>
         </div>
-        <button className="btn_submit space-UD" onClick={showMore}>صفحه ی بعدی</button>
-
+        <div className="btn_holder_next_prev">
+            <button className="btn_submit space-UD" onClick={showMore}>صفحه ی بعدی</button>
+            <button className="btn_submit space-UD" onClick={showPrev}>صفحه ی قبلی</button>
+          </div>
       </div>
     </>
   );

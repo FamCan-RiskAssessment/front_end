@@ -3,7 +3,7 @@
 }
 .total_patients_holder{
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
     align-content: flex-start;
     flex-direction: column;

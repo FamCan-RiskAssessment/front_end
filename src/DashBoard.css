@@ -144,8 +144,8 @@
         align-content: unset;
         flex-wrap: nowrap;
     }
-    .tool_card{
-        width: unset;
+    .tool_card_holder{
+      width: unset;
     }
     .nav-item:nth-child(2) , .nav-item:nth-child(3) {
         display: none;
