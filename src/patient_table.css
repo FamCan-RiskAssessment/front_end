@@ -54,3 +54,16 @@ width: 100%
     margin-bottom: 2rem;
     margin-top: 1rem;
 }
+
+.model_in_btn{
+    align-self: center;
+    background-color: #7a4ca0;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.model_in_btn:hover {
+background-color: #9a5cc0;
+transform: scale(1.05);
+box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}

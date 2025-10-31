@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import RoleChanger from "./role_giver";
 import NavBar from "./navBar";
 import "./DashBoard.css"
+import formT from "./assets/from_transfer.svg"
 import { useLocation ,  useNavigate } from "react-router-dom";
 import {permExtractor , fetchDataGET}from "./utils/tools"
 
@@ -10,6 +11,7 @@ function DashBoard(){
     const [perms , setPerms] = useState([])
     const permissions = location.state?.permissions;
     const [userPhone , setUserPhone] = useState("")
+    let role = JSON.parse(localStorage.getItem("roles"))
     useEffect(() => {
         let checkPerms = JSON.parse(localStorage.getItem("permissions"))
         if(checkPerms.length <= 1){
@@ -62,6 +64,9 @@ function DashBoard(){
     const tool_chooser6 = () =>{
         navigate("/DashBoard/supervisorForms" , { state: { phone: userPhone } })
     }
+    const tool_chooser7 = () =>{
+        navigate("/DashBoard/systemLog" , { state: { phone: userPhone } })
+    }
 
 
     return(
@@ -107,7 +112,7 @@ function DashBoard(){
                 )}
                 <div className="tool_card_holder">
                 <div className="tool_card" onClick={tool_chooser4}>
-                <div className="tool_image around_image patients"></div>
+                <div className="tool_image around_image manager"></div>
                 <div className="tool_name">
                     <span>مدیریت کاربران</span>
                 </div>
@@ -116,19 +121,30 @@ function DashBoard(){
                 {(permExtractor(perms,  "دسترسی کامل") || permExtractor(perms , "تنظیم پسورد")) && (
                     <div className="tool_card_holder">
                 <div className="tool_card" onClick={tool_chooser5}>
-                <div className="tool_image around_image patients"></div>
+                <div className="tool_image around_image changePass"></div>
                 <div className="tool_name">
                     <span>تغییر رمز</span>
                 </div>
                 </div>
                 </div>
                 )}
-                {(permExtractor(perms,  "دسترسی کامل") || permExtractor(perms , "تنظیم پسورد")) && (
+                {(permExtractor(perms,  "دسترسی کامل") || role[0].name == "مدیر") && (
                     <div className="tool_card_holder">
                 <div className="tool_card" onClick={tool_chooser6}>
-                <div className="tool_image around_image patients"></div>
+                <div className="tool_image around_image formtrans"></div>
                 <div className="tool_name">
                     <span>ارجاع فرم</span>
+                </div>
+                </div>
+                </div>
+                )}
+
+                {(permExtractor(perms,  "دسترسی کامل") || role[0].name == "مدیر" ) && (
+                    <div className="tool_card_holder">
+                <div className="tool_card" onClick={tool_chooser7}>
+                <div className="tool_image around_image formtrans"></div>
+                <div className="tool_name">
+                    <span>گزارش سیستم</span>
                 </div>
                 </div>
                 </div>

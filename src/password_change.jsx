@@ -50,7 +50,7 @@ function ChangePass(){
       <NavBar account={userPhone} />
             <div className="passesholder">
                 <div className="title-holder">
-                    <h1>تغییر نقش</h1>
+                    <h1>تغییر رمز</h1>
                 </div>
                 <div className="inputsholder">
                 <input type="password" placeholder="رمز عبور جدید" className="search_bar_input" value={innerUserPassword} onChange={(e) => setInnerUserPassword(e.target.value)}/>

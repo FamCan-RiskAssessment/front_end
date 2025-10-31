@@ -13,6 +13,7 @@ import AdminLogin_page from './admins_login'
 import ChangePass from './password_change'
 import ErrorShower from './Error_page'
 import SupervisorPage from './supervisor_page'
+import SystemLogs from './SysLogs'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 function App() {
 
@@ -34,7 +35,7 @@ function App() {
         <Route path="/DashBoard/passChange" element={<ChangePass></ChangePass>}></Route>
         <Route path='/DashBoard/usersTree' element={<RoleHierarchyTree></RoleHierarchyTree>}></Route>
         <Route path='/DashBoard/supervisorForms' element={<SupervisorPage></SupervisorPage>}></Route>
-
+        <Route path='/DashBoard/systemLog' element={<SystemLogs></SystemLogs>}></Route>
         <Route path='*' element={<ErrorShower errorType={404}></ErrorShower>}></Route>
       </Routes>
     </Router>

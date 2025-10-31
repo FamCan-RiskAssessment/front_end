@@ -95,7 +95,18 @@
   .tool_image.patients {
     background-image: url("./assets/patients.svg");
   }
+  .tool_image.formtrans {
+    background-image: url("./assets/formT2.svg");
+  }
+
+  .tool_image.changePass  {
+    background-image: url("./assets/changePass.svg");
+  }
   
+  .tool_image.manager  {
+    background-image: url("./assets/manager.svg");
+  }
+
   /* Card titles */
   .tool_name {
     width: 100%;

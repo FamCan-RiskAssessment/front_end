@@ -2,37 +2,85 @@ import { useState, useEffect } from "react";
 import NavBar from "./navBar";
 import "./patient_table.css";
 import { APIARR , APIURL } from "./utils/config";
-import { fetchDataGET , key_stage_matcher , stageMatcher} from "./utils/tools";
+import { fetchDataGET , fetchDataPOST , key_stage_matcher , stageMatcher} from "./utils/tools";
 import PERSIAN_HEADERS from "./assets/table_header.json"
 import { useLocation } from "react-router-dom";
 import { useToast } from "./toaster";
 import ToastProvider from "./toaster";
 import { isNumber } from "./utils/tools";
 import Loader from "./utils/loader";
-
-
+// admin/form?status=1
+// 1:در حال بررسی  
+// 2 : قبول شده
+// 3 : رد شده
+// 4:ؤ تکمیل نشده
+// 5: ارسال شده
 export default function FilterableTable() {
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState("All");
   const [editingCell, setEditingCell] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [innerloading , setInnerloading] = useState(true)
   const [editedData, setEditedData] = useState({});
   const [filteredData2, setFilteredData2] = useState([]);
   const [editedId , setEditedId] = useState(0)
   const [page , setPage]=  useState(1)
   const [pagiPrev , setPagiPrev] = useState(false)
   const [pagiNext , setPagiNext] = useState(false)
+  const [selectedFormId , setSelectedFormId] = useState(0)
+  const [openModal , setOpenModal] = useState(false)
+  const [risks , setRisks] = useState({})
+  const [openModalRisks , setOpenModalRisks] = useState(false)
+  const [modelList , setModelList] = useState([])
   const { addToast } = useToast()
   const location = useLocation();
   const userPhone = location.state?.phone;
   // debugs 
   console.log("here it comes : " , data)
   // console.log("maybe the answer : " , editedData)
+  const statuses = ["در حال بررسی" , "قبول شده" , "رد شده" , "تکمیل نشده" , "ارسال شده"]
+
+  useEffect(() => {
+    let token = localStorage.getItem("token")
+    const fetchModels = async () =>{
+      let res = await fetchDataGET("admin/calc/all-models" , token)
+      setModelList(res.data)
+      // console.log("this is the res for the models : " , res.data)
+    }
+    fetchModels()
+  } ,[])
 
   useEffect(() => {
     const fetchformIds = async () => {
+    let pre_forms = null
     let token = localStorage.getItem("token")
-    let pre_forms = await fetchDataGET(`admin/form?page=${page}&pageSize=20` , token)
+    let role = JSON.parse(localStorage.getItem("roles"))
+    console.log("check the name : " , role[0])
+    if(filter == "All" && role[0].name == "اپراتور" ){
+    pre_forms = await fetchDataGET(`admin/operator-form?page=${page}&pageSize=10` , token)
+    }else if(filter == "All" && role[0].name != "اپراتور"){
+      let stid = 0
+      statuses.forEach((s , i) => {
+        if(s == filter){
+          stid = i + 1
+        }
+      });
+      console.log("used Operator1")
+      pre_forms = await fetchDataGET(`admin/form?page=${page}&pageSize=10` , token)
+    }else if(filter != "All" && role[0].name != "اپراتور"){
+      pre_forms = await fetchDataGET(`admin/form?page=${page}&pageSize=10&status=${stid}` , token)
+    }else{
+      let stid = 0
+      statuses.forEach((s , i) => {
+        if(s == filter){
+          stid = i + 1
+        }
+      });
+      // console.log("here is the id : " ,  stid)
+      console.log("used Operator2")
+      pre_forms = await fetchDataGET(`admin/operator-form?page=${page}&pageSize=10&status=${stid}` , token)
+    }
+    console.log("here is the filter : " , pre_forms)
     setPagiNext(pre_forms.data.pagination.hasNextPage)
     setPagiPrev(pre_forms.data.pagination.hasPrevPage)
     if (pre_forms.status === 200) {
@@ -63,7 +111,7 @@ export default function FilterableTable() {
   };
 
   fetchformIds();   
-  }, [page]);
+  }, [page , filter]);
 
   // show me more 
 const showMore = () => {
@@ -80,17 +128,17 @@ const showPrev = () => {
   
   // Filter by 'status'
   useEffect(() => {
-    if (data.length === 0) {
-      setFilteredData2([]);
-      return;
-    }
+    // if (data.length === 0) {
+    //   setFilteredData2([]);
+    //   return;
+    // }
 
-    if (filter === "All") {
-      setFilteredData2(data);
-    } else {
-      setFilteredData2(data.filter(item => item.status === filter));
-    }
-  }, [filter, data]);
+    // if (filter === "All") {
+    //   setFilteredData2(data);
+    // } else {
+    //   setFilteredData2(data.filter(item => item.status === filter));
+    // }
+  }, [data]);
 
   const statusOptions = [...new Set(data.map(item => item.status).filter(Boolean))];
 
@@ -191,6 +239,56 @@ const showPrev = () => {
     return <Loader></Loader>;
   }
   
+  const saveTheIdAndOpetions = (form_id) => {
+    setOpenModal(true)
+    setSelectedFormId(form_id)
+  }
+
+  const sendToCalcModel = async (model_id) => {
+    let token = localStorage.getItem("token")
+    let bodyData = {
+      "calcID":model_id,
+      "formID":selectedFormId
+    }
+    let res = await fetchDataPOST("admin/calc/model" , token , bodyData)
+    setSelectedFormId(0)
+    setOpenModal(false)
+    console.log("this is the input and model output : " , res)
+  }
+
+
+  // useEffect(() => {
+
+  // })
+  const showTheRisks = async (model_name , form_id) => {
+    try {
+      const token = localStorage.getItem("token");
+      setInnerloading(true)
+      const res = await fetchDataGET(`admin/calc/${model_name}/${form_id}`, token);
+      if(res.status == 200){
+        setInnerloading(false)
+      }
+      if (model_name === "premm5") {
+        const the_probs = res.data; // assuming res.data has gene_probs and p_any
+        const { gene_probs, p_any } = the_probs;
+  
+        // Merge gene_probs and p_any into a single flat object
+        const combinedRisks = {
+          ...gene_probs,
+          total: p_any
+        };
+  
+        setRisks(combinedRisks); // ✅ Now risks contains all keys
+        // console.log("Combined risks:", combinedRisks);
+      }else if(model_name == "bcra"){
+        // console.log("this is the bcra pro : " , res)
+        setRisks(res.data)
+      }
+    } catch (error) {
+      console.error("Failed to fetch risks:", error);
+    }
+  }
+  // fetchFormRisk(1)
 
   return (
     <>
@@ -205,7 +303,7 @@ const showPrev = () => {
               onChange={(e) => setFilter(e.target.value)}
             >
               <option value="All">همه</option>
-              {statusOptions.map(status => (
+              {statuses.map(status => (
                 <option key={status} value={status}>
                   {status}
                 </option>
@@ -228,34 +326,56 @@ const showPrev = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredData2.length > 0 ? (
-                filteredData2.map(row => (
+              {data.length > 0 ? (
+                data.map(row => (
                   <tr key={row.id || row.user_id || Math.random()}>
-                    {PERSIAN_HEADERS.map(({ key }) => (
-                      <td
-                        className="cell_choose"
-                        key={key}
-                        onDoubleClick={() => handleDoubleClick(row.id, key, row[key])}
-                      >
-                        {editingCell?.rowId === row.id && editingCell?.field === key ? (
-                          <div className="excel_input_holder">
-                            <input
-                              type="text"
-                              value={
-                                editedData[row.id]?.[key] !== undefined
-                                  ? editedData[row.id][key]
-                                  : row[key] ?? ""
-                              }
-                              onChange={(e) => handleChange(e, row.id, key)}
-                              className="w-full border rounded p-1"
-                              autoFocus
-                            />
-                          </div>
-                        ) : (
-                          row[key] != null ? String(row[key]) : ""
-                        )}
-                      </td>
-                    ))}
+                    {PERSIAN_HEADERS.map(({ key }) => {
+                      if(key == "modelEnterence"){
+                        return(
+                          <td className="cell_choose" key={key}>
+                            <button className="model_in_btn" onClick={() => saveTheIdAndOpetions(row.id)}>ورود به مدل</button>
+                          </td>
+                        )
+                      }else if(key == "gbr" || key == "bcra" || key == "premm5"){
+                        return(
+                          <td
+                          className="cell_choose"
+                          key={key}
+                        >
+                          <button className="model_in_btn" onClick={() => {
+                            showTheRisks(key , row.id)
+                            setOpenModalRisks(true)
+                            }}>نمایش نتایج</button>
+                        </td>
+                        )
+                      }else{
+                        return(
+                          <td
+                          className="cell_choose"
+                          key={key}
+                          onDoubleClick={() => handleDoubleClick(row.id, key, row[key])}
+                        >
+                          {editingCell?.rowId === row.id && editingCell?.field === key ? (
+                            <div className="excel_input_holder">
+                              <input
+                                type="text"
+                                value={
+                                  editedData[row.id]?.[key] !== undefined
+                                    ? editedData[row.id][key]
+                                    : row[key] ?? ""
+                                }
+                                onChange={(e) => handleChange(e, row.id, key)}
+                                className="w-full border rounded p-1"
+                                autoFocus
+                              />
+                            </div>
+                          ) : (
+                            row[key] != null ? String(row[key]) : ""
+                          )}
+                        </td>
+                        )
+                      }
+                    })}
                   </tr>
                 ))
               ) : (
@@ -273,6 +393,57 @@ const showPrev = () => {
             <button className="btn_submit space-UD" onClick={showPrev}>صفحه ی قبلی</button>
           </div>
       </div>
+      {openModal && (
+        <div className="role_modal">
+            <div className="modal_header">
+            <h3>مدل ها</h3>
+            <div className="modal_close" onClick={() => {
+              setOpenModal(false)
+              setSelectedFormId(0)
+            }}>✕</div>
+            </div>
+            <div className="roles">
+            {modelList.map((m, index) => (
+                <div 
+                key={index} 
+                className="role" 
+                onClick={() => sendToCalcModel(m.id)} // pass role directly instead of e.target.value
+                >
+                {m.name}
+                </div>
+            ))}
+            </div>
+        </div>
+        )}
+
+      
+      {openModalRisks && (
+        <div className="role_modal">
+          {innerloading ? <Loader></Loader> : (
+            <>
+            <div className="modal_header">
+            <h3>احتمال ریسک ها</h3>
+            <div className="modal_close" onClick={() => {
+              setOpenModalRisks(false)
+              setRisks({})
+            }}>✕</div>
+            </div>
+            <div className="roles">
+            {Object.keys(risks).length == 0 ? "ریسک هنوز محاسبه نشده است!" : null}
+            {Object.keys(risks).map((rk, index) => (
+                <div 
+                key={index} 
+                className="role" 
+                >
+                نتیجه ی احتمال {rk} : {risks[rk]}
+                </div>
+            ))}
+            </div>
+            </>
+          )}
+
+        </div>
+        )}
     </>
   );
 }

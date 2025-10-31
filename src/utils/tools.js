@@ -100,6 +100,23 @@ export const fetchDataPUT = async (endpoint, token_auth, bodyData) => {
   };
 
 
+export const fetchDataPOST = async (endpoint, token_auth, bodyData) => {
+    // console.log(bodyData);
+    const res = await fetch(`http://${APIURL}/${endpoint}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token_auth}`,
+      },
+      body: JSON.stringify(bodyData),
+    });
+  
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "POST request failed");
+    console.log("this is the data in the tools: ", data);
+    return data;
+  };
+
 
 // const showMore = async (setPage) => {
 //     setPage(p => p + 1)

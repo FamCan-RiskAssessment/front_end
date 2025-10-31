@@ -25,6 +25,7 @@ function SupervisorPage(){
     useEffect(() => {
         let token = localStorage.getItem("token")
         const get_forms = async () =>{
+            
             let data = await fetchDataGET(`admin/form?page=${page}&pageSize=10` , token)
             console.log("this is the data : " , data)
             setPagiNext(data.data.pagination.hasNextPage)

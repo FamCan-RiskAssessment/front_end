@@ -1,4 +1,8 @@
 [
+    {"key":"gbr" , "label":"نتیجه ی مدل gbr"},
+    {"key":"bcra" , "label":"نتیجه ی مدل bcra"},
+    {"key":"premm5" , "label":"نتیجه ی مدل premm5"},
+    {"key":"modelEnterence" , "label":"ورودی به مدل"},
     { "key": "id", "label": "شناسه" },
     { "key": "status", "label": "وضعیت" },
     { "key": "user_id", "label": "شناسه کاربر" },

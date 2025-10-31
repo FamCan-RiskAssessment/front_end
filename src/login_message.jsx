@@ -41,6 +41,7 @@ function LoginMessage(){
           localStorage.setItem("token", data.data.access_token);
           localStorage.setItem("number" , phone)
           localStorage.setItem("permissions" , JSON.stringify(data.data.permissions))
+          localStorage.setItem("roles", JSON.stringify(data.data.roles))
           if(phone != adminNumber){
             addToast({
               title: 'با موفقیت وارد شدید',
