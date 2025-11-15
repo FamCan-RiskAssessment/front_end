@@ -1,0 +1,100 @@
+/* Background */
+/* body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background: linear-gradient(135deg, #f8f5ff, #e5d4f9);
+} */
+
+/* Center container */
+.otp-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #f8f5ff, #e5d4f9);
+}
+
+/* Card */
+.otp-card {
+    background: white;
+    /* width: 350px; */
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    color: #4b006e;
+}
+
+/* Texts */
+.otp-card h2 {
+    margin: 0 0 10px 0;
+    font-size: 22px;
+}
+
+.otp-msg {
+    margin-bottom: 25px;
+    font-size: 15px;
+}
+
+/* Inputs */
+.otp-inputs {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    gap: 1rem;
+}
+
+.otp-inputs input {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 2px solid #c7a0e6;
+    font-size: 22px;
+    text-align: center;
+    color: #4b006e;
+    outline: none;
+    transition: 0.2s;
+}
+
+.otp-inputs input:focus {
+    border-color: #4b006e;
+}
+
+/* Button */
+.otp-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    background: #4b006e;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.otp-btn:hover {
+    background: #3a0056;
+}
+
+/* Resend link */
+.resend {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.resend a {
+    color: #4b006e;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.resend a:hover {
+    text-decoration: underline;
+}
+
+.opr-user-mobile {
+    width: auto !important;
+}

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function Radio({data_req , data , class_change1 , class_change2 , valueSetter , relation}){
+function Radio({data_req , data , class_change1 , class_change2 , valueSetter , relation , Enum}){
     // const [Itext , setIText] = useState('')
     // const [inpError , setInpError] = useState('')
 
@@ -40,7 +40,7 @@ function Radio({data_req , data , class_change1 , class_change2 , valueSetter , 
                 <input data_req={data_req} type="radio" className="radio" name={data.Rname} value="null" id={opt} onChange={(e) => valueSetter(e.target.id)} />
                 )}
                 {(opt == "مرد" || opt == "زن") && (
-                <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
+                <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} data-enum={Enum} />
                 )}
                 {(opt == "سابقاً مصرف می کرده ام اما کمتر از ۱۵ سال است که ترک کرده ام" || opt == "سابقاً مصرف می کردم اما بیش از ۱۵ سال است که ترک کرده ام") && (
                 <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
@@ -52,7 +52,7 @@ function Radio({data_req , data , class_change1 , class_change2 , valueSetter , 
                     <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
                 )}
                 {data.options.length >= 4 && (
-                <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
+                <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} data-enum={Enum} />
                 )}
             </div>
             )}

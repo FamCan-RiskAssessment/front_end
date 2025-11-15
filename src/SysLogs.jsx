@@ -11,6 +11,14 @@ function SystemLogs() {
   const [loading, setLoading] = useState(true);
   console.log(logs)
   useEffect(() => {
+    let token = localStorage.getItem("token");
+    const fetchEnumTest = async () => {
+      let res = await fetchDataGET("admin/log/types" , token)
+      console.log(res)
+    }
+    fetchEnumTest()
+  } , [])
+  useEffect(() => {
     const fetchLogs = async () => {
       try {
         const token = localStorage.getItem("token");

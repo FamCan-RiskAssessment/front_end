@@ -1,5 +1,4 @@
-
-.question_container{
+.question_container {
     height: 100vh;
     /* background:url('./assets/logan-gutierrez-Rl9bIWKCVF0-unsplash.jpg');
     background-position: center;
@@ -16,7 +15,7 @@
     gap: 1rem;
 }
 
-.question_form_container{
+.question_form_container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -25,7 +24,7 @@
     /* -webkit-backdrop-filter: blur(20px); for Safari */
     border-radius: 16px;
     padding: 2rem 3rem;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2) , -5px -5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2), -5px -5px 10px rgba(0, 0, 0, 0.2);
     background-color: white;
     border: 1px solid rgba(255, 255, 255, 0.2);
     width: 80%;
@@ -34,35 +33,39 @@
     /* padding-left: 1rem; */
 }
 
-.question_form_container::-webkit-scrollbar{
+.question_form_container::-webkit-scrollbar {
     width: 10px;
 }
 
 .question_form_container::-webkit-scrollbar-button {
-    visibility: hidden; /* This removes the arrows at the top and bottom */
+    visibility: hidden;
+    /* This removes the arrows at the top and bottom */
 
 }
 
 .question_form_container::-webkit-scrollbar-track {
     background: transparent;
-    border-radius: 10px; /* Rounded corners for the track */
-    margin-left: 20px; /* Creates a gap between the left edge of container and the scrollbar */
+    border-radius: 10px;
+    /* Rounded corners for the track */
+    margin-left: 20px;
+    /* Creates a gap between the left edge of container and the scrollbar */
     /* padding: 1rem 0rem; */
 
 }
+
 .question_form_container::-webkit-scrollbar-thumb {
     background: #47002d;
     border-radius: 10px;
-  }
+}
 
 
 
-.question_title{
+.question_title {
     color: #8f005a;
     font-size: 1.9rem;
 }
 
-.question_form{
+.question_form {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -70,7 +73,7 @@
     width: 90%;
 }
 
-.form_element{
+.form_element {
 
     display: flex;
     flex-direction: row;
@@ -80,30 +83,33 @@
     padding: 1rem;
     border-radius: 20px;
 }
-.P1{
+
+.P1 {
     background-color: #eee;
-    border-radius: 20px;   
-}
-.P1 .form_element{
-    width:calc(25% - 3rem); 
+    border-radius: 20px;
 }
 
-.P2{
+.P1 .form_element {
+    width: calc(25% - 3rem);
+}
+
+.P2 {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     width: 100%;
 }
 
-.P2_inner{
+.P2_inner {
     justify-content: unset !important;
 }
 
-.btn_holder_next_prev{
+.btn_holder_next_prev {
     display: flex;
-    gap: 1rem ;
+    gap: 1rem;
 }
-.btn_question{
+
+.btn_question {
     background: #47002d;
     /* backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px); */
@@ -128,7 +134,7 @@
 
 
 /* input */
-.inp_question{
+.inp_question {
     width: 100%;
     padding: 0.5rem 1rem;
     outline: none;
@@ -139,12 +145,14 @@
     transition: all 0.3s ease;
     margin-top: 0.5rem;
 }
-.error_inp{
+
+.error_inp {
     color: red;
     animation: fader_rev 0.3s ease forwards;
-    
+
 }
-.input_box_holder{
+
+.input_box_holder {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -152,21 +160,23 @@
 }
 
 @keyframes fader_rev {
-    from{
+    from {
         opacity: 0;
     }
-    to{
+
+    to {
         opacity: 1;
     }
 }
+
 /* check boxes */
 
-.check_box_question{
+.check_box_question {
     font-size: 1.7rem;
     font-weight: bold;
 }
 
-.check_box_holder{
+.check_box_holder {
     display: flex;
     flex-direction: row;
     gap: 1rem;
@@ -174,22 +184,23 @@
     align-items: flex-start;
 }
 
-.total_check_holder{
+.total_check_holder {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
-    gap: 1rem ;
+    gap: 1rem;
     width: 100%;
 }
-.check_box{
+
+.check_box {
     width: 20px;
     height: 20px;
 }
 
 /* radios */
 
-.radio_question{
+.radio_question {
     display: flex;
     flex-direction: row;
     gap: 1rem;
@@ -197,25 +208,25 @@
     align-items: flex-start;
 }
 
-.total_radio_holder{
+.total_radio_holder {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
-    gap: 1rem ;
+    gap: 1rem;
     width: 100%;
     /* transition: all 0.3s ease-in-out; */
 }
 
 
-.radio{
+.radio {
     width: 20px;
     height: 20px;
     transition: all 0.5s ease-in-out;
 }
 
 /* options */
-.option_holder{
+.option_holder {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -223,7 +234,7 @@
     gap: 1rem;
 }
 
-.select_options{
+.select_options {
     width: 100%;
     height: 2.5rem;
     font-family: 'vazir';
@@ -233,7 +244,7 @@
 
 /* file uploader */
 
-.color_changer{
+.color_changer {
     background-color: #dfb1ce !important;
 }
 
@@ -241,7 +252,7 @@
 
 /* cancer Element */
 
-.cancer_element{
+.cancer_element {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -250,20 +261,24 @@
     padding: 1rem;
     border-radius: 20px;
 }
-.total_cancer_holder .form_element{
+
+.total_cancer_holder .form_element {
     background-color: transparent;
 }
-.total_cancer_holder{
+
+.total_cancer_holder {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
-.tah_holder{
+
+.tah_holder {
     display: flex;
     align-items: flex-end;
     gap: 1rem;
 }
-.file_uploader{
+
+.file_uploader {
     background-color: transparent;
     color: black;
     padding: 1rem;
@@ -271,30 +286,36 @@
     border-radius: 20px;
 }
 
-.file_uploader > button{
+.file_uploader>button {
     padding: 1rem;
 }
-.total_file_uploader{
+
+.total_file_uploader {
     display: flex;
     flex-direction: column;
 
 }
-.jadval_and_form{
+
+.jadval_and_form {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;  
+    justify-content: space-between;
     width: 100%;
 }
-.sar_jadval tr th{
+
+.sar_jadval tr th {
     width: 50rem;
 }
-.sar_jadval > tr{
+
+.sar_jadval>tr {
     background-color: #eee;
 }
-td{
+
+td {
     text-align: center;
 }
-td img{
+
+td img {
     width: 5rem;
     height: 5rem;
 }
@@ -302,15 +323,17 @@ td img{
 
 /* Personal element */
 
-.grider{
+.grider {
     width: calc(33.33% - 1rem);
 }
-.personal_element{
+
+.personal_element {
     display: flex;
     flex-wrap: wrap;
     background-color: #eee;
     border-radius: 20px;
 }
-.personal_element .form_element{
+
+.personal_element .form_element {
     background-color: transparent;
 }

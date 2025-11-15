@@ -1,38 +1,39 @@
 import { useState } from "react";
 
-function InputBox({data_req , data , valueSetter , class_change1 , class_change2}){
+function InputBox({ data_req, data, valueSetter, class_change1, class_change2, colRef }) {
     // const [Itext , setIText] = useState('')
-    const [inpError , setInpError] = useState('')
-    const [empErr , setEmpErr] = useState(false)
+    const [inpError, setInpError] = useState('')
+    const [empErr, setEmpErr] = useState(false)
     const validator = (val) => {
-        if (data.type == "number" && Number.isFinite(Number(val))){
+        if (data.type == "number" && Number.isFinite(Number(val))) {
             valueSetter(val)
             setInpError("")
-        }else if(data.type == "text" && !Number.isFinite(Number(val))){
+        } else if (data.type == "text" && !Number.isFinite(Number(val))) {
             valueSetter(val)
             setInpError("")
-        }else{
+        } else {
             setInpError('!لطفا فرم را به درستی پر کنید')
         }
     }
     // if(req[2] && Itext.length == 0 && req[1]){
     //     setEmpErr(true)
     // }
-    return(
+    return (
         <>
-        <div className={`form_element ${class_change1}`}>
-        <div className="input_box_holder">
-            {inpError.length != 0 && (
-                <span className={inpError.length != 0 ? "error_inp faderR" : null}>{inpError}</span>
-            )}
-            
-            <label htmlFor={data.inpName}>{data.inpName}</label>
-            <input data_req={data_req} type="text" className={`inp_question ${class_change2}`} placeholder={data.placeHolder} onChange={(e) => validator(e.target.value)}
-             name={data.engName} id={data.inpName} 
-             style={inpError.length != 0 ? {"border":"1px solid red"} : null}
-             />
-        </div>
-        </div>
+            <div className={`form_element ${class_change1}`}>
+                <div className="input_box_holder">
+                    {inpError.length != 0 && (
+                        <span className={inpError.length != 0 ? "error_inp faderR" : null}>{inpError}</span>
+                    )}
+
+                    <label htmlFor={data.inpName}>{data.inpName}</label>
+                    <input data_req={data_req} type="text" className={`inp_question ${class_change2}`} placeholder={data.placeHolder} onChange={valueSetter == undefined ? null : (e) => validator(e.target.value)}
+                        name={data.engName} id={data.inpName}
+                        style={inpError.length != 0 ? { "border": "1px solid red" } : null}
+                        ref={colRef == undefined ? null : colRef}
+                    />
+                </div>
+            </div>
         </>
     )
 }
