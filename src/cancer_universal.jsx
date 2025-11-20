@@ -33,7 +33,7 @@ function CancerField({
 
     // =============== REFS ===============
     const typeRef = useRef(null);
-
+    const canUniRef = useRef(null)
     // =============== EFFECTS ===============
     if (famrel == "مادر") {
         console.log("we have found what we wanted ! :  ", famrel, preData)
@@ -217,6 +217,15 @@ function CancerField({
             fileInput.value = "";
         }
 
+        // Reset all radio buttons within canUniRef
+        if (canUniRef.current) {
+            const radioButtons = canUniRef.current.querySelectorAll('input[type="radio"]');
+            console.log(radioButtons)
+            radioButtons.forEach(radio => {
+                radio.checked = false;
+            });
+        }
+
         // Clean up the preview URL but keep the imageDisplayUrl in the table item
         if (imagePreviewUrl) {
             URL.revokeObjectURL(imagePreviewUrl);
@@ -238,6 +247,7 @@ function CancerField({
         senderFunc,
         canArrFunc,
         canArr,
+        canUniRef,
     ]);
 
     const handleDeleteRow = useCallback((index, id) => {
@@ -268,7 +278,7 @@ function CancerField({
 
             <div className="jadval_and_form">
                 {/* Form */}
-                <div className="total_cancer_holder">
+                <div className="total_cancer_holder" ref={canUniRef}>
                     {data_Inp1 && (
                         <InputBox
                             data_req={"false"}
