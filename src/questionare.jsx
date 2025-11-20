@@ -19,7 +19,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { APIURL } from "./utils/config";
 import { useToast } from "./toaster";
 import ToastProvider from "./toaster";
-import { fetchDataGET, isNumber, formatAndValidateJalali, CancerAdder, fetchDataPOSTImg, persianMonths } from "./utils/tools";
+import { fetchDataGET, isNumber, formatAndValidateJalali, CancerAdder, fetchDataPOSTImg, persianMonths, fetchDataGETImg } from "./utils/tools";
 import "./form_elements.css"
 import "./responsive_questionare.css"
 // import { set } from "animejs";
@@ -52,7 +52,7 @@ function Questions() {
     const [isMamoTest, setIsMamoTest] = useState('')
     // step 4
     const [isCancer, setIsCancer] = useState('')
-    const [selfCancers, setSelfCancers] = useState([])
+    const [selfCancersPreData, setSelfCancersPreData] = useState(null)
     //step 5
     const [isChildCancer, setIsChildCncer] = useState('')
     const [isMotherCancer, setIsMotherCncer] = useState('')
@@ -60,6 +60,9 @@ function Questions() {
     const [isSibsCancer, setIsSibsCncer] = useState('')
     const [isUncAuntCancer, setIsUncAuntCncer] = useState('')
     const [isUncAunt2Cancer, setIsUncAunt2Cncer] = useState('')
+    const [isOtherCancer, setIsOtherCncer] = useState('')
+    const [familyCancersPreData, setFamilyCancersPreData] = useState(null)
+
 
     const [isGeneTest, setIsGeneTest] = useState('')
     const [isFamGeneTest, setIsFamGeneTest] = useState('')
@@ -86,6 +89,14 @@ function Questions() {
         7: useRef(null)
     };
 
+    const cancerTable = useRef(null)
+    const cancerMotherTable = useRef(null)
+    const cancerFatherTable = useRef(null)
+    // const cancerTable = useRef(null)
+    // const cancerMotherTable = useRef(null)
+    // const cancerMotherTable = useRef(null)
+    console.log(")))))))))))))))))))))))))))))))))))))))))))))))))))))) , : ", smokeType)
+
     console.log("*********************************************", createdFormId)
 
 
@@ -97,34 +108,66 @@ function Questions() {
     // const id_form = id_form_raw ? JSON.parse(id_form_raw) : null;
     console.log("this is the fetched preset form  : ", presetform)
     console.log("here is the form id from above : ", typeof id_form)
-    useEffect(() => {
-        let token = localStorage.getItem("token")
-        const fucking_func = async () => {
-            const res = await fetchDataGET(`enum/menopausal-statuses`, token);
-            console.log("form Refs : ", res)
-        }
-        // let sele = formRefs[1].current
-        fucking_func()
-    }, [])
+    console.log("there is a data that you neeeed : ", selfCancersPreData)
+    // useEffect(() => {
+    //     let token = localStorage.getItem("token")
+    //     const fucking_func = async () => {
+    //         const res = await fetchDataGET(`enum/genders`, token);
+    //         console.log("the fucking Enums : ", res)
+    //     }
+    //     // let sele = formRefs[1].current
+    //     fucking_func()
+    // }, [])
 
     useEffect(() => {
         let token = localStorage.getItem("token")
         const innerFunc = async () => {
-            const res = await fetchDataGET(`enum/relatives`, token);
+            const res = await fetchDataGET(`enum/form-statuses`, token);
             console.log("000000000000000000000000000000000000000000000000000000000000000: ", res)
         }
         innerFunc()
     }, [])
 
+    useEffect(() => {
+        if (presetform != null && id_form != null) {
+            setCreatedFormId(id_form)
+        }
+    })
 
 
 
-    console.log("33333333333333333333333333333333333333333333333333333333333333 : ", selfCancers)
+    // console.log("33333333333333333333333333333333333333333333333333333333333333 : ", selfCancers)
+
     useEffect(() => {
         if (presetform != null) {
+            // pre hide removers
             setIsAlchol(presetform["drinksAlcohol"])
             setIsSabzi(presetform["lastMonthSabzijatMeal"])
             setIsActivity(presetform["mediumActivityMonthInYear"])
+            setIsHardActivity(presetform["hardActivityMonthInYear"])
+            setIsSmoke(presetform["smokeAtLeast100"])
+            setIsSmokeAge(presetform["smokingAge"])
+            setIsSmokingNow(presetform["smokingNow"])
+            setIsChild(presetform["hasChildren"])
+            setIsAdat(presetform["menopausalStatus"])
+            setIsHRT(presetform["hrt"])
+            setIsHRT5(presetform["lastFiveYearsHrtUse"])
+            setIsOral(presetform["oral"])
+            setIsColon(presetform["laDeColon"])
+            setIsMamoTest(presetform["mamoGraphy"])
+            setIsCancer(presetform["cancer"])
+            setIsChildCncer(presetform["childCancer"])
+            setIsMotherCncer(presetform["motherCancer"])
+            setIsFatherCncer(presetform["fatherCancer"])
+            setIsSibsCncer(presetform["siblingCancer"])
+            setIsUncAuntCncer(presetform["ameAmoCancer"])
+            setIsUncAunt2Cncer(presetform["khaleDaeiCancer"])
+            setIsOtherCncer(presetform["otherRelative"])
+            setIsGeneTest(presetform["testGen"])
+            setIsFamGeneTest(presetform["fmTestGen"])
+            setSmokeType(presetform["smokingTypesCurrent"])
+            setSmokeTypePast(presetform["smokingTypesPast"])
+
             let formElems = []
             Object.keys(formRefs).forEach(fk => {
                 let formRaw = formRefs[fk].current.querySelectorAll("input , select")
@@ -134,47 +177,214 @@ function Questions() {
             })
             console.log("########################################", presetform)
             formElems.forEach(fE => {
+                if (fE.type == "file") {
+                    console.log(fE.name == "mamoGraphyPicture")
+                }
                 Object.keys(presetform).forEach(pfk => {
-                    if (fE.name == pfk && (fE.type == "text" || fE.type == "number" || fE.nodeName === 'SELECT')) {
-                        if (pfk == "birthDate") {
+                    if (fE.type == "text" || fE.type == "number" || fE.nodeName == "SELECT") {
+                        if (pfk == "birthDate" && (fE.name == "birthYear" || fE.name == "birthMonth" || fE.name == "birthDay")) {
+                            console.log("I am here in the presetform : ", pfk)
                             const [year, month, day] = presetform[pfk].split("T")[0].split("-");
                             const y = parseInt(year);
                             const m = parseInt(month);
                             const d = parseInt(day);
 
-                            const Mkey = Object.keys(persianMonths).find(k => obj[k] === m);
-                            formElems.forEach(elem => {
-                                if (elem.name === "birthYear") {
-                                    elem.value = y;
-                                }
-                                if (elem.name === "birthMonth") {
-                                    elem.value = Mkey;    // since it's a SELECT
-                                }
-                                if (elem.name === "birthDay") {
-                                    elem.value = d;
-                                }
-                            });
-
-                        } else {
+                            const Mkey = Object.keys(persianMonths).find(k => persianMonths[k] === m);
+                            // formElems.forEach(elem => {
+                            if (fE.name === "birthYear") {
+                                fE.value = y;
+                            }
+                            if (fE.name === "birthMonth") {
+                                fE.value = Mkey;    // since it's a SELECT
+                            }
+                            if (fE.name === "birthDay") {
+                                fE.value = d;
+                            }
+                            // });
+                        } else if (fE.name == pfk) {
                             fE.value = presetform[pfk]
                         }
                     } else if (fE.name == pfk && fE.type == "radio") {
                         if (fE.id == presetform[pfk]) {
                             fE.checked = true
+                        } else if (fE.getAttribute("data-enum")) {
+                            let token = localStorage.getItem("token")
+                            const enumFinder = async () => {
+                                const res = await fetchDataGET(`enum/${fE.getAttribute("data-enum")}`, token);
+                                res.data.forEach(en => {
+                                    if (en.id == presetform[pfk] && fE.id == en.name) {
+                                        fE.checked = true
+                                    }
+                                });
+                                // console.log("the fucking Enums : ", res)
+                            }
+                            enumFinder()
                         }
                         if (fE.id == "بله" && (presetform[pfk] == true || presetform[pfk] == "true")) {
                             fE.checked = true
                         } else if (fE.id == "خیر" && (presetform[pfk] == false || presetform[pfk] == "false")) {
                             fE.checked = true
                         }
+                    } else if (!(fE.name in presetform) && fE.id != "بله" && fE.id != "خیر") {
+                        fE.checked = true
+                    } else if (fE.name == pfk && fE.type == "file") {
+                        console.log("find that file uploader")
+                        // Handle file inputs - presetform value is a URL to an image
+                        if (presetform[pfk] && typeof presetform[pfk] === 'string') {
+                            // Add the image URL to a custom attribute so the FileUploader component can access it
+                            fE.setAttribute('data-file-url', presetform[pfk]);
+
+                            // Find the parent container of this file input and locate the image preview if it exists
+                            // const parentContainer = fE.closest('.total_file_uploader');
+                            // if (parentContainer) {
+                            //     // Look for an existing image preview area
+                            //     // let previewContainer = parentContainer.querySelector('.image-preview');
+                            //     // if (!previewContainer) {
+                            //     //     // Create a preview container if it doesn't exist
+                            //     //     previewContainer = document.createElement('div');
+                            //     //     previewContainer.className = 'image-preview';
+                            //     //     parentContainer.appendChild(previewContainer);
+                            //     // }
+
+                            //     // Create and set the image
+                            //     const img = document.createElement('img');
+                            //     img.src = presetform[pfk]; // The URL is the preset value
+                            //     img.alt = 'Preset Image';
+                            //     img.style.maxWidth = '200px';
+                            //     img.style.maxHeight = '200px';
+                            //     img.style.marginTop = '10px';
+                            //     img.style.border = '1px solid #ccc';
+                            //     img.style.borderRadius = '4px';
+
+                            //     // Clear any existing content and add the new image
+                            //     previewContainer.innerHTML = '';
+                            //     previewContainer.appendChild(img);
+                            // }
+                        }
                     }
                 })
             });
 
+            let token = localStorage.getItem("token")
+            const selfFunc = async () => {
+                const res = await fetchDataGETImg(`admin/form/${id_form}/cancer`, token);
+                setSelfCancersPreData(res)
+            }
+            selfFunc()
+            const familyFunc = async () => {
+                const res = await fetchDataGETImg(`admin/form/${id_form}/familycancer`, token);
+                setFamilyCancersPreData(res)
+            }
+            familyFunc()
         }
     }, [])
+
+    // New useEffect to handle family relatives cancer status
+    useEffect(() => {
+        const loadFamilyCancerData = async () => {
+            if (id_form && presetform) {
+                const token = localStorage.getItem("token");
+
+                try {
+                    // Fetch family cancer data
+                    const familyCancerRes = await fetchDataGETImg(`admin/form/${id_form}/familycancer`, token);
+                    const familyCancerData = familyCancerRes.data?.familyCancers || [];
+
+                    // Fetch relatives enum to map relative IDs to names
+                    const relativesEnumRes = await fetchDataGET(`enum/relatives`, token);
+                    const relativesEnum = relativesEnumRes.data || [];
+
+                    // Create a map from relative ID to relative name
+                    const relativeIdToName = {};
+                    relativesEnum.forEach(rel => {
+                        relativeIdToName[rel.id] = rel.name;
+                    });
+
+                    // Create a map of field names to relative IDs based on the state variables
+                    // isChildCancer, isMotherCancer, isFatherCancer, isSibsCancer, isUncAuntCancer, isUncAunt2Cancer, isOtherCancer
+                    const relativeFieldMap = {
+                        1: "childCancer",
+                        2: "motherCancer",
+                        3: "fatherCancer",
+                        4: "siblingCancer",
+                        5: "ameAmoCancer",
+                        6: "khaleDaeiCancer",
+                        7: "otherRelative"
+                    };
+
+                    // Map field names to form input names based on the useState variables
+                    // const fieldToInputName = {
+                    //     "childCancer": "isChildCancer",
+                    //     "motherCancer": "isMotherCancer",
+                    //     "fatherCancer": "isFatherCancer",
+                    //     "siblingCancer": "isSibsCancer",
+                    //     "ameAmoCancer": "isUncAuntCancer",
+                    //     "khaleDaeiCancer": "isUncAunt2Cancer",
+                    //     "otherRelative": "isOtherCancer"
+                    // };
+
+                    // Create a map of relatives that have cancer
+                    const relativesWithCancer = {};
+                    familyCancerData.forEach(familyMember => {
+                        const relativeId = familyMember.relative;
+
+                        // Find the corresponding field name from the enum
+                        const relativeName = relativeIdToName[relativeId];
+                        if (relativeName) {
+                            // Map the relative name to the field name
+                            const fieldName = relativeFieldMap[relativeId];
+                            if (fieldName) {
+                                // Map the field name to input name used in the form
+                                // const inputName = fieldToInputName[fieldName];
+                                // if (inputName) {
+                                // Check if this relative has any cancers
+                                if (familyMember.cancers && familyMember.cancers.length > 0) {
+                                    relativesWithCancer[fieldName] = true;
+                                }
+                                // }
+                            }
+                        }
+                    });
+                    console.log("dele bare gi : ", relativesWithCancer)
+                    // Now update the radio buttons in step 5 based on cancer data
+                    if (formRefs[5]?.current) {
+                        const formElements = formRefs[5].current.querySelectorAll("input[type='radio']");
+
+                        formElements.forEach(radio => {
+                            // Find the field name that this radio button belongs to
+                            const fieldName = radio.name;
+                            console.log(fieldName)
+                            // Check if this field corresponds to a relative with cancer
+                            if (relativesWithCancer[fieldName]) {
+                                // If the relative has cancer, check the "بله" radio button
+                                if (radio.id === "بله") {
+                                    radio.checked = true;
+                                } else if (radio.id === "خیر") {
+                                    radio.checked = false;
+                                }
+                            } else {
+                                // If the relative doesn't have cancer, check the "خیر" radio button
+                                if (radio.id === "خیر") {
+                                    radio.checked = true;
+                                } else if (radio.id === "بله") {
+                                    radio.checked = false;
+                                }
+                            }
+                        });
+                    }
+
+                } catch (error) {
+                    console.error("Error fetching family cancer data:", error);
+                }
+            }
+        };
+
+        loadFamilyCancerData();
+    }, [id_form, presetform]);
     const relator_S = (state) => {
+        console.log(state)
         if (state != '' && state != "انتخاب کنید") {
+            console.log(state)
             return true
         } else {
             return false
@@ -292,13 +502,13 @@ function Questions() {
         isAlchol, isSabzi, isActivity, isHardActivity, isSmoke, isSmokeAge,
         isSmokingNow, isChild, isAdat, isHRT, isHRT5, isOral, isColon, isCancer, isMamoTest,
         isChildCancer, isMotherCancer, isFatherCancer, isSibsCancer,
-        isUncAuntCancer, isUncAunt2Cancer, isGeneTest, isFamGeneTest
+        isUncAuntCancer, isUncAunt2Cancer, isOtherCancer, isGeneTest, isFamGeneTest
     ]);
     // const smokes
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const APIARR = ["basic", "generalhealth", "mamography", "cancer", "familycancer", "contact", "lungcancer"];
+        const APIARR = ["basic", "generalhealth", "mamography", "cancer", "familycancer", "lungcancer", "contact"];
 
         const form = formRefs[`${step}`].current;
         if (!form) return;
@@ -337,6 +547,7 @@ function Questions() {
 
             // ✅ Handle enum mapping first
             let finalValue = value;
+            console.log("namaste : ", typeof finalValue)
             const enumName = elem.getAttribute('data-enum');
             if (enumName && value && type !== "file") {
                 try {
@@ -364,7 +575,9 @@ function Questions() {
             } else if (finalValue === "false" && name !== "pastSmoking") {
                 allData[name] = false;
             } else if (finalValue === "null" && name !== "pastSmoking") {
-                allData[name] = null;
+                // allData[name] = null;
+                // console.log("name is the name , : ", name)
+                // pass the fucking data
             } else if (isNumber(finalValue) && name !== "socialSecurityNumber" && name !== "postalCode") {
                 allData[name] = parseInt(finalValue, 10);
             } else {
@@ -394,7 +607,7 @@ function Questions() {
         console.log("Mapped allData:", allData);
 
         // ✅ Append text fields to FormData
-        if (step == 3) {
+        if (step == 3 || step == 7) {
             Object.entries(allData).forEach(([key, value]) => {
                 formData.append(key, value);
             });
@@ -441,7 +654,7 @@ function Questions() {
                 "Content-Type": "application/json",
                 'Authorization': `Bearer ${token_auth}`
             }
-            if (step == 3) {
+            if (step == 3 || step == 7) {
                 headers = {
                     'Authorization': `Bearer ${token_auth}`, // ⚠️ No Content-Type
                 }
@@ -495,6 +708,7 @@ function Questions() {
         };
 
         try {
+            let new_item_id;
             const isCancerAdded = await fetchDataPOSTImg(
                 `form/${createdFormId}/cancer`,
                 token,
@@ -507,6 +721,7 @@ function Questions() {
                     type: 'success',
                     duration: 4000,
                 });
+                isCancerAdded.data.cancer
             }
         } catch (error) {
             console.error("Image upload failed:", error);
@@ -641,6 +856,7 @@ function Questions() {
         return the_chooseVal
     }
     const smokesNow = smokeTypeQuestion(smokeType)
+    console.log(smokesNow)
     const smokesPast = smokeTypePastQuestion(smokeTypePast)
 
     // if(loading){
@@ -750,48 +966,35 @@ function Questions() {
 
                     <form ref={formRefs[4]} style={step == 4 ? null : { display: "none " }} className="question_form P2">
                         <Radio data_req={"true"} class_change1={"P2"} class_change2={"P2_inner"} data={part4.radio_opts_cancer} valueSetter={setIsCancer}></Radio>
-                        <CancerField data_req={"true"} data_Inp1={null} data_Options={part4.cancerCard.cancerType} data_Radio={null} data_Inp2={part4.cancerCard.cancerAge} relation={relator_R(isCancer)} Enum={"cancer-types"} canArrFunc={setSelfCancers} canArr={selfCancers} senderFunc={selfCancerSender} ></CancerField>
+                        <CancerField data_req={selfCancersPreData != null ? "false" : "true"} data_Inp1={null} data_Options={part4.cancerCard.cancerType} data_Radio={null} data_Inp2={part4.cancerCard.cancerAge} relation={relator_R(isCancer)} Enum={"cancer-types"} canArrFunc={null} canArr={null} senderFunc={selfCancerSender} preData={selfCancersPreData}></CancerField>
                     </form>
                     {/* form part 5 */}
 
                     <form ref={formRefs[5]} style={step == 5 ? null : { display: "none " }} className="question_form P2">
 
                         <Radio data_req={"true"} data={part5.radio_opts_childCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChildCncer}></Radio>
-                        <CancerField data_req={"true"} data_Inp1={part5.childCard.childName} data_Inp2={part5.childCard.childCancerAge} data_Options={part5.childCard.childCancerType} data_Radio={part5.childCard.childLifeStatus} relation={relator_R(isChildCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} famrel={"فرزند"}></CancerField>
+                        <CancerField data_req={"true"} data_Inp1={part5.childCard.childName} data_Inp2={part5.childCard.childCancerAge} data_Options={part5.childCard.childCancerType} data_Radio={part5.childCard.childLifeStatus} relation={relator_R(isChildCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={"فرزند"}></CancerField>
 
                         <Radio data_req={"true"} data={part5.radio_opts_motherCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsMotherCncer}></Radio>
-                        <CancerField data_req={"true"} data_Inp1={part5.motherCard.motherName} data_Inp2={part5.motherCard.motherCancerAge} data_Options={part5.motherCard.motherCancerType} data_Radio={part5.motherCard.motherLifeStatus} relation={relator_R(isMotherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} famrel={"مادر"}></CancerField>
+                        <CancerField data_req={"true"} data_Inp1={part5.motherCard.motherName} data_Inp2={part5.motherCard.motherCancerAge} data_Options={part5.motherCard.motherCancerType} data_Radio={part5.motherCard.motherLifeStatus} relation={relator_R(isMotherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={"مادر"}></CancerField>
 
                         <Radio data_req={"true"} data={part5.radio_opts_fatherCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsFatherCncer}></Radio>
-                        <CancerField data_req={"true"} data_Inp1={part5.fatherCard.fatherName} data_Inp2={part5.fatherCard.fatherCancerAge} data_Options={part5.fatherCard.fatherCancerType} data_Radio={part5.fatherCard.fatherLifeStatus} relation={relator_R(isFatherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} famrel={"پدر"}></CancerField>
+                        <CancerField data_req={"true"} data_Inp1={part5.fatherCard.fatherName} data_Inp2={part5.fatherCard.fatherCancerAge} data_Options={part5.fatherCard.fatherCancerType} data_Radio={part5.fatherCard.fatherLifeStatus} relation={relator_R(isFatherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={"پدر"}></CancerField>
 
                         <Radio data_req={"true"} data={part5.radio_opts_bsCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsSibsCncer}></Radio>
-                        <CancerField data_req={"true"} data_Inp1={part5.siblingCard.siblingName} data_Inp2={part5.siblingCard.siblingCancerAge} data_Options={part5.siblingCard.siblingCancerType} data_Radio={part5.siblingCard.siblingLifeStatus} relation={relator_R(isSibsCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} famrel={"برادر"}></CancerField>
+                        <CancerField data_req={"true"} data_Inp1={part5.siblingCard.siblingName} data_Inp2={part5.siblingCard.siblingCancerAge} data_Options={part5.siblingCard.siblingCancerType} data_Radio={part5.siblingCard.siblingLifeStatus} relation={relator_R(isSibsCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={"برادر"}></CancerField>
 
                         <Radio data_req={"true"} data={part5.radio_opts_ameAmoCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsUncAuntCncer}></Radio>
-                        <CancerField data_req={"true"} data_Inp1={part5.uncleAuntCard.uncleAuntName} data_Inp2={part5.uncleAuntCard.uncleAuntCancerAge} data_Options={part5.uncleAuntCard.uncleAuntCancerType} data_Radio={part5.uncleAuntCard.uncleAuntLifeStatus} relation={relator_R(isUncAuntCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} famrel={"دایی"}></CancerField>
+                        <CancerField data_req={"true"} data_Inp1={part5.uncleAuntCard.uncleAuntName} data_Inp2={part5.uncleAuntCard.uncleAuntCancerAge} data_Options={part5.uncleAuntCard.uncleAuntCancerType} data_Radio={part5.uncleAuntCard.uncleAuntLifeStatus} relation={relator_R(isUncAuntCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={"دایی"}></CancerField>
 
                         <Radio data_req={"true"} data={part5.radio_opts_khaleDaeiCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsUncAunt2Cncer}></Radio>
-                        <CancerField data_req={"true"} data_Inp1={part5.khaleDaeiCard.khaleDaeiName} data_Inp2={part5.khaleDaeiCard.khaleDaeiCancerAge} data_Options={part5.khaleDaeiCard.khaleDaeiCancerType} data_Radio={part5.khaleDaeiCard.khaleDaeiLifeStatus} relation={relator_R(isUncAunt2Cancer)} Enum={"cancer-types"} senderFunc={familycancerSender} famrel={"عمو"}></CancerField>
+                        <CancerField data_req={"true"} data_Inp1={part5.khaleDaeiCard.khaleDaeiName} data_Inp2={part5.khaleDaeiCard.khaleDaeiCancerAge} data_Options={part5.khaleDaeiCard.khaleDaeiCancerType} data_Radio={part5.khaleDaeiCard.khaleDaeiLifeStatus} relation={relator_R(isUncAunt2Cancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={"عمو"}></CancerField>
 
-                        <CancerField data_req={"true"} data_Inp1={part5.otherRelativeCard.otherRelation} data_Inp2={part5.otherRelativeCard.otherCancerAge} data_Options={part5.otherRelativeCard.otherCancerType} data_Radio={part5.otherRelativeCard.otherLifeStatus} Enum={"cancer-types"} senderFunc={familycancerSender} famrel={"فامیل دور"}></CancerField>
+                        <Radio data_req={"true"} data={part5.radio_opts_otherRelative} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsOtherCncer}></Radio>
+                        <CancerField data_req={"true"} data_Inp1={part5.otherRelativeCard.otherRelation} data_Inp2={part5.otherRelativeCard.otherCancerAge} data_Options={part5.otherRelativeCard.otherCancerType} data_Radio={part5.otherRelativeCard.otherLifeStatus} relation={relator_R(isOtherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={"فامیل دور"}></CancerField>
                     </form>
                     {/* form part 6 */}
                     <form ref={formRefs[6]} id="form6" style={step == 6 ? null : { display: "none" }} className="question_form P2">
-                        <Radio data_req={"true"} data={part6.radio_opts_testGen} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsGeneTest}></Radio>
-                        <FileUploader data={part6.attachment_testGen} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isGeneTest)}></FileUploader>
-
-                        <Radio data_req={"true"} data={part6.radio_opts_fmTestGen} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsFamGeneTest}></Radio>
-                        <FileUploader data={part6.attachment_fmTestGen} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isFamGeneTest)}></FileUploader>
-
-                        <Radio data_req={"true"} data={part6.radio_opts_callExpert} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
-                        <PersonalInfo data_req={"true"} data_inp1={part6.personalInfo.fullName} data_inp2={part6.personalInfo.mobileNumber1} data_inp3={part6.personalInfo.mobileNumber2} data_inp4={part6.personalInfo.province}
-                            data_inp5={part6.personalInfo.city} data_inp6={part6.personalInfo.postalCode} data_opt={part6.personalInfo.birthCountry} data_inp7={part6.personalInfo.address}
-                            data_check={part6.personalInfo.confidentialityAgreement}
-                        ></PersonalInfo>
-                    </form>
-                    {/* form part 7 */}
-                    <form ref={formRefs[7]} id="form7" style={step == 7 ? null : { display: "none" }} action="" className="question_form P2">
                         <Options data_req={"true"} data={part7.combine_option_insurance} class_change1={"P2"} class_change2={"P2_inner"}></Options>
                         <Radio data_req={"true"} data={part7.radio_hypertension} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                         <Radio data_req={"true"} data={part7.radio_hypertension_treatment} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
@@ -806,23 +1009,35 @@ function Questions() {
                         <Options data_req={"true"} data={part7.combine_option_occupationalExposure} class_change1={"P2"} class_change2={"P2_inner"}></Options>
                         <Radio data={part7.radio_currentSmoking} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                         <Options data_req={"true"} data={part7.combine_option_smokingTypes_current} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setSmokeType}></Options>
-                        {smokeType.length != 0 && smokeType != "انتخاب کنید" && (
-                            <InputBox data={smokesNow} class_change1={"P2"} class_change2={"P2_inner"}></InputBox>
-                        )}
-                        {smokeType == "تریاک" && (
-                            <InputBox data={part7.text_chewedOpiumPerDay_past} class_change1={"P2"} class_change2={"P2_inner"}></InputBox>
-                        )}
+                        {/* {smokeType != null && smokeType != "انتخاب کنید" && ( */}
+                        <InputBox data={part7.text_using_now} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_S(smokeType)}></InputBox>
+                        {/* )} */}
+                        {/* {smokeType != null && smokeType == "تریاک" && ( */}
+                        {/* <InputBox data={part7.text_chewedOpiumPerDay_past} class_change1={"P2"} class_change2={"P2_inner"}></InputBox> */}
+                        {/* )} */}
                         <Radio data_req={"true"} data={part7.radio_pastSmoking} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                         <InputBox data_req={"true"} data={part7.text_smokingStartAge_past} class_change1={"P2"} class_change2={"P2_inner"}></InputBox>
                         <Options data={part7.combine_option_smokingTypes_past} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setSmokeTypePast}></Options>
-                        {smokeTypePast.length != 0 && smokeTypePast != "انتخاب کنید" && (
-                            <InputBox data_req={"true"} data={smokesPast} class_change1={"P2"} class_change2={"P2_inner"}></InputBox>
-                        )}
-                        {smokeTypePast == "تریاک" && (
-                            <InputBox data_req={"true"} data={part7.text_chewedOpiumPerDay_past} class_change1={"P2"} class_change2={"P2_inner"}></InputBox>
-                        )}
+                        {/* {smokeTypePast != null && smokeTypePast != "انتخاب کنید" && ( */}
+                        <InputBox data_req={"false"} data={part7.text_using_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_S(smokeTypePast)}></InputBox>
+                        {/* )} */}
+                        {/* {smokeType != null && smokeTypePast == "تریاک" && ( */}
+                        {/* <InputBox data_req={"true"} data={part7.text_chewedOpiumPerDay_past} class_change1={"P2"} class_change2={"P2_inner"}></InputBox> */}
+                        {/* )} */}
+                    </form>
+                    {/* form part 7 */}
+                    <form ref={formRefs[7]} id="form7" style={step == 7 ? null : { display: "none" }} action="" className="question_form P2">
+                        <Radio data_req={"true"} data={part6.radio_opts_testGen} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsGeneTest}></Radio>
+                        <FileUploader data={part6.attachment_testGen} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isGeneTest)}></FileUploader>
 
+                        <Radio data_req={"true"} data={part6.radio_opts_fmTestGen} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsFamGeneTest}></Radio>
+                        <FileUploader data={part6.attachment_fmTestGen} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isFamGeneTest)}></FileUploader>
 
+                        <Radio data_req={"true"} data={part6.radio_opts_callExpert} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                        <PersonalInfo data_req={"true"} data_inp1={part6.personalInfo.fullName} data_inp2={part6.personalInfo.mobileNumber1} data_inp3={part6.personalInfo.mobileNumber2} data_inp4={part6.personalInfo.province}
+                            data_inp5={part6.personalInfo.city} data_inp6={part6.personalInfo.postalCode} data_opt={part6.personalInfo.birthCountry} data_inp7={part6.personalInfo.address}
+                            data_check={part6.personalInfo.confidentialityAgreement}
+                        ></PersonalInfo>
 
                     </form>
 

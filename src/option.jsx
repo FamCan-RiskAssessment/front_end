@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-function Options({ data_req, data, class_change1, class_change2, valueSetter, relation, Enum, colRef }) {
+function Options({ data_req, data, class_change1, class_change2, valueSetter, value, relation, Enum, colRef }) {
+    // console.log("this is the valueSetter : ", valueSetter, data.O)
     if (relation == undefined) {
         relation = true
     }
@@ -20,9 +21,10 @@ function Options({ data_req, data, class_change1, class_change2, valueSetter, re
                         data_req={data_req}
                         name={data.Oname}
                         id={data.Oname}
-                        onChange={(e) => valueSetter(e.target.value)}
+                        onChange={(e) => valueSetter?.(e.target.value)}
                         className={`select_options ${class_change2}`} data-enum={Enum}
                         ref={colRef == undefined ? null : colRef}
+                        value={value}
                     >
                         {data.options.map((opt, index) =>
                             <option value={opt}>{opt}</option>

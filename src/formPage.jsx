@@ -123,7 +123,7 @@ function FormsPage() {
       localStorage.setItem("form_data", JSON.stringify(form_data));
       localStorage.setItem("form_id", form_id);
 
-      console.log("✅ All stages fetched:", form_data);
+      console.log("✅ All stages fetched:", results);
       navigate("/forms/new");
     } catch (err) {
       console.error("Error fetching forms:", err);

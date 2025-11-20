@@ -1,397 +1,451 @@
 {
-    "combine_option_insurance": {
-      "ask": "وضعیت بیمه سلامت خود را مشخص کنید",
-      "Oname": "insuranceStatus",
-      "options": [
-        "انتخاب کنید",
-        "تحت پوشش بیمه قرار ندارم",
-        "خدمات درمانی تامین اجتماعی",
-        "تکمیلی"
-      ]
-    },
-    "text_supplementaryInsurances": {
-      "engName": "supplementaryInsurances",
-      "type":"number",
-      "placeHolder":"xx",
-      "inpName": "نام بیمه های تکمیلی که تحت پوشش آنها قرار دارید را ذکر کنید"
-    },
-    "radio_hypertension": {
-      "Rname": "hypertension",
-      "ask": "سابقه فشارخون",
-      "options": ["بله", "خیر"]
-    },
-    "radio_hypertension_treatment": {
-      "Rname": "hypertensionTreatment",
-      "ask": "آیا تحت درمان فشارخون هستید؟",
-      "options": ["بله", "خیر"],
-      "condition": "if hypertension == 'بله'"
-    },
-    "radio_heartDisease": {
-      "Rname": "heartDisease",
-      "ask": "سابقه بیماری قلبی عروقی",
-      "options": ["بله", "خیر"]
-    },
-    "radio_heartDisease_treatment": {
-      "Rname": "heartDiseaseTreatment",
-      "ask": "آیا تحت درمان بیماری قلبی عروقی هستید؟",
-      "options": ["بله", "خیر"],
-      "condition": "if heartDisease == 'بله'"
-    },
-    "radio_diabetes": {
-      "Rname": "diabetes",
-      "ask": "سابقه دیابت",
-      "options": ["بله", "خیر"]
-    },
-    "radio_diabetes_treatment": {
-      "Rname": "diabetesTreatment",
-      "ask": "آیا تحت درمان دیابت هستید؟",
-      "options": ["بله", "خیر"],
-      "condition": "if diabetes == 'بله'"
-    },
-    "radio_chronicLungDisease":{
-        "Rname":"chronicLungDisease",
-        "ask":"سابقه یبماری های مزمن ریوی دارید ؟ ",
-        "options":["نمی دانم","بله", "خیر"]
-    },
-    "combine_option_chronicLungDisease": {
-      "ask": "chronicLungDisease",
-      "Oname": "سابقه بیماریهای مزمن ریوی",
-      "options": [
-        "انتخاب کنید",
-        "خیر",
-        "بیماری مزمن انسدادی ریه (COPD)",
-        "آمفیزم",
-        "فیبروز ریوی",
-        "پنوموکونیوز",
-        "برونشکتازی"
-      ]
-    },
-    "radio_lungCancerHistory": {
-      "Rname": "lungCancerHistory",
-      "ask": "سابقه سرطان ریه",
-      "options": ["بله", "خیر"]
-    },
-    "radio_otherCancerHistory": {
-      "Rname": "otherCancerHistory",
-      "ask": "سابقه سایر سرطانها",
-      "options": ["بله", "خیر"]
-    },
-    "combine_option_cancerType": {
-      "ask": "نوع سرطان",
-      "Oname": "otherCancerType",
-      "options": [
-        "انتخاب کنید",
-        "سرطان معده",
-        "سرطان روده بزرگ (کولورکتال)",
-        "سرطان مری",
-        "سرطان کبد",
-        "سرطان حنجره",
-        "سرطان لوزالمعده (پانکراس)",
-        "سرطان نای",
-        "سرطان کلیه",
-        "سرطان مثانه",
-        "سرطان پروستات",
-        "سرطان بیضه",
-        "سرطان رحم",
-        "سرطان تخمدان",
-        "سرطان هیپوفیز",
-        "سرطان دهانه رحم (سرویکس)",
-        "سرطان واژن",
-        "سرطان فرج (ولووا)",
-        "سرطان نخاع",
-        "لنفوم غیر هوچکین",
-        "تومورهای مغزی",
-        "سرطان پوست",
-        "لوسمی (سرطان خون)",
-        "لنفوم هوچکین",
-        "مولتیپل میلوما (سرطان مغز استخوان)",
-        "سرطان تیروئید",
-        "سرطان آدرنال فوق کلیوی",
-        "نوع سرطان را نمی دانم"
-      ],
-      "condition": "if otherCancerHistory == 'بله'"
-    },
-    "radio_lungCancerFamily": {
-      "Rname": "lungCancerFamily",
-      "ask": "سابقه سرطان ریه در بین افراد درجه ۱ خانواده",
-      "options": ["بله", "خیر"]
-    },
-    "combine_option_lungCancerFamilyRelation": {
-      "ask": "نسبت فامیلی فرد مبتلا به سرطان ریه",
-      "Oname": "lungCancerFamilyRelation",
-      "options": [
-        "انتخاب کنید",
-        "پدر",
-        "مادر",
-        "برادر",
-        "خواهر",
-        "فرزند"
-      ],
-      "condition": "if lungCancerFamily == 'بله'"
-    },
-    "radio_otherCancerFamily": {
-      "Rname": "otherCancerFamily",
-      "ask": "سابقه سرطان در بین افراد درجه ۱ خانواده",
-      "options": ["بله", "خیر"]
-    },
-    "combine_option_otherCancerFamilyType": {
-      "ask": "نوع سرطان در بین افراد درجه ۱ خانواده",
-      "Oname": "otherCancerFamilyType",
-      "options": [
-        "انتخاب کنید",
-        "سرطان معده",
-        "سرطان روده بزرگ (کولورکتال)",
-        "سرطان مری",
-        "سرطان کبد",
-        "سرطان حنجره",
-        "سرطان لوزالمعده (پانکراس)",
-        "سرطان نای",
-        "سرطان کلیه",
-        "سرطان مثانه",
-        "سرطان پروستات",
-        "سرطان بیضه",
-        "سرطان رحم",
-        "سرطان تخمدان",
-        "سرطان هیپوفیز",
-        "سرطان دهانه رحم (سرویکس)",
-        "سرطان واژن",
-        "سرطان فرج (ولووا)",
-        "سرطان نخاع",
-        "لنفوم غیر هوچکین",
-        "تومورهای مغزی",
-        "سرطان پوست",
-        "لوسمی (سرطان خون)",
-        "لنفوم هوچکین",
-        "مولتیپل میلوما (سرطان مغز استخوان)",
-        "سرطان تیروئید",
-        "سرطان آدرنال فوق کلیوی",
-        "نوع سرطان را نمی دانم"
-      ],
-      "condition": "if otherCancerFamily == 'بله'"
-    },
-    "combine_option_otherCancerFamilyRelation": {
-      "ask": "نسبت فامیلی فرد مبتلا به سرطان",
-      "Oname": "otherCancerFamilyRelation",
-      "options": [
-        "انتخاب کنید",
-        "پدر",
-        "مادر",
-        "برادر",
-        "خواهر",
-        "فرزند"
-      ],
-      "condition": "if otherCancerFamily == 'بله'"
-    },
-    "combine_option_occupationalExposure": {
-      "ask": "سابقه اشتغال در کدامیک از محیطهای مذکور را دارید",
-      "Oname": "occupationalExposure",
-      "options": [
-        "انتخاب کنید",
-        "هیچکدام",
-        "معادن زغال سنگ و یا اورانیوم و یا آزبست",
-        "کارخانه های تولید رنگ، لاک و حلالهای شیمیایی",
-        "ایستگاه های آتش نشانی",
-        "کارخانه های تولید سرامیک، سیمان و شیشه",
-        "کارگاه های چاپ و تولید کاغذ",
-        "کارخانه های تولید آزبست و مصالح ساختمانی قدیمی",
-        "نیروگاه های حرارتی و زغال سنگی",
-        "کارگاه های چوب بری و نجاری",
-        "کارخانه های تولید مواد غذایی و صنایع بسته بندی",
-        "ساختمانهای قدیمی و کارگاههای تخریب و بازسازی",
-        "پالایشگاه های نفت و صنایع پتروشیمی",
-        "کارگاههای جوشکاری و ریخته گری فلزات",
-        "صنایع نساجی و تولید الیاف مصنوعی",
-        "مزارع و گلخانه های صنعتی",
-        "کارخانههای تولید باتری و مواد الکترونیکی",
-        "کارخانه های تولید مواد شیمیایی و پلاستیک",
-        "صنایع خودروسازی و تعمیرگاههای خودرو",
-        "کارخانه های تولید لاستیک و تایر",
-        "کارگاههای تولید و بهره وری از فیبرهای شیشه ای"
-      ]
-    },
-    "radio_currentSmoking": {
-      "Rname": "currentSmoking",
-      "ask": "آیا در حال حاضر از سیگار با سایر مواد دخانی استفاده می کنید",
-      "options": ["بله", "خیر"]
-    },
-    "text_smokingStartAge_current": {
-      "engName": "smokingStartAge_current",
-      "placeHolder":"xx",
-      "inpName": "از چه سنی از مواد دخانی استفاده میکنید",
-      "type":"number",
-      "condition": "if currentSmoking == 'بله'"
-    },
-    "combine_option_smokingTypes_current": {
-      "ask": "انواع مواد دخانی که مورد استفاده قرار میدهید را انتخاب کنید",
-      "Oname": "smokingTypesCurrent",
-      "options": [
-        "انتخاب کنید",
-        "سیگار",
-        "سیگار برگ",
-        "پیپ",
-        "قلیان",
-        "چپق",
-        "سیگار الکترونیک و محصولات مشابه",
-        "تریاک"
-      ],
-      "condition": "if currentSmoking == 'بله'"
-    },
-    "text_cigarettesPerDay_current": {
-      "engName": "cigarettesPerDayCurrent",
-      "placeHolder":"xx",
-      "inpName": "به طور متوسط روزانه چند نخ سیگار میکشید (در صورتیکه استفاده نمی کنید: 0)",
-      "type":"number",
-      "condition": "if currentSmoking == 'بله'"
-    },
-    "text_cigarPerDay_current": {
-      "engName": "cigarPerDayCurrent",
-      "placeHolder":"xx",
-      "inpName": "به طور متوسط روزانه چند عدد سیگار برگ میکشید (در صورتیکه استفاده نمی کنید: 0)",
-      "type":"number",
-      "condition": "if currentSmoking == 'بله'"
-    },
-    "text_eCigPerDay_current": {
-      "engName": "eCigPerDayCurrent",
-      "placeHolder":"xx",
-      "inpName": "به طور متوسط روزانه چند مرتبه سیگار الکترونیک یا محصولات مشابه استفاده میکنید (در صورتیکه استفاده نمی کنید: 0)",
-      "type":"number",
-      "condition": "if currentSmoking == 'بله'"
-    },
-    "text_pipePerDay_current": {
-      "engName": "pipePerDayCurrent",
-      "placeHolder":"xx",
-      "inpName": "به طور متوسط روزانه چند مرتبه پیپ استفاده میکنید (در صورتیکه استفاده نمی کنید: 0)",
-      "type":"number",
-      "condition": "if currentSmoking == 'بله'"
-    },
-    "text_chapoghPerDay_current": {
-      "engName": "chapoghPerDayCurrent",
-      "placeHolder":"xx",
-      "inpName": "به طور متوسط روزانه چند مرتبه چپق استفاده میکنید (در صورتیکه استفاده نمی کنید: 0)",
-      "type":"number",
-      "condition": "if currentSmoking == 'بله'"
-    },
-    "text_smokedOpiumPerDay_current": {
-      "engName": "smokedOpiumPerDayCurrent",
-      "placeHolder":"xx",
-      "inpName": "به طور متوسط روزانه چند مرتبه تریاک تدخینی استفاده میکنید (در صورتیکه استفاده نمی کنید: 0)",
-      "type":"number",
-      "condition": "if currentSmoking == 'بله'"
-    },
-    "text_chewedOpiumPerDay_current": {
-      "engName": "chewedOpiumPerDayCurrent",
-      "placeHolder":"xx",
-      "inpName": "به طور متوسط روزانه چند مرتبه تریاک میجوید (در صورتیکه استفاده نمی کنید: 0)",
-      "type":"number",
-      "condition": "if currentSmoking == 'بله'"
-    },
-    "text_hookahPerWeek_current": {
-      "engName": "hookahPerWeekCurrent",
-      "placeHolder":"xx",
-      "inpName": "به طور متوسط در هفته چند نوبت قلیان استفاده میکنید (در صورتیکه استفاده نمی کنید: 0)",
-      "type":"number",
-      "condition": "if currentSmoking == 'بله'"
-    },
-    "radio_pastSmoking": {
-      "Rname": "pastSmoking",
-      "ask": "آیا سابقه استعمال سیگار و یا سایر مواد دخانی را دارید",
-      "options": [
-        "خیر",
-        "سابقاً مصرف می کرده ام اما کمتر از ۱۵ سال است که ترک کرده ام",
-        "سابقاً مصرف می کردم اما بیش از ۱۵ سال است که ترک کرده ام"
-      ]
-    },
-    "text_smokingStartAge_past": {
-      "engName": "smokingStartAgePast",
-      "placeHolder":"xx",
-      "inpName": "از چه سنی از مواد دخانی استفاده میکردید",
-      "type":"number",
-      "condition": "if pastSmoking != 'خیر'"
-    },
-    "combine_option_smokingTypes_past": {
-      "ask": "انواع مواد دخانی که مورد استفاده قرار میداید را انتخاب کنید",
-      "Oname": "smokingTypesPast",
-      "options": [
-        "انتخاب کنید",
-        "سیگار",
-        "سیگار برگ",
-        "پیپ",
-        "قلیان",
-        "چپق",
-        "سیگار الکترونیک و محصولات مشابه",
-        "تریاک"
-      ],
-      "condition": "if pastSmoking != 'خیر'"
-    },
-    "text_cigarettesPerDay_past": {
-      "engName": "cigarettesPerDayPast",
-      "placeHolder":"xx",
-      "inpName": "به طور متوسط روزانه چند نخ سیگار میکشیدید (در صورتیکه استفاده نمی کنید: 0)",
-      "type":"number",
-      "condition": "if pastSmoking != 'خیر'"
-    },
-    "text_cigarPerDay_past": {
-      "engName": "cigarPerDayPast",
-      "placeHolder":"xx",
-      "inpName": "به طور متوسط روزانه چند عدد سیگار برگ میکشیدید (در صورتیکه استفاده نمی کنید: 0)",
-      "type":"number",
-      "condition": "if pastSmoking != 'خیر'"
-    },
-    "text_eCigPerDay_past": {
-      "engName": "eCigPerDayPast",
-      "placeHolder":"xx",
-      "inpName": "به طور متوسط روزانه چند مرتبه سیگار الکترونیک یا محصولات مشابه استفاده میکردید (در صورتیکه استفاده نمی کنید: 0)",
-      "type":"number",
-      "condition": "if pastSmoking != 'خیر'"
-    },
-    "text_pipePerDay_past": {
-      "engName": "pipePerDayPast",
-      "placeHolder":"xx",
-      "inpName": "به طور متوسط روزانه چند مرتبه پیپ استفاده میکردید (در صورتیکه استفاده نمی کنید: 0)",
-      "type":"number",
-      "condition": "if pastSmoking != 'خیر'"
-    },
-    "text_chapoghPerDay_past": {
-      "engName": "chapoghPerDayPast",
-      "placeHolder":"xx",
-      "inpName": "به طور متوسط روزانه چند مرتبه چپق استفاده میکردید (در صورتیکه استفاده نمی کنید: 0)",
-      "type":"number",
-      "condition": "if pastSmoking != 'خیر'"
-    },
-    "text_smokedOpiumPerDay_past": {
-      "engName": "smokedOpiumPerDayPast",
-      "placeHolder":"xx",
-      "inpName": "به طور متوسط روزانه چند مرتبه تریاک تدخینی استفاده میکردید (در صورتیکه استفاده نمی کنید: 0)",
-      "type":"number",
-      "condition": "if pastSmoking != 'خیر'"
-    },
-    "text_chewedOpiumPerDay_past": {
-      "engName": "chewedOpiumPerDayPast",
-      "placeHolder":"xx",
-      "inpName": "به طور متوسط روزانه چند مرتبه تریاک میجوید (در صورتیکه استفاده نمی کنید: 0)",
-      "type":"number",
-      "condition": "if pastSmoking != 'خیر'"
-    },
-    "text_hookahPerWeek_past": {
-      "engName": "hookahPerWeekPast",
-      "placeHolder":"xx",
-      "inpName": "به طور متوسط در هفته چند نوبت قلیان استفاده میکردید (در صورتیکه استفاده نمی کنید: 0)",
-      "type":"number",
-      "condition": "if pastSmoking != 'خیر'"
-    },
-    "radio_secondhandSmoke": {
-      "Rname": "secondhandSmoke",
-      "ask": "آیا مکررا در مجاورت دود سیگار و یا سایر مواد دخانی مصرف کنندگان این مواد قرار دارید",
-      "options": ["بله", "خیر"]
-    },
-    "combine_option_secondhandSmokeLocation": {
-      "ask": "secondhandSmokeLocation",
-      "Oname": "محل قرارگیری در معرض دود دخانی",
-      "options": [
-        "انتخاب کنید",
-        "در منزل",
-        "در محل کار"
-      ],
-      "condition": "if secondhandSmoke == 'بله'"
-    }
+  "combine_option_insurance": {
+    "ask": "وضعیت بیمه سلامت خود را مشخص کنید",
+    "Oname": "insuranceStatus",
+    "options": [
+      "انتخاب کنید",
+      "تحت پوشش بیمه قرار ندارم",
+      "خدمات درمانی تامین اجتماعی",
+      "تکمیلی"
+    ]
+  },
+  "text_supplementaryInsurances": {
+    "engName": "supplementaryInsurances",
+    "type": "number",
+    "placeHolder": "xx",
+    "inpName": "نام بیمه های تکمیلی که تحت پوشش آنها قرار دارید را ذکر کنید"
+  },
+  "radio_hypertension": {
+    "Rname": "hypertension",
+    "ask": "سابقه فشارخون",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "radio_hypertension_treatment": {
+    "Rname": "hypertensionTreatment",
+    "ask": "آیا تحت درمان فشارخون هستید؟",
+    "options": [
+      "بله",
+      "خیر"
+    ],
+    "condition": "if hypertension == 'بله'"
+  },
+  "radio_heartDisease": {
+    "Rname": "heartDisease",
+    "ask": "سابقه بیماری قلبی عروقی",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "radio_heartDisease_treatment": {
+    "Rname": "heartDiseaseTreatment",
+    "ask": "آیا تحت درمان بیماری قلبی عروقی هستید؟",
+    "options": [
+      "بله",
+      "خیر"
+    ],
+    "condition": "if heartDisease == 'بله'"
+  },
+  "radio_diabetes": {
+    "Rname": "diabetes",
+    "ask": "سابقه دیابت",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "radio_diabetes_treatment": {
+    "Rname": "diabetesTreatment",
+    "ask": "آیا تحت درمان دیابت هستید؟",
+    "options": [
+      "بله",
+      "خیر"
+    ],
+    "condition": "if diabetes == 'بله'"
+  },
+  "radio_chronicLungDisease": {
+    "Rname": "chronicLungDisease",
+    "ask": "سابقه یبماری های مزمن ریوی دارید ؟ ",
+    "options": [
+      "نمی دانم",
+      "بله",
+      "خیر"
+    ]
+  },
+  "combine_option_chronicLungDisease": {
+    "ask": "chronicLungDisease",
+    "Oname": "سابقه بیماریهای مزمن ریوی",
+    "options": [
+      "انتخاب کنید",
+      "خیر",
+      "بیماری مزمن انسدادی ریه (COPD)",
+      "آمفیزم",
+      "فیبروز ریوی",
+      "پنوموکونیوز",
+      "برونشکتازی"
+    ]
+  },
+  "radio_lungCancerHistory": {
+    "Rname": "lungCancerHistory",
+    "ask": "سابقه سرطان ریه",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "radio_otherCancerHistory": {
+    "Rname": "otherCancerHistory",
+    "ask": "سابقه سایر سرطانها",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "combine_option_cancerType": {
+    "ask": "نوع سرطان",
+    "Oname": "otherCancerType",
+    "options": [
+      "انتخاب کنید",
+      "سرطان معده",
+      "سرطان روده بزرگ (کولورکتال)",
+      "سرطان مری",
+      "سرطان کبد",
+      "سرطان حنجره",
+      "سرطان لوزالمعده (پانکراس)",
+      "سرطان نای",
+      "سرطان کلیه",
+      "سرطان مثانه",
+      "سرطان پروستات",
+      "سرطان بیضه",
+      "سرطان رحم",
+      "سرطان تخمدان",
+      "سرطان هیپوفیز",
+      "سرطان دهانه رحم (سرویکس)",
+      "سرطان واژن",
+      "سرطان فرج (ولووا)",
+      "سرطان نخاع",
+      "لنفوم غیر هوچکین",
+      "تومورهای مغزی",
+      "سرطان پوست",
+      "لوسمی (سرطان خون)",
+      "لنفوم هوچکین",
+      "مولتیپل میلوما (سرطان مغز استخوان)",
+      "سرطان تیروئید",
+      "سرطان آدرنال فوق کلیوی",
+      "نوع سرطان را نمی دانم"
+    ],
+    "condition": "if otherCancerHistory == 'بله'"
+  },
+  "radio_lungCancerFamily": {
+    "Rname": "lungCancerFamily",
+    "ask": "سابقه سرطان ریه در بین افراد درجه ۱ خانواده",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "combine_option_lungCancerFamilyRelation": {
+    "ask": "نسبت فامیلی فرد مبتلا به سرطان ریه",
+    "Oname": "lungCancerFamilyRelation",
+    "options": [
+      "انتخاب کنید",
+      "پدر",
+      "مادر",
+      "برادر",
+      "خواهر",
+      "فرزند"
+    ],
+    "condition": "if lungCancerFamily == 'بله'"
+  },
+  "radio_otherCancerFamily": {
+    "Rname": "otherCancerFamily",
+    "ask": "سابقه سرطان در بین افراد درجه ۱ خانواده",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "combine_option_otherCancerFamilyType": {
+    "ask": "نوع سرطان در بین افراد درجه ۱ خانواده",
+    "Oname": "otherCancerFamilyType",
+    "options": [
+      "انتخاب کنید",
+      "سرطان معده",
+      "سرطان روده بزرگ (کولورکتال)",
+      "سرطان مری",
+      "سرطان کبد",
+      "سرطان حنجره",
+      "سرطان لوزالمعده (پانکراس)",
+      "سرطان نای",
+      "سرطان کلیه",
+      "سرطان مثانه",
+      "سرطان پروستات",
+      "سرطان بیضه",
+      "سرطان رحم",
+      "سرطان تخمدان",
+      "سرطان هیپوفیز",
+      "سرطان دهانه رحم (سرویکس)",
+      "سرطان واژن",
+      "سرطان فرج (ولووا)",
+      "سرطان نخاع",
+      "لنفوم غیر هوچکین",
+      "تومورهای مغزی",
+      "سرطان پوست",
+      "لوسمی (سرطان خون)",
+      "لنفوم هوچکین",
+      "مولتیپل میلوما (سرطان مغز استخوان)",
+      "سرطان تیروئید",
+      "سرطان آدرنال فوق کلیوی",
+      "نوع سرطان را نمی دانم"
+    ],
+    "condition": "if otherCancerFamily == 'بله'"
+  },
+  "combine_option_otherCancerFamilyRelation": {
+    "ask": "نسبت فامیلی فرد مبتلا به سرطان",
+    "Oname": "otherCancerFamilyRelation",
+    "options": [
+      "انتخاب کنید",
+      "پدر",
+      "مادر",
+      "برادر",
+      "خواهر",
+      "فرزند"
+    ],
+    "condition": "if otherCancerFamily == 'بله'"
+  },
+  "combine_option_occupationalExposure": {
+    "ask": "سابقه اشتغال در کدامیک از محیطهای مذکور را دارید",
+    "Oname": "occupationalExposure",
+    "options": [
+      "انتخاب کنید",
+      "هیچکدام",
+      "معادن زغال سنگ و یا اورانیوم و یا آزبست",
+      "کارخانه های تولید رنگ، لاک و حلالهای شیمیایی",
+      "ایستگاه های آتش نشانی",
+      "کارخانه های تولید سرامیک، سیمان و شیشه",
+      "کارگاه های چاپ و تولید کاغذ",
+      "کارخانه های تولید آزبست و مصالح ساختمانی قدیمی",
+      "نیروگاه های حرارتی و زغال سنگی",
+      "کارگاه های چوب بری و نجاری",
+      "کارخانه های تولید مواد غذایی و صنایع بسته بندی",
+      "ساختمانهای قدیمی و کارگاههای تخریب و بازسازی",
+      "پالایشگاه های نفت و صنایع پتروشیمی",
+      "کارگاههای جوشکاری و ریخته گری فلزات",
+      "صنایع نساجی و تولید الیاف مصنوعی",
+      "مزارع و گلخانه های صنعتی",
+      "کارخانههای تولید باتری و مواد الکترونیکی",
+      "کارخانه های تولید مواد شیمیایی و پلاستیک",
+      "صنایع خودروسازی و تعمیرگاههای خودرو",
+      "کارخانه های تولید لاستیک و تایر",
+      "کارگاههای تولید و بهره وری از فیبرهای شیشه ای"
+    ]
+  },
+  "radio_currentSmoking": {
+    "Rname": "currentSmoking",
+    "ask": "آیا در حال حاضر از سیگار با سایر مواد دخانی استفاده می کنید",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "text_smokingStartAge_current": {
+    "engName": "smokingStartAge_current",
+    "placeHolder": "xx",
+    "inpName": "از چه سنی از مواد دخانی استفاده میکنید",
+    "type": "number",
+    "condition": "if currentSmoking == 'بله'"
+  },
+  "combine_option_smokingTypes_current": {
+    "ask": "انواع مواد دخانی که مورد استفاده قرار میدهید را انتخاب کنید",
+    "Oname": "smokingTypesCurrent",
+    "options": [
+      "انتخاب کنید",
+      "سیگار",
+      "سیگار برگ",
+      "پیپ",
+      "قلیان",
+      "چپق",
+      "سیگار الکترونیک و محصولات مشابه",
+      "تریاک"
+    ],
+    "condition": "if currentSmoking == 'بله'"
+  },
+  "text_cigarettesPerDay_current": {
+    "engName": "cigarettesPerDayCurrent",
+    "placeHolder": "xx",
+    "inpName": "به طور متوسط روزانه چند نخ سیگار میکشید (در صورتیکه استفاده نمی کنید: 0)",
+    "type": "number",
+    "condition": "if currentSmoking == 'بله'"
+  },
+  "text_cigarPerDay_current": {
+    "engName": "cigarPerDayCurrent",
+    "placeHolder": "xx",
+    "inpName": "به طور متوسط روزانه چند عدد سیگار برگ میکشید (در صورتیکه استفاده نمی کنید: 0)",
+    "type": "number",
+    "condition": "if currentSmoking == 'بله'"
+  },
+  "text_eCigPerDay_current": {
+    "engName": "eCigPerDayCurrent",
+    "placeHolder": "xx",
+    "inpName": "به طور متوسط روزانه چند مرتبه سیگار الکترونیک یا محصولات مشابه استفاده میکنید (در صورتیکه استفاده نمی کنید: 0)",
+    "type": "number",
+    "condition": "if currentSmoking == 'بله'"
+  },
+  "text_pipePerDay_current": {
+    "engName": "pipePerDayCurrent",
+    "placeHolder": "xx",
+    "inpName": "به طور متوسط روزانه چند مرتبه پیپ استفاده میکنید (در صورتیکه استفاده نمی کنید: 0)",
+    "type": "number",
+    "condition": "if currentSmoking == 'بله'"
+  },
+  "text_chapoghPerDay_current": {
+    "engName": "chapoghPerDayCurrent",
+    "placeHolder": "xx",
+    "inpName": "به طور متوسط روزانه چند مرتبه چپق استفاده میکنید (در صورتیکه استفاده نمی کنید: 0)",
+    "type": "number",
+    "condition": "if currentSmoking == 'بله'"
+  },
+  "text_smokedOpiumPerDay_current": {
+    "engName": "smokedOpiumPerDayCurrent",
+    "placeHolder": "xx",
+    "inpName": "به طور متوسط روزانه چند مرتبه تریاک تدخینی استفاده میکنید (در صورتیکه استفاده نمی کنید: 0)",
+    "type": "number",
+    "condition": "if currentSmoking == 'بله'"
+  },
+  "text_chewedOpiumPerDay_current": {
+    "engName": "chewedOpiumPerDayCurrent",
+    "placeHolder": "xx",
+    "inpName": "به طور متوسط روزانه چند مرتبه تریاک میجوید (در صورتیکه استفاده نمی کنید: 0)",
+    "type": "number",
+    "condition": "if currentSmoking == 'بله'"
+  },
+  "text_hookahPerWeek_current": {
+    "engName": "hookahPerWeekCurrent",
+    "placeHolder": "xx",
+    "inpName": "به طور متوسط در هفته چند نوبت قلیان استفاده میکنید (در صورتیکه استفاده نمی کنید: 0)",
+    "type": "number",
+    "condition": "if currentSmoking == 'بله'"
+  },
+  "text_using_now": {
+    "engName": "smokeCurrent",
+    "placeHolder": "xx",
+    "inpName": "به طور متوسط چه میزان از مورد انتخابی را استفاده میکنید (سیگار به صورت روزانه نخی ، قلیان هفتگی نوبتی، تریاک تدخینی چند مرتبه روزانه ، چپق روزانه چند مرتبه ، پیپ روزانه چند مرتبه ،سیگار الکترونیک یا محصولات مشابه روزانه چند مرتبه ، سیگار برگ روزانه چند نخ ، سیگار روزانه چند نخ )",
+    "type": "number",
+    "condition": "if currentSmoking == 'بله'"
+  },
+  "radio_pastSmoking": {
+    "Rname": "pastSmoking",
+    "ask": "آیا سابقه استعمال سیگار و یا سایر مواد دخانی را دارید",
+    "options": [
+      "خیر",
+      "سابقاً مصرف می کرده ام اما کمتر از ۱۵ سال است که ترک کرده ام",
+      "سابقاً مصرف می کردم اما بیش از ۱۵ سال است که ترک کرده ام"
+    ]
+  },
+  "text_smokingStartAge_past": {
+    "engName": "smokingStartAgePast",
+    "placeHolder": "xx",
+    "inpName": "از چه سنی از مواد دخانی استفاده میکردید",
+    "type": "number",
+    "condition": "if pastSmoking != 'خیر'"
+  },
+  "combine_option_smokingTypes_past": {
+    "ask": "انواع مواد دخانی که مورد استفاده قرار میداید را انتخاب کنید",
+    "Oname": "smokingTypesPast",
+    "options": [
+      "انتخاب کنید",
+      "سیگار",
+      "سیگار برگ",
+      "پیپ",
+      "قلیان",
+      "چپق",
+      "سیگار الکترونیک و محصولات مشابه",
+      "تریاک"
+    ],
+    "condition": "if pastSmoking != 'خیر'"
+  },
+  "text_cigarettesPerDay_past": {
+    "engName": "cigarettesPerDayPast",
+    "placeHolder": "xx",
+    "inpName": "به طور متوسط روزانه چند نخ سیگار میکشیدید (در صورتیکه استفاده نمی کنید: 0)",
+    "type": "number",
+    "condition": "if pastSmoking != 'خیر'"
+  },
+  "text_cigarPerDay_past": {
+    "engName": "cigarPerDayPast",
+    "placeHolder": "xx",
+    "inpName": "به طور متوسط روزانه چند عدد سیگار برگ میکشیدید (در صورتیکه استفاده نمی کنید: 0)",
+    "type": "number",
+    "condition": "if pastSmoking != 'خیر'"
+  },
+  "text_eCigPerDay_past": {
+    "engName": "eCigPerDayPast",
+    "placeHolder": "xx",
+    "inpName": "به طور متوسط روزانه چند مرتبه سیگار الکترونیک یا محصولات مشابه استفاده میکردید (در صورتیکه استفاده نمی کنید: 0)",
+    "type": "number",
+    "condition": "if pastSmoking != 'خیر'"
+  },
+  "text_pipePerDay_past": {
+    "engName": "pipePerDayPast",
+    "placeHolder": "xx",
+    "inpName": "به طور متوسط روزانه چند مرتبه پیپ استفاده میکردید (در صورتیکه استفاده نمی کنید: 0)",
+    "type": "number",
+    "condition": "if pastSmoking != 'خیر'"
+  },
+  "text_chapoghPerDay_past": {
+    "engName": "chapoghPerDayPast",
+    "placeHolder": "xx",
+    "inpName": "به طور متوسط روزانه چند مرتبه چپق استفاده میکردید (در صورتیکه استفاده نمی کنید: 0)",
+    "type": "number",
+    "condition": "if pastSmoking != 'خیر'"
+  },
+  "text_smokedOpiumPerDay_past": {
+    "engName": "smokedOpiumPerDayPast",
+    "placeHolder": "xx",
+    "inpName": "به طور متوسط روزانه چند مرتبه تریاک تدخینی استفاده میکردید (در صورتیکه استفاده نمی کنید: 0)",
+    "type": "number",
+    "condition": "if pastSmoking != 'خیر'"
+  },
+  "text_chewedOpiumPerDay_past": {
+    "engName": "chewedOpiumPerDayPast",
+    "placeHolder": "xx",
+    "inpName": "به طور متوسط روزانه چند مرتبه تریاک میجوید (در صورتیکه استفاده نمی کنید: 0)",
+    "type": "number",
+    "condition": "if pastSmoking != 'خیر'"
+  },
+  "text_hookahPerWeek_past": {
+    "engName": "hookahPerWeekPast",
+    "placeHolder": "xx",
+    "inpName": "به طور متوسط در هفته چند نوبت قلیان استفاده میکردید (در صورتیکه استفاده نمی کنید: 0)",
+    "type": "number",
+    "condition": "if pastSmoking != 'خیر'"
+  },
+  "text_using_past": {
+    "engName": "smokePast",
+    "placeHolder": "xx",
+    "inpName": "به طور متوسط چه میزان از مورد انتخابی را استفاده می کردید (سیگار به صورت روزانه نخی ، قلیان هفتگی نوبتی، تریاک تدخینی چند مرتبه روزانه ، چپق روزانه چند مرتبه ، پیپ روزانه چند مرتبه ،سیگار الکترونیک یا محصولات مشابه روزانه چند مرتبه ، سیگار برگ روزانه چند نخ ، سیگار روزانه چند نخ )",
+    "type": "number",
+    "condition": "if currentSmoking == 'بله'"
+  },
+  "radio_secondhandSmoke": {
+    "Rname": "secondhandSmoke",
+    "ask": "آیا مکررا در مجاورت دود سیگار و یا سایر مواد دخانی مصرف کنندگان این مواد قرار دارید",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "combine_option_secondhandSmokeLocation": {
+    "ask": "secondhandSmokeLocation",
+    "Oname": "محل قرارگیری در معرض دود دخانی",
+    "options": [
+      "انتخاب کنید",
+      "در منزل",
+      "در محل کار"
+    ],
+    "condition": "if secondhandSmoke == 'بله'"
   }
+}

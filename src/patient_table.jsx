@@ -2,21 +2,38 @@ import { useState, useEffect } from "react";
 import NavBar from "./navBar";
 import "./patient_table.css";
 import { APIARR, APIURL } from "./utils/config";
-import { fetchDataGET, fetchDataPOST, key_stage_matcher, stageMatcher } from "./utils/tools";
+import { fetchDataGET, fetchDataPOST, key_stage_matcher, stageMatcher, fetchDataGETImg, cancerTypeEx, relativeTypeEx } from "./utils/tools";
 import PERSIAN_HEADERS from "./assets/table_header.json"
 import { useLocation } from "react-router-dom";
 import { useToast } from "./toaster";
 import ToastProvider from "./toaster";
 import { isNumber } from "./utils/tools";
 import Loader from "./utils/loader";
+
+// Helper function to convert boolean/null values to Persian text
+const convertToPersianText = (value, key) => {
+  if (value === true) return "بله";
+  if (value === false) return "خیر";
+  if (value === null) return "نمیدانم";
+  if (value == undefined) return "موجود نیست"
+  if (key == "birthDate") {
+    return String(value.split("T")[0])
+  }
+  return String(value);
+};
+
+// Helper functions are now part of the component state,
+// so we'll update the component to use the pre-loaded enum maps
+
 // admin/form?status=1
-// 1:در حال بررسی  
+// 1:در حال بررسی
 // 2 : قبول شده
 // 3 : رد شده
 // 4:ؤ تکمیل نشده
 // 5: ارسال شده
 export default function FilterableTable() {
   const [data, setData] = useState([]);
+  const [run, setRun] = useState(false)
   const [filter, setFilter] = useState("All");
   const [editingCell, setEditingCell] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -32,11 +49,21 @@ export default function FilterableTable() {
   const [risks, setRisks] = useState({})
   const [openModalRisks, setOpenModalRisks] = useState(false)
   const [modelList, setModelList] = useState([])
+  const [detailedFamilyCancerData, setDetailedFamilyCancerData] = useState({})
+  const [openFamilyCancerModal, setOpenFamilyCancerModal] = useState(false)
+  const [detailedCancerData, setDetailedCancerData] = useState({})
+  const [openCancerModal, setOpenCancerModal] = useState(false)
+  const [selectedFormForFamilyCancer, setSelectedFormForFamilyCancer] = useState(null)
+  const [selectedFormForSelfCancer, setSelectedFormForSelfCancer] = useState(null)
+
+  const [cancerTypesMap, setCancerTypesMap] = useState({})
+  const [relativeTypesMap, setRelativeTypesMap] = useState({})
   const { addToast } = useToast()
   const location = useLocation();
   const userPhone = location.state?.phone;
   // debugs 
   console.log("here it comes : ", data)
+  console.log("the detailed family data : ", detailedFamilyCancerData)
   // console.log("maybe the answer : " , editedData)
   const statuses = ["در حال بررسی", "قبول شده", "رد شده", "تکمیل نشده", "ارسال شده"]
 
@@ -50,6 +77,38 @@ export default function FilterableTable() {
     fetchModels()
   }, [])
 
+  // Load enum data when component mounts
+  useEffect(() => {
+    const loadEnums = async () => {
+      const token = localStorage.getItem("token");
+
+      try {
+        // Load cancer types
+        const cancerTypesRes = await fetchDataGET("enum/cancer-types", token);
+        if (cancerTypesRes && cancerTypesRes.data) {
+          const cancerMap = {};
+          cancerTypesRes.data.forEach((cancer, index) => {
+            cancerMap[index + 1] = cancer.name; // Assuming IDs start from 1
+          });
+          setCancerTypesMap(cancerMap);
+        }
+
+        // Load relative types
+        const relativeTypesRes = await fetchDataGET("enum/relatives", token);
+        if (relativeTypesRes && relativeTypesRes.data) {
+          const relativeMap = {};
+          relativeTypesRes.data.forEach((relative, index) => {
+            relativeMap[index + 1] = relative.name; // Assuming IDs start from 1
+          });
+          setRelativeTypesMap(relativeMap);
+        }
+      } catch (error) {
+        console.error("Error loading enums:", error);
+      }
+    };
+
+    loadEnums();
+  }, []);
   useEffect(() => {
     const fetchformIds = async () => {
       let pre_forms = null
@@ -106,12 +165,15 @@ export default function FilterableTable() {
 
         // Update state with the fully updated array
         setData(updatedForms);
+        if (!run) {
+          setRun(true)
+        }
         setLoading(false);
       }
     };
-
     fetchformIds();
   }, [page, filter]);
+
 
   // show me more 
   const showMore = () => {
@@ -151,7 +213,7 @@ export default function FilterableTable() {
     setEditingCell({ rowId, field });
     setEditedData(prev => ({
       ...prev,
-      [rowId]: { ...prev[rowId], [field]: value }
+      [rowId]: { ...prev[rowId], [field]: convertToPersianText(value) }
     }));
   };
 
@@ -188,11 +250,11 @@ export default function FilterableTable() {
           for (const field of Object.keys(editedData[form_id])) {
             let res = key_stage_matcher(field, temporal_data.data)
             if (res) {
-              if (editedData[form_id][field] === "true" && field != "pastSmoking") {
+              if (editedData[form_id][field] === "بله" && field != "pastSmoking") {
                 editedData[form_id][field] = true;
-              } else if (editedData[form_id][field] === "false" && field != "pastSmoking") {
+              } else if (editedData[form_id][field] === "خیر" && field != "pastSmoking") {
                 editedData[form_id][field] = false;
-              } else if (editedData[form_id][field] === "null" && field != "pastSmoking") {
+              } else if (editedData[form_id][field] == "null" && field != "pastSmoking") {
                 editedData[form_id][field] = null;
               } else if (isNumber(editedData[form_id][field]) && field != "socialSecurityNumber" && field != "postalCode") {
                 editedData[form_id][field] = parseInt(editedData[form_id][field]);
@@ -285,9 +347,16 @@ export default function FilterableTable() {
       } else if (model_name == "bcra") {
         // console.log("this is the bcra pro : " , res)
         setRisks(res.data)
+      } else if (model_name == "gail") {
+        setRisks(res.data)
+      } else if (model_name == "plco") {
+        setRisks(res.data)
       }
     } catch (error) {
       console.error("Failed to fetch risks:", error);
+      console.log("here man !")
+      setInnerloading(false)
+      setRisks(["ریسک مورد نظر یافت نشد"])
     }
   }
   // fetchFormRisk(1)
@@ -338,7 +407,7 @@ export default function FilterableTable() {
                             <button className="model_in_btn" onClick={() => saveTheIdAndOpetions(row.id)}>ورود به مدل</button>
                           </td>
                         )
-                      } else if (key == "gbr" || key == "bcra" || key == "premm5") {
+                      } else if (key == "gail" || key == "bcra" || key == "premm5" || key == "plco") {
                         return (
                           <td
                             className="cell_choose"
@@ -348,6 +417,62 @@ export default function FilterableTable() {
                               showTheRisks(key, row.id)
                               setOpenModalRisks(true)
                             }}>نمایش نتایج</button>
+                          </td>
+                        )
+                      } else if (key == "famCan") {
+                        return (
+                          <td className="cell_choose">
+                            <button
+                              className="model_in_btn"
+                              onClick={() => {
+                                setSelectedFormForFamilyCancer(row.id);
+                                // Fetch family cancer details for this specific form
+                                const fetchDetails = async () => {
+                                  const token = localStorage.getItem("token");
+                                  try {
+                                    const familyCancerRes = await fetchDataGETImg(`admin/form/${row.id}/familycancer`, token);
+                                    setDetailedFamilyCancerData(prev => ({
+                                      ...prev,
+                                      [row.id]: familyCancerRes.data?.familyCancers || []
+                                    }));
+                                    setOpenFamilyCancerModal(true);
+                                  } catch (error) {
+                                    console.error(`Error fetching family cancer details for form ${row.id}:`, error);
+                                  }
+                                };
+                                fetchDetails();
+                              }}
+                            >
+                              نمایش جزئیات
+                            </button>
+                          </td>
+                        )
+                      } else if (key == "cancerInfo") {
+                        return (
+                          <td className="cell_choose">
+                            <button
+                              className="model_in_btn"
+                              onClick={() => {
+                                setSelectedFormForSelfCancer(row.id);
+                                // Fetch family cancer details for this specific form
+                                const fetchDetails = async () => {
+                                  const token = localStorage.getItem("token");
+                                  try {
+                                    const selfCancerRes = await fetchDataGETImg(`admin/form/${row.id}/cancer`, token);
+                                    setDetailedCancerData(prev => ({
+                                      ...prev,
+                                      [row.id]: selfCancerRes.data?.cancers || []
+                                    }));
+                                    setOpenCancerModal(true);
+                                  } catch (error) {
+                                    console.error(`Error fetching family cancer details for form ${row.id}:`, error);
+                                  }
+                                };
+                                fetchDetails();
+                              }}
+                            >
+                              نمایش جزئیات
+                            </button>
                           </td>
                         )
                       } else {
@@ -372,7 +497,7 @@ export default function FilterableTable() {
                                 />
                               </div>
                             ) : (
-                              row[key] != null ? String(row[key]) : ""
+                              convertToPersianText(row[key], key)
                             )}
                           </td>
                         )
@@ -444,6 +569,90 @@ export default function FilterableTable() {
             </>
           )}
 
+        </div>
+      )}
+
+      {openFamilyCancerModal && (
+        <div className="role_modal">
+          <div className="modal_header">
+            <h3>تاریخچه سرطان خانوادگی</h3>
+            <div className="modal_close" onClick={() => {
+              setOpenFamilyCancerModal(false)
+              setSelectedFormForFamilyCancer(null)
+            }}>✕</div>
+          </div>
+          <div className="roles cancer-mode">
+            {detailedFamilyCancerData[selectedFormForFamilyCancer]?.length === 0 || !detailedFamilyCancerData[selectedFormForFamilyCancer] ? "تاریخچه سرطان خانوادگی موجود نیست" :
+              detailedFamilyCancerData[selectedFormForFamilyCancer]?.map((familyMember, index) => (
+                <div key={index} className="role">
+                  <div className="family-member-info">
+                    <p><strong>خویشاوند:</strong> {relativeTypesMap[familyMember.relative]}</p>
+                    <p><strong>وضعیت زندگی:</strong>
+                      {familyMember.lifeStatus === 0 ? "فوت شده" :
+                        familyMember.lifeStatus === 1 ? "زنده" :
+                          familyMember.lifeStatus === 2 ? "نامشخص" : "نامشخص"}
+                    </p>
+                    <div className="cancers-list">
+                      <p style={{ fontWeight: "bold", fontSize: "20px", borderBottom: "1px solid #ccc", padding: "1rem", }}>انواع سرطان:</p>
+                      {familyMember.cancers && familyMember.cancers.length > 0 ?
+                        familyMember.cancers.map((cancer, cancerIndex) => (
+                          <div key={cancerIndex} className="cancer-item">
+                            <p>نوع سرطان: {cancerTypesMap[cancer.cancerType]}</p>
+                            <p>سن تشخیص: {cancer.cancerAge}</p>
+                            {cancer.picture && (
+                              <a href={`${cancer.picture}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="download-link">
+                                دانلود تصویر
+                              </a>
+                            )}
+                          </div>
+                        ))
+                        : "اطلاعات سرطان موجود نیست"}
+                    </div>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      )}
+
+      {openCancerModal && (
+        <div className="role_modal">
+          <div className="modal_header">
+            <h3>تاریخچه سرطان</h3>
+            <div className="modal_close" onClick={() => {
+              setOpenCancerModal(false)
+              setSelectedFormForSelfCancer(null)
+            }}>✕</div>
+          </div>
+          <div className="roles cancer-mode">
+            <div className="role">
+              <div className="cancer-list">
+                {detailedCancerData[selectedFormForSelfCancer]?.length === 0 || !detailedCancerData[selectedFormForSelfCancer] ? "تاریخچه سرطان خانوادگی موجود نیست" :
+                  detailedCancerData[selectedFormForSelfCancer]?.map((cancer, index) => {
+                    return (
+                      <div className="cancer-item">
+                        <p>نوع سرطان: {cancerTypesMap[cancer.cancerType]}</p>
+                        <p>سن تشخیص: {cancer.cancerAge}</p>
+                        {cancer.picture && (
+                          <a href={`${cancer.picture}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="download-link">
+                            دانلود تصویر
+                          </a>
+                        )}
+                      </div>
+
+                    )
+                  })
+                }
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </>

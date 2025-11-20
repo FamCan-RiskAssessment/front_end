@@ -1,64 +1,49 @@
 import { useState } from "react";
 
-function Radio({data_req , data , class_change1 , class_change2 , valueSetter , relation , Enum}){
-    // const [Itext , setIText] = useState('')
-    // const [inpError , setInpError] = useState('')
+function Radio({ data_req, data, class_change1, value, class_change2, valueSetter, relation, Enum }) {
+    // Option value mapping
+    const optionValueMap = {
+        'بله': true,
+        'خیر': false,
+        'نمی دانم': 'null',
+        'نمیدانم': 'null',
+        'نامعین': 'null',
+        'احتمال دارد اما دقیق اطلاع ندارم': 'null'
+    };
 
-    // const validator = (val) => {
-    //     if (data.type == "number" && Number.isFinite(val)){
-    //         setIText(v => val)
-    //     }else if(data.type == "text" && !Number.isFinite(val)){
-    //         setIText(v => val)
-    //     }else{
-    //         setInpError('!لطفا فرم را به درستی پر کنید')
-    //     }
-    // }
-    // console.log(class_change[1])
-    if(relation == undefined){
-        relation = true
-    }
-    if(!relation){
-        data_req = "false"
-    }
-    return(
+    // Default relation to true if undefined
+    const effectiveRelation = relation !== undefined ? relation : true;
+    const effectiveDataReq = effectiveRelation ? data_req : "false";
+
+    return (
         <>
-        <div className={`form_element ${class_change1}`} style={relation ? null : {display:"none"}}>
-            <div className="radio_question">
-                <p>{data.ask}</p>
-            </div>
-            <div className={`total_radio_holder ${class_change2}`}>
-            {data.options.map((opt , index) => 
-            <div className="radio_holder">
-                <label htmlFor={data.Rname}>{opt}</label>
-                {opt == "بله" && data.options.length != 4 && (
-                <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={true} id={opt} onChange={(e) => valueSetter(e.target.id)} />
-                )}
-                {opt == "خیر" && data.options.length != 4 && (
-                <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={false} id={opt} onChange={(e) => valueSetter(e.target.id)} />
-                )}
-                {(opt == "نمی دانم" || opt=="نمیدانم" || opt == "نامعین" || opt == "احتمال دارد اما دقیق اطلاع ندارم") && data.options.length != 4 && (
-                <input data_req={data_req} type="radio" className="radio" name={data.Rname} value="null" id={opt} onChange={(e) => valueSetter(e.target.id)} />
-                )}
-                {(opt == "مرد" || opt == "زن") && (
-                <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} data-enum={Enum} />
-                )}
-                {(opt == "سابقاً مصرف می کرده ام اما کمتر از ۱۵ سال است که ترک کرده ام" || opt == "سابقاً مصرف می کردم اما بیش از ۱۵ سال است که ترک کرده ام") && (
-                <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
-                )}
-                {(opt == "خارج از کشور" || opt == "ایران") && (
-                    <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
-                )}
-                {(opt == "فوت شده" || opt == "در قید حیات") && (
-                    <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} />
-                )}
-                {data.options.length >= 4 && (
-                <input data_req={data_req} type="radio" className="radio" name={data.Rname} value={opt} id={opt} onChange={(e) => valueSetter(e.target.id)} data-enum={Enum} />
-                )}
-            </div>
-            )}
-            </div>
+            <div
+                className={`form_element ${class_change1}`}
+                style={effectiveRelation ? null : { display: "none" }}
+            >
+                <div className="radio_question">
+                    <p>{data.ask}</p>
+                </div>
+                <div className={`total_radio_holder ${class_change2}`}>
+                    {data.options.map((opt) => (
+                        <div className="radio_holder" key={opt}>
+                            <label htmlFor={data.Rname}>{opt}</label>
+                            <input
+                                data_req={effectiveDataReq}
+                                type="radio"
+                                className="radio"
+                                name={data.Rname}
+                                value={optionValueMap[opt] !== undefined ? optionValueMap[opt] : opt}
+                                id={opt}
+                                onChange={(e) => valueSetter?.(e.target.id)}
+                                {...Enum !== undefined ? { 'data-enum': Enum } : {}}
+                            />
+                        </div>
+                    ))}
+                </div>
             </div>
         </>
-    )
+    );
 }
-export default Radio
+
+export default Radio;

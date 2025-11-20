@@ -101,6 +101,25 @@ export const fetchDataGET = async (endpoint, token_auth) => {
 };
 
 
+// utils/fetchItemWithImage.js
+// utils/fetchCancerList.js
+export const fetchDataGETImg = async (endpoint, token) => {
+  const res = await fetch(`http://${APIURL}/${endpoint}`, { // adjust endpoint as needed
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch cancers: ${res.status} ${res.statusText}`);
+  }
+
+  const data = await res.json();
+  return data; // { status: 200, message: "OK", data: { cancer: true, cancers: [...] } }
+};
+
+
 
 export const fetchDataDELETE = async (endpoint, token_auth) => {
   const res = await fetch(`http://${APIURL}/${endpoint}`, {
@@ -196,7 +215,54 @@ export const CancerAdder = (data, cancersArr, deletables, assigned) => {
   return data
 }
 
+// Add these functions to the file
+export const extractDay = (dateString) => {
+  if (!dateString) return null;
+  const match = dateString.match(/T(\d{2}):\d{2}:\d{2}/);
+  return match ? match[1] : null;
+};
 
+export const extractMonth = (dateString) => {
+  if (!dateString) return null;
+  const parts = dateString.split('T')[0].split('-');
+  return parts.length === 3 ? parts[1] : null;
+};
+
+export const extractYear = (dateString) => {
+  if (!dateString) return null;
+  const parts = dateString.split('T')[0].split('-');
+  return parts.length === 3 ? parts[0] : null;
+};
+
+export const cancerTypeEx = async (can, rev) => {
+  try {
+    let token = localStorage.getItem("token");
+    let res = await fetchDataGET("enum/cancer-types", token);
+    if (res && res.data && res.data[can - 1]) {
+      return res.data[can - 1].name;
+    } else {
+      return `سرطان ${can}`;
+    }
+  } catch (error) {
+    console.error("Error fetching cancer types:", error);
+    return `سرطان ${can}`;
+  }
+};
+
+export const relativeTypeEx = async (rel, rev) => {
+  try {
+    let token = localStorage.getItem("token");
+    let res = await fetchDataGET("enum/relatives", token);
+    if (res && res.data && res.data[rel - 1]) {
+      return res.data[rel - 1].name;
+    } else {
+      return `خویشاوند ${rel}`;
+    }
+  } catch (error) {
+    console.error("Error fetching relative types:", error);
+    return `خویشاوند ${rel}`;
+  }
+};
 
 
 // export const nameEnumMap = async (elem, token) => {

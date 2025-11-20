@@ -1,164 +1,403 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import InputBox from "./input_box";
 import Options from "./option";
 import Radio from "./radio";
-import { data } from "react-router-dom";
-import { isNumber, fetchDataGET } from "./utils/tools";
+import { isNumber, fetchDataGET, fetchDataDELETE } from "./utils/tools";
 
-function CancerField({ data_req, data_Inp1, data_Options, data_Radio, data_Inp2, relation, Enum, canArrFunc, canArr, senderFunc, famrel }) {
-    const [cancerArray, setCancerArray] = useState([])
-    const [relData, setRelData] = useState("")
-    const [inp1, setInp1] = useState("")
-    const [inp2, setInp2] = useState("")
-    const [opt, setOpt] = useState("")
-    const [rad, setRad] = useState("")
-    const [image, setImage] = useState(null)
-    const [realImage, setRealImage] = useState(null)
+function CancerField({
+    data_req,
+    data_Inp1,
+    data_Options,
+    data_Radio,
+    data_Inp2,
+    relation: propRelation = true,
+    Enum,
+    canArrFunc,
+    canArr = [],
+    senderFunc,
+    famrel,
+    preData,
+}) {
+    // =============== STATE ===============
+    const [cancerArray, setCancerArray] = useState([]);
+    const [relData, setRelData] = useState("");
+    const [inp1, setInp1] = useState("");
+    const [inp2, setInp2] = useState("");
+    const [opt, setOpt] = useState("");
+    const [rad, setRad] = useState("");
+    const [imagePreviewUrl, setImagePreviewUrl] = useState(null); // Object URL for preview
+    const [imageFile, setImageFile] = useState(null); // Raw File
+    const [isFilled, setIsFilled] = useState(false)
+    const [forceIsReq, setForceIsReq] = useState(true)
+    // console.log(inp1, inp2, opt, rad)
 
-    const ageRef = useRef(null)
-    const typeRef = useRef(null)
+    // =============== REFS ===============
+    const typeRef = useRef(null);
+
+    // =============== EFFECTS ===============
+    if (famrel == "مادر") {
+        console.log("we have found what we wanted ! :  ", famrel, preData)
+    }
+    // change because it is needed :
     useEffect(() => {
-        if (famrel != undefined && famrel != null) {
-            setRelData(famrel)
+        if (preData != null) {
+            data_req = false
         }
-    })
-    // console.log(cancerArray)
-    const inpSetter1 = (val) => {
-        setInp1(v => val)
-    }
-    const inpSetter2 = (val) => {
-        setInp2(v => val)
-    }
-    const optSetter = (val) => {
-        setOpt(v => val)
-    }
-    const radSetter = (val) => {
-        if (val == "فوت شده") {
-            setRad(0)
-        } else {
-            setRad(1)
+    }, [data_req])
+
+
+
+    // 1. Sync famrel → relData
+    useEffect(() => {
+        if (famrel != null) setRelData(famrel);
+    }, [famrel]);
+
+    // 2. Load preData cancers — only when preData changes
+    useEffect(() => {
+        if (preData?.data?.cancers) {
+            // Handle self cancers
+            const loadedSelf = preData.data.cancers.map((can) => ({
+                id: can.id,
+                relation: can.relative, // adjust if you have relation in data
+                cancerType: can.cancerType,
+                cancerAge: can.cancerAge,
+                status: can.lifeStatus, // or infer from context
+                image: can.picture, // full URL (string)
+            }));
+            setCancerArray(loadedSelf);
+        } else if (preData?.data?.familyCancers) {
+            // Handle family cancers - filter by the current family relation
+            // Move the async logic outside the filter
+            const processFamilyCancers = async () => {
+                let token = localStorage.getItem("token")
+                let rel = await fetchDataGET("enum/relatives", token)
+
+                // Filter family cancers based on the relation
+                const filteredFamilyCancers = preData.data.familyCancers.filter((familyMember) => {
+                    const relationName = rel.data[familyMember.relative - 1]?.name;
+                    // console.log("ooooooooooooooooooooooooooo : ", relationName === famrel, famrel, relationName)
+                    return relationName === famrel;
+                });
+
+                console.log("I am in here , : ", filteredFamilyCancers, preData, famrel)
+                return filteredFamilyCancers;
+            };
+
+            // Execute the async function and update state accordingly
+            processFamilyCancers().then(filteredFamilyCancers => {
+                if (filteredFamilyCancers.length > 0) {
+                    // Map each family member's cancers into the format expected by the UI
+                    const familyCancerRows = [];
+
+                    filteredFamilyCancers.forEach((familyMember) => {
+                        familyMember.cancers.forEach((cancer) => {
+                            familyCancerRows.push({
+                                id: cancer.id,
+                                relation: familyMember.relative,
+                                cancerType: cancer.cancerType,
+                                cancerAge: cancer.cancerAge,
+                                status: familyMember.lifeStatus, // lifeStatus is at the family member level
+                                image: cancer.picture, // picture is at the cancer level
+                            });
+                        });
+                    });
+
+                    setCancerArray(familyCancerRows);
+                    setIsFilled(true)
+                } else {
+                    // If no matching family relation is found, set empty array
+                    setCancerArray([]);
+                    setIsFilled(false)
+                }
+            }).catch(error => {
+                console.error("Error processing family cancers:", error);
+                setCancerArray([]); // Set empty array in case of error
+                setIsFilled(false)
+            });
         }
-    }
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            // create a URL for preview
-            setRealImage(file)
-            setImage(URL.createObjectURL(file));
+    }, [preData, famrel]); // ✅ dependency included
+
+    // 3. Cleanup image preview URLs
+    useEffect(() => {
+        return () => {
+            if (imagePreviewUrl) {
+                URL.revokeObjectURL(imagePreviewUrl);
+            }
+        };
+    }, [imagePreviewUrl]);
+
+    // =============== HANDLERS ===============
+
+    const handleInp1Change = useCallback((val) => setInp1(val), []);
+    const handleInp2Change = useCallback((val) => setInp2(val), []);
+    const handleOptChange = useCallback((val) => setOpt(val), []);
+    const handleRadChange = useCallback((val) => {
+        setRad(val === "فوت شده" ? 0 : 1);
+    }, []);
+
+    const handleFileChange = useCallback((e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Revoke previous URL
+        if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
+
+        const url = URL.createObjectURL(file);
+        setImagePreviewUrl(url);
+        setImageFile(file);
+    }, [imagePreviewUrl]);
+
+    const handleAddRow = useCallback(async () => {
+        // Validate required fields (skip if field is null)
+        const hasInp1 = !data_Inp1 || inp1.trim() !== "";
+        const hasInp2 = !data_Inp2 || inp2.trim() !== "";
+        const hasOpt = !data_Options || opt !== "";
+        const hasRad = !data_Radio || rad !== "";
+
+        if (!hasInp1 || !hasInp2 || !hasOpt || !hasRad) {
+            alert("لطفاً فیلدهای الزامی را پر کنید.");
+            return;
         }
-    };
-    // console.log(cancerArray)
-    const add_row = async () => {
-        if ((inp1 || data_Inp1 == null) && (inp2 || data_Inp2 == null) && (opt || data_Options == null) && (rad || data_Radio == null)) {
-            setCancerArray((prev) => [...prev, [inp1, opt, inp2, rad, image]]);
-            const enumName = typeRef.current.getAttribute('data-enum');
-            let token = localStorage.getItem("token")
-            console.log("fuckU fuckU fuckU fuckU fuckU fuckU fuckU fuckU fuckU fuckU fuckU fuckU fuckU fuckU fuckU fuckU ")
+
+        // Prepare new row - Create a new URL for the table display that won't be affected by form reset
+        let imageDisplayUrl = null;
+        if (imageFile) {
+            imageDisplayUrl = URL.createObjectURL(imageFile);
+        }
+
+        const newRow = {
+            relation: relData,
+            cancerType: opt,
+            cancerAge: inp2,
+            status: rad,
+            image: imageDisplayUrl || "",
+            // Store the actual file to be used by senderFunc and to keep track of it
+            imageFile: imageFile,
+        };
+
+        // Update UI table
+        setCancerArray((prev) => [...prev, newRow]);
+
+        // Call external sender
+        if (senderFunc) {
+            senderFunc(relData, inp2, opt, rad, imageFile);
+        }
+
+        // Resolve enum & update canArr
+        if (canArrFunc && typeRef.current) {
+            const enumName = typeRef.current.getAttribute("data-enum");
             if (enumName) {
                 try {
+                    const token = localStorage.getItem("token");
                     const res = await fetchDataGET(`enum/${enumName}`, token);
-                    const match = res.data.find(r => r.name === typeRef.current.value);
+                    const match = res.data.find((r) => r.name === typeRef.current.value);
+
                     if (match) {
-                        let payload = {
-                            cancerAge: isNumber(inp2) ? parseInt(inp2) : null,
+                        const payload = {
+                            cancerAge: isNumber(inp2) ? parseInt(inp2, 10) : null,
                             cancerType: match.id,
-                        }
-                        let nextcanArr = [...canArr, payload]
-                        console.log("are you working th ebitch of  alll th eakjhakjdhajaihp;")
-                        canArrFunc(nextcanArr)
+                        };
+                        canArrFunc([...canArr, payload]);
                     }
                 } catch (err) {
-                    console.warn(`Enum resolve failed: ${enumName}`, err);
+                    console.warn(`Failed to resolve enum: ${enumName}`, err);
                 }
             }
-
         }
-
+        // Reset form fields
         setInp1("");
+        console.log("////////////////////////////////////////////////////////")
         setInp2("");
         setOpt("");
         setRad("");
-        setImage(null)
-    }
-    if (relation == undefined) {
-        relation = true
-    }
-    if (!relation) {
-        data_req = "false"
-    }
+
+        // Reset file input visually
+        const fileInput = document.getElementById("file_uploader");
+        if (fileInput) {
+            fileInput.value = "";
+        }
+
+        // Clean up the preview URL but keep the imageDisplayUrl in the table item
+        if (imagePreviewUrl) {
+            URL.revokeObjectURL(imagePreviewUrl);
+        }
+        setImageFile(null);
+        setImagePreviewUrl(null);
+    }, [
+        data_Inp1,
+        data_Inp2,
+        data_Options,
+        data_Radio,
+        inp1,
+        inp2,
+        opt,
+        rad,
+        relData,
+        imageFile,
+        imagePreviewUrl,
+        senderFunc,
+        canArrFunc,
+        canArr,
+    ]);
+
+    const handleDeleteRow = useCallback((index, id) => {
+        setCancerArray((prev) => prev.filter((_, i) => i !== index));
+        let token = localStorage.getItem("token")
+        let form_id = localStorage.getItem("form_id")
+        let delRow = fetchDataDELETE(`admin/form/${form_id}/cancer/${id}`)
+        if (delRow.status == 200) {
+            addToast({
+                title: "سرطان مورد نظر حذف شد",
+                type: 'success',
+                duration: 4000
+            })
+        }
+        // Note: You may want to also sync deletion with canArr/sender via callback
+    }, []);
+
+    // =============== RENDER ===============
+    const shouldRender = propRelation;
+
+    if (!shouldRender && !isFilled) return null;
+
     return (
-        <>
-            <div className="cancer_element" style={relation ? null : { display: "none" }}>
-                <div className="cancer_title">
-                    <p>در جدول نام، نوع یا انواع سرطان و سن ابتلا را درج کنید</p>
-                </div>
-                <div className="jadval_and_form">
-                    <div className="total_cancer_holder">
-                        {data_Inp1 != null && <InputBox data_req={data_req} data={data_Inp1} valueSetter={inpSetter1} colRef={ageRef}></InputBox>}
-                        {data_Options != null && <Options data_req={data_req} data={data_Options} valueSetter={setOpt} Enum={Enum} colRef={typeRef}></Options>}
-                        {data_Inp2 != null && <InputBox data_req={data_req} data={data_Inp2} valueSetter={inpSetter2}></InputBox>}
-                        {data_Radio != null && <Radio data_req={data_req} data={data_Radio} valueSetter={radSetter}></Radio>}
-                        <div className="tah_holder">
-                            <div className="form_element">
-                                <div className="total_file_uploader">
-                                    <label htmlFor="file_uploader">لطفا عکسی بارگذاری کنید</label>
-                                    <input type="file" className="file_uploader" accept="image/*" onChange={handleFileChange} />
-                                </div>
+        <div className="cancer_element">
+            <div className="cancer_title">
+                <p>در جدول نام، نوع یا انواع سرطان و سن ابتلا را درج کنید</p>
+            </div>
+
+            <div className="jadval_and_form">
+                {/* Form */}
+                <div className="total_cancer_holder">
+                    {data_Inp1 && (
+                        <InputBox
+                            data_req={"false"}
+                            data={data_Inp1}
+                            valueSetter={handleInp1Change}
+                            value={inp1}
+                        />
+                    )}
+                    {data_Options && (
+                        <Options
+                            data_req={"false"}
+                            data={data_Options}
+                            valueSetter={handleOptChange}
+                            Enum={Enum}
+                            value={opt}
+                            colRef={typeRef}
+                        />
+                    )}
+                    {data_Inp2 && (
+                        <InputBox
+                            data_req={"false"}
+                            data={data_Inp2}
+                            valueSetter={handleInp2Change}
+                            value={inp2}
+                        />
+                    )}
+                    {data_Radio && (
+                        <Radio
+                            data_req={"false"}
+                            data={data_Radio}
+                            valueSetter={handleRadChange}
+                            value={rad}
+                        />
+                    )}
+
+                    <div className="tah_holder">
+                        <div className="form_element">
+                            <div className="total_file_uploader">
+                                <label htmlFor="file_uploader">لطفا عکسی بارگذاری کنید</label>
+                                <input
+                                    id="file_uploader"
+                                    type="file"
+                                    className="file_uploader"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                // value={imageFile}
+                                />
+                                {imagePreviewUrl && (
+                                    <div style={{ marginTop: "0.5rem", textAlign: "center" }}>
+                                        <img
+                                            src={imagePreviewUrl}
+                                            alt="پیش‌نمایش"
+                                            style={{
+                                                maxWidth: "100px",
+                                                maxHeight: "100px",
+                                                borderRadius: "4px",
+                                                border: "1px solid #ddd",
+                                            }}
+                                        />
+                                    </div>
+                                )}
                             </div>
-                            <button type="button" className="btn_question jadval_adder" onClick={
-                                () => {
-                                    add_row()
-                                    senderFunc(relData, inp2, opt, rad, realImage)
-                                }
-                            }>اضافه</button>
                         </div>
-                    </div>
-                    <div className="table_holder">
-                        <table border="0.5" cellSpacing="0" cellPadding="8">
-                            <thead className="sar_jadval">
-                                <tr>
 
-                                    <th>{data_Inp1 != null && "ارتباط"}</th>
-                                    <th>{data_Options != null && "سرطان"}</th>
-                                    <th>{data_Inp2 != null && "سن"}</th>
-                                    <th>{data_Radio != null && "در قید حیات"}</th>
-                                    <th>تصویر</th>
-                                    <th>عمل</th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {cancerArray.map((canEl, index) => (
-                                    <tr key={index}>
-                                        <td>{canEl[0]}</td>
-                                        <td>{canEl[1]}</td>
-                                        <td>{canEl[2]}</td>
-                                        <td>{canEl[3]}</td>
-                                        <td>
-                                            <img src={canEl[4]} alt="preview" />
-                                        </td>
-                                        <td>
-                                            <button
-                                                type="button"
-                                                className="btn_question"
-                                                onClick={() => {
-                                                    setCancerArray((prev) => prev.filter((_, i) => i !== index))
-                                                    deleteTheCan()
-                                                }
-                                                }
-                                            >
-                                                حذف
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                        <button
+                            type="button"
+                            className="btn_question jadval_adder"
+                            onClick={handleAddRow}
+                        >
+                            اضافه
+                        </button>
                     </div>
                 </div>
-            </div >
-        </>
-    )
+
+                {/* Table */}
+                <div className="table_holder">
+                    <table border="0.5" cellSpacing="0" cellPadding="8">
+                        <thead className="sar_jadval">
+                            <tr>
+                                {data_Inp1 && <th>ارتباط</th>}
+                                {data_Options && <th>سرطان</th>}
+                                {data_Inp2 && <th>سن</th>}
+                                {data_Radio && <th>در قید حیات</th>}
+                                <th>تصویر</th>
+                                <th>عمل</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {cancerArray.map((row, index) => (
+                                <tr key={index}>
+                                    {data_Inp1 && <td>{row.relation}</td>}
+                                    {data_Options && <td>{row.cancerType}</td>}
+                                    {data_Inp2 && <td>{row.cancerAge}</td>}
+                                    {data_Radio && (
+                                        <td>{row.status === 0 ? "فوت شده" : "زنده"}</td>
+                                    )}
+                                    <td>
+                                        {row.image && (
+                                            <img
+                                                src={row.image}
+                                                alt="تصویر"
+                                                style={{
+                                                    maxWidth: "80px",
+                                                    maxHeight: "80px",
+                                                    borderRadius: "2px",
+                                                }}
+                                                onError={(e) => {
+                                                    e.target.style.display = "none";
+                                                }}
+                                            />
+                                        )}
+                                    </td>
+                                    <td>
+                                        <button
+                                            type="button"
+                                            className="btn_question"
+                                            onClick={() => handleDeleteRow(index, row.id)}
+                                        >
+                                            حذف
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    );
 }
 
-export default CancerField
+export default CancerField;

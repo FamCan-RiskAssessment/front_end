@@ -1,317 +1,364 @@
 {
-    "radio_opts_childCancer": {
-      "Rname": "childCancer",
-      "ask": "آیا از میان فرزندان شما تا به حال برای کسی سرطان تشخیص داده شده؟",
-      "options": ["بله", "خیر"]
+  "radio_opts_childCancer": {
+    "Rname": "childCancer",
+    "ask": "آیا از میان فرزندان شما تا به حال برای کسی سرطان تشخیص داده شده؟",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "childCard": {
+    "childName": {
+      "engName": "childName",
+      "inpName": "نام فرزند",
+      "type": "text",
+      "placeHolder": "نام فرزند"
     },
-    "childCard": {
-      "childName": {
-        "engName": "childName",
-        "inpName": "نام فرزند",
-        "type": "text",
-        "placeHolder": "نام فرزند"
-      },
-      "childCancerType": {
-        "ask": "نوع یا انواع سرطان",
-        "Oname": "childCancerType",
-        "options": [
-          "انتخاب کنید",
-          "سرطان پستان",
-          "سرطان تخمدان",
-          "سرطان پانکراس",
-          "سرطان پروستات",
-          "سرطان روده بزرگ",
-          "تومور مغزی",
-          "سرطان های دیگر"
-        ]
-      },
-      "childCancerAge": {
-        "engName": "childCancerAge",
-        "inpName": "سن ابتلا",
-        "type": "number",
-        "placeHolder": "سن ابتلا"
-      },
-      "childLifeStatus": {
-        "Rname": "childLifeStatus",
-        "ask": "وضعیت فعلی",
-        "options": ["در قید حیات", "فوت شده"]
-      },
-      "attachment": {
-        "fieldName": "لطفاً تصویر را بارگذاری کنید.",
-        "inputType": "file",
-        "name": "cancerChildFiles",
-        "required": true
-      }
+    "childCancerType": {
+      "ask": "نوع یا انواع سرطان",
+      "Oname": "childCancerType",
+      "options": [
+        "انتخاب کنید",
+        "سرطان پستان",
+        "سرطان تخمدان",
+        "سرطان پانکراس",
+        "سرطان پروستات",
+        "سرطان روده بزرگ",
+        "تومور مغزی",
+        "سرطان های دیگر"
+      ]
     },
-    "radio_opts_motherCancer": {
-      "Rname": "motherCancer",
-      "ask": "آیا تا به حال برای مادر شما سرطان تشخیص داده شده؟",
-      "options": ["بله", "خیر"]
+    "childCancerAge": {
+      "engName": "childCancerAge",
+      "inpName": "سن ابتلا",
+      "type": "number",
+      "placeHolder": "سن ابتلا"
     },
-    "motherCard": {
-      "motherName": {
-        "engName": "motherName",
-        "inpName": "نام مادر",
-        "type": "text",
-        "placeHolder": "نام مادر"
-      },
-      "motherLifeStatus": {
-        "Rname": "motherLifeStatus",
-        "ask": "وضعیت فعلی",
-        "options": ["در قید حیات", "فوت شده"]
-      },
-      "motherCancerType": {
-        "ask": "نوع یا انواع سرطان",
-        "Oname": "motherCancerType",
-        "options": [
-          "انتخاب کنید",
-          "سرطان پستان",
-          "سرطان تخمدان",
-          "سرطان پانکراس",
-          "سرطان پروستات",
-          "سرطان روده بزرگ",
-          "تومور مغزی",
-          "سرطان های دیگر"
-        ]
-      },
-      "motherCancerAge": {
-        "engName": "motherCancerAge",
-        "inpName": "سن ابتلا",
-        "type": "number",
-        "placeHolder": "سن ابتلا"
-      },
-      "attachment": {
-        "fieldName": "لطفاً تصویر را بارگذاری کنید.",
-        "inputType": "file",
-        "name": "motherCancerFiles",
-        "required": true
-      }
+    "childLifeStatus": {
+      "Rname": "childLifeStatus",
+      "ask": "وضعیت فعلی",
+      "options": [
+        "در قید حیات",
+        "فوت شده"
+      ]
     },
-    "radio_opts_fatherCancer": {
-      "Rname": "fatherCancer",
-      "ask": "آیا تا به حال برای پدر شما سرطان تشخیص داده شده؟",
-      "options": ["بله", "خیر"]
+    "attachment": {
+      "fieldName": "لطفاً تصویر را بارگذاری کنید.",
+      "inputType": "file",
+      "name": "cancerChildFiles",
+      "required": true
+    }
+  },
+  "radio_opts_motherCancer": {
+    "Rname": "motherCancer",
+    "ask": "آیا تا به حال برای مادر شما سرطان تشخیص داده شده؟",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "motherCard": {
+    "motherName": {
+      "engName": "motherName",
+      "inpName": "نام مادر",
+      "type": "text",
+      "placeHolder": "نام مادر"
     },
-    "fatherCard": {
-      "fatherName": {
-        "engName": "fatherName",
-        "inpName": "نام پدر",
-        "type": "text",
-        "placeHolder": "نام پدر"
-      },
-      "fatherLifeStatus": {
-        "Rname": "fatherLifeStatus",
-        "ask": "وضعیت فعلی",
-        "options": ["در قید حیات", "فوت شده"]
-      },
-      "fatherCancerType": {
-        "ask": "نوع یا انواع سرطان",
-        "Oname": "fatherCancerType",
-        "options": [
-          "انتخاب کنید",
-          "سرطان پستان",
-          "سرطان تخمدان",
-          "سرطان پانکراس",
-          "سرطان پروستات",
-          "سرطان روده بزرگ",
-          "تومور مغزی",
-          "سرطان های دیگر"
-        ]
-      },
-      "fatherCancerAge": {
-        "engName": "fatherCancerAge",
-        "inpName": "سن ابتلا",
-        "type": "number",
-        "placeHolder": "سن ابتلا"
-      },
-      "attachment": {
-        "fieldName": "لطفاً تصویر را بارگذاری کنید.",
-        "inputType": "file",
-        "name": "fatherCancerFiles",
-        "required": true
-      }
+    "motherLifeStatus": {
+      "Rname": "motherLifeStatus",
+      "ask": "وضعیت فعلی",
+      "options": [
+        "در قید حیات",
+        "فوت شده"
+      ]
     },
-    "radio_opts_bsCancer": {
-      "Rname": "siblingCancer",
-      "ask": "آیا از میان خواهران یا برادران شما تا به حال برای کسی سرطان تشخیص داده اند؟",
-      "options": ["بله", "خیر"]
+    "motherCancerType": {
+      "ask": "نوع یا انواع سرطان",
+      "Oname": "motherCancerType",
+      "options": [
+        "انتخاب کنید",
+        "سرطان پستان",
+        "سرطان تخمدان",
+        "سرطان پانکراس",
+        "سرطان پروستات",
+        "سرطان روده بزرگ",
+        "تومور مغزی",
+        "سرطان های دیگر"
+      ]
     },
-    "siblingCard": {
-      "siblingName": {
-        "engName": "siblingName",
-        "inpName": "نام خواهر یا برادر",
-        "type": "text",
-        "placeHolder": "نام خواهر یا برادر"
-      },
-      "siblingLifeStatus": {
-        "Rname": "siblingLifeStatus",
-        "ask": "وضعیت فعلی",
-        "options": ["در قید حیات", "فوت شده"]
-      },
-      "siblingCancerType": {
-        "ask": "نوع یا انواع سرطان",
-        "Oname": "siblingCancerType",
-        "options": [
-          "انتخاب کنید",
-          "سرطان پستان",
-          "سرطان تخمدان",
-          "سرطان پانکراس",
-          "سرطان پروستات",
-          "سرطان روده بزرگ",
-          "تومور مغزی",
-          "سرطان های دیگر"
-        ]
-      },
-      "siblingCancerAge": {
-        "engName": "siblingCancerAge",
-        "inpName": "سن ابتلا",
-        "type": "number",
-        "placeHolder": "سن ابتلا"
-      },
-      "attachment": {
-        "fieldName": "لطفاً تصویر را بارگذاری کنید.",
-        "inputType": "file",
-        "name": "bsCancerFiles",
-        "required": true
-      }
+    "motherCancerAge": {
+      "engName": "motherCancerAge",
+      "inpName": "سن ابتلا",
+      "type": "number",
+      "placeHolder": "سن ابتلا"
     },
-    "radio_opts_ameAmoCancer": {
-      "Rname": "ameAmoCancer",
-      "ask": "آیا از میان عمه‌ها و عموهای شما تا به حال برای کسی سرطان تشخیص داده اند؟",
-      "options": ["بله", "خیر"]
+    "attachment": {
+      "fieldName": "لطفاً تصویر را بارگذاری کنید.",
+      "inputType": "file",
+      "name": "motherCancerFiles",
+      "required": true
+    }
+  },
+  "radio_opts_fatherCancer": {
+    "Rname": "fatherCancer",
+    "ask": "آیا تا به حال برای پدر شما سرطان تشخیص داده شده؟",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "fatherCard": {
+    "fatherName": {
+      "engName": "fatherName",
+      "inpName": "نام پدر",
+      "type": "text",
+      "placeHolder": "نام پدر"
     },
-    "uncleAuntCard": {
-      "uncleAuntName": {
-        "engName": "ameAmoName",
-        "inpName": "نام عمه یا عمو",
-        "type": "text",
-        "placeHolder": "نام عمه یا عمو"
-      },
-      "uncleAuntLifeStatus": {
-        "Rname": "ameAmoLifeStatus",
-        "ask": "وضعیت فعلی",
-        "options": ["در قید حیات", "فوت شده"]
-      },
-      "uncleAuntCancerType": {
-        "ask": "نوع یا انواع سرطان",
-        "Oname": "ameAmoCancerType",
-        "options": [
-          "انتخاب کنید",
-          "سرطان پستان",
-          "سرطان تخمدان",
-          "سرطان پانکراس",
-          "سرطان پروستات",
-          "سرطان روده بزرگ",
-          "تومور مغزی",
-          "سرطان های دیگر"
-        ]
-      },
-      "uncleAuntCancerAge": {
-        "engName": "ameAmoCancerAge",
-        "inpName": "سن ابتلا",
-        "type": "number",
-        "placeHolder": "سن ابتلا"
-      },
-      "attachment": {
-        "fieldName": "لطفاً تصویر را بارگذاری کنید.",
-        "inputType": "file",
-        "name": "ameAmoCancerFiles",
-        "required": true
-      }
+    "fatherLifeStatus": {
+      "Rname": "fatherLifeStatus",
+      "ask": "وضعیت فعلی",
+      "options": [
+        "در قید حیات",
+        "فوت شده"
+      ]
     },
-    "radio_opts_khaleDaeiCancer": {
-      "Rname": "khaleDaeiCancer",
-      "ask": "آیا از میان خاله ها و دایی های شما تا به حال برای کسی سرطان تشخیص داده اند؟",
-      "options": ["بله", "خیر"]
+    "fatherCancerType": {
+      "ask": "نوع یا انواع سرطان",
+      "Oname": "fatherCancerType",
+      "options": [
+        "انتخاب کنید",
+        "سرطان پستان",
+        "سرطان تخمدان",
+        "سرطان پانکراس",
+        "سرطان پروستات",
+        "سرطان روده بزرگ",
+        "تومور مغزی",
+        "سرطان های دیگر"
+      ]
     },
-    "khaleDaeiCard": {
-      "khaleDaeiName": {
-        "engName": "khaleDaeiName",
-        "inpName": "نام خاله یا دایی",
-        "type": "text",
-        "placeHolder": "نام خاله یا دایی"
-      },
-      "khaleDaeiLifeStatus": {
-        "Rname": "khaleDaeiLifeStatusx",
-        "ask": "وضعیت فعلی",
-        "options": ["در قید حیات", "فوت شده"]
-      },
-      "khaleDaeiCancerType": {
-        "ask": "نوع یا انواع سرطان",
-        "Oname": "khaleDaeiCancerType",
-        "options": [
-          "انتخاب کنید",
-          "سرطان پستان",
-          "سرطان تخمدان",
-          "سرطان پانکراس",
-          "سرطان پروستات",
-          "سرطان روده بزرگ",
-          "تومور مغزی",
-          "سرطان های دیگر"
-        ]
-      },
-      "khaleDaeiCancerAge": {
-        "engName": "khaleDaeiCancerAge",
-        "inpName": "سن ابتلا",
-        "type": "number",
-        "placeHolder": "سن ابتلا"
-      },
-      "attachment": {
-        "fieldName": "لطفاً تصویر را بارگذاری کنید.",
-        "inputType": "file",
-        "name": "khaleDaeiCancerFiles",
-        "required": true
-      }
+    "fatherCancerAge": {
+      "engName": "fatherCancerAge",
+      "inpName": "سن ابتلا",
+      "type": "number",
+      "placeHolder": "سن ابتلا"
     },
-    "otherRelativeCard": {
-      "otherName": {
-        "engName": "otherRelativeName",
-        "inpName": "نام شخص",
-        "type": "text",
-        "placeHolder": "نام شخص"
-      },
-      "otherRelation": {
-        "engName": "otherRelativeRelation",
-        "inpName": "نسبت",
-        "type": "text",
-        "placeHolder": "نسبت"
-      },
-      "otherBirthYear": {
-        "engName": "otherRelativeCancerAge",
-        "inpName": "سال تولد",
-        "type": "number",
-        "placeHolder": "____"
-      },
-      "otherLifeStatus": {
-        "Rname": "otherRelativeLifeStatus",
-        "ask": "وضعیت فعلی",
-        "options": ["در قید حیات", "فوت شده"]
-      },
-      "otherCancerType": {
-        "ask": "نوع یا انواع سرطان",
-        "Oname": "otherRelativeCancerType",
-        "options": [
-          "انتخاب کنید",
-          "سرطان پستان",
-          "سرطان تخمدان",
-          "سرطان پانکراس",
-          "سرطان پروستات",
-          "سرطان روده بزرگ",
-          "تومور مغزی",
-          "سرطان های دیگر"
-        ]
-      },
-      "otherCancerAge": {
-        "engName": "otherRelativeCancerAge",
-        "inpName": "سن ابتلا",
-        "type": "number",
-        "placeHolder": "سن ابتلا"
-      },
-      "attachment": {
-        "fieldName": "لطفاً تصویر را بارگذاری کنید.",
-        "inputType": "file",
-        "name": "otherCancerFiles",
-        "required": true
-      }
+    "attachment": {
+      "fieldName": "لطفاً تصویر را بارگذاری کنید.",
+      "inputType": "file",
+      "name": "fatherCancerFiles",
+      "required": true
+    }
+  },
+  "radio_opts_bsCancer": {
+    "Rname": "siblingCancer",
+    "ask": "آیا از میان خواهران یا برادران شما تا به حال برای کسی سرطان تشخیص داده اند؟",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "siblingCard": {
+    "siblingName": {
+      "engName": "siblingName",
+      "inpName": "نام خواهر یا برادر",
+      "type": "text",
+      "placeHolder": "نام خواهر یا برادر"
+    },
+    "siblingLifeStatus": {
+      "Rname": "siblingLifeStatus",
+      "ask": "وضعیت فعلی",
+      "options": [
+        "در قید حیات",
+        "فوت شده"
+      ]
+    },
+    "siblingCancerType": {
+      "ask": "نوع یا انواع سرطان",
+      "Oname": "siblingCancerType",
+      "options": [
+        "انتخاب کنید",
+        "سرطان پستان",
+        "سرطان تخمدان",
+        "سرطان پانکراس",
+        "سرطان پروستات",
+        "سرطان روده بزرگ",
+        "تومور مغزی",
+        "سرطان های دیگر"
+      ]
+    },
+    "siblingCancerAge": {
+      "engName": "siblingCancerAge",
+      "inpName": "سن ابتلا",
+      "type": "number",
+      "placeHolder": "سن ابتلا"
+    },
+    "attachment": {
+      "fieldName": "لطفاً تصویر را بارگذاری کنید.",
+      "inputType": "file",
+      "name": "bsCancerFiles",
+      "required": true
+    }
+  },
+  "radio_opts_ameAmoCancer": {
+    "Rname": "ameAmoCancer",
+    "ask": "آیا از میان عمه‌ها و عموهای شما تا به حال برای کسی سرطان تشخیص داده اند؟",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "uncleAuntCard": {
+    "uncleAuntName": {
+      "engName": "ameAmoName",
+      "inpName": "نام عمه یا عمو",
+      "type": "text",
+      "placeHolder": "نام عمه یا عمو"
+    },
+    "uncleAuntLifeStatus": {
+      "Rname": "ameAmoLifeStatus",
+      "ask": "وضعیت فعلی",
+      "options": [
+        "در قید حیات",
+        "فوت شده"
+      ]
+    },
+    "uncleAuntCancerType": {
+      "ask": "نوع یا انواع سرطان",
+      "Oname": "ameAmoCancerType",
+      "options": [
+        "انتخاب کنید",
+        "سرطان پستان",
+        "سرطان تخمدان",
+        "سرطان پانکراس",
+        "سرطان پروستات",
+        "سرطان روده بزرگ",
+        "تومور مغزی",
+        "سرطان های دیگر"
+      ]
+    },
+    "uncleAuntCancerAge": {
+      "engName": "ameAmoCancerAge",
+      "inpName": "سن ابتلا",
+      "type": "number",
+      "placeHolder": "سن ابتلا"
+    },
+    "attachment": {
+      "fieldName": "لطفاً تصویر را بارگذاری کنید.",
+      "inputType": "file",
+      "name": "ameAmoCancerFiles",
+      "required": true
+    }
+  },
+  "radio_opts_khaleDaeiCancer": {
+    "Rname": "khaleDaeiCancer",
+    "ask": "آیا از میان خاله ها و دایی های شما تا به حال برای کسی سرطان تشخیص داده اند؟",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "khaleDaeiCard": {
+    "khaleDaeiName": {
+      "engName": "khaleDaeiName",
+      "inpName": "نام خاله یا دایی",
+      "type": "text",
+      "placeHolder": "نام خاله یا دایی"
+    },
+    "khaleDaeiLifeStatus": {
+      "Rname": "khaleDaeiLifeStatusx",
+      "ask": "وضعیت فعلی",
+      "options": [
+        "در قید حیات",
+        "فوت شده"
+      ]
+    },
+    "khaleDaeiCancerType": {
+      "ask": "نوع یا انواع سرطان",
+      "Oname": "khaleDaeiCancerType",
+      "options": [
+        "انتخاب کنید",
+        "سرطان پستان",
+        "سرطان تخمدان",
+        "سرطان پانکراس",
+        "سرطان پروستات",
+        "سرطان روده بزرگ",
+        "تومور مغزی",
+        "سرطان های دیگر"
+      ]
+    },
+    "khaleDaeiCancerAge": {
+      "engName": "khaleDaeiCancerAge",
+      "inpName": "سن ابتلا",
+      "type": "number",
+      "placeHolder": "سن ابتلا"
+    },
+    "attachment": {
+      "fieldName": "لطفاً تصویر را بارگذاری کنید.",
+      "inputType": "file",
+      "name": "khaleDaeiCancerFiles",
+      "required": true
+    }
+  },
+  "radio_opts_otherRelative": {
+    "Rname": "otherRelative",
+    "ask": "آیا از بقیه ی افراد خانواده شما تا به حال برای کسی سرطان تشخیص داده اند؟",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "otherRelativeCard": {
+    "otherName": {
+      "engName": "otherRelativeName",
+      "inpName": "نام شخص",
+      "type": "text",
+      "placeHolder": "نام شخص"
+    },
+    "otherRelation": {
+      "engName": "otherRelativeRelation",
+      "inpName": "نسبت",
+      "type": "text",
+      "placeHolder": "نسبت"
+    },
+    "otherBirthYear": {
+      "engName": "otherRelativeCancerAge",
+      "inpName": "سال تولد",
+      "type": "number",
+      "placeHolder": "____"
+    },
+    "otherLifeStatus": {
+      "Rname": "otherRelativeLifeStatus",
+      "ask": "وضعیت فعلی",
+      "options": [
+        "در قید حیات",
+        "فوت شده"
+      ]
+    },
+    "otherCancerType": {
+      "ask": "نوع یا انواع سرطان",
+      "Oname": "otherRelativeCancerType",
+      "options": [
+        "انتخاب کنید",
+        "سرطان پستان",
+        "سرطان تخمدان",
+        "سرطان پانکراس",
+        "سرطان پروستات",
+        "سرطان روده بزرگ",
+        "تومور مغزی",
+        "سرطان های دیگر"
+      ]
+    },
+    "otherCancerAge": {
+      "engName": "otherRelativeCancerAge",
+      "inpName": "سن ابتلا",
+      "type": "number",
+      "placeHolder": "سن ابتلا"
+    },
+    "attachment": {
+      "fieldName": "لطفاً تصویر را بارگذاری کنید.",
+      "inputType": "file",
+      "name": "otherCancerFiles",
+      "required": true
     }
   }
+}

@@ -5,6 +5,7 @@ import CheckBox from './checkbox';
 import { useToast } from "./toaster";
 import ToastProvider from "./toaster";
 import { fetchDataGET, fetchDataDELETE } from './utils/tools';
+import { APIURL } from './utils/config';
 function RoleMaker() {
   const [clicked, setClicked] = useState(false)
   const [roleName, setRoleName] = useState("");
@@ -52,7 +53,7 @@ function RoleMaker() {
       try {
         // ✅ Get token from localStorage (or context)
         const token = localStorage.getItem("token");
-        const response = await fetch("http://185.231.115.28:8080/admin/permission", {
+        const response = await fetch(`http://${APIURL}/admin/permission`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

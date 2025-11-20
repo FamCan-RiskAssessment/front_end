@@ -1,61 +1,65 @@
-.card-holder{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: 80%;
-    padding: 1rem;
-    gap: 2rem;
-    align-items: center;
-}
-.all_holder{
-    min-height: 100vh;
-    background: linear-gradient(135deg, #f8f5ff, #e5d4f9);
+.card-holder {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 80%;
+  padding: 1rem;
+  gap: 2rem;
+  align-items: center;
 }
 
-.title-holder{
-    padding:1rem;
-    /* border-bottom: 1px solid white; */
-    margin:  0rem 1rem 1rem 1rem;
-    border-bottom: 1px solid black;
-}
-div > .identifiers {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 80%;
-    padding: 1rem 2rem;
-    text-align: center;
-    border-bottom: 1px solid black;
-}
-.idholder{
-    display: flex;
-    justify-content: center;
-}
-.code_and_shomare{
-    display: flex;
-    justify-content: center;
-    gap: 21rem;
+.all_holder {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f5ff, #e5d4f9);
 }
 
-.search_bar{
-    width: 80%;
-    display: flex;
-    justify-content: space-between;
+.title-holder {
+  padding: 1rem;
+  /* border-bottom: 1px solid white; */
+  margin: 0rem 1rem 1rem 1rem;
+  border-bottom: 1px solid black;
 }
 
-.search_bar_input{
-    width: 80%;
-    padding: 0.5rem 1rem;
-    outline: none;
-    border: 1px solid;
-    border-radius: 10px;
-    font-size: 1.3rem;
-    font-family: 'vazir';
-    transition: all 0.3s ease;
-    margin-top: 0.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+div>.identifiers {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 80%;
+  padding: 1rem 2rem;
+  text-align: center;
+  border-bottom: 1px solid black;
+}
+
+.idholder {
+  display: flex;
+  justify-content: center;
+}
+
+.code_and_shomare {
+  display: flex;
+  justify-content: center;
+  gap: 21rem;
+}
+
+.search_bar {
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.search_bar_input {
+  width: 80%;
+  padding: 0.5rem 1rem;
+  outline: none;
+  border: 1px solid;
+  border-radius: 10px;
+  font-size: 1.3rem;
+  font-family: 'vazir';
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 
@@ -71,7 +75,7 @@ div > .identifiers {
   width: 360px;
   padding: 1.5rem;
   border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -115,6 +119,16 @@ div > .identifiers {
   gap: 0.75rem;
 }
 
+.roles.cancer-mode {
+  height: 30rem;
+  overflow-y: scroll;
+}
+
+.cancer-item {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 1rem;
+}
+
 .role {
   padding: 0.75rem 1rem;
   background-color: #f9fafb;
@@ -141,190 +155,189 @@ div > .identifiers {
 
 
 
-
 /* the role maker page  */
 
 /* Background wrapper */
 .all_holder {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #f8f5ff, #e5d4f9);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 3rem 1rem;
-  }
-  
-  /* Title */
-  .title-holder {
-    text-align: center;
-    margin-bottom: 2rem;
-    color: #4b006e;
-  }
-  
-  .title-holder h1 {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .title-holder .subtitle {
-    font-size: 1.1rem;
-    color: #7a4ca0;
-  }
-  
-  /* Form container */
-  .role_form {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(10px);
-    border-radius: 1.5rem;
-    padding: 2rem;
-    width: 90%;
-    max-width: 800px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-  
-  /* Input group */
-  .form_group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .form_label {
-    font-size: 1.1rem;
-    color: #4b006e;
-  }
-  
-  .form_input {
-    padding: 0.8rem 1rem;
-    border-radius: 0.8rem;
-    border: 1px solid #aaa;
-    font-size: 1rem;
-    outline: none;
-    transition: all 0.3s ease;
-    font-family: 'vazir';
-  }
-  
-  .form_input:focus {
-    border-color: #7a4ca0;
-    box-shadow: 0 0 6px rgba(122, 76, 160, 0.3);
-  }
-  
-  /* Permissions section */
-  .perm_section {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .perm_title {
-    font-size: 1.3rem;
-    color: #4b006e;
-    margin-bottom: 0.5rem;
-  }
-  
-  .perm_holder {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: flex-start;
-    width: unset !important;
-  }
-  
-  /* CheckBox layout refinements */
-  .checkBox_column {
-    flex-direction: column !important;
-    gap: 1rem;
-    padding: 2rem;
-  }
-  
-  .checkBox_column > .total_check_holder {
-    padding: 1rem;
-  }
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f5ff, #e5d4f9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 1rem;
+}
 
-  .width_and_centerer {
-    width: calc(33.33% - 1rem);
-    display: flex;
-    align-items: center;
-    justify-content: flex-start !important;
-  }
-  
-  /* Submit button */
-  .btn_submit {
-    align-self: center;
-    background-color: #7a4ca0;
-    color: white;
-    padding: 0.8rem 2rem;
-    font-size: 1.1rem;
-    border-radius: 1rem;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .btn_submit:hover {
-    background-color: #9a5cc0;
-    transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-  }
-  
+/* Title */
+.title-holder {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #4b006e;
+}
 
-  .checkBox_column{
-      flex-direction:column !important;
-      gap: 2rem;
-  }
-  .total_check_holder{
-      flex-wrap: wrap;
-  }
-  .width_and_centerer{
-      width: calc(33.33% - 3rem);
-      align-items: center;
-      justify-content: center !important;
-  }
+.title-holder h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.title-holder .subtitle {
+  font-size: 1.1rem;
+  color: #7a4ca0;
+}
+
+/* Form container */
+.role_form {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  width: 90%;
+  max-width: 800px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Input group */
+.form_group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form_label {
+  font-size: 1.1rem;
+  color: #4b006e;
+}
+
+.form_input {
+  padding: 0.8rem 1rem;
+  border-radius: 0.8rem;
+  border: 1px solid #aaa;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: 'vazir';
+}
+
+.form_input:focus {
+  border-color: #7a4ca0;
+  box-shadow: 0 0 6px rgba(122, 76, 160, 0.3);
+}
+
+/* Permissions section */
+.perm_section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.perm_title {
+  font-size: 1.3rem;
+  color: #4b006e;
+  margin-bottom: 0.5rem;
+}
+
+.perm_holder {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-start;
+  width: unset !important;
+}
+
+/* CheckBox layout refinements */
+.checkBox_column {
+  flex-direction: column !important;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.checkBox_column>.total_check_holder {
+  padding: 1rem;
+}
+
+.width_and_centerer {
+  width: calc(33.33% - 1rem);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start !important;
+}
+
+/* Submit button */
+.btn_submit {
+  align-self: center;
+  background-color: #7a4ca0;
+  color: white;
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn_submit:hover {
+  background-color: #9a5cc0;
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
 
 
-  .role_holder{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 80%;
-    max-height: 70vh;
-    overflow-y: scroll;
-    gap: 1rem;
-    padding: 1rem;
-  }
-  .role_card{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 90%;
-    padding: 1rem;
-    background-color: white;
-    border: 1px solid transparent;
-    border-radius: 20px;
-    box-shadow: 5px 5px 10px rgb(0, 0, 0 ,0.2);
-    transition: all 0.3s ease;
-    cursor: pointer;
-  }
+.checkBox_column {
+  flex-direction: column !important;
+  gap: 2rem;
+}
 
-  .role_card:hover{
-    transform: translate(0px, -10px);
-  }
+.total_check_holder {
+  flex-wrap: wrap;
+}
 
-  .delete_btn{
-    color: #ff2f2f;
-    border: 1px solid #ff2f2f;
-    background-color: transparent;
-    transition: all 0.3s ease;
-  }
-  .delete_btn:hover{
-    background-color: #ff2f2f;
-    color:white;
-  }
+.width_and_centerer {
+  width: calc(33.33% - 3rem);
+  align-items: center;
+  justify-content: center !important;
+}
 
 
+.role_holder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  max-height: 70vh;
+  overflow-y: scroll;
+  gap: 1rem;
+  padding: 1rem;
+}
 
+.role_card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  padding: 1rem;
+  background-color: white;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  box-shadow: 5px 5px 10px rgb(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
 
+.role_card:hover {
+  transform: translate(0px, -10px);
+}
+
+.delete_btn {
+  color: #ff2f2f;
+  border: 1px solid #ff2f2f;
+  background-color: transparent;
+  transition: all 0.3s ease;
+}
+
+.delete_btn:hover {
+  background-color: #ff2f2f;
+  color: white;
+}
