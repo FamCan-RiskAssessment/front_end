@@ -107,7 +107,11 @@ function FormsPage() {
             },
           });
 
-          if (!res.ok) throw new Error(`Failed to fetch ${ar}`);
+          if (!res.ok) {
+            localStorage.setItem("imperfectForm", true)
+          } else {
+            localStorage.setItem("imperfectForm", false)
+          }
           const json = await res.json();
           return json.data;
         })

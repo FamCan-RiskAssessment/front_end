@@ -158,11 +158,14 @@
     ]
   },
   "siblingCard": {
-    "siblingName": {
-      "engName": "siblingName",
-      "inpName": "نام خواهر یا برادر",
-      "type": "text",
-      "placeHolder": "نام خواهر یا برادر"
+    "siblingType": {
+      "ask": "نسبت",
+      "Oname": "siblingRelation",
+      "options": [
+        "انتخاب کنید",
+        "برادر",
+        "خواهر"
+      ]
     },
     "siblingLifeStatus": {
       "Rname": "siblingLifeStatus",
@@ -208,11 +211,14 @@
     ]
   },
   "uncleAuntCard": {
-    "uncleAuntName": {
-      "engName": "ameAmoName",
-      "inpName": "نام عمه یا عمو",
-      "type": "text",
-      "placeHolder": "نام عمه یا عمو"
+    "uncleAuntType": {
+      "ask": "نسبت",
+      "Oname": "ameAmoRelation",
+      "options": [
+        "انتخاب کنید",
+        "عمه",
+        "عمو"
+      ]
     },
     "uncleAuntLifeStatus": {
       "Rname": "ameAmoLifeStatus",
@@ -258,11 +264,14 @@
     ]
   },
   "khaleDaeiCard": {
-    "khaleDaeiName": {
-      "engName": "khaleDaeiName",
-      "inpName": "نام خاله یا دایی",
-      "type": "text",
-      "placeHolder": "نام خاله یا دایی"
+    "khaleDaeiType": {
+      "ask": "نسبت",
+      "Oname": "khaleDaeiRelation",
+      "options": [
+        "انتخاب کنید",
+        "خاله",
+        "دایی"
+      ]
     },
     "khaleDaeiLifeStatus": {
       "Rname": "khaleDaeiLifeStatusx",
@@ -308,11 +317,11 @@
     ]
   },
   "otherRelativeCard": {
-    "otherName": {
-      "engName": "otherRelativeName",
-      "inpName": "نام شخص",
+    "otherType": {
+      "engName": "otherRelation",
+      "inpName": "نسبت",
       "type": "text",
-      "placeHolder": "نام شخص"
+      "placeHolder": "نسبت"
     },
     "otherRelation": {
       "engName": "otherRelativeRelation",

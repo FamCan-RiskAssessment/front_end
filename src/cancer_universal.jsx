@@ -45,12 +45,41 @@ function CancerField({
         }
     }, [data_req])
 
+    // useEffect(() => {
+    //     c
+    // })
+
+    const RelationFinder = (famrel) => {
+        if (famrel !== undefined && typeof famrel == "string") {
+            return (
+                <InputBox
+                    data_req={"false"}
+                    data={data_Inp1}
+                    valueSetter={setInp1}
+                    value={inp1}
+                />
+            )
+        } else if (famrel !== undefined && famrel.length == 2) {
+            return (
+                <Options
+                    data_req={"false"}
+                    data={data_Inp1}
+                    valueSetter={setInp1}
+                    Enum={Enum}
+                    value={inp1}
+                    colRef={typeRef}
+                />
+            )
+        }
+    }
+
+
 
 
     // 1. Sync famrel → relData
-    useEffect(() => {
-        if (famrel != null) setRelData(famrel);
-    }, [famrel]);
+    // useEffect(() => {
+    //     if (famrel != null) setRelData(famrel);
+    // }, [famrel]);
 
     // 2. Load preData cancers — only when preData changes
     useEffect(() => {
@@ -76,44 +105,53 @@ function CancerField({
                 const filteredFamilyCancers = preData.data.familyCancers.filter((familyMember) => {
                     const relationName = rel.data[familyMember.relative - 1]?.name;
                     // console.log("ooooooooooooooooooooooooooo : ", relationName === famrel, famrel, relationName)
-                    return relationName === famrel;
+                    if (typeof famrel == "string") {
+                        return relationName === famrel;
+                    } else if (famrel.length == 2) {
+                        return famrel.includes(relationName)
+                    }
                 });
 
                 console.log("I am in here , : ", filteredFamilyCancers, preData, famrel)
-                return filteredFamilyCancers;
+                return { filteredFamilyCancers, relData: rel.data };
             };
 
             // Execute the async function and update state accordingly
-            processFamilyCancers().then(filteredFamilyCancers => {
-                if (filteredFamilyCancers.length > 0) {
-                    // Map each family member's cancers into the format expected by the UI
-                    const familyCancerRows = [];
+            const processAndSetData = async () => {
+                try {
+                    const { filteredFamilyCancers, relData } = await processFamilyCancers();
+                    if (filteredFamilyCancers.length > 0) {
+                        // Map each family member's cancers into the format expected by the UI
+                        const familyCancerRows = [];
 
-                    filteredFamilyCancers.forEach((familyMember) => {
-                        familyMember.cancers.forEach((cancer) => {
-                            familyCancerRows.push({
-                                id: cancer.id,
-                                relation: familyMember.relative,
-                                cancerType: cancer.cancerType,
-                                cancerAge: cancer.cancerAge,
-                                status: familyMember.lifeStatus, // lifeStatus is at the family member level
-                                image: cancer.picture, // picture is at the cancer level
+                        filteredFamilyCancers.forEach((familyMember) => {
+                            familyMember.cancers.forEach((cancer) => {
+                                familyCancerRows.push({
+                                    id: cancer.id,
+                                    relation: relData[familyMember.relative - 1].name,
+                                    cancerType: cancer.cancerType,
+                                    cancerAge: cancer.cancerAge,
+                                    status: familyMember.lifeStatus, // lifeStatus is at the family member level
+                                    image: cancer.picture, // picture is at the family level
+                                });
                             });
                         });
-                    });
 
-                    setCancerArray(familyCancerRows);
-                    setIsFilled(true)
-                } else {
-                    // If no matching family relation is found, set empty array
-                    setCancerArray([]);
+                        setCancerArray(familyCancerRows);
+                        setIsFilled(true)
+                    } else {
+                        // If no matching family relation is found, set empty array
+                        setCancerArray([]);
+                        setIsFilled(false)
+                    }
+                } catch (error) {
+                    console.error("Error processing family cancers:", error);
+                    setCancerArray([]); // Set empty array in case of error
                     setIsFilled(false)
                 }
-            }).catch(error => {
-                console.error("Error processing family cancers:", error);
-                setCancerArray([]); // Set empty array in case of error
-                setIsFilled(false)
-            });
+            };
+
+            processAndSetData();
         }
     }, [preData, famrel]); // ✅ dependency included
 
@@ -149,6 +187,7 @@ function CancerField({
 
     const handleAddRow = useCallback(async () => {
         // Validate required fields (skip if field is null)
+        console.log("what is the inp1 : ", inp1)
         const hasInp1 = !data_Inp1 || inp1.trim() !== "";
         const hasInp2 = !data_Inp2 || inp2.trim() !== "";
         const hasOpt = !data_Options || opt !== "";
@@ -166,7 +205,7 @@ function CancerField({
         }
 
         const newRow = {
-            relation: relData,
+            relation: typeof famrel == "string" && famrel != "write" ? famrel : inp1,
             cancerType: opt,
             cancerAge: inp2,
             status: rad,
@@ -180,7 +219,7 @@ function CancerField({
 
         // Call external sender
         if (senderFunc) {
-            senderFunc(relData, inp2, opt, rad, imageFile);
+            senderFunc(newRow.relation, inp2, opt, rad, imageFile);
         }
 
         // Resolve enum & update canArr
@@ -267,8 +306,10 @@ function CancerField({
 
     // =============== RENDER ===============
     const shouldRender = propRelation;
-
-    if (!shouldRender && !isFilled) return null;
+    console.log("I am doing my job what else !", famrel, shouldRender, isFilled)
+    if (!shouldRender && !isFilled) {
+        return null;
+    }
 
     return (
         <div className="cancer_element">
@@ -279,14 +320,7 @@ function CancerField({
             <div className="jadval_and_form">
                 {/* Form */}
                 <div className="total_cancer_holder" ref={canUniRef}>
-                    {data_Inp1 && (
-                        <InputBox
-                            data_req={"false"}
-                            data={data_Inp1}
-                            valueSetter={handleInp1Change}
-                            value={inp1}
-                        />
-                    )}
+                    {data_Inp1 && RelationFinder(famrel)}
                     {data_Options && (
                         <Options
                             data_req={"false"}

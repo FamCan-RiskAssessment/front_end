@@ -1,18 +1,23 @@
 import { useState } from "react";
-
-function InputBox({ data_req, data, valueSetter, value, class_change1, class_change2, relation, colRef }) {
+import { isNumber } from "./utils/tools";
+function InputBox({ data_req, data, valueSetter, value, class_change1, class_change2, relation, colRef, typeErr }) {
     // const [Itext , setIText] = useState('')
     const [inpError, setInpError] = useState('')
     const [empErr, setEmpErr] = useState(false)
     const validator = (val) => {
-        if (data.type == "number" && Number.isFinite(Number(val))) {
-            valueSetter(val)
+        if (data.type == "number" && isNumber(val)) {
+            valueSetter?.(val)
             setInpError("")
-        } else if (data.type == "text" && !Number.isFinite(Number(val))) {
-            valueSetter(val)
+            typeErr?.(false)
+
+        } else if (data.type == "text" && !isNumber(val)) {
+            valueSetter?.(val)
             setInpError("")
+            typeErr?.(false)
+
         } else {
             setInpError('!لطفا فرم را به درستی پر کنید')
+            typeErr?.(true)
         }
     }
     // if(req[2] && Itext.length == 0 && req[1]){
@@ -33,7 +38,9 @@ function InputBox({ data_req, data, valueSetter, value, class_change1, class_cha
                     )}
 
                     <label htmlFor={data.inpName}>{data.inpName}</label>
-                    <input data_req={data_req} type="text" className={`inp_question ${class_change2}`} placeholder={data.placeHolder} value={value} onChange={valueSetter == undefined ? null : (e) => validator(e.target.value)}
+                    <input data_req={data_req} type="text" data-Stype={data.type} className={`inp_question ${class_change2}`} placeholder={data.placeHolder} value={value} onChange={(e) => {
+                        validator(e.target.value)
+                    }}
                         name={data.engName} id={data.inpName}
                         style={inpError.length != 0 ? { "border": "1px solid red" } : null}
                         ref={colRef == undefined ? null : colRef}

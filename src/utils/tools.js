@@ -265,6 +265,23 @@ export const relativeTypeEx = async (rel, rev) => {
 };
 
 
+export const EnumTaker = async (endP, theVal) => {
+  try {
+    let token = localStorage.getItem("token")
+    let res = await fetchDataGET(`${endP}`, token)
+    if (res.data) {
+      const foundItem = res.data.find(d => d.name == theVal);
+      if (foundItem) {
+        return foundItem.id;
+      }
+    }
+    return null; // Return null if no matching item is found
+  } catch (error) {
+    console.log(`Error fetching Enum ${endP} : ${error}`)
+    return null;
+  }
+}
+
 // export const nameEnumMap = async (elem, token) => {
 //   const enumName = elem.current.getAttribute('data-enum');
 //   if (enumName) {

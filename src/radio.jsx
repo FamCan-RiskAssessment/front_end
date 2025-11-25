@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { EnumTaker } from "./utils/tools";
 function Radio({ data_req, data, class_change1, value, class_change2, valueSetter, relation, Enum }) {
     // Option value mapping
     const optionValueMap = {
@@ -8,7 +8,9 @@ function Radio({ data_req, data, class_change1, value, class_change2, valueSette
         'نمی دانم': 'null',
         'نمیدانم': 'null',
         'نامعین': 'null',
-        'احتمال دارد اما دقیق اطلاع ندارم': 'null'
+        'احتمال دارد اما دقیق اطلاع ندارم': 'null',
+        'سابقاً مصرف می کرده ام اما کمتر از ۱۵ سال است که ترک کرده ام': true,
+        'سابقاً مصرف می کردم اما بیش از ۱۵ سال است که ترک کرده ام': true,
     };
 
     // Default relation to true if undefined
@@ -35,7 +37,18 @@ function Radio({ data_req, data, class_change1, value, class_change2, valueSette
                                 name={data.Rname}
                                 value={optionValueMap[opt] !== undefined ? optionValueMap[opt] : opt}
                                 id={opt}
-                                onChange={(e) => valueSetter?.(e.target.id)}
+                                onChange={(e) => {
+                                    // Handle the enum lookup in a separate async function
+                                    const handleEnumChange = async () => {
+                                        const enumId = await EnumTaker(`enum/${Enum}`, e.target.id);
+                                        valueSetter?.(enumId);
+                                    };
+                                    if (Enum !== undefined) {
+                                        handleEnumChange();
+                                    } else {
+                                        valueSetter?.(e.target.value)
+                                    }
+                                }}
                                 {...Enum !== undefined ? { 'data-enum': Enum } : {}}
                             />
                         </div>
