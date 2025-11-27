@@ -14,7 +14,7 @@ function PersonalInfo({ data_req, data_inp1, data_inp2, data_inp3, data_inp4, da
                 <InputBox data_req={data_req} data={data_inp4} class_change1={"grider"} class_change2={"grider_inner"}></InputBox>
                 <Radio data_req={data_req} data={data_opt} class_change1={"grider"} class_change2={"grider_inner"}></Radio>
                 <InputBox data_req={data_req} data={data_inp5} class_change1={"grider"} class_change2={"grider_inner"}></InputBox>
-                <InputBox data_req={data_req} data={data_inp6} class_change1={"grider"} class_change2={"grider_inner"} typeErr={typeErr}></InputBox>
+                <InputBox data_req={data_req} data={data_inp6} class_change1={"grider"} class_change2={"grider_inner"} typeErr={typeErr} limit={10}></InputBox>
                 <InputBox data_req={data_req} data={data_inp7} class_change1={"grider"} class_change2={"grider_inner_spec"}></InputBox>
                 <CheckBox data={data_check}></CheckBox>
 

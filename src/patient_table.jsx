@@ -516,8 +516,8 @@ export default function FilterableTable() {
           </table>
         </div>
         <div className="btn_holder_next_prev">
-          <button className="btn_submit space-UD" onClick={showMore}>صفحه ی بعدی</button>
           <button className="btn_submit space-UD" onClick={showPrev}>صفحه ی قبلی</button>
+          <button className="btn_submit space-UD" onClick={showMore}>صفحه ی بعدی</button>
         </div>
       </div>
       {openModal && (

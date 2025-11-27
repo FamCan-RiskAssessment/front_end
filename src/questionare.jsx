@@ -95,12 +95,12 @@ function Questions() {
     const cancerTable = useRef(null)
     const cancerMotherTable = useRef(null)
     const cancerFatherTable = useRef(null)
+    const questionContainerRef = useRef(null);
     // const cancerTable = useRef(null)
     // const cancerMotherTable = useRef(null)
     // const cancerMotherTable = useRef(null)
     console.log(")))))))))))))))))))))))))))))))))))))))))))))))))))))) , : ", isCancer)
 
-    console.log("*********************************************", createdFormId)
 
 
     console.log("############################", step, "#############################")
@@ -173,11 +173,16 @@ function Questions() {
             if ('smokingTypesPast' in presetform) setSmokeTypePast(presetform["smokingTypesPast"])
 
             let formElems = []
+            let stepsLoaded = JSON.parse(localStorage.getItem("trueSteps"))
+            console.log("444444444444444444444444444444444444 :  ", stepsLoaded)
+
             Object.keys(formRefs).forEach(fk => {
+                // if (stepsLoaded[fk]) {
                 let formRaw = formRefs[fk].current.querySelectorAll("input , select")
                 formRaw.forEach(fR => {
                     formElems.push(fR)
                 });
+                // }
             })
             console.log("########################################", presetform)
             formElems.forEach(fE => {
@@ -232,7 +237,7 @@ function Questions() {
                                 fE.checked = true
                             }
                         } else if (!(fE.name in presetform) && fE.id != "بله" && fE.id != "خیر" && localStorage.getItem("imperfectForm") == false) {
-                            console.log("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN: ", fE.name)
+                            // console.log("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN: ", fE.name)
                             fE.checked = true
                         } else if (fE.name == pfk && fE.type == "file") {
                             console.log("find that file uploader")
@@ -394,6 +399,16 @@ function Questions() {
 
         loadFamilyCancerData();
     }, [id_form, presetform]);
+
+    // Scroll to top of questions container when step changes
+    useEffect(() => {
+        if (questionContainerRef.current) {
+            questionContainerRef.current.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    }, [step]);
     const relator_S = (state) => {
         console.log(state)
         if (state != '' && state != "انتخاب کنید") {
@@ -496,13 +511,27 @@ function Questions() {
         // console.log(go1 , go2)
         // if there is just one object pass that
         if (!pass2 && !pass1) {
-            nexter()
-        } else if (go1.length == 0 || go2.length == 0) {
-            if (go1.length >= 1 && !pass1) {
-                nexter()
-            } else if (go2.length >= 1 && !pass2) {
+            if (step == 7) {
+                return true
+            } else {
                 nexter()
             }
+        } else if (go1.length == 0 || go2.length == 0) {
+            if (go1.length >= 1 && !pass1) {
+                if (step == 7) {
+                    return true
+                } else {
+                    nexter()
+                }
+            } else if (go2.length >= 1 && !pass2) {
+                if (step == 7) {
+                    return true
+                } else {
+                    nexter()
+                }
+            }
+        } else {
+            return false
         }
     };
 
@@ -892,7 +921,7 @@ function Questions() {
         <>
             <div className="question_container">
                 <h2 className="question_title">سامانه ریسک سنجی آنلاین</h2>
-                <div className="question_form_container">
+                <div className="question_form_container" ref={questionContainerRef}>
                     {/* form part 1*/}
 
                     <form ref={formRefs[1]} style={step == 1 ? null : { display: "none " }} className="question_form P1">
@@ -935,9 +964,9 @@ function Questions() {
                                 {/* )} */}
                                 {/* {isSmokingNow == 'خیر' && ( */}
                                 <>
-                                    <Options data_req={"true"} data={part2.combine_option_leaveSmokingAge} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == true}></Options>
-                                    <Options data_req={"true"} data={part2.combine_option_countSmokingDaily_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == true}></Options>
-                                    <Options data_req={"true"} data={part2.combine_option_t_gh_daily_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == true}></Options>
+                                    <Options data_req={"true"} data={part2.combine_option_leaveSmokingAge} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == false}></Options>
+                                    <Options data_req={"true"} data={part2.combine_option_countSmokingDaily_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == false}></Options>
+                                    <Options data_req={"true"} data={part2.combine_option_t_gh_daily_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == false}></Options>
                                 </>
                                 {/* )} */}
                             </>
@@ -953,7 +982,7 @@ function Questions() {
                         <Options data_req={"true"} data={part3.combine_option_ghaedeAge} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender)}></Options>
 
                         <Radio data_req={"true"} data={part3.radio_opts_children} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChild}></Radio>
-                        <Options data={part3.combine_option_firstChildBirthAge} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isChild)}></Options>
+                        <Options data={part3.combine_option_firstChildBirthAge} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender) && relator_R(isChild)}></Options>
                         <>
                             <Radio data_req={"true"} data={part3.radio_opts_menopausal_status} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsAdat} Enum={"menopausal-statuses"} relation={relator_gen(gender)}></Radio>
                             <Options data={part3.combine_option_menopause} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isAdat) && relator_gen(gender)}></Options>
@@ -1075,7 +1104,9 @@ function Questions() {
 
                     {step == 7 ? (
                         <button className="btn_question" onClick={(e) => {
-                            if (!typeErr) {
+
+                            let passOno = checkReq(formRefs[step], step)
+                            if (!typeErr && passOno) {
                                 handleSubmit(e)
                                 addToast({
                                     title: 'پاسخ های شما با موفقیت ذخیره شد',

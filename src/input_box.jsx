@@ -1,20 +1,24 @@
 import { useState } from "react";
 import { isNumber } from "./utils/tools";
-function InputBox({ data_req, data, valueSetter, value, class_change1, class_change2, relation, colRef, typeErr }) {
+function InputBox({ data_req, data, valueSetter, value, class_change1, class_change2, relation, colRef, typeErr, limit }) {
     // const [Itext , setIText] = useState('')
     const [inpError, setInpError] = useState('')
     const [empErr, setEmpErr] = useState(false)
     const validator = (val) => {
-        if (data.type == "number" && isNumber(val)) {
+        if (data.type == "number" && (isNumber(val) || val == "")) {
+            console.log("salam!!!!!")
             valueSetter?.(val)
             setInpError("")
             typeErr?.(false)
 
-        } else if (data.type == "text" && !isNumber(val)) {
+        } else if (data.type == "text" && (!isNumber(val) || val == "")) {
             valueSetter?.(val)
             setInpError("")
             typeErr?.(false)
 
+        } else if (limit != undefined && val.length > limit) {
+            setInpError(`طول عدد وارد شده بیشتر از ${limit} می باشد`)
+            typeErr?.(true)
         } else {
             setInpError('!لطفا فرم را به درستی پر کنید')
             typeErr?.(true)
@@ -24,7 +28,7 @@ function InputBox({ data_req, data, valueSetter, value, class_change1, class_cha
     //     setEmpErr(true)
     // }
     // if (data.inpName == "smokeCurrent") {
-    console.log("99999999999999999999999999999999999 : ", relation, data.inpName)
+    // console.log("99999999999999999999999999999999999 : ", value)
     // }
     if (relation == undefined) {
         relation = true
@@ -38,7 +42,7 @@ function InputBox({ data_req, data, valueSetter, value, class_change1, class_cha
                     )}
 
                     <label htmlFor={data.inpName}>{data.inpName}</label>
-                    <input data_req={data_req} type="text" data-Stype={data.type} className={`inp_question ${class_change2}`} placeholder={data.placeHolder} value={value} onChange={(e) => {
+                    <input data_req={data_req} type="text" data-Stype={data.type} className={`inp_question ${class_change2}`} maxLength={limit ? limit : 256} placeholder={data.placeHolder} value={value} onChange={(e) => {
                         validator(e.target.value)
                     }}
                         name={data.engName} id={data.inpName}

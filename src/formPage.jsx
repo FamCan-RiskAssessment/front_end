@@ -10,12 +10,14 @@ import { useToast } from "./toaster";
 function FormsPage() {
   const [forms, setForms] = useState([]);
   const [deletedForm, setDeletedForm] = useState(0)
+  const [openModalConf, setOpenModalConf] = useState(false)
+  const [selectedForm, setSelectedForm] = useState(0)
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const [perms, setPerms] = useState([])
   const { addToast } = useToast()
-
+  console.log(openModalConf)
 
   // user info
   useEffect(() => {
@@ -97,8 +99,9 @@ function FormsPage() {
       setLoading(true);
 
       // Wait for all fetch requests to complete
+      let TrueSteps = [];
       const results = await Promise.all(
-        APIARR.map(async (ar) => {
+        APIARR.map(async (ar, index) => {
           const res = await fetch(`http://${APIURL}/form/${form_id}/${ar}`, {
             method: "GET",
             headers: {
@@ -109,8 +112,11 @@ function FormsPage() {
 
           if (!res.ok) {
             localStorage.setItem("imperfectForm", true)
+            TrueSteps.push(false)
           } else {
             localStorage.setItem("imperfectForm", false)
+            console.log("*********************************************", res)
+            TrueSteps.push(true)
           }
           const json = await res.json();
           return json.data;
@@ -126,7 +132,7 @@ function FormsPage() {
       // Save after all fetches complete
       localStorage.setItem("form_data", JSON.stringify(form_data));
       localStorage.setItem("form_id", form_id);
-
+      localStorage.setItem("trueSteps", JSON.stringify(TrueSteps))
       console.log("✅ All stages fetched:", results);
       navigate("/forms/new");
     } catch (err) {
@@ -154,10 +160,12 @@ function FormsPage() {
 
   return (
     <>
-      {perms.length > 1 ? (<button className="btn_submit place_independently" onClick={() => {
-        navigate('/DashBoard', { state: { permissions: perms } })
-      }}>ورود به پنل</button>) : null}
-      <button className="btn_submit spider" onClick={() => navigate("/")}>خروج</button>
+      <div className="dashboard_btns">
+        {perms.length > 1 ? (<button className="btn_submit place_independently" onClick={() => {
+          navigate('/DashBoard', { state: { permissions: perms } })
+        }}>ورود به پنل</button>) : null}
+        <button className="btn_submit spider" onClick={() => navigate("/")}>خروج</button>
+      </div>
       <div className="forms-page-wrapper">
         <div className="forms-container">
           <h1 className="forms-title">لیست فرم‌های شما</h1>
@@ -176,7 +184,10 @@ function FormsPage() {
                     >
                       مشاهده
                     </button>
-                    <button className="delete_btn2" onClick={() => deleteForm(form.id)}>حذف فرم</button>
+                    <button className="delete_btn2" onClick={() => {
+                      setOpenModalConf(true)
+                      setSelectedForm(form.id)
+                    }}>حذف فرم</button>
                   </div>
                 </li>
               ))}
@@ -198,6 +209,25 @@ function FormsPage() {
           </div>
         </div>
       </div>
+
+      {openModalConf && (
+        <div className="role_modal">
+          <div className="modal_header">
+            <h3>آیا می خواهید فرم را حذف کنید ؟ </h3>
+            <div className="modal_close" onClick={() => {
+              setOpenModalConf(false)
+            }}>✕</div>
+          </div>
+          <div className="roles">
+            <button className="btn-add-new" onClick={() => {
+              deleteForm(selectedForm)
+              setOpenModalConf(false)
+            }}>بلی</button>
+            <button className="delete_btn2" onClick={() => setOpenModalConf(false)}>خیر</button>
+          </div>
+        </div>
+      )}
+
     </>
   );
 }

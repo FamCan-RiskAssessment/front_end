@@ -29,7 +29,8 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     width: 80%;
     overflow-y: scroll;
-    max-height: 60%;
+    box-sizing: border-box;
+    /* Added to include padding in width calculation */
     /* padding-left: 1rem; */
 }
 
@@ -70,7 +71,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     gap: 1rem;
-    width: 90%;
+    width: 100%;
 }
 
 .form_element {
@@ -90,7 +91,9 @@
 }
 
 .P1 .form_element {
-    width: calc(25% - 3rem);
+    width: calc(25% - 2.2rem);
+    /* Reduced to account for padding and borders */
+    box-sizing: border-box;
 }
 
 .P2 {

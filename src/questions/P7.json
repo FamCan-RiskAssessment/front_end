@@ -70,9 +70,9 @@
     "Rname": "chronicLungDisease",
     "ask": "سابقه یبماری های مزمن ریوی دارید ؟ ",
     "options": [
-      "نمی دانم",
       "بله",
-      "خیر"
+      "خیر",
+      "نمی دانم"
     ]
   },
   "combine_option_chronicLungDisease": {

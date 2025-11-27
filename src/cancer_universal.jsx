@@ -29,7 +29,7 @@ function CancerField({
     const [imageFile, setImageFile] = useState(null); // Raw File
     const [isFilled, setIsFilled] = useState(false)
     const [forceIsReq, setForceIsReq] = useState(true)
-    // console.log(inp1, inp2, opt, rad)
+    console.log(inp1, inp2, opt, rad)
 
     // =============== REFS ===============
     const typeRef = useRef(null);
@@ -337,6 +337,7 @@ function CancerField({
                             data={data_Inp2}
                             valueSetter={handleInp2Change}
                             value={inp2}
+                            limit={3}
                         />
                     )}
                     {data_Radio && (
