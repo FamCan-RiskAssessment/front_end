@@ -70,6 +70,8 @@ function Questions() {
     const [smokeTypePast, setSmokeTypePast] = useState('')
     const [anySmokePast, setAnySmokePast] = useState(false)
     const [anySmoke, setAnySmoke] = useState(false)
+    const [firstDeg, setFirstDeg] = useState(false)
+    // const [isChronic, setIsChronic] = useState(false)
     //step 7
 
     const [isGeneTest, setIsGeneTest] = useState('')
@@ -171,6 +173,7 @@ function Questions() {
             if ('fmTestGen' in presetform) setIsFamGeneTest(presetform["fmTestGen"])
             if ('smokingTypesCurrent' in presetform) setSmokeType(presetform["smokingTypesCurrent"])
             if ('smokingTypesPast' in presetform) setSmokeTypePast(presetform["smokingTypesPast"])
+            if ('lungCancerFamily' in presetform) setFirstDeg(presetform["lungCancerFamily"])
 
             let formElems = []
             let stepsLoaded = JSON.parse(localStorage.getItem("trueSteps"))
@@ -280,12 +283,12 @@ function Questions() {
 
             let token = localStorage.getItem("token")
             const selfFunc = async () => {
-                const res = await fetchDataGETImg(`admin/form/${id_form}/cancer`, token);
+                const res = await fetchDataGETImg(`form/${id_form}/cancer`, token);
                 setSelfCancersPreData(res)
             }
             selfFunc()
             const familyFunc = async () => {
-                const res = await fetchDataGETImg(`admin/form/${id_form}/familycancer`, token);
+                const res = await fetchDataGETImg(`form/${id_form}/familycancer`, token);
                 setFamilyCancersPreData(res)
             }
             familyFunc()
@@ -300,7 +303,7 @@ function Questions() {
 
                 try {
                     // Fetch family cancer data
-                    const familyCancerRes = await fetchDataGETImg(`admin/form/${id_form}/familycancer`, token);
+                    const familyCancerRes = await fetchDataGETImg(`form/${id_form}/familycancer`, token);
                     const familyCancerData = familyCancerRes.data?.familyCancers || [];
                     // Fetch relatives enum to map relative IDs to names
                     const relativesEnumRes = await fetchDataGET(`enum/relatives`, token);
@@ -930,8 +933,8 @@ function Questions() {
                         <Options data_req={"true"} data={part1[2]} relation={true}></Options>
                         <Options data_req={"true"} data={part1[3]} relation={true}></Options>
                         <CheckBox data={part1[4]} atba={atba} checker={setatba}></CheckBox>
-                        {atba && <InputBox data_req={"true"} data={part1[5]}></InputBox>}
-                        {!atba && <InputBox data_req={"true"} data={part1[6]}></InputBox>}
+                        {atba && <InputBox data_req={"true"} data={part1[5]} limit={10}></InputBox>}
+                        {!atba && <InputBox data_req={"true"} data={part1[6]} limit={10}></InputBox>}
                         <InputBox data_req={"true"} data={part1[7]}></InputBox>
                         <InputBox data_req={"true"} data={part1[8]}></InputBox>
                     </form>
@@ -963,11 +966,11 @@ function Questions() {
                                 </>
                                 {/* )} */}
                                 {/* {isSmokingNow == 'خیر' && ( */}
-                                <>
+                                {/* <>
                                     <Options data_req={"true"} data={part2.combine_option_leaveSmokingAge} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == false}></Options>
                                     <Options data_req={"true"} data={part2.combine_option_countSmokingDaily_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == false}></Options>
                                     <Options data_req={"true"} data={part2.combine_option_t_gh_daily_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == false}></Options>
-                                </>
+                                </> */}
                                 {/* )} */}
                             </>
                             {/* )} */}
@@ -1059,10 +1062,13 @@ function Questions() {
                         <Radio data_req={"true"} data={part7.radio_heartDisease_treatment} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                         <Radio data_req={"true"} data={part7.radio_diabetes} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                         <Radio data_req={"true"} data={part7.radio_diabetes_treatment} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
-                        <Radio data_req={"true"} data={part7.radio_chronicLungDisease} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                        {/* <Radio data_req={"true"} data={part7.radio_chronicLungDisease} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChronic}></Radio> */}
+                        <Options data_req={"true"} data={part7.combine_option_chronicLungDisease} class_change1={"P2"} class_change2={"P2_inner"}></Options>
+
+                        <Options data_req={"true"} data={part7.combine_option_lungCancerFamilyRelation} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(firstDeg)}></Options>
                         <Radio data_req={"true"} data={part7.radio_lungCancerHistory} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
-                        <Radio data_req={"true"} data={part7.radio_lungCancerFamily} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
-                        <Options data_req={"true"} data={part7.combine_option_lungCancerFamilyRelation} class_change1={"P2"} class_change2={"P2_inner"}></Options>
+                        <Radio data_req={"true"} data={part7.radio_lungCancerFamily} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setFirstDeg}></Radio>
+                        <Options data_req={"true"} data={part7.combine_option_lungCancerFamilyRelation} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(firstDeg)}></Options>
                         <Options data_req={"true"} data={part7.combine_option_occupationalExposure} class_change1={"P2"} class_change2={"P2_inner"}></Options>
                         <Radio data={part7.radio_currentSmoking} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmoke}></Radio>
                         <Options data_req={"true"} data={part7.combine_option_smokingTypes_current} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setSmokeType} relation={relator_R(anySmoke)}></Options>
@@ -1089,6 +1095,8 @@ function Questions() {
 
                         <Radio data_req={"true"} data={part6.radio_opts_fmTestGen} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsFamGeneTest}></Radio>
                         <FileUploader data={part6.attachment_fmTestGen} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isFamGeneTest)}></FileUploader>
+
+                        <Options data_req={"true"} data={part6.options_education} class_change1={"P2"} class_change2={"P2_inner"}></Options>
 
                         <Radio data_req={"true"} data={part6.radio_opts_callExpert} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                         <PersonalInfo data_req={"true"} data_inp1={part6.personalInfo.fullName} data_inp2={part6.personalInfo.mobileNumber1} data_inp3={part6.personalInfo.mobileNumber2} data_inp4={part6.personalInfo.province}

@@ -76,8 +76,8 @@
     ]
   },
   "combine_option_chronicLungDisease": {
-    "ask": "chronicLungDisease",
-    "Oname": "سابقه بیماریهای مزمن ریوی",
+    "ask": "سابقه بیماریهای مزمن ریوی:",
+    "Oname": "lungDiseaseHistory",
     "options": [
       "انتخاب کنید",
       "خیر",

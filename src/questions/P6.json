@@ -11,7 +11,7 @@
   "attachment_testGen": {
     "fieldName": "لطفاً تصویر گزارش تست ژنتیک خود را بارگذاری کنید.",
     "inputType": "file",
-    "name": "testGenPicture",
+    "name": "testGenPictures",
     "required": true
   },
   "radio_opts_fmTestGen": {
@@ -26,8 +26,21 @@
   "attachment_fmTestGen": {
     "fieldName": "لطفاً تصویر گزارش تست ژنتیک آنها را بارگذاری کنید.",
     "inputType": "file",
-    "name": "fatherTestGenPicture",
+    "name": "fatherTestGenPictures",
     "required": true
+  },
+  "options_education": {
+    "ask": "لطفا تحصیلات خود را انتخاب کنید : ",
+    "Oname": "education",
+    "options": [
+      "انتخاب کنید",
+      "ابتدایی یا کمتر",
+      "دیپلم",
+      "فوق دیپلم/مدارک فنی حرفه ای بالای دیپلم",
+      "لیسانس",
+      "فوق لیسانس",
+      "دکتری حرفه ای یا تخصصی"
+    ]
   },
   "radio_opts_callExpert": {
     "Rname": "callExpert",

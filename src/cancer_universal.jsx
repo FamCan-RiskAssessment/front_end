@@ -85,22 +85,28 @@ function CancerField({
     useEffect(() => {
         if (preData?.data?.cancers) {
             // Handle self cancers
-            const loadedSelf = preData.data.cancers.map((can) => ({
-                id: can.id,
-                relation: can.relative, // adjust if you have relation in data
-                cancerType: can.cancerType,
-                cancerAge: can.cancerAge,
-                status: can.lifeStatus, // or infer from context
-                image: can.picture, // full URL (string)
-            }));
-            setCancerArray(loadedSelf);
+            const selfCanLoad = async () => {
+                let token = localStorage.getItem("token")
+                let canType = await fetchDataGET("enum/cancer-types", token)
+
+                const loadedSelf = preData.data.cancers.map((can) => ({
+                    id: can.id,
+                    relation: can.relative, // adjust if you have relation in data
+                    cancerType: canType.data[can.cancerType - 1].name,
+                    cancerAge: can.cancerAge,
+                    status: can.lifeStatus, // or infer from context
+                    image: can.picture, // full URL (string)
+                }));
+                setCancerArray(loadedSelf);
+            }
+            selfCanLoad()
         } else if (preData?.data?.familyCancers) {
             // Handle family cancers - filter by the current family relation
             // Move the async logic outside the filter
             const processFamilyCancers = async () => {
                 let token = localStorage.getItem("token")
                 let rel = await fetchDataGET("enum/relatives", token)
-
+                let canType = await fetchDataGET("enum/cancer-types", token)
                 // Filter family cancers based on the relation
                 const filteredFamilyCancers = preData.data.familyCancers.filter((familyMember) => {
                     const relationName = rel.data[familyMember.relative - 1]?.name;
@@ -113,13 +119,13 @@ function CancerField({
                 });
 
                 console.log("I am in here , : ", filteredFamilyCancers, preData, famrel)
-                return { filteredFamilyCancers, relData: rel.data };
+                return { filteredFamilyCancers, relData: rel.data, Can: canType.data };
             };
 
             // Execute the async function and update state accordingly
             const processAndSetData = async () => {
                 try {
-                    const { filteredFamilyCancers, relData } = await processFamilyCancers();
+                    const { filteredFamilyCancers, relData, Can } = await processFamilyCancers();
                     if (filteredFamilyCancers.length > 0) {
                         // Map each family member's cancers into the format expected by the UI
                         const familyCancerRows = [];
@@ -129,7 +135,7 @@ function CancerField({
                                 familyCancerRows.push({
                                     id: cancer.id,
                                     relation: relData[familyMember.relative - 1].name,
-                                    cancerType: cancer.cancerType,
+                                    cancerType: Can[cancer.cancerType - 1].name,
                                     cancerAge: cancer.cancerAge,
                                     status: familyMember.lifeStatus, // lifeStatus is at the family member level
                                     image: cancer.picture, // picture is at the family level

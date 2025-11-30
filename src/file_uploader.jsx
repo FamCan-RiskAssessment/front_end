@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 function FileUploader({ data, class_change1, class_change2, handleFileChange, relation }) {
-    const [imagePreview, setImagePreview] = useState(null);
+    const [imagePreview, setImagePreview] = useState([]);
     const fileInputRef = useRef(null);
 
     if (relation == undefined) {
@@ -15,14 +15,13 @@ function FileUploader({ data, class_change1, class_change2, handleFileChange, re
             setImagePreview(presetUrl);
         }
     }, []);
-
     const handleFileChangeWithPreview = (e) => {
         const file = e.target.files[0];
 
         if (file) {
             // Create a blob URL for the image
             const blobUrl = URL.createObjectURL(file);
-            setImagePreview(blobUrl);
+            setImagePreview(bus => [...bus, blobUrl]);
 
             // Call the original handleFileChange function if provided
             if (handleFileChange) {
@@ -44,12 +43,17 @@ function FileUploader({ data, class_change1, class_change2, handleFileChange, re
                         accept="image/*"
                         onChange={handleFileChangeWithPreview}
                     />
-
-                    {imagePreview && (
-                        <div className="image-preview">
-                            <img src={imagePreview} alt="Preview" style={{ maxWidth: "200px", maxHeight: "200px", marginTop: "10px", border: "1px solid #ccc", borderRadius: "4px" }} />
-                        </div>
-                    )}
+                    {/* <button className="btn-view-form" onClick={ }> اضافه</button> */}
+                    <div className="image_holder_fileUploader">
+                        {imagePreview ? imagePreview.map((I, index) => {
+                            return (
+                                <div className="image-preview">
+                                    < img src={I} alt="Preview" style={{ maxWidth: "200px", maxHeight: "200px", marginTop: "10px", border: "1px solid #ccc", borderRadius: "4px" }} />
+                                </div>
+                            )
+                        })
+                            : null}
+                    </div>
                 </div>
             </div>
         </>

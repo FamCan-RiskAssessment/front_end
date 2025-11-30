@@ -251,6 +251,12 @@
     background-color: #dfb1ce !important;
 }
 
+.image_holder_fileUploader {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
 
 
 /* cancer Element */

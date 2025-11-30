@@ -16,13 +16,16 @@ function FormsPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [perms, setPerms] = useState([])
+  const [role, setRole] = useState("")
   const { addToast } = useToast()
-  console.log(openModalConf)
+  console.log(forms)
 
   // user info
   useEffect(() => {
     let permissions = JSON.parse(localStorage.getItem("permissions"))
     setPerms(permissions)
+    let role = JSON.parse(localStorage.getItem("roles"))
+    setRole(role[0].name)
   }, [])
 
 
@@ -161,7 +164,7 @@ function FormsPage() {
   return (
     <>
       <div className="dashboard_btns">
-        {perms.length > 1 ? (<button className="btn_submit place_independently" onClick={() => {
+        {role != "بیمار" ? (<button className="btn_submit place_independently" onClick={() => {
           navigate('/DashBoard', { state: { permissions: perms } })
         }}>ورود به پنل</button>) : null}
         <button className="btn_submit spider" onClick={() => navigate("/")}>خروج</button>
@@ -174,9 +177,10 @@ function FormsPage() {
             <p className="no-forms-text">فرمی ثبت نشده است.</p>
           ) : (
             <ul className="forms-list">
-              {forms.map((form) => (
+              {forms.map((form, index) => (
                 <li key={form.id} className="form-item">
-                  <span className="form-name">{form.id}</span>
+                  <span className="form-name">{index + 1}</span>
+                  <span className="social-num">{form.socialSecurityNumber}</span>
                   <div className="btn_formPage_holder">
                     <button
                       className="btn-view-form"

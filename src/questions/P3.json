@@ -239,7 +239,7 @@
   "attach_mamoGraphy": {
     "fieldName": "لطفاً تصویر گزارش آزمایش ماموگرافی خود را بارگذاری کنید.",
     "inputType": "file",
-    "name": "mamoGraphyPicture"
+    "name": "mamographyPictures"
   },
   "radio_opts_falop": {
     "Rname": "falop",
