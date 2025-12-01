@@ -239,14 +239,226 @@ td {
 
 /* ارسال شده */
 
-@media (max-width: 480px) {
-    .status_badge {
-        font-size: 0.7rem;
-        padding: 0.2rem 0.4rem;
+/* Drawer-style interface styles */
+.form_sections_container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form_section_drawer {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.drawer_header {
+    background-color: #8f005a;
+    color: white;
+    padding: 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.drawer_header:hover {
+    background-color: #a8006c;
+}
+
+.drawer_title {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.drawer_arrow {
+    transition: transform 0.3s ease;
+}
+
+.drawer_content {
+    padding: 0rem 1rem;
+    background-color: #f9f9f9;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.drawer_content.open {
+    max-height: 1000px;
+    /* Adjust as needed based on content */
+}
+
+.part_section {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border-radius: 6px;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.part_title {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #8f005a;
+    border-bottom: 2px solid #8f005a;
+    padding-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.api_part_drawer {
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.api_part_header {
+    background-color: #f0e6f5;
+    padding: 0.75rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.api_part_header:hover {
+    background-color: #e6d4ee;
+}
+
+.api_part_header h4 {
+    margin: 0;
+    color: #8f005a;
+    font-size: 1.1rem;
+}
+
+.api_part_arrow {
+    transition: transform 0.3s ease;
+}
+
+.api_part_content {
+    padding: 0rem 1rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.api_part_content.open {
+    max-height: 1000px;
+    /* Adjust as needed based on content */
+}
+
+.drawer_controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.model_enter_btn {
+    background-color: #7a4ca0;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.model_enter_btn:hover {
+    background-color: #9a5cc0;
+}
+
+.cancer_btn {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cancer_btn:hover {
+    background-color: #c9302c;
+}
+
+.family_cancer_btn {
+    background-color: #5bc0de;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.family_cancer_btn:hover {
+    background-color: #31b0d5;
+}
+
+.data_row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.data_key {
+    font-weight: bold;
+    color: #555;
+    flex: 1;
+}
+
+.data_value {
+    color: #333;
+    flex: 2;
+    text-align: right;
+}
+
+.no_data_message {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .form_sections_container {
+        width: 98%;
     }
 
-    .page_btn {
-        padding: 0.4rem 0.8rem;
+    .drawer_header {
+        padding: 0.8rem;
+    }
+
+    .drawer_title {
+        font-size: 1rem;
+    }
+
+    .data_row {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .drawer_title {
         font-size: 0.9rem;
+    }
+
+    .part_title {
+        font-size: 1rem;
     }
 }

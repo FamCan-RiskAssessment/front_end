@@ -6,7 +6,7 @@
       "زن"
     ],
     "Rname": "gender",
-    "ask": "جنسیت خود را انتخاب کنبد: "
+    "ask": "جنسیت خود را انتخاب کنید: "
   },
   {
     "input_type": "selection_input",
@@ -215,5 +215,8 @@
     "type": "number",
     "placeHolder": "وزن",
     "condition": null
+  },
+  {
+    "title": "سوالات پایه"
   }
 ]

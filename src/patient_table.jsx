@@ -10,6 +10,17 @@ import ToastProvider from "./toaster";
 import { isNumber } from "./utils/tools";
 import Loader from "./utils/loader";
 
+// Load the Persian header mapping
+const headerMapping = {};
+PERSIAN_HEADERS.forEach(item => {
+  headerMapping[item.key] = item.label;
+});
+
+// Helper function to convert field keys to Persian labels
+const getFieldLabel = (key) => {
+  return headerMapping[key] || key; // Return Persian label if available, otherwise return the key itself
+};
+
 // Helper function to convert boolean/null values to Persian text
 const convertToPersianText = (value, key) => {
   if (value === true) return "بله";
@@ -58,10 +69,15 @@ export default function FilterableTable() {
 
   const [cancerTypesMap, setCancerTypesMap] = useState({})
   const [relativeTypesMap, setRelativeTypesMap] = useState({})
+  const [formDetails, setFormDetails] = useState({}); // Store details for each form by ID
+  const [loadingDetails, setLoadingDetails] = useState({}); // Track loading state for each form
+  const [editingCells, setEditingCells] = useState({}); // Track which cells are being edited {formId: {apiPart: {fieldName: value}}}
+  const [editingFormPart, setEditingFormPart] = useState(null); // Track which form part is being edited
+  const [openApiSections, setOpenApiSections] = useState({}); // Track which API sections are open for each form {formId: [apiPart1, apiPart2, ...]}
   const { addToast } = useToast()
   const location = useLocation();
   const userPhone = location.state?.phone;
-  // debugs 
+  // debugs
   console.log("here it comes : ", data)
   console.log("the detailed family data : ", detailedFamilyCancerData)
   // console.log("maybe the answer : " , editedData)
@@ -76,6 +92,189 @@ export default function FilterableTable() {
     }
     fetchModels()
   }, [])
+
+  // Function to fetch details for a specific form and API part
+  const fetchFormPartDetails = async (formId, apiPart) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetchDataGET(`admin/form/${formId}/${apiPart}`, token);
+      setFormDetails(prev => ({
+        ...prev,
+        [formId]: {
+          ...prev[formId],
+          [apiPart]: response.data
+        }
+      }));
+    } catch (error) {
+      console.error(`Error fetching ${apiPart} for form ${formId}:`, error);
+    }
+  };
+
+  // Function to toggle drawer and fetch data if not already loaded
+  const toggleDrawer = async (formId) => {
+    const drawer = document.getElementById(`drawer-${formId}`);
+    if (drawer) {
+      const isCurrentlyOpen = drawer.classList.contains('open');
+
+      // If opening the drawer for the first time, fetch all parts
+      if (!isCurrentlyOpen) {
+        setLoadingDetails(prev => ({ ...prev, [formId]: true }));
+
+        // Fetch all API parts for this form
+        for (const apiPart of APIARR) {
+          if (!formDetails[formId] || !formDetails[formId][apiPart]) {
+            await fetchFormPartDetails(formId, apiPart);
+          }
+        }
+
+        setLoadingDetails(prev => ({ ...prev, [formId]: false }));
+      }
+
+      drawer.classList.toggle('open');
+    }
+  };
+
+  // Function to handle double click on a form field for editing
+  const handleFieldDoubleClick = (formId, apiPart, fieldName, currentValue) => {
+    setEditingCells(prev => ({
+      ...prev,
+      [formId]: {
+        ...(prev[formId] || {}),
+        [apiPart]: {
+          ...((prev[formId] || {})[apiPart] || {}),
+          [fieldName]: currentValue
+        }
+      }
+    }));
+    setEditingFormPart(`${formId}-${apiPart}-${fieldName}`);
+  };
+
+  // Function to handle changes to edited fields
+  const handleFieldChange = (formId, apiPart, fieldName, value) => {
+    setEditingCells(prev => ({
+      ...prev,
+      [formId]: {
+        ...(prev[formId] || {}),
+        [apiPart]: {
+          ...((prev[formId] || {})[apiPart] || {}),
+          [fieldName]: value
+        }
+      }
+    }));
+  };
+
+  // Function to save edited field to server
+  const saveFieldToServer = async (formId, apiPart, fieldName, fieldValue) => {
+    const token = localStorage.getItem("token");
+    try {
+      // Convert the field value based on its type
+      let processedValue = fieldValue;
+      if (fieldValue === "بله") processedValue = true;
+      else if (fieldValue === "خیر") processedValue = false;
+      else if (fieldValue === "null" || fieldValue === null) processedValue = null;
+      else if (!isNaN(fieldValue) && fieldValue !== "" && fieldValue !== "انتخاب کنید" && fieldValue !== "انتخاب نمایید") {
+        processedValue = Number(fieldValue);
+      }
+
+      const payload = { [fieldName]: processedValue };
+
+      const response = await fetch(`http://${APIURL}/admin/form/${formId}/${apiPart}`, {
+        method: 'PATCH',
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      addToast({
+        title: result.message || "تغییرات با موفقیت ذخیره شد",
+        type: 'success',
+        duration: 4000
+      });
+
+      // Update the local state after successful save
+      setFormDetails(prev => ({
+        ...prev,
+        [formId]: {
+          ...(prev[formId] || {}),
+          [apiPart]: {
+            ...((prev[formId] || {})[apiPart] || {}),
+            [fieldName]: processedValue
+          }
+        }
+      }));
+
+      // Clear the editing state
+      setEditingFormPart(null);
+      setEditingCells(prev => {
+        const newPrev = { ...prev };
+        if (newPrev[formId] && newPrev[formId][apiPart]) {
+          delete newPrev[formId][apiPart][fieldName];
+          if (Object.keys(newPrev[formId][apiPart]).length === 0) {
+            delete newPrev[formId][apiPart];
+          }
+        }
+        return newPrev;
+      });
+
+      return true;
+    } catch (error) {
+      console.error('Error saving field:', error);
+      addToast({
+        title: "خطا در ذخیره تغییرات",
+        type: 'error',
+        duration: 4000
+      });
+      return false;
+    }
+  };
+
+  // Function to toggle individual API section
+  const toggleApiSection = (formId, apiPart) => {
+    const sectionContent = document.querySelector(`#form-${formId}-section-${apiPart} .api_part_content`);
+
+    setOpenApiSections(prev => {
+      const currentFormSections = prev[formId] || [];
+      const isCurrentlyOpen = currentFormSections.includes(apiPart);
+
+      if (isCurrentlyOpen) {
+        // Close the section
+        const newSections = currentFormSections.filter(section => section !== apiPart);
+        // Remove open class after a delay to allow animation
+        if (sectionContent) {
+          setTimeout(() => {
+            if (sectionContent) sectionContent.classList.remove('open');
+          }, 300);
+        }
+        return {
+          ...prev,
+          [formId]: newSections
+        };
+      } else {
+        // Open the section
+        const newSections = [...currentFormSections, apiPart];
+        // Add open class to the section content
+        if (sectionContent) {
+          sectionContent.classList.add('open');
+        }
+        return {
+          ...prev,
+          [formId]: newSections
+        };
+      }
+    });
+  };
+
+  // Helper function to check if an API section is open
+  const isApiSectionOpen = (formId, apiPart) => {
+    return (openApiSections[formId] || []).includes(apiPart);
+  };
 
   // Load enum data when component mounts
   useEffect(() => {
@@ -361,6 +560,17 @@ export default function FilterableTable() {
   }
   // fetchFormRisk(1)
 
+  // Part names for the drawer titles
+  const partNames = [
+    "اطلاعات شخصی",
+    "سوالات سلامت فردی",
+    "سوالات مصرف دارو",
+    "سوالات سرطان فردی",
+    "سوالات سرطان خانواده",
+    "سوالات اطلاعات کامل فردی",
+    "سوالات سرطان ریه"
+  ];
+
   return (
     <>
       <NavBar account={userPhone} />
@@ -387,134 +597,166 @@ export default function FilterableTable() {
           <p>برای تغییر دادن هر فیلد دابل کلیک کنید.</p>
         </div>
 
-        <div className="table_holder lower_width">
-          <table border="1" cellSpacing="0" cellPadding="8" dir="rtl" borderColor="#ddd">
-            <thead className="sar_jadval">
-              <tr>
-                {PERSIAN_HEADERS.map(({ key, label }) => (
-                  <th key={key}>{label}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {data.length > 0 ? (
-                data.map(row => (
-                  <tr key={row.id || row.user_id || Math.random()}>
-                    {PERSIAN_HEADERS.map(({ key }) => {
-                      if (key == "modelEnterence") {
-                        return (
-                          <td className="cell_choose" key={key}>
-                            <button className="model_in_btn" onClick={() => saveTheIdAndOpetions(row.id)}>ورود به مدل</button>
-                          </td>
-                        )
-                      } else if (key == "gail" || key == "bcra" || key == "premm5" || key == "plco") {
-                        return (
-                          <td
-                            className="cell_choose"
-                            key={key}
+        {/* Drawer-style interface for form sections */}
+        <div className="form_sections_container">
+          {data.length > 0 ? (
+            data.map((row, rowIndex) => (
+              <div key={row.id || row.user_id || Math.random()} className="form_section_drawer">
+                <div
+                  className="drawer_header"
+                  onClick={() => toggleDrawer(row.id)}
+                >
+                  <h3 className="drawer_title">فرم {row.id || rowIndex + 1} - {row.name || "نامشخص"}</h3>
+                  <div className="drawer_controls">
+                    <button
+                      className="model_enter_btn"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent triggering the drawer toggle
+                        saveTheIdAndOpetions(row.id);
+                      }}
+                    >
+                      ورودی به مدل
+                    </button>
+                    <span className="drawer_arrow">▼</span>
+                  </div>
+                </div>
+
+                <div id={`drawer-${row.id || rowIndex}`} className="drawer_content">
+                  {loadingDetails[row.id] ? (
+                    <p>در حال بارگذاری...</p>
+                  ) : (
+                    APIARR.map((apiPart, partIndex) => {
+                      const partData = formDetails[row.id]?.[apiPart] || {};
+
+                      // Filter out metadata fields
+                      const filteredData = {};
+                      Object.keys(partData).forEach(key => {
+                        if (key !== "id" && key !== "userID" && key !== "__typename" &&
+                          key !== "status" && key !== "createdAt" && key !== "updatedAt") {
+                          filteredData[key] = partData[key];
+                        }
+                      });
+
+                      return (
+                        <div key={apiPart} id={`form-${row.id}-section-${apiPart}`} className="api_part_drawer">
+                          <div
+                            className="api_part_header"
+                            onClick={() => toggleApiSection(row.id, apiPart)}
                           >
-                            <button className="model_in_btn" onClick={() => {
-                              showTheRisks(key, row.id)
-                              setOpenModalRisks(true)
-                            }}>نمایش نتایج</button>
-                          </td>
-                        )
-                      } else if (key == "famCan") {
-                        return (
-                          <td className="cell_choose">
-                            <button
-                              className="model_in_btn"
-                              onClick={() => {
-                                setSelectedFormForFamilyCancer(row.id);
-                                // Fetch family cancer details for this specific form
-                                const fetchDetails = async () => {
-                                  const token = localStorage.getItem("token");
-                                  try {
-                                    const familyCancerRes = await fetchDataGETImg(`admin/form/${row.id}/familycancer`, token);
-                                    setDetailedFamilyCancerData(prev => ({
-                                      ...prev,
-                                      [row.id]: familyCancerRes.data?.familyCancers || []
-                                    }));
-                                    setOpenFamilyCancerModal(true);
-                                  } catch (error) {
-                                    console.error(`Error fetching family cancer details for form ${row.id}:`, error);
-                                  }
-                                };
-                                fetchDetails();
-                              }}
-                            >
-                              نمایش جزئیات
-                            </button>
-                          </td>
-                        )
-                      } else if (key == "cancerInfo") {
-                        return (
-                          <td className="cell_choose">
-                            <button
-                              className="model_in_btn"
-                              onClick={() => {
-                                setSelectedFormForSelfCancer(row.id);
-                                // Fetch family cancer details for this specific form
-                                const fetchDetails = async () => {
-                                  const token = localStorage.getItem("token");
-                                  try {
-                                    const selfCancerRes = await fetchDataGETImg(`admin/form/${row.id}/cancer`, token);
-                                    setDetailedCancerData(prev => ({
-                                      ...prev,
-                                      [row.id]: selfCancerRes.data?.cancers || []
-                                    }));
-                                    setOpenCancerModal(true);
-                                  } catch (error) {
-                                    console.error(`Error fetching family cancer details for form ${row.id}:`, error);
-                                  }
-                                };
-                                fetchDetails();
-                              }}
-                            >
-                              نمایش جزئیات
-                            </button>
-                          </td>
-                        )
-                      } else {
-                        return (
-                          <td
-                            className="cell_choose"
-                            key={key}
-                            onDoubleClick={() => handleDoubleClick(row.id, key, row[key])}
-                          >
-                            {editingCell?.rowId === row.id && editingCell?.field === key ? (
-                              <div className="excel_input_holder">
-                                <input
-                                  type="text"
-                                  value={
-                                    editedData[row.id]?.[key] !== undefined
-                                      ? editedData[row.id][key]
-                                      : row[key] ?? ""
-                                  }
-                                  onChange={(e) => handleChange(e, row.id, key)}
-                                  className="w-full border rounded p-1"
-                                  autoFocus
-                                />
-                              </div>
-                            ) : (
-                              convertToPersianText(row[key], key)
+                            <h4 className="part_title">{partNames[partIndex] || `بخش ${partIndex + 1}`}</h4>
+                            <span className="api_part_arrow">
+                              {isApiSectionOpen(row.id, apiPart) ? '▲' : '▼'}
+                            </span>
+                          </div>
+
+                          <div className={`api_part_content ${isApiSectionOpen(row.id, apiPart) ? 'open' : ''}`}>
+                            {/* Add special buttons for cancer sections */}
+                            {apiPart === "cancer" && (
+                              <button
+                                className="cancer_btn"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedFormForSelfCancer(row.id);
+                                  // Fetch self cancer details for this specific form
+                                  const fetchDetails = async () => {
+                                    const token = localStorage.getItem("token");
+                                    try {
+                                      const selfCancerRes = await fetchDataGETImg(`admin/form/${row.id}/cancer`, token);
+                                      setDetailedCancerData(prev => ({
+                                        ...prev,
+                                        [row.id]: selfCancerRes.data?.cancers || []
+                                      }));
+                                      setOpenCancerModal(true);
+                                    } catch (error) {
+                                      console.error(`Error fetching self cancer details for form ${row.id}:`, error);
+                                    }
+                                  };
+                                  fetchDetails();
+                                }}
+                              >
+                                نمایش جزئیات سرطان فردی
+                              </button>
                             )}
-                          </td>
-                        )
-                      }
-                    })}
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={PERSIAN_HEADERS.length} style={{ textAlign: "center" }}>
-                    داده‌ای موجود نیست
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                            {apiPart === "familycancer" && (
+                              <button
+                                className="family_cancer_btn"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedFormForFamilyCancer(row.id);
+                                  // Fetch family cancer details for this specific form
+                                  const fetchDetails = async () => {
+                                    const token = localStorage.getItem("token");
+                                    try {
+                                      const familyCancerRes = await fetchDataGETImg(`admin/form/${row.id}/familycancer`, token);
+                                      setDetailedFamilyCancerData(prev => ({
+                                        ...prev,
+                                        [row.id]: familyCancerRes.data?.familyCancers || []
+                                      }));
+                                      setOpenFamilyCancerModal(true);
+                                    } catch (error) {
+                                      console.error(`Error fetching family cancer details for form ${row.id}:`, error);
+                                    }
+                                  };
+                                  fetchDetails();
+                                }}
+                              >
+                                نمایش جزئیات سرطان خانوادگی
+                              </button>
+                            )}
+
+                            <div className="part_data">
+                              {Object.keys(filteredData).length > 0 ? (
+                                Object.entries(filteredData).map(([key, value]) => {
+                                  const isCurrentlyEditing = editingFormPart === `${row.id}-${apiPart}-${key}`;
+                                  const editingValue = editingCells[row.id]?.[apiPart]?.[key] !== undefined
+                                    ? editingCells[row.id]?.[apiPart]?.[key]
+                                    : convertToPersianText(value, key);
+
+                                  return (
+                                    <div key={key} className="data_row">
+                                      <span className="data_key">{getFieldLabel(key)}:</span>
+                                      <span
+                                        className="data_value"
+                                        onDoubleClick={() => handleFieldDoubleClick(row.id, apiPart, key, convertToPersianText(value, key))}
+                                      >
+                                        {isCurrentlyEditing ? (
+                                          <input
+                                            type="text"
+                                            value={editingValue}
+                                            onChange={(e) => handleFieldChange(row.id, apiPart, key, e.target.value)}
+                                            onBlur={() => saveFieldToServer(row.id, apiPart, key, editingValue)}
+                                            onKeyDown={(e) => {
+                                              if (e.key === 'Enter') {
+                                                saveFieldToServer(row.id, apiPart, key, editingValue);
+                                              }
+                                            }}
+                                            autoFocus
+                                            style={{ width: "100%" }}
+                                          />
+                                        ) : (
+                                          convertToPersianText(value, key)
+                                        )}
+                                      </span>
+                                    </div>
+                                  );
+                                })
+                              ) : (
+                                <p className="no_data">اطلاعاتی موجود نیست</p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="no_data_message">داده‌ای موجود نیست</div>
+          )}
         </div>
+
         <div className="btn_holder_next_prev">
           <button className="btn_submit space-UD" onClick={showPrev}>صفحه ی قبلی</button>
           <button className="btn_submit space-UD" onClick={showMore}>صفحه ی بعدی</button>
@@ -536,7 +778,7 @@ export default function FilterableTable() {
                 className="role"
                 onClick={() => sendToCalcModel(m.id)} // pass role directly instead of e.target.value
               >
-                {m.name}
+                {m.name.toUpperCase()}
               </div>
             ))}
           </div>

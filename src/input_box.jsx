@@ -7,6 +7,7 @@ function InputBox({ data_req, data, valueSetter, value, class_change1, class_cha
     const validator = (val) => {
         if (data.type == "number" && (isNumber(val) || val == "")) {
             console.log("salam!!!!!")
+
             valueSetter?.(val)
             setInpError("")
             typeErr?.(false)
@@ -16,11 +17,12 @@ function InputBox({ data_req, data, valueSetter, value, class_change1, class_cha
             setInpError("")
             typeErr?.(false)
 
-        } else if (limit != undefined && val.length > limit) {
-            setInpError(`طول عدد وارد شده بیشتر از ${limit} می باشد`)
-            typeErr?.(true)
         } else {
             setInpError('!لطفا فرم را به درستی پر کنید')
+            typeErr?.(true)
+        }
+        if (limit != undefined && val.length !== limit) {
+            setInpError(`طول عدد وارد شده  ${limit} نمی باشد`)
             typeErr?.(true)
         }
     }

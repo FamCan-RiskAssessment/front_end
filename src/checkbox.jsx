@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-function CheckBox({ data, checker, atba, classChange1, classChange2 }) {
+function CheckBox({ data_req, data, checker, atba, classChange1, classChange2 }) {
+    const effectiveDataReq = data_req ? data_req : "false";
     return (
         <>
             <div className={`form_element ${classChange1}`}>
@@ -19,7 +20,7 @@ function CheckBox({ data, checker, atba, classChange1, classChange2 }) {
                             {opt.length != 2 && (
                                 <>
                                     <label htmlFor={opt}>{opt}</label>
-                                    <input type="checkbox" className="check_box" name={opt} id={opt} onChange={(e) => checker(e.target.checked)} />
+                                    <input data_req={effectiveDataReq} type="checkbox" className="check_box" name={opt} id={opt} onChange={(e) => checker(e.target.checked)} />
                                 </>
                             )}
                         </div>

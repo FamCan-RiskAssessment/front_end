@@ -1,50 +1,55 @@
 {
-    "radio_opts_cancer": {
-      "Rname": "cancer",
-      "ask": "آیا تا به حال برای شما سرطان تشخیص داده‌اند؟",
-      "options": ["بله", "خیر"]
+  "title": "سوالات سرطان فردی",
+  "radio_opts_cancer": {
+    "Rname": "cancer",
+    "ask": "آیا تا به حال برای شما سرطان تشخیص داده‌اند؟",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "cancerCard": {
+    "cancerType": {
+      "ask": "نوع یا انواع سرطان و سن ابتلا را مشخص کنید. (حداقل یک انتخاب و بیشتر)",
+      "Oname": "cancerType",
+      "options": [
+        "انتخاب کنید",
+        "سرطان پستان",
+        "سرطان پستان دو بار (یا دوطرفه)",
+        "سرطان تخمدان",
+        "سرطان پانکراس",
+        "سرطان پروستات",
+        "سرطان رحم",
+        "سرطان روده بزرگ",
+        "سرطان مثانه",
+        "سرطان معده",
+        "سرطان کلیه یا مجاری ادرار",
+        "تومور مغزی",
+        "سرطان های دیگر",
+        "سرطان ریه",
+        "سرطان به صورت متاستاتیک بوده"
+      ]
     },
-    "cancerCard": {
-      "cancerType": {
-        "ask":"نوع یا انواع سرطان و سن ابتلا را مشخص کنید. (حداقل یک انتخاب و بیشتر)",
-        "Oname": "cancerType",
-        "options": [
-          "انتخاب کنید",
-          "سرطان پستان",
-          "سرطان پستان دو بار (یا دوطرفه)",
-          "سرطان تخمدان",
-          "سرطان پانکراس",
-          "سرطان پروستات",
-          "سرطان رحم",
-          "سرطان روده بزرگ",
-          "سرطان مثانه",
-          "سرطان معده",
-          "سرطان کلیه یا مجاری ادرار",
-          "تومور مغزی",
-          "سرطان های دیگر",
-          "سرطان به صورت متاستاتیک بوده"
-        ]
-      },
-      "cancerAge": {
-        "engName":"cancerAge",
-        "inpName": "سن ابتلا",
-        "type": "number",
-        "placeHolder": "سن ابتلا"
-      },
-      "attachment": {
-        "fieldName": "لطفاً تصویر را بارگذاری کنید.",
-        "inputType": "file",
-        "name": "cancerFiles",
-        "required": true
-      },
-      "addButton": {
-        "label": "اضافه",
-        "action": "addCancer()",
-        "id": "addCancerId"
-      },
-      "listContainer": {
-        "id": "divCancerListId",
-        "purpose": "نمایش لیست سرطان‌های اضافه شده"
-      }
+    "cancerAge": {
+      "engName": "cancerAge",
+      "inpName": "سن ابتلا",
+      "type": "number",
+      "placeHolder": "سن ابتلا"
+    },
+    "attachment": {
+      "fieldName": "لطفاً تصویر را بارگذاری کنید.",
+      "inputType": "file",
+      "name": "cancerFiles",
+      "required": true
+    },
+    "addButton": {
+      "label": "اضافه",
+      "action": "addCancer()",
+      "id": "addCancerId"
+    },
+    "listContainer": {
+      "id": "divCancerListId",
+      "purpose": "نمایش لیست سرطان‌های اضافه شده"
     }
   }
+}

@@ -1,4 +1,5 @@
 {
+  "title": "سوالات مصرف دارو",
   "combine_option_ghaedeAge": {
     "ask": "اولین بار که دچار قاعدگی شدید چند سال داشتید؟ (اگر بالای 18 و زیر 8 است نزدیکترین سن را انتخاب کنید.)",
     "Oname": "ghaedeAge",
@@ -24,6 +25,18 @@
       "بله",
       "خیر"
     ]
+  },
+  "text_sonCount": {
+    "engName": "sonCounts",
+    "type": "number",
+    "placeHolder": "xx",
+    "inpName": "تعداد فرزندان پسر"
+  },
+  "text_doughterCount": {
+    "engName": "doughterCount",
+    "type": "number",
+    "placeHolder": "xx",
+    "inpName": "تعداد فرزندان دختر"
   },
   "combine_option_firstChildBirthAge": {
     "ask": "در اولین زایمان زنده چند سال داشتید؟",
@@ -77,10 +90,10 @@
     "Rname": "menopausalStatus",
     "ask": "آیا عادت ماهانۀ شما متوقف شده است؟ (یعنی در 6 ماه گذشته بدون آنکه حامله باشید یا داروی هورمونی مصرف کنید عادت ماهانه نشده باشید.)",
     "options": [
-      "پیش از یائسگی",
-      "دوران یائسگی",
-      "پس از یائسگی",
-      "نامشخص"
+      "بله (Postmenopausal)",
+      "خیر (Premenopausal)",
+      "در اثر مصرف دارو موقتا  متوقف شده است",
+      "اطلاع ندارم"
     ]
   },
   "combine_option_menopause": {
@@ -239,7 +252,7 @@
   "attach_mamoGraphy": {
     "fieldName": "لطفاً تصویر گزارش آزمایش ماموگرافی خود را بارگذاری کنید.",
     "inputType": "file",
-    "name": "mamographyPictures"
+    "name": "mamoGraphyPictures"
   },
   "radio_opts_falop": {
     "Rname": "falop",

@@ -343,7 +343,7 @@ function CancerField({
                             data={data_Inp2}
                             valueSetter={handleInp2Change}
                             value={inp2}
-                            limit={3}
+                        // limit={3}
                         />
                     )}
                     {data_Radio && (

@@ -15,6 +15,7 @@ import ErrorShower from './Error_page'
 import SupervisorPage from './supervisor_page'
 import SystemLogs from './SysLogs'
 import UserVerify from './UserVerification'
+import ModelResults from './model_res'
 import OperatorUserMobile from './userMobile'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 function App() {
@@ -40,6 +41,8 @@ function App() {
           <Route path='/DashBoard/systemLog' element={<SystemLogs></SystemLogs>}></Route>
           <Route path='/operator/userMobile' element={<OperatorUserMobile></OperatorUserMobile>}></Route>
           <Route path='/operator/userVerification' element={<UserVerify></UserVerify>}></Route>
+          <Route path='/DashBoard/modelsResults' element={<ModelResults></ModelResults>}></Route>
+
 
           <Route path='*' element={<ErrorShower errorType={404}></ErrorShower>}></Route>
         </Routes>

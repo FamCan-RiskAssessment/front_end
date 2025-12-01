@@ -1,21 +1,5 @@
 [
   {
-    "key": "bcra",
-    "label": "نتیجه ی مدل bcra"
-  },
-  {
-    "key": "premm5",
-    "label": "نتیجه ی مدل premm5"
-  },
-  {
-    "key": "gail",
-    "label": "نتیجه ی مدل gail"
-  },
-  {
-    "key": "plco",
-    "label": "نتیجه ی مدل plco"
-  },
-  {
     "key": "modelEnterence",
     "label": "ورودی به مدل"
   },
@@ -364,76 +348,8 @@
     "label": "سیگار در روز (اکنون)"
   },
   {
-    "key": "cigarPerDayCurrent",
-    "label": "سیگار لوکس در روز (اکنون)"
-  },
-  {
-    "key": "eCigPerDayCurrent",
-    "label": "سیگار الکترونیکی در روز (اکنون)"
-  },
-  {
-    "key": "pipePerDayCurrent",
-    "label": "چوب سیگار در روز (اکنون)"
-  },
-  {
-    "key": "chapoghPerDayCurrent",
-    "label": "چاپوق در روز (اکنون)"
-  },
-  {
-    "key": "smokedOpiumPerDayCurrent",
-    "label": "تریاک دودی در روز (اکنون)"
-  },
-  {
-    "key": "chewedOpiumPerDayCurrent",
-    "label": "تریاک جویدنی در روز (اکنون)"
-  },
-  {
-    "key": "hookahPerWeekCurrent",
-    "label": "قلیان در هفته (اکنون)"
-  },
-  {
     "key": "pastSmoking",
     "label": "سابقه سیگار کشیدن"
-  },
-  {
-    "key": "smokingStartAgePast",
-    "label": "سن شروع سیگار (گذشته)"
-  },
-  {
-    "key": "smokingTypesPast",
-    "label": "نوع سیگار (گذشته)"
-  },
-  {
-    "key": "cigarettesPerDayPast",
-    "label": "سیگار در روز (گذشته)"
-  },
-  {
-    "key": "cigarPerDayPast",
-    "label": "سیگار لوکس در روز (گذشته)"
-  },
-  {
-    "key": "eCigPerDayPast",
-    "label": "سیگار الکترونیکی در روز (گذشته)"
-  },
-  {
-    "key": "pipePerDayPast",
-    "label": "چوب سیگار در روز (گذشته)"
-  },
-  {
-    "key": "chapoghPerDayPast",
-    "label": "چاپوق در روز (گذشته)"
-  },
-  {
-    "key": "smokedOpiumPerDayPast",
-    "label": "تریاک دودی در روز (گذشته)"
-  },
-  {
-    "key": "chewedOpiumPerDayPast",
-    "label": "تریاک جویدنی در روز (گذشته)"
-  },
-  {
-    "key": "hookahPerWeekPast",
-    "label": "قلیان در هفته (گذشته)"
   },
   {
     "key": "secondhandSmoke",
