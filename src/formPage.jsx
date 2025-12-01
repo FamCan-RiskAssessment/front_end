@@ -181,6 +181,7 @@ function FormsPage() {
                 <li key={form.id} className="form-item">
                   <span className="form-name">{index + 1}</span>
                   <span className="social-num">{form.socialSecurityNumber}</span>
+                  <span className="form-name">{form.name}</span>
                   <div className="btn_formPage_holder">
                     <button
                       className="btn-view-form"

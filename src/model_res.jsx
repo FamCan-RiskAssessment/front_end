@@ -158,7 +158,7 @@ const ModelResults = () => {
                             <tr>
                                 <th>نام</th>
                                 <th>PREMM5</th>
-                                <th>GAIL</th>
+                                <th>GAIL(6 years)</th>
                                 <th>BCRA</th>
                                 <th>PLCO</th>
                                 <th>CCRAT</th>

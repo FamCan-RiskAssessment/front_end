@@ -290,7 +290,7 @@ td {
 }
 
 .drawer_content.open {
-    max-height: 1000px;
+    max-height: fit-content;
     /* Adjust as needed based on content */
 }
 
@@ -353,7 +353,7 @@ td {
 }
 
 .api_part_content.open {
-    max-height: 1000px;
+    max-height: fit-content;
     /* Adjust as needed based on content */
 }
 
