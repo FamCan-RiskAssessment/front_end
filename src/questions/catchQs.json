@@ -1,0 +1,55 @@
+[
+    {
+        "input_type": "radio_input",
+        "options": [
+            "بله",
+            "خیر",
+            "نمی دانم"
+        ],
+        "Rname": "attentionCorrect",
+        "useName": "catch1",
+        "ask": "آیا فرم را به درستی پر نمی کنید ؟ ",
+        "ans": "خیر"
+    },
+    {
+        "input_type": "radio_input",
+        "options": [
+            "بله",
+            "خیر",
+            "نمی دانم"
+        ],
+        "Rname": "attentionCorrect",
+        "useName": "catch2",
+        "ask": "آیا از پاسخ های خود مطمئن نیستید ؟ ",
+        "ans": "خیر"
+    },
+    {
+        "input_type": "radio_input",
+        "options": [
+            "بله",
+            "خیر",
+            "نمی دانم"
+        ],
+        "Rname": "attentionCorrect",
+        "useName": "catch3",
+        "ask": "آیا فرم را با صداقت پر می کنید ؟ ",
+        "ans": "بله"
+    },
+    {
+        "input_type": "input_text",
+        "inpName": " : مجموع رو به رو را حساب کنید",
+        "type": "number",
+        "placeHolder": "xx",
+        "useName": "catchSum",
+        "engName": "attentionCorrect"
+    },
+    {
+        "input_type": "input_text",
+        "inpName": "یک سال چند ماه دارد ؟ ",
+        "type": "number",
+        "placeHolder": "xx",
+        "useName": "catchMonth",
+        "engName": "attentionCorrect",
+        "ans": 12
+    }
+]

@@ -70,6 +70,7 @@ export default function FilterableTable() {
   const [selectedFormForFamilyCancer, setSelectedFormForFamilyCancer] = useState(null)
   const [selectedFormForSelfCancer, setSelectedFormForSelfCancer] = useState(null)
   const [cancerDeled, setCancerDeled] = useState([])
+  const [familyCancerDeled, setFamilyCancerDeled] = useState([])
   const [AddCancerModal, setAddCancerModal] = useState(false)
   const [cancerTypesMap, setCancerTypesMap] = useState({})
   const [relativeTypesMap, setRelativeTypesMap] = useState({})
@@ -595,7 +596,7 @@ export default function FilterableTable() {
   const deleteFamCancer = async (canId, form_id) => {
     let token = localStorage.getItem("token")
     let delAns = await fetchDataDELETE(`admin/form/${form_id}/familycancer/${canId}`, token)
-    setCancerDeled(ar => [...ar, canId])
+    setFamilyCancerDeled(ar => [...ar, canId])
     if (delAns.ok) {
       console.log("delete was successful!")
     }
@@ -698,6 +699,7 @@ export default function FilterableTable() {
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setSelectedFormForSelfCancer(row.id);
+                                    setCancerDeled([]); // Reset deleted self cancers tracking
                                     // Fetch self cancer details for this specific form
                                     const fetchDetails = async () => {
                                       const token = localStorage.getItem("token");
@@ -736,6 +738,7 @@ export default function FilterableTable() {
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setSelectedFormForFamilyCancer(row.id);
+                                    setFamilyCancerDeled([]); // Reset deleted family cancers tracking
                                     // Fetch family cancer details for this specific form
                                     const fetchDetails = async () => {
                                       const token = localStorage.getItem("token");
@@ -800,7 +803,24 @@ export default function FilterableTable() {
                                             style={{ width: "100%" }}
                                           />
                                         ) : (
-                                          convertToPersianText(value, key)
+                                          // Check if the field is an array of images and render as downloadable links
+                                          (key === 'testGenPictures' || key === 'fatherTestGenPictures' || key === 'grandFatherCancerPictures' || key === 'grandMotherCancerPictures' || key === "mamoGraphyPictures") && Array.isArray(value) && value.length > 0 ? (
+                                            <div className="image-pictures-container">
+                                              {value.map((pictureUrl, index) => (
+                                                <a
+                                                  key={index}
+                                                  href={pictureUrl}
+                                                  target="_blank"
+                                                  rel="noopener noreferrer"
+                                                  className="download-link"
+                                                >
+                                                  دانلود تصویر {index + 1}
+                                                </a>
+                                              ))}
+                                            </div>
+                                          ) : (
+                                            convertToPersianText(value, key)
+                                          )
                                         )}
                                       </span>
                                     </div>
@@ -887,6 +907,7 @@ export default function FilterableTable() {
             <div className="modal_close" onClick={() => {
               setOpenFamilyCancerModal(false)
               setSelectedFormForFamilyCancer(null)
+              setFamilyCancerDeled([]) // Reset deleted family cancers tracking
             }}>✕</div>
           </div>
           <div className="roles cancer-mode">
@@ -904,8 +925,7 @@ export default function FilterableTable() {
                       <p style={{ fontWeight: "bold", fontSize: "20px", borderBottom: "1px solid #ccc", padding: "1rem", }}>انواع سرطان:</p>
                       {familyMember.cancers && familyMember.cancers.length > 0 ?
                         familyMember.cancers.map((cancer, cancerIndex) => {
-                          if (!(cancer.id in cancerDeled)) {
-                            console.log(cancer.id, cancerDeled)
+                          if (!(familyCancerDeled.includes(cancer.id))) {
                             return (<div key={cancerIndex} className="cancer-item">
                               <div className="top_cancer_holder">
                                 <p>نوع سرطان: {cancerTypesMap[cancer.cancerType]}</p>
@@ -944,6 +964,7 @@ export default function FilterableTable() {
             <div className="modal_close" onClick={() => {
               setOpenCancerModal(false)
               setSelectedFormForSelfCancer(null)
+              setCancerDeled([]) // Reset deleted self cancers tracking
             }}>✕</div>
           </div>
           <div className="roles cancer-mode">
@@ -951,7 +972,7 @@ export default function FilterableTable() {
               <div className="cancer-list">
                 {detailedCancerData[selectedFormForSelfCancer]?.length === 0 || !detailedCancerData[selectedFormForSelfCancer] ? "تاریخچه سرطان خانوادگی موجود نیست" :
                   detailedCancerData[selectedFormForSelfCancer]?.map((cancer, index) => {
-                    if (!(cancer.id in cancerDeled)) {
+                    if (!(cancerDeled.includes(cancer.id))) {
 
                       return (
                         <div className="cancer-item" >
@@ -993,6 +1014,8 @@ export default function FilterableTable() {
               setAddCancerModal(false);
               setSelectedFormForSelfCancer(null);
               setSelectedFormForFamilyCancer(null);
+              setCancerDeled([]); // Reset deleted self cancers tracking
+              setFamilyCancerDeled([]); // Reset deleted family cancers tracking
             }}>✕</div>
           </div>
           <div className="roles cancer-mode">
@@ -1004,6 +1027,8 @@ export default function FilterableTable() {
                   setAddCancerModal(false);
                   setSelectedFormForSelfCancer(null);
                   setSelectedFormForFamilyCancer(null);
+                  setCancerDeled([]); // Reset deleted self cancers tracking
+                  setFamilyCancerDeled([]); // Reset deleted family cancers tracking
                 }}
                 cancerTypesMap={cancerTypesMap}
                 relativeTypesMap={relativeTypesMap}
@@ -1022,18 +1047,31 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
   const [cancerAge, setCancerAge] = useState("");
   const [relativeType, setRelativeType] = useState("");
   const [lifeStatus, setLifeStatus] = useState(1); // 1 for alive, 0 for deceased
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
   const { addToast } = useToast();
 
   // Handle image file selection
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
+    const files = Array.from(e.target.files);
+    if (files.length > 0) {
+      // Create preview URLs for new files
+      const newPreviews = files.map(file => URL.createObjectURL(file));
+
+      // Update state with new files and previews
+      setImageFiles(prev => [...prev, ...files]);
+      setImagePreviews(prev => [...prev, ...newPreviews]);
     }
+  };
+
+  // Function to remove an image
+  const removeImage = (index) => {
+    // Revoke the preview URL to free up memory
+    URL.revokeObjectURL(imagePreviews[index]);
+
+    // Update state to remove the file and preview at the specified index
+    setImageFiles(prev => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   // Handle form submission
@@ -1081,8 +1119,8 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
 
       // Call the fetchDataPOST function directly similar to cancer_universal.jsx
       let response;
-      if (imageFile) {
-        // Send as form data if there's an image file
+      if (imageFiles.length > 0) {
+        // Send as form data if there are image files
         const formData = new FormData();
 
         if (isFamilyCancer) {
@@ -1090,7 +1128,11 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
           formData.append('lifeStatus', lifeStatusInt);
           formData.append('cancerAge', cancerAgeInt);
           formData.append('cancerType', cancerTypeId);
-          formData.append('file', imageFile);
+
+          // Append each image file with the same field name to support multiple files
+          imageFiles.forEach(file => {
+            formData.append('pictures', file); // Note: using 'files' plural to handle multiple files
+          });
 
           response = await fetch(`http://${APIURL}/admin/form/${formId}/familycancer`, {
             method: 'POST',
@@ -1102,7 +1144,11 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
         } else {
           formData.append('cancerAge', cancerAgeInt);
           formData.append('cancerType', cancerTypeId);
-          formData.append('file', imageFile);
+
+          // Append each image file with the same field name to support multiple files
+          imageFiles.forEach(file => {
+            formData.append('pictures', file); // Note: using 'files' plural to handle multiple files
+          });
 
           response = await fetch(`http://${APIURL}/admin/form/${formId}/cancer`, {
             method: 'POST',
@@ -1113,7 +1159,7 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
           });
         }
       } else {
-        // Send as JSON if no image file
+        // Send as JSON if no image files
         const payload = isFamilyCancer ?
           {
             relative: relativeTypeId,
@@ -1160,14 +1206,17 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
     }
   };
 
-  // Cleanup preview URL when component unmounts
+  // Cleanup preview URLs when component unmounts
   useEffect(() => {
     return () => {
-      if (imagePreview) {
-        URL.revokeObjectURL(imagePreview);
-      }
+      // Revoke all preview URLs to free up memory
+      imagePreviews.forEach(preview => {
+        if (preview) {
+          URL.revokeObjectURL(preview);
+        }
+      });
     };
-  }, [imagePreview]);
+  }, [imagePreviews]);
 
   return (
     <div className="cancer-add-form">
@@ -1250,13 +1299,27 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
             accept="image/*"
             onChange={handleImageChange}
             className="form-control"
+            multiple // Allow multiple file selection
           />
-          {imagePreview && (
-            <div className="image-preview" style={{ marginTop: '10px' }}>
-              <p>پیش نمایش تصویر:</p>
-              <img src={imagePreview} alt="Preview" style={{ maxWidth: '200px', maxHeight: '200px', border: '1px solid #ccc', borderRadius: '4px' }} />
-            </div>
-          )}
+          <div className="image-previews-container">
+            <p>پیش نمایش تصاویر:</p>
+            {imagePreviews.map((preview, index) => (
+              <div key={index} className="image-preview-item">
+                <img
+                  src={preview}
+                  alt={`Preview ${index + 1}`}
+                  style={{ maxWidth: '200px', maxHeight: '200px', border: '1px solid #ccc', borderRadius: '4px' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => removeImage(index)}
+                  className="remove-image-btn"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="form-actions" style={{ marginTop: '15px', display: 'flex', gap: '10px' }}>

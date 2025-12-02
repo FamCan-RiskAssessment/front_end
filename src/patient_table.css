@@ -482,7 +482,7 @@ td {
 /* Cancer add form styling */
 .cancer-add-form {
     width: 100%;
-    padding: 1rem;
+    /* padding: 1rem; */
 }
 
 .form-group {
@@ -578,4 +578,77 @@ td {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+}
+
+/* Multiple image preview styles */
+.image-previews-container {
+    margin-top: 10px;
+}
+
+.image-previews-container p {
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+.image-preview-item {
+    position: relative;
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.image-preview-item img {
+    max-width: 200px;
+    max-height: 200px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.remove-image-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.remove-image-btn:hover {
+    background: #c00;
+    transform: scale(1.1);
+}
+
+/* Download links for image arrays */
+.image-pictures-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-start;
+}
+
+.download-link {
+    display: inline-block;
+    padding: 4px 8px;
+    background-color: #f0f0f0;
+    color: #333;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.download-link:hover {
+    background-color: #e0e0e0;
+    border-color: #999;
 }

@@ -15,6 +15,7 @@ import part4 from './questions/P4.json'
 import part5 from './questions/P5.json'
 import part6 from './questions/P6.json'
 import part7 from './questions/P7.json'
+// import CQs from './catchQs.json'
 import { useLocation, useNavigate } from "react-router-dom";
 import { APIURL } from "./utils/config";
 import { useToast } from "./toaster";
