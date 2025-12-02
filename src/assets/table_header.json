@@ -370,5 +370,49 @@
   {
     "key": "breastDensity",
     "label": "breast density"
+  },
+  {
+    "key": "yearSmoke",
+    "label": "تعداد سال های سیگار کشیدن"
+  },
+  {
+    "key": "countGheliandaily",
+    "label": "تعداد قلیان در روز "
+  },
+  {
+    "key": "daughterCount",
+    "label": "تعداد دختر "
+  },
+  {
+    "key": "sonCount",
+    "label": "تعداد پسر"
+  },
+  {
+    "key": "education",
+    "label": "تحصیلات"
+  },
+  {
+    "key": "phone2",
+    "label": "تلفن 1"
+  },
+  {
+    "key": "phone3",
+    "label": "تلفن 2"
+  },
+  {
+    "key": "takmilBime",
+    "label": "بیمه تکمیلی"
+  },
+  {
+    "key": "leaveSmoke",
+    "label": "چند سال مصرف سیگار "
+  },
+  {
+    "key": "smokingTypesPast",
+    "label": "مواد دخانی مورد استفاده"
+  },
+  {
+    "key": "lungDiseaseHistory",
+    "label": "بیماری مزمن ریوی"
   }
 ]

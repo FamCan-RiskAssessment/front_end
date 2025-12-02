@@ -100,7 +100,21 @@ export const fetchDataGET = async (endpoint, token_auth) => {
   return data;
 };
 
+export const fetchDataGETTab = async (endpoint, token_auth) => {
+  const res = await fetch(`http://${APIURL}/${endpoint}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      'Authorization': `Bearer ${token_auth}`
+    },
 
+  });
+
+  const data = await res.json();
+  // if (!res.ok) throw new Error(data.message || "Request failed");
+
+  return data;
+};
 // utils/fetchItemWithImage.js
 // utils/fetchCancerList.js
 export const fetchDataGETImg = async (endpoint, token) => {

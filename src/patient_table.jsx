@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import NavBar from "./navBar";
 import "./patient_table.css";
 import { APIARR, APIURL } from "./utils/config";
-import { fetchDataGET, fetchDataPOST, key_stage_matcher, stageMatcher, fetchDataGETImg, cancerTypeEx, relativeTypeEx, fetchDataDELETE } from "./utils/tools";
+import { fetchDataGET, fetchDataGETTab, fetchDataPOST, key_stage_matcher, stageMatcher, fetchDataGETImg, cancerTypeEx, relativeTypeEx, fetchDataDELETE } from "./utils/tools";
 import PERSIAN_HEADERS from "./assets/table_header.json"
 import { useLocation } from "react-router-dom";
 import { useToast } from "./toaster";
@@ -111,6 +111,14 @@ export default function FilterableTable() {
       }));
     } catch (error) {
       console.error(`Error fetching ${apiPart} for form ${formId}:`, error);
+      // Still update the state to indicate that this section had an error
+      setFormDetails(prev => ({
+        ...prev,
+        [formId]: {
+          ...prev[formId],
+          [apiPart]: { error: error.message, incomplete: true }
+        }
+      }));
     }
   };
 
@@ -346,27 +354,23 @@ export default function FilterableTable() {
       setPagiNext(pre_forms.data.pagination.hasNextPage)
       setPagiPrev(pre_forms.data.pagination.hasPrevPage)
       if (pre_forms.status === 200) {
-        // Create a new array to hold the updated forms
         const updatedForms = [];
-
-        // Process each form sequentially (or use Promise.all for parallel)
+        // Process each form from the API exactly once to prevent duplicates
         for (const pf of pre_forms.data.data) {
-          let updatedForm = { ...pf }; // Start with a copy of the original form
+          let updatedForm = { ...pf }; // Start with base form data
 
-          // Process each API endpoint
+          // Combine data from all API parts for this specific form
           for (const ar of APIARR) {
-            try {
-              let user_part_form = await fetchDataGET(`form/${pf.id}/${ar}`, token);
-              updatedForm = { ...updatedForm, ...user_part_form.data };
-            } catch (error) {
-              console.error(`Error fetching form ${pf.id} for ${ar}:`, error);
-            }
+            const user_part_form = await fetchDataGETTab(`form/${pf.id}/${ar}`, token);
+
+            // Spread the additional data but keep the original id from pf
+            updatedForm = { ...updatedForm, ...user_part_form.data, id: pf.id };
           }
 
+          // Add this form only once to the results array
           updatedForms.push(updatedForm);
         }
 
-        // Update state with the fully updated array
         setData(updatedForms);
         if (!run) {
           setRun(true)
@@ -449,51 +453,65 @@ export default function FilterableTable() {
     const matchAndSend = async () => {
       for (const ar of APIARR) {
         for (const form_id of Object.keys(editedData)) {
-          let temporal_data = await fetchDataGET(`form/${form_id}/${ar}`, token_auth)
-          for (const field of Object.keys(editedData[form_id])) {
-            let res = key_stage_matcher(field, temporal_data.data)
-            if (res) {
-              if (editedData[form_id][field] === "بله" && field != "pastSmoking") {
-                editedData[form_id][field] = true;
-              } else if (editedData[form_id][field] === "خیر" && field != "pastSmoking") {
-                editedData[form_id][field] = false;
-              } else if (editedData[form_id][field] == "null" && field != "pastSmoking") {
-                editedData[form_id][field] = null;
-              } else if (isNumber(editedData[form_id][field]) && field != "socialSecurityNumber" && field != "postalCode") {
-                editedData[form_id][field] = parseInt(editedData[form_id][field]);
-              } else if (editedData[form_id][field] == "انتخاب کنید" || editedData[form_id][field] == "انتخاب نمایید" || editedData[form_id][field] == "") {
-                continue
-              }
-              const payload = {
-                [field]: editedData[form_id][`${field}`]
-              }
-              try {
-                const response = await fetch(`http://${APIURL}/admin/form/${form_id}/${ar}`, {
-                  method: 'PATCH',
-                  headers: {
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${token_auth}`
-                  },
-                  body: JSON.stringify(payload),
-                });
-
-                if (!response.ok) {
-                  throw new Error(`HTTP error! status: ${response.status}`);
-                } else {
-                  const result = await response.json();
-                  setEditingCell(null)
-                  addToast({
-                    title: result.message,
-                    type: 'success',
-                    duration: 4000
-                  })
-                  console.log('PUT success:', result);
+          try {
+            let temporal_data = await fetchDataGET(`form/${form_id}/${ar}`, token_auth)
+            for (const field of Object.keys(editedData[form_id])) {
+              let res = key_stage_matcher(field, temporal_data.data)
+              if (res) {
+                if (editedData[form_id][field] === "بله" && field != "pastSmoking") {
+                  editedData[form_id][field] = true;
+                } else if (editedData[form_id][field] === "خیر" && field != "pastSmoking") {
+                  editedData[form_id][field] = false;
+                } else if (editedData[form_id][field] == "null" && field != "pastSmoking") {
+                  editedData[form_id][field] = null;
+                } else if (isNumber(editedData[form_id][field]) && field != "socialSecurityNumber" && field != "postalCode") {
+                  editedData[form_id][field] = parseInt(editedData[form_id][field]);
+                } else if (editedData[form_id][field] == "انتخاب کنید" || editedData[form_id][field] == "انتخاب نمایید" || editedData[form_id][field] == "") {
+                  continue
                 }
-              } catch (error) {
-                console.error('PUT request failed:', error);
-              }
-            }
+                const payload = {
+                  [field]: editedData[form_id][`${field}`]
+                }
+                try {
+                  const response = await fetch(`http://${APIURL}/admin/form/${form_id}/${ar}`, {
+                    method: 'PATCH',
+                    headers: {
+                      "Content-Type": "application/json",
+                      'Authorization': `Bearer ${token_auth}`
+                    },
+                    body: JSON.stringify(payload),
+                  });
 
+                  if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                  } else {
+                    const result = await response.json();
+                    setEditingCell(null)
+                    addToast({
+                      title: result.message,
+                      type: 'success',
+                      duration: 4000
+                    })
+                    console.log('PUT success:', result);
+                  }
+                } catch (error) {
+                  console.error('PUT request failed:', error);
+                  addToast({
+                    title: `خطا در ذخیره فیلد ${field}: ${error.message}`,
+                    type: 'error',
+                    duration: 4000
+                  });
+                }
+              }
+
+            }
+          } catch (error) {
+            console.error(`Error fetching data for form ${form_id} during save:`, error);
+            addToast({
+              title: `خطا در بارگذاری داده‌های فرم ${form_id}: ${error.message}`,
+              type: 'error',
+              duration: 4000
+            });
           }
         }
       }
@@ -616,7 +634,7 @@ export default function FilterableTable() {
         <div className="form_sections_container">
           {data.length > 0 ? (
             data.map((row, rowIndex) => (
-              <div key={row.id || row.user_id || Math.random()} className="form_section_drawer">
+              <div key={`form-${row.id || rowIndex}`} className="form_section_drawer">
                 <div
                   className="drawer_header"
                   onClick={() => toggleDrawer(row.id)}
@@ -636,7 +654,7 @@ export default function FilterableTable() {
                   </div>
                 </div>
 
-                <div id={`drawer-${row.id || rowIndex}`} className="drawer_content">
+                <div id={`drawer-${row.id || `row-${rowIndex}`}`} className="drawer_content">
                   {loadingDetails[row.id] ? (
                     <p>در حال بارگذاری...</p>
                   ) : (
@@ -744,7 +762,9 @@ export default function FilterableTable() {
                             )}
 
                             <div className="part_data">
-                              {Object.keys(filteredData).length > 0 ? (
+                              {partData.error ? (
+                                <p className="error_message">خطا در بارگذاری داده‌ها: {partData.error}</p>
+                              ) : Object.keys(filteredData).length > 0 ? (
                                 Object.entries(filteredData).map(([key, value]) => {
                                   const isCurrentlyEditing = editingFormPart === `${row.id}-${apiPart}-${key}`;
                                   const editingValue = editingCells[row.id]?.[apiPart]?.[key] !== undefined

@@ -564,3 +564,12 @@ td {
 .form-group label[for] {
     cursor: pointer;
 }
+
+.error_message {
+    color: #d32f2f;
+    font-weight: bold;
+    padding: 8px;
+    background-color: #ffebee;
+    border-radius: 4px;
+    margin: 5px 0;
+}
