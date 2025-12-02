@@ -1,0 +1,79 @@
+.attention-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 1rem;
+}
+
+.attention-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 2rem;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  border: 2px solid #ff6b6b;
+}
+
+.attention-content {
+  margin-bottom: 1.5rem;
+}
+
+.attention-title {
+  color: #d32f2f;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.attention-message {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #333;
+  text-align: right;
+  direction: rtl;
+  margin: 0;
+}
+
+.continue-btn {
+  background-color: #7a4ca0;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: bold;
+  width: 100%;
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+.continue-btn:hover {
+  background-color: #9a5cc0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .attention-card {
+    padding: 1.5rem;
+    margin: 0.5rem;
+  }
+  
+  .attention-title {
+    font-size: 1.5rem;
+  }
+  
+  .attention-message {
+    font-size: 1rem;
+  }
+  
+  .continue-btn {
+    padding: 0.7rem 1.5rem;
+    font-size: 1rem;
+  }
+}

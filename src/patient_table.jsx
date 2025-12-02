@@ -592,7 +592,14 @@ export default function FilterableTable() {
     }
   }
 
-
+  const deleteFamCancer = async (canId, form_id) => {
+    let token = localStorage.getItem("token")
+    let delAns = await fetchDataDELETE(`admin/form/${form_id}/familycancer/${canId}`, token)
+    setCancerDeled(ar => [...ar, canId])
+    if (delAns.ok) {
+      console.log("delete was successful!")
+    }
+  }
   // Part names for the drawer titles
   const partNames = [
     "اطلاعات شخصی",
@@ -896,20 +903,30 @@ export default function FilterableTable() {
                     <div className="cancers-list">
                       <p style={{ fontWeight: "bold", fontSize: "20px", borderBottom: "1px solid #ccc", padding: "1rem", }}>انواع سرطان:</p>
                       {familyMember.cancers && familyMember.cancers.length > 0 ?
-                        familyMember.cancers.map((cancer, cancerIndex) => (
-                          <div key={cancerIndex} className="cancer-item">
-                            <p>نوع سرطان: {cancerTypesMap[cancer.cancerType]}</p>
-                            <p>سن تشخیص: {cancer.cancerAge}</p>
-                            {cancer.picture && (
-                              <a href={`${cancer.picture}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="download-link">
-                                دانلود تصویر
-                              </a>
-                            )}
-                          </div>
-                        ))
+                        familyMember.cancers.map((cancer, cancerIndex) => {
+                          if (!(cancer.id in cancerDeled)) {
+                            console.log(cancer.id, cancerDeled)
+                            return (<div key={cancerIndex} className="cancer-item">
+                              <div className="top_cancer_holder">
+                                <p>نوع سرطان: {cancerTypesMap[cancer.cancerType]}</p>
+                                <button className="modal_close" onClick={() => deleteFamCancer(cancer.id, selectedFormForFamilyCancer)}>✕</button>
+                              </div>
+                              <p>سن تشخیص: {cancer.cancerAge}</p>
+                              <div className="cancer_image_holder">
+                                {cancer.pictures && cancer.pictures.map((cp, index) => {
+                                  return (
+                                    <a href={`${cp}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="download-link">
+                                      دانلود تصویر {index + 1}
+                                    </a>
+                                  )
+                                })}
+                              </div>
+                            </div>)
+                          }
+                        })
                         : "اطلاعات سرطان موجود نیست"}
                     </div>
                   </div>
@@ -943,14 +960,18 @@ export default function FilterableTable() {
                             <button className="modal_close" onClick={() => deleteCancer(cancer.id, selectedFormForSelfCancer)}>✕</button>
                           </div>
                           <p>سن تشخیص: {cancer.cancerAge}</p>
-                          {cancer.picture && (
-                            <a href={`${cancer.picture}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="download-link">
-                              دانلود تصویر
-                            </a>
-                          )}
+                          <div className="cancer_image_holder">
+                            {cancer.pictures && cancer.pictures.map((cp, index) => {
+                              return (
+                                <a href={`${cp}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="download-link">
+                                  دانلود تصویر {index + 1}
+                                </a>
+                              )
+                            })}
+                          </div>
                         </div>
 
                       )

@@ -17,6 +17,7 @@ import SystemLogs from './SysLogs'
 import UserVerify from './UserVerification'
 import ModelResults from './model_res'
 import OperatorUserMobile from './userMobile'
+import AttentionPage from './attentionPage'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 function App() {
 
@@ -24,7 +25,7 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<Login_page></Login_page>}></Route>
+          <Route path="/login" element={<Login_page></Login_page>}></Route>
           <Route path="/adminLogin" element={<AdminLogin_page></AdminLogin_page>}></Route>
           <Route path="/error" element={<ErrorShower></ErrorShower>}></Route>
 
@@ -42,6 +43,8 @@ function App() {
           <Route path='/operator/userMobile' element={<OperatorUserMobile></OperatorUserMobile>}></Route>
           <Route path='/operator/userVerification' element={<UserVerify></UserVerify>}></Route>
           <Route path='/DashBoard/modelsResults' element={<ModelResults></ModelResults>}></Route>
+          <Route path='/' element={<AttentionPage></AttentionPage>}></Route>
+
 
 
           <Route path='*' element={<ErrorShower errorType={404}></ErrorShower>}></Route>

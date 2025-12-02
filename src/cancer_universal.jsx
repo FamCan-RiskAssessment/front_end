@@ -26,8 +26,8 @@ function CancerField({
     const [inp2, setInp2] = useState("");
     const [opt, setOpt] = useState("");
     const [rad, setRad] = useState("");
-    const [imagePreviewUrl, setImagePreviewUrl] = useState(null); // Object URL for preview
-    const [imageFile, setImageFile] = useState(null); // Raw File
+    const [imagePreviewUrls, setImagePreviewUrls] = useState([]); // Object URL for preview
+    const [imageFiles, setImageFiles] = useState([]); // Raw File
     const [isFilled, setIsFilled] = useState(false)
     const [forceIsReq, setForceIsReq] = useState(true)
     console.log(inp1, inp2, opt, rad)
@@ -96,7 +96,7 @@ function CancerField({
                     cancerType: canType.data[can.cancerType - 1].name,
                     cancerAge: can.cancerAge,
                     status: can.lifeStatus, // or infer from context
-                    image: can.picture, // full URL (string)
+                    image: can.pictures, // full URL (string)
                 }));
                 setCancerArray(loadedSelf);
             }
@@ -139,7 +139,7 @@ function CancerField({
                                     cancerType: Can[cancer.cancerType - 1].name,
                                     cancerAge: cancer.cancerAge,
                                     status: familyMember.lifeStatus, // lifeStatus is at the family member level
-                                    image: cancer.picture, // picture is at the family level
+                                    image: cancer.pictures, // picture is at the family level
                                 });
                             });
                         });
@@ -165,11 +165,13 @@ function CancerField({
     // 3. Cleanup image preview URLs
     useEffect(() => {
         return () => {
-            if (imagePreviewUrl) {
-                URL.revokeObjectURL(imagePreviewUrl);
+            if (imagePreviewUrls && Array.isArray(imagePreviewUrls)) {
+                imagePreviewUrls.forEach(ipu => {
+                    URL.revokeObjectURL(ipu);
+                });
             }
         };
-    }, [imagePreviewUrl]);
+    }, [imagePreviewUrls]);
 
     // =============== HANDLERS ===============
 
@@ -181,16 +183,24 @@ function CancerField({
     }, []);
 
     const handleFileChange = useCallback((e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
+        const files = e.target.files; // Get all selected files
+        if (!files || files.length === 0) return;
 
-        // Revoke previous URL
-        if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
+        // Process all selected files
+        const newPreviewUrls = [];
+        const newFiles = [];
 
-        const url = URL.createObjectURL(file);
-        setImagePreviewUrl(url);
-        setImageFile(file);
-    }, [imagePreviewUrl]);
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const url = URL.createObjectURL(file);
+            newPreviewUrls.push(url);
+            newFiles.push(file);
+        }
+
+        // Update state with all new files and preview URLs
+        setImagePreviewUrls(prev => [...(prev || []), ...newPreviewUrls]);
+        setImageFiles(prev => [...(prev || []), ...newFiles]);
+    }, []);
 
     const handleAddRow = useCallback(async () => {
         // Validate required fields (skip if field is null)
@@ -205,10 +215,13 @@ function CancerField({
             return;
         }
 
-        // Prepare new row - Create a new URL for the table display that won't be affected by form reset
-        let imageDisplayUrl = null;
-        if (imageFile) {
-            imageDisplayUrl = URL.createObjectURL(imageFile);
+        // Prepare new row - Create new URLs for the table display that won't be affected by form reset
+        let imageDisplayUrls = [];
+        if (imageFiles && imageFiles.length > 0) {
+            imageFiles.forEach(IF => {
+                const singleImageDisplayUrl = URL.createObjectURL(IF);
+                imageDisplayUrls.push(singleImageDisplayUrl);
+            });
         }
 
         const newRow = {
@@ -216,9 +229,9 @@ function CancerField({
             cancerType: opt,
             cancerAge: inp2,
             status: rad,
-            image: imageDisplayUrl || "",
+            image: imageDisplayUrls.length > 0 ? imageDisplayUrls : null,
             // Store the actual file to be used by senderFunc and to keep track of it
-            imageFile: imageFile,
+            imageFile: imageFiles && imageFiles.length > 0 ? imageFiles : null,
         };
 
         // Update UI table
@@ -226,7 +239,7 @@ function CancerField({
 
         // Call external sender
         if (senderFunc) {
-            senderFunc(newRow.relation, inp2, opt, rad, imageFile);
+            senderFunc(newRow.relation, inp2, opt, rad, imageFiles);
         }
 
         // Resolve enum & update canArr
@@ -273,11 +286,13 @@ function CancerField({
         }
 
         // Clean up the preview URL but keep the imageDisplayUrl in the table item
-        if (imagePreviewUrl) {
-            URL.revokeObjectURL(imagePreviewUrl);
+        if (imagePreviewUrls) {
+            imagePreviewUrls.forEach(ipu => {
+                URL.revokeObjectURL(ipu);
+            });
         }
-        setImageFile(null);
-        setImagePreviewUrl(null);
+        setImageFiles(null);
+        setImagePreviewUrls(null);
     }, [
         data_Inp1,
         data_Inp2,
@@ -288,8 +303,8 @@ function CancerField({
         opt,
         rad,
         relData,
-        imageFile,
-        imagePreviewUrl,
+        imageFiles,
+        imagePreviewUrls,
         senderFunc,
         canArrFunc,
         canArr,
@@ -368,20 +383,24 @@ function CancerField({
                                     onChange={handleFileChange}
                                 // value={imageFile}
                                 />
-                                {imagePreviewUrl && (
-                                    <div style={{ marginTop: "0.5rem", textAlign: "center" }}>
-                                        <img
-                                            src={imagePreviewUrl}
-                                            alt="پیش‌نمایش"
-                                            style={{
-                                                maxWidth: "100px",
-                                                maxHeight: "100px",
-                                                borderRadius: "4px",
-                                                border: "1px solid #ddd",
-                                            }}
-                                        />
-                                    </div>
-                                )}
+                                {(imagePreviewUrls || []).map((ipu, index) => {
+                                    return (
+                                        < div style={{ marginTop: "0.5rem", textAlign: "center" }}>
+                                            <img
+                                                src={ipu}
+                                                alt="پیش‌نمایش"
+                                                style={{
+                                                    maxWidth: "100px",
+                                                    maxHeight: "100px",
+                                                    borderRadius: "4px",
+                                                    border: "1px solid #ddd",
+                                                }}
+                                            />
+                                        </div>
+                                    )
+                                })
+
+                                }
                             </div>
                         </div>
 
@@ -409,7 +428,7 @@ function CancerField({
                             </tr>
                         </thead>
                         <tbody>
-                            {cancerArray.map((row, index) => (
+                            {(cancerArray || []).map((row, index) => (
                                 <tr key={index}>
                                     {data_Inp1 && <td>{row.relation}</td>}
                                     {data_Options && <td>{row.cancerType}</td>}
@@ -418,7 +437,22 @@ function CancerField({
                                         <td>{row.status === 0 ? "فوت شده" : "زنده"}</td>
                                     )}
                                     <td>
-                                        {row.image && (
+                                        {row.image && Array.isArray(row.image) ? (
+                                            // Handle multiple images in a container
+                                            <div className="multiple-images-container">
+                                                {row.image.map((img, imgIndex) => (
+                                                    <img
+                                                        key={imgIndex}
+                                                        src={img}
+                                                        alt={`تصویر ${imgIndex + 1}`}
+                                                        onError={(e) => {
+                                                            e.target.style.display = "none";
+                                                        }}
+                                                    />
+                                                ))}
+                                            </div>
+                                        ) : row.image ? (
+                                            // Handle single image
                                             <img
                                                 src={row.image}
                                                 alt="تصویر"
@@ -431,7 +465,7 @@ function CancerField({
                                                     e.target.style.display = "none";
                                                 }}
                                             />
-                                        )}
+                                        ) : null}
                                     </td>
                                     <td>
                                         <button
@@ -448,7 +482,7 @@ function CancerField({
                     </table>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 

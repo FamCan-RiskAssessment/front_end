@@ -29,6 +29,69 @@ function Questions() {
     const [requiredMap, setRequiredMap] = useState({});
     const [createdFormId, setCreatedFormId] = useState(0)
     const [typeErr, setTypeErr] = useState(false)
+    const [typeErr2, setTypeErr2] = useState(false)
+    const formDataRef = useRef(new FormData()); // Keep formData in a ref so FileUploaders can access it
+    const fileArraysRef = useRef({}); // Keep track of file arrays by field name
+    console.log("changed the MF form images : ", formDataRef)
+
+    // Function to allow FileUploader components to add files to the shared formData
+    const fillingFormData = (fieldName, file) => {
+        formDataRef.current.append(fieldName, file);
+
+        // Also track in our separate file arrays structure
+        if (!fileArraysRef.current[fieldName]) {
+            fileArraysRef.current[fieldName] = [];
+        }
+        fileArraysRef.current[fieldName].push(file);
+
+        console.log("---- CURRENT FORMDATA CONTENT ----");
+        for (let pair of formDataRef.current.entries()) {
+            console.log(pair[0], pair[1]);
+        }
+    };
+
+    // Function to allow FileUploader components to remove the last file from the shared formData
+    const removeLastFileFromFormData = (fieldName) => {
+        // Get the file array for this field
+        const fieldFiles = fileArraysRef.current[fieldName] || [];
+
+        if (fieldFiles.length > 0) {
+            // Remove the last file from our tracking array
+            fieldFiles.pop();
+
+            // Rebuild the formData by getting all values for each field
+            const newFormData = new FormData();
+            const fieldsMap = new Map(); // To collect values by field name
+
+            // Collect all values by field name
+            for (let [key, value] of formDataRef.current.entries()) {
+                if (!fieldsMap.has(key)) {
+                    fieldsMap.set(key, []);
+                }
+                fieldsMap.get(key).push(value);
+            }
+
+            // Rebuild the formData, removing the last value for the specified field
+            for (let [fieldNameKey, valuesArray] of fieldsMap) {
+                if (fieldNameKey === fieldName && valuesArray.length > 0) {
+                    // For the target field, add all values except the last one
+                    for (let i = 0; i < valuesArray.length - 1; i++) {
+                        newFormData.append(fieldNameKey, valuesArray[i]);
+                    }
+                } else {
+                    // For other fields, add all values
+                    for (let value of valuesArray) {
+                        newFormData.append(fieldNameKey, value);
+                    }
+                }
+            }
+
+            // Update the ref
+            formDataRef.current = newFormData;
+        }
+    };
+
+    console.log("err2err2err2err2err2err2err2 : ", typeErr2)
     // const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const { addToast } = useToast()
@@ -591,7 +654,7 @@ function Questions() {
 
         const token_auth = localStorage.getItem("token");
         let allData = {};
-        const formData = new FormData(); // ✅ For sending data (text + file)
+        const currentFormData = formDataRef.current; // Use the shared formData
         let sendData;
         for (const elem of form.elements) {
             const { name, type, tagName } = elem;
@@ -649,31 +712,20 @@ function Questions() {
                 }
             }
 
-            // ✅ Handle file separately
+            // ✅ Handle file separately - can handle multiple files
             if (type === "file") {
-                // for (let i = 0; i < elem.files.length; i++) {
-                //     formData.append(name, elem.files[i]);
+                // // For native file inputs, get files directly from the element
+                // if (elem.files && elem.files.length > 0) {
+                //     // Append each file with the same field name (standard for multiple files)
+                //     for (let i = 0; i < elem.files.length; i++) {
+                //         const file = elem.files[i];
+                //         if (file && file.name) {
+                //             currentFormData.append(name, file);
+                //         }
+                //     }
                 // }
-                let images = elem.getAttribute("data_toSend")
-                if (images) {
-                    try {
-                        const imageFiles = JSON.parse(images);
-                        if (Array.isArray(imageFiles)) {
-                            // Append each file individually to FormData
-                            imageFiles.forEach(file => {
-                                if (file && file.name) { // Check if it's a valid file object
-                                    formData.append(name, file);
-                                }
-                            });
-                        } else if (imageFiles && imageFiles.name) {
-                            // If it's a single file object
-                            formData.append(name, imageFiles);
-                        }
-                    } catch (e) {
-                        console.error("Error parsing images:", e);
-                    }
-                }
-                continue;
+
+                continue; // Skip adding this field to allData since it's handled via FormData
             }
 
             // ✅ Apply transformations for normal fields
@@ -713,15 +765,15 @@ function Questions() {
 
         console.log("Mapped allData:", allData);
 
-        // ✅ Append text fields to FormData
+        // ✅ Append text fields to currentFormData
         if (step == 3 || step == 7) {
             Object.entries(allData).forEach(([key, value]) => {
-                formData.append(key, value);
+                currentFormData.append(key, value);
             });
-            for (let [key, value] of formData.entries()) {
+            for (let [key, value] of currentFormData.entries()) {
                 console.log(key, value);
             }
-            sendData = formData
+            sendData = currentFormData
         } else {
             sendData = JSON.stringify(allData)
         }
@@ -777,7 +829,8 @@ function Questions() {
                 // },
                 body: sendData, // ✅ FormData includes both files and text
             });
-
+            // Reset formData for this submission
+            formDataRef.current = new FormData();
             const json = await res.json();
             console.log("Response:", json);
             if (step === 1 && json.data?.form?.id) {
@@ -808,11 +861,26 @@ function Questions() {
             console.warn(`Enum resolve failed: cancer-types`, err);
         }
 
+        // Prepare payload
         const payload = {
             cancerType: cancerVal,
             cancerAge: age,
-            picture: img, // <-- actual File object
         };
+
+        // Handle multiple images by adding them directly to the payload
+        if (Array.isArray(img)) {
+            // Add all image files to the payload under the same field name
+            const validFiles = img.filter(file => file instanceof File);
+            if (validFiles.length > 0) {
+                payload.pictures = validFiles; // This will be handled by the updated fetchDataPOSTImg
+            }
+        } else if (img instanceof File) {
+            // Single file case
+            payload.pictures = img;
+        } else if (img) {
+            // Handle case where img is not a File object (e.g., URL)
+            payload.pictures = img;
+        }
 
         try {
             let new_item_id;
@@ -824,7 +892,9 @@ function Questions() {
 
             if (isCancerAdded.status === 200) {
                 addToast({
-                    title: 'سرطان شما با موفقیت ذخیره شد.',
+                    title: Array.isArray(img) && img.length > 1
+                        ? `${img.length} تصویر سرطان با موفقیت ذخیره شد.`
+                        : 'سرطان شما با موفقیت ذخیره شد.',
                     type: 'success',
                     duration: 4000,
                 });
@@ -870,13 +940,28 @@ function Questions() {
             console.warn(`Enum resolve failed: cancer-types`, err);
         }
 
+        // Prepare payload
         const payload = {
             cancerType: cancerVal,
             cancerAge: age,
-            picture: img, // <-- actual File object
             relative: firstVal,
             lifeStatus: isALive,
         };
+
+        // Handle multiple images by adding them directly to the payload
+        if (Array.isArray(img)) {
+            // Add all image files to the payload under the same field name
+            const validFiles = img.filter(file => file instanceof File);
+            if (validFiles.length > 0) {
+                payload.pictures = validFiles; // This will be handled by the updated fetchDataPOSTImg
+            }
+        } else if (img instanceof File) {
+            // Single file case
+            payload.pictures = img;
+        } else if (img) {
+            // Handle case where img is not a File object (e.g., URL)
+            payload.pictures = img;
+        }
 
         try {
             const isCancerAdded = await fetchDataPOSTImg(
@@ -887,7 +972,9 @@ function Questions() {
 
             if (isCancerAdded.status === 200) {
                 addToast({
-                    title: 'سرطان شما با موفقیت ذخیره شد.',
+                    title: Array.isArray(img) && img.length > 1
+                        ? `${img.length} تصویر سرطان خانوادگی با موفقیت ذخیره شد.`
+                        : 'سرطان شما با موفقیت ذخیره شد.',
                     type: 'success',
                     duration: 4000,
                 });
@@ -1072,7 +1159,7 @@ function Questions() {
                             <Radio data_req={"true"} data={part3.radio_opts_oral2LastYears} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender)}></Radio>
 
                             <Radio data_req={"true"} data={part3.radio_opts_mamoGraphy} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsMamoTest} relation={relator_gen(gender)}></Radio>
-                            <FileUploader data={part3.attach_mamoGraphy} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isMamoTest) && relator_gen(gender)}></FileUploader>
+                            <FileUploader data={part3.attach_mamoGraphy} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isMamoTest) && relator_gen(gender)} fillingFormData={fillingFormData} removeLastFileFromFormData={removeLastFileFromFormData}></FileUploader>
 
                             <Radio data_req={"true"} data={part3.radio_opts_falop} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender)}></Radio>
                             <Radio data_req={"true"} data={part3.radio_opts_andometrioz} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender)}></Radio>
@@ -1155,17 +1242,17 @@ function Questions() {
                         <div className="form_title">{part7.title}</div>
 
                         <Radio data_req={"true"} data={part6.radio_opts_testGen} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsGeneTest}></Radio>
-                        <FileUploader data={part6.attachment_testGen} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isGeneTest)}></FileUploader>
+                        <FileUploader data={part6.attachment_testGen} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isGeneTest)} fillingFormData={fillingFormData} removeLastFileFromFormData={removeLastFileFromFormData}></FileUploader>
 
                         <Radio data_req={"true"} data={part6.radio_opts_fmTestGen} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsFamGeneTest}></Radio>
-                        <FileUploader data={part6.attachment_fmTestGen} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isFamGeneTest)}></FileUploader>
+                        <FileUploader data={part6.attachment_fmTestGen} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isFamGeneTest)} fillingFormData={fillingFormData} removeLastFileFromFormData={removeLastFileFromFormData}></FileUploader>
 
                         <Options data_req={"true"} data={part6.options_education} class_change1={"P2"} class_change2={"P2_inner"}></Options>
 
                         <Radio data_req={"true"} data={part6.radio_opts_callExpert} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                         <PersonalInfo data_req={"true"} data_inp1={part6.personalInfo.fullName} data_inp2={part6.personalInfo.mobileNumber1} data_inp3={part6.personalInfo.mobileNumber2} data_inp4={part6.personalInfo.province}
                             data_inp5={part6.personalInfo.city} data_inp6={part6.personalInfo.postalCode} data_opt={part6.personalInfo.birthCountry} data_inp7={part6.personalInfo.address}
-                            data_check={part6.personalInfo.confidentialityAgreement} typeErr={setTypeErr}
+                            data_check={part6.personalInfo.confidentialityAgreement} typeErr={setTypeErr} typeErr2={setTypeErr2}
                         ></PersonalInfo>
 
                     </form>
@@ -1178,7 +1265,7 @@ function Questions() {
                         <button className="btn_question" onClick={(e) => {
 
                             let passOno = checkReq(formRefs[step], step)
-                            if (!typeErr && passOno) {
+                            if (!typeErr && !typeErr2 && passOno) {
                                 handleSubmit(e)
                                 addToast({
                                     title: 'پاسخ های شما با موفقیت ذخیره شد',

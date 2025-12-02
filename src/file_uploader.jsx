@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 
-function FileUploader({ data, class_change1, class_change2, handleFileChange, relation }) {
+function FileUploader({ data, class_change1, class_change2, handleFileChange, relation, fillingFormData, removeLastFileFromFormData }) {
     const [imagePreview, setImagePreview] = useState([]);
-    const [orgI, setOrgI] = useState([])
+    const [selectedFiles, setSelectedFiles] = useState([]); // Store the actual file objects
     const fileInputRef = useRef(null);
 
     if (relation == undefined) {
@@ -39,16 +39,38 @@ function FileUploader({ data, class_change1, class_change2, handleFileChange, re
                 // Create a blob URL for the image
                 const blobUrl = URL.createObjectURL(file);
                 newPreviews.push(blobUrl);
-                newFiles.push(file);
+                newFiles.push(file); // Store the actual File object
+
+                // Add file directly to formData using the passed function
+                if (fillingFormData) {
+                    fillingFormData(data.name, file);
+                }
             }
 
             setImagePreview(prev => [...prev, ...newPreviews]);
-            setOrgI(prev => [...prev, ...newFiles]);
+            setSelectedFiles(prev => [...prev, ...newFiles]); // Add to existing files
 
             // Call the original handleFileChange function if provided
             if (handleFileChange) {
                 handleFileChange(e);
             }
+        }
+    };
+
+    const handleDeleteLastImage = () => {
+        if (imagePreview.length > 0) {
+            // Get the last preview URL and revoke it to free memory
+            const lastPreviewUrl = imagePreview[imagePreview.length - 1];
+            URL.revokeObjectURL(lastPreviewUrl);
+
+            // Remove the last file from formData if remove function is available
+            if (removeLastFileFromFormData && selectedFiles.length > 0) {
+                removeLastFileFromFormData(data.name);
+            }
+
+            // Remove the last preview and file
+            setImagePreview(prev => prev.slice(0, -1));
+            setSelectedFiles(prev => prev.slice(0, -1));
         }
     };
 
@@ -61,7 +83,6 @@ function FileUploader({ data, class_change1, class_change2, handleFileChange, re
                         type="file"
                         name={data.name}
                         ref={fileInputRef}
-                        data_toSend={JSON.stringify(orgI)}
                         className={`file_uploader ${class_change2}`}
                         accept="image/*"
                         onChange={handleFileChangeWithPreview}
@@ -76,6 +97,16 @@ function FileUploader({ data, class_change1, class_change2, handleFileChange, re
                             )
                         })}
                     </div>
+                    {imagePreview.length > 0 && (
+                        <button
+                            type="button"
+                            className="btn_question"
+                            onClick={handleDeleteLastImage}
+                            style={{ marginTop: "10px", alignSelf: "flex-start" }}
+                        >
+                            حذف
+                        </button>
+                    )}
                 </div>
             </div>
         </>

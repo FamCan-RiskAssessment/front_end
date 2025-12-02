@@ -197,10 +197,20 @@ export const fetchDataPOST = async (endpoint, token_auth, bodyData) => {
 export const fetchDataPOSTImg = async (endpoint, token_auth, bodyData) => {
   const formData = new FormData();
 
-  // Append all fields
+  // Append all fields - handle arrays of files by appending each item with the same field name
   for (const key in bodyData) {
     if (bodyData[key] !== null && bodyData[key] !== undefined) {
-      formData.append(key, bodyData[key]);
+      if (Array.isArray(bodyData[key])) {
+        // If the value is an array (e.g., multiple files), append each item with the same key
+        bodyData[key].forEach(item => {
+          if (item !== null && item !== undefined) {
+            formData.append(key, item);
+          }
+        });
+      } else {
+        // If it's a single item, append normally
+        formData.append(key, bodyData[key]);
+      }
     }
   }
 
