@@ -27,13 +27,13 @@
     ]
   },
   "text_sonCount": {
-    "engName": "sonCounts",
+    "engName": "sonCount",
     "type": "number",
     "placeHolder": "xx",
     "inpName": "تعداد فرزندان پسر"
   },
   "text_doughterCount": {
-    "engName": "doughterCount",
+    "engName": "daughterCount",
     "type": "number",
     "placeHolder": "xx",
     "inpName": "تعداد فرزندان دختر"

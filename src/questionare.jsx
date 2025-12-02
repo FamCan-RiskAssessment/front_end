@@ -243,11 +243,11 @@ function Questions() {
                             // console.log("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN: ", fE.name)
                             fE.checked = true
                         } else if (fE.name == pfk && fE.type == "file") {
-                            console.log("find that file uploader")
                             // Handle file inputs - presetform value is a URL to an image
-                            if (presetform[pfk] && typeof presetform[pfk] === 'string') {
+                            if (presetform[pfk]) {
                                 // Add the image URL to a custom attribute so the FileUploader component can access it
-                                fE.setAttribute('data-file-url', presetform[pfk]);
+                                console.log("find that file uploader", presetform[pfk], fE.name)
+                                fE.setAttribute('data-file-url', JSON.stringify(presetform[pfk]));
 
                                 // Find the parent container of this file input and locate the image preview if it exists
                                 // const parentContainer = fE.closest('.total_file_uploader');
@@ -611,12 +611,24 @@ function Questions() {
                 if (!value || value === "انتخاب کنید" || value === "انتخاب نمایید") continue;
                 shouldProcess = true;
             } else if (type === 'file') {
-                if (elem.files && elem.files.length > 0) {
+                // Check if the file input has files either via the native files property or the custom data_toSend attribute
+                const hasNativeFiles = elem.files && elem.files.length > 0;
+                const hasCustomFiles = elem.getAttribute("data_toSend");
+                if (hasNativeFiles || hasCustomFiles) {
+                    shouldProcess = true;
+                }
+            } else if (type === 'text' || type === 'number' || type === 'email' || type === 'password' || type === 'tel' || type === 'url' || type === 'search' || type === 'date' || type === 'time' || type === 'datetime-local' || type === 'month' || type === 'week' || type === 'color') {
+                // Handle various text-based input types
+                value = elem.value;
+                if (value.trim() !== '') { // Only process if not empty
                     shouldProcess = true;
                 }
             } else {
+                // For other input types that don't fit the above categories
                 value = elem.value;
-                shouldProcess = true;
+                if (value.trim() !== '') { // Only process if not empty
+                    shouldProcess = true;
+                }
             }
 
             if (!shouldProcess) continue;
@@ -639,8 +651,27 @@ function Questions() {
 
             // ✅ Handle file separately
             if (type === "file") {
-                for (let i = 0; i < elem.files.length; i++) {
-                    formData.append(name, elem.files[i]);
+                // for (let i = 0; i < elem.files.length; i++) {
+                //     formData.append(name, elem.files[i]);
+                // }
+                let images = elem.getAttribute("data_toSend")
+                if (images) {
+                    try {
+                        const imageFiles = JSON.parse(images);
+                        if (Array.isArray(imageFiles)) {
+                            // Append each file individually to FormData
+                            imageFiles.forEach(file => {
+                                if (file && file.name) { // Check if it's a valid file object
+                                    formData.append(name, file);
+                                }
+                            });
+                        } else if (imageFiles && imageFiles.name) {
+                            // If it's a single file object
+                            formData.append(name, imageFiles);
+                        }
+                    } catch (e) {
+                        console.error("Error parsing images:", e);
+                    }
                 }
                 continue;
             }
@@ -1016,20 +1047,20 @@ function Questions() {
 
                         <Radio data_req={"true"} data={part3.radio_opts_children} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChild}></Radio>
                         <Options data={part3.combine_option_firstChildBirthAge} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender) && relator_R(isChild)}></Options>
-                        <InputBox data_req={"true"} data={part3.text_sonCount} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isChild)}></InputBox>
-                        <InputBox data_req={"true"} data={part3.text_doughterCount} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isChild)}></InputBox>
+                        <InputBox data_req={"false"} data={part3.text_sonCount} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isChild)}></InputBox>
+                        <InputBox data_req={"false"} data={part3.text_doughterCount} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isChild)}></InputBox>
 
                         <>
                             <Radio data_req={"true"} data={part3.radio_opts_menopausal_status} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsAdat} Enum={"menopausal-statuses"} relation={relator_gen(gender)}></Radio>
                             {/* <Radio data_req={"true"} data={part3.radio_opts_menopausal_status} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsAdat} relation={relator_gen(gender)}></Radio> */}
-                            <Options data={part3.combine_option_menopause} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isAdat) && relator_gen(gender)}></Options>
+                            <Options data={part3.combine_option_menopause} class_change1={"P2"} class_change2={"P2_inner"} relation={!relator_R(isAdat) && relator_gen(gender)}></Options>
                         </>
 
                         <>
-                            <Radio data_req={"true"} data={part3.radio_opts_hrt} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT} relation={relator_R(isAdat) && relator_gen(gender)}></Radio>
-                            <Options data={part3.combine_option_hrt_use_length} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isAdat) && relator_gen(gender)}></Options>
+                            <Radio data_req={"true"} data={part3.radio_opts_hrt} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT} relation={!relator_R(isAdat) && relator_gen(gender)}></Radio>
+                            <Options data={part3.combine_option_hrt_use_length} class_change1={"P2"} class_change2={"P2_inner"} relation={!relator_R(isAdat) && relator_gen(gender)}></Options>
 
-                            <Radio data_req={"true"} data={part3.radio_opts_lastFiveYears_HRT_use} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT5} relation={relator_R(isAdat) && relator_gen(gender)}></Radio>
+                            <Radio data_req={"true"} data={part3.radio_opts_lastFiveYears_HRT_use} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT5} relation={!relator_R(isAdat) && relator_gen(gender)}></Radio>
 
                             <Radio data_req={"true"} data={part3.radio_opts_HRT_current_use} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isHRT5) && relator_gen(gender)}></Radio>
                             <Options data_req={"true"} data={part3.combine_option_intended_HRT_use} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isHRT5) && relator_gen(gender)}></Options>

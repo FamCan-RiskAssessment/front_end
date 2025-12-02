@@ -17,6 +17,7 @@ function CancerField({
     senderFunc,
     famrel,
     preData,
+    showTab,
 }) {
     // =============== STATE ===============
     const [cancerArray, setCancerArray] = useState([]);
@@ -395,7 +396,7 @@ function CancerField({
                 </div>
 
                 {/* Table */}
-                <div className="table_holder">
+                <div className="table_holder" style={showTab !== undefined && showTab == false ? { display: "none" } : null}>
                     <table border="0.5" cellSpacing="0" cellPadding="8">
                         <thead className="sar_jadval">
                             <tr>

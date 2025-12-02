@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 function FileUploader({ data, class_change1, class_change2, handleFileChange, relation }) {
     const [imagePreview, setImagePreview] = useState([]);
+    const [orgI, setOrgI] = useState([])
     const fileInputRef = useRef(null);
 
     if (relation == undefined) {
@@ -12,16 +13,37 @@ function FileUploader({ data, class_change1, class_change2, handleFileChange, re
         // Check if there's a preset file URL in the input element
         if (fileInputRef.current && fileInputRef.current.getAttribute('data-file-url')) {
             const presetUrl = fileInputRef.current.getAttribute('data-file-url');
-            setImagePreview(presetUrl);
+            try {
+                const urlsArray = JSON.parse(presetUrl);
+                if (Array.isArray(urlsArray)) {
+                    setImagePreview(urlsArray);
+                } else {
+                    setImagePreview([urlsArray]);
+                }
+            } catch {
+                // Handle if it's a single URL string
+                setImagePreview([presetUrl]);
+            }
         }
     }, []);
-    const handleFileChangeWithPreview = (e) => {
-        const file = e.target.files[0];
 
-        if (file) {
-            // Create a blob URL for the image
-            const blobUrl = URL.createObjectURL(file);
-            setImagePreview(bus => [...bus, blobUrl]);
+    const handleFileChangeWithPreview = (e) => {
+        const files = e.target.files; // Get all selected files
+
+        if (files && files.length > 0) {
+            const newPreviews = [];
+            const newFiles = [];
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                // Create a blob URL for the image
+                const blobUrl = URL.createObjectURL(file);
+                newPreviews.push(blobUrl);
+                newFiles.push(file);
+            }
+
+            setImagePreview(prev => [...prev, ...newPreviews]);
+            setOrgI(prev => [...prev, ...newFiles]);
 
             // Call the original handleFileChange function if provided
             if (handleFileChange) {
@@ -39,20 +61,20 @@ function FileUploader({ data, class_change1, class_change2, handleFileChange, re
                         type="file"
                         name={data.name}
                         ref={fileInputRef}
+                        data_toSend={JSON.stringify(orgI)}
                         className={`file_uploader ${class_change2}`}
                         accept="image/*"
                         onChange={handleFileChangeWithPreview}
+                        multiple  // Add this to allow multiple file selection
                     />
-                    {/* <button className="btn-view-form" onClick={ }> اضافه</button> */}
                     <div className="image_holder_fileUploader">
-                        {imagePreview ? imagePreview.map((I, index) => {
+                        {imagePreview.map((I, index) => {
                             return (
-                                <div className="image-preview">
-                                    < img src={I} alt="Preview" style={{ maxWidth: "200px", maxHeight: "200px", marginTop: "10px", border: "1px solid #ccc", borderRadius: "4px" }} />
+                                <div key={index} className="image-preview">
+                                    <img src={I} alt={`Preview ${index}`} style={{ maxWidth: "200px", maxHeight: "200px", marginTop: "10px", border: "1px solid #ccc", borderRadius: "4px" }} />
                                 </div>
                             )
-                        })
-                            : null}
+                        })}
                     </div>
                 </div>
             </div>

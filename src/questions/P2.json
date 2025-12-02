@@ -288,7 +288,7 @@
   },
   "combine_option_t_gh_daily": {
     "ask": "به طور منظم روزانه چند سر قلیان می‌کشید؟",
-    "Oname": "countGhelianDaily",
+    "Oname": "countGheliandaily",
     "options": [
       "انتخاب کنید",
       "0 سر",

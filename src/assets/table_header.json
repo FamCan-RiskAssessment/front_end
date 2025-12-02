@@ -366,5 +366,9 @@
   {
     "key": "updatedAt",
     "label": "تاریخ بروزرسانی"
+  },
+  {
+    "key": "breastDensity",
+    "label": "breast density"
   }
 ]

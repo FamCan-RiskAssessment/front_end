@@ -1,14 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import NavBar from "./navBar";
 import "./patient_table.css";
 import { APIARR, APIURL } from "./utils/config";
-import { fetchDataGET, fetchDataPOST, key_stage_matcher, stageMatcher, fetchDataGETImg, cancerTypeEx, relativeTypeEx } from "./utils/tools";
+import { fetchDataGET, fetchDataPOST, key_stage_matcher, stageMatcher, fetchDataGETImg, cancerTypeEx, relativeTypeEx, fetchDataDELETE } from "./utils/tools";
 import PERSIAN_HEADERS from "./assets/table_header.json"
 import { useLocation } from "react-router-dom";
 import { useToast } from "./toaster";
 import ToastProvider from "./toaster";
 import { isNumber } from "./utils/tools";
 import Loader from "./utils/loader";
+import CancerField from "./cancer_universal";
+import part4 from './questions/P4.json'
+import part5 from './questions/P5.json'
 
 // Load the Persian header mapping
 const headerMapping = {};
@@ -66,7 +69,8 @@ export default function FilterableTable() {
   const [openCancerModal, setOpenCancerModal] = useState(false)
   const [selectedFormForFamilyCancer, setSelectedFormForFamilyCancer] = useState(null)
   const [selectedFormForSelfCancer, setSelectedFormForSelfCancer] = useState(null)
-
+  const [cancerDeled, setCancerDeled] = useState([])
+  const [AddCancerModal, setAddCancerModal] = useState(false)
   const [cancerTypesMap, setCancerTypesMap] = useState({})
   const [relativeTypesMap, setRelativeTypesMap] = useState({})
   const [formDetails, setFormDetails] = useState({}); // Store details for each form by ID
@@ -560,6 +564,17 @@ export default function FilterableTable() {
   }
   // fetchFormRisk(1)
 
+  // how to delete the cancer
+  const deleteCancer = async (canId, form_id) => {
+    let token = localStorage.getItem("token")
+    let delAns = await fetchDataDELETE(`admin/form/${form_id}/cancer/${canId}`, token)
+    setCancerDeled(ar => [...ar, canId])
+    if (delAns.ok) {
+      console.log("delete was successful!")
+    }
+  }
+
+
   // Part names for the drawer titles
   const partNames = [
     "اطلاعات شخصی",
@@ -652,56 +667,80 @@ export default function FilterableTable() {
                           <div className={`api_part_content ${isApiSectionOpen(row.id, apiPart) ? 'open' : ''}`}>
                             {/* Add special buttons for cancer sections */}
                             {apiPart === "cancer" && (
-                              <button
-                                className="cancer_btn"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedFormForSelfCancer(row.id);
-                                  // Fetch self cancer details for this specific form
-                                  const fetchDetails = async () => {
-                                    const token = localStorage.getItem("token");
-                                    try {
-                                      const selfCancerRes = await fetchDataGETImg(`admin/form/${row.id}/cancer`, token);
-                                      setDetailedCancerData(prev => ({
-                                        ...prev,
-                                        [row.id]: selfCancerRes.data?.cancers || []
-                                      }));
-                                      setOpenCancerModal(true);
-                                    } catch (error) {
-                                      console.error(`Error fetching self cancer details for form ${row.id}:`, error);
-                                    }
-                                  };
-                                  fetchDetails();
-                                }}
-                              >
-                                نمایش جزئیات سرطان فردی
-                              </button>
+                              <>
+                                <button
+                                  className="cancer_btn"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedFormForSelfCancer(row.id);
+                                    // Fetch self cancer details for this specific form
+                                    const fetchDetails = async () => {
+                                      const token = localStorage.getItem("token");
+                                      try {
+                                        const selfCancerRes = await fetchDataGETImg(`admin/form/${row.id}/cancer`, token);
+                                        setDetailedCancerData(prev => ({
+                                          ...prev,
+                                          [row.id]: selfCancerRes.data?.cancers || []
+                                        }));
+                                        setOpenCancerModal(true);
+                                      } catch (error) {
+                                        console.error(`Error fetching self cancer details for form ${row.id}:`, error);
+                                      }
+                                    };
+                                    fetchDetails();
+                                  }}
+                                >
+                                  نمایش جزئیات سرطان فردی
+                                </button>
+                                <button
+                                  className="add_cancer"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setAddCancerModal(true);
+                                    setSelectedFormForSelfCancer(row.id);
+                                  }}
+                                >
+                                  اضافه کردن سرطان
+                                </button>
+                              </>
                             )}
                             {apiPart === "familycancer" && (
-                              <button
-                                className="family_cancer_btn"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedFormForFamilyCancer(row.id);
-                                  // Fetch family cancer details for this specific form
-                                  const fetchDetails = async () => {
-                                    const token = localStorage.getItem("token");
-                                    try {
-                                      const familyCancerRes = await fetchDataGETImg(`admin/form/${row.id}/familycancer`, token);
-                                      setDetailedFamilyCancerData(prev => ({
-                                        ...prev,
-                                        [row.id]: familyCancerRes.data?.familyCancers || []
-                                      }));
-                                      setOpenFamilyCancerModal(true);
-                                    } catch (error) {
-                                      console.error(`Error fetching family cancer details for form ${row.id}:`, error);
-                                    }
-                                  };
-                                  fetchDetails();
-                                }}
-                              >
-                                نمایش جزئیات سرطان خانوادگی
-                              </button>
+                              <>
+                                <button
+                                  className="family_cancer_btn"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedFormForFamilyCancer(row.id);
+                                    // Fetch family cancer details for this specific form
+                                    const fetchDetails = async () => {
+                                      const token = localStorage.getItem("token");
+                                      try {
+                                        const familyCancerRes = await fetchDataGETImg(`admin/form/${row.id}/familycancer`, token);
+                                        setDetailedFamilyCancerData(prev => ({
+                                          ...prev,
+                                          [row.id]: familyCancerRes.data?.familyCancers || []
+                                        }));
+                                        setOpenFamilyCancerModal(true);
+                                      } catch (error) {
+                                        console.error(`Error fetching family cancer details for form ${row.id}:`, error);
+                                      }
+                                    };
+                                    fetchDetails();
+                                  }}
+                                >
+                                  نمایش جزئیات سرطان خانوادگی
+                                </button>
+                                <button
+                                  className="add_cancer"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setAddCancerModal(true);
+                                    setSelectedFormForFamilyCancer(row.id);
+                                  }}
+                                >
+                                  اضافه کردن سرطان خانوادگی
+                                </button>
+                              </>
                             )}
 
                             <div className="part_data">
@@ -775,7 +814,7 @@ export default function FilterableTable() {
             {modelList.map((m, index) => (
               <div
                 key={index}
-                className="role"
+                className="role_table"
                 onClick={() => sendToCalcModel(m.id)} // pass role directly instead of e.target.value
               >
                 {m.name.toUpperCase()}
@@ -802,7 +841,7 @@ export default function FilterableTable() {
                 {Object.keys(risks).map((rk, index) => (
                   <div
                     key={index}
-                    className="role"
+                    className="role_table"
                   >
                     نتیجه ی احتمال {rk} : {risks[rk]}
                   </div>
@@ -826,7 +865,7 @@ export default function FilterableTable() {
           <div className="roles cancer-mode">
             {detailedFamilyCancerData[selectedFormForFamilyCancer]?.length === 0 || !detailedFamilyCancerData[selectedFormForFamilyCancer] ? "تاریخچه سرطان خانوادگی موجود نیست" :
               detailedFamilyCancerData[selectedFormForFamilyCancer]?.map((familyMember, index) => (
-                <div key={index} className="role">
+                <div key={index} className="role_table">
                   <div className="family-member-info">
                     <p><strong>خویشاوند:</strong> {relativeTypesMap[familyMember.relative]}</p>
                     <p><strong>وضعیت زندگی:</strong>
@@ -871,25 +910,31 @@ export default function FilterableTable() {
             }}>✕</div>
           </div>
           <div className="roles cancer-mode">
-            <div className="role">
+            <div className="role_table">
               <div className="cancer-list">
                 {detailedCancerData[selectedFormForSelfCancer]?.length === 0 || !detailedCancerData[selectedFormForSelfCancer] ? "تاریخچه سرطان خانوادگی موجود نیست" :
                   detailedCancerData[selectedFormForSelfCancer]?.map((cancer, index) => {
-                    return (
-                      <div className="cancer-item">
-                        <p>نوع سرطان: {cancerTypesMap[cancer.cancerType]}</p>
-                        <p>سن تشخیص: {cancer.cancerAge}</p>
-                        {cancer.picture && (
-                          <a href={`${cancer.picture}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="download-link">
-                            دانلود تصویر
-                          </a>
-                        )}
-                      </div>
+                    if (!(cancer.id in cancerDeled)) {
 
-                    )
+                      return (
+                        <div className="cancer-item" >
+                          <div className="top_cancer_holder">
+                            <p>نوع سرطان: {cancerTypesMap[cancer.cancerType]}</p>
+                            <button className="modal_close" onClick={() => deleteCancer(cancer.id, selectedFormForSelfCancer)}>✕</button>
+                          </div>
+                          <p>سن تشخیص: {cancer.cancerAge}</p>
+                          {cancer.picture && (
+                            <a href={`${cancer.picture}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="download-link">
+                              دانلود تصویر
+                            </a>
+                          )}
+                        </div>
+
+                      )
+                    }
                   })
                 }
               </div>
@@ -897,6 +942,287 @@ export default function FilterableTable() {
           </div>
         </div>
       )}
+
+      {/* Add Cancer Modal */}
+      {AddCancerModal && (
+        <div className="role_modal">
+          <div className="modal_header">
+            <h3>اضافه کردن سرطان</h3>
+            <div className="modal_close" onClick={() => {
+              setAddCancerModal(false);
+              setSelectedFormForSelfCancer(null);
+              setSelectedFormForFamilyCancer(null);
+            }}>✕</div>
+          </div>
+          <div className="roles cancer-mode">
+            <div className="role_table">
+              <CancerAddForm
+                formId={selectedFormForSelfCancer || selectedFormForFamilyCancer}
+                isFamilyCancer={!!selectedFormForFamilyCancer}
+                onClose={() => {
+                  setAddCancerModal(false);
+                  setSelectedFormForSelfCancer(null);
+                  setSelectedFormForFamilyCancer(null);
+                }}
+                cancerTypesMap={cancerTypesMap}
+                relativeTypesMap={relativeTypesMap}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </>
+  );
+}
+
+// Simple form component for adding cancers
+function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relativeTypesMap }) {
+  const [cancerType, setCancerType] = useState("");
+  const [cancerAge, setCancerAge] = useState("");
+  const [relativeType, setRelativeType] = useState("");
+  const [lifeStatus, setLifeStatus] = useState(1); // 1 for alive, 0 for deceased
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const { addToast } = useToast();
+
+  // Handle image file selection
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+    }
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!cancerType || !cancerAge || (isFamilyCancer && !relativeType)) {
+      addToast({
+        title: "لطفاً تمام فیلدهای الزامی را پر کنید",
+        type: 'error',
+        duration: 4000
+      });
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+
+      // Get the IDs for cancer type and relative type from the map
+      let cancerTypeId = null;
+      let relativeTypeId = null;
+
+      // Get cancer type ID
+      for (const [id, name] of Object.entries(cancerTypesMap)) {
+        if (name === cancerType) {
+          cancerTypeId = parseInt(id);
+          break;
+        }
+      }
+
+      // If this is a family cancer, get relative type ID
+      if (isFamilyCancer) {
+        for (const [id, name] of Object.entries(relativeTypesMap)) {
+          if (name === relativeType) {
+            relativeTypeId = parseInt(id);
+            break;
+          }
+        }
+      }
+
+      // Prepare the data for the sender function
+      const relation = isFamilyCancer ? relativeType : null;
+      const cancerAgeInt = parseInt(cancerAge);
+      const lifeStatusInt = parseInt(lifeStatus);
+
+      // Call the fetchDataPOST function directly similar to cancer_universal.jsx
+      let response;
+      if (imageFile) {
+        // Send as form data if there's an image file
+        const formData = new FormData();
+
+        if (isFamilyCancer) {
+          formData.append('relative', relativeTypeId);
+          formData.append('lifeStatus', lifeStatusInt);
+          formData.append('cancerAge', cancerAgeInt);
+          formData.append('cancerType', cancerTypeId);
+          formData.append('file', imageFile);
+
+          response = await fetch(`http://${APIURL}/admin/form/${formId}/familycancer`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+            body: formData,
+          });
+        } else {
+          formData.append('cancerAge', cancerAgeInt);
+          formData.append('cancerType', cancerTypeId);
+          formData.append('file', imageFile);
+
+          response = await fetch(`http://${APIURL}/admin/form/${formId}/cancer`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+            body: formData,
+          });
+        }
+      } else {
+        // Send as JSON if no image file
+        const payload = isFamilyCancer ?
+          {
+            relative: relativeTypeId,
+            lifeStatus: lifeStatusInt,
+            cancers: [{
+              cancerAge: cancerAgeInt,
+              cancerType: cancerTypeId
+            }]
+          } :
+          {
+            cancerAge: cancerAgeInt,
+            cancerType: cancerTypeId
+          };
+
+        response = await fetch(`http://${APIURL}/admin/form/${formId}/${isFamilyCancer ? 'familycancer' : 'cancer'}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+      }
+
+      const result = await response.json();
+
+      if (response.ok) {
+        addToast({
+          title: result.message || `سرطان ${isFamilyCancer ? 'خانوادگی' : 'فردی'} با موفقیت اضافه شد`,
+          type: 'success',
+          duration: 4000
+        });
+        onClose(); // Close the modal after successful submission
+      } else {
+        throw new Error(result.message || `خطا در اضافه کردن سرطان ${isFamilyCancer ? 'خانوادگی' : 'فردی'}`);
+      }
+    } catch (error) {
+      console.error(`Error adding ${isFamilyCancer ? 'family' : 'self'} cancer:`, error);
+      addToast({
+        title: error.message || `خطا در اضافه کردن سرطان ${isFamilyCancer ? 'خانوادگی' : 'فردی'}`,
+        type: 'error',
+        duration: 4000
+      });
+    }
+  };
+
+  // Cleanup preview URL when component unmounts
+  useEffect(() => {
+    return () => {
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
+
+  return (
+    <div className="cancer-add-form">
+      <form onSubmit={handleSubmit}>
+        {isFamilyCancer && (
+          <div className="form-group">
+            <label>نسبت خانوادگی:</label>
+            <select
+              value={relativeType}
+              onChange={(e) => setRelativeType(e.target.value)}
+              className="form-control"
+            >
+              <option value="">انتخاب کنید</option>
+              {Object.entries(relativeTypesMap).map(([id, name]) => (
+                <option key={id} value={name}>{name}</option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        <div className="form-group">
+          <label>نوع سرطان:</label>
+          <select
+            value={cancerType}
+            onChange={(e) => setCancerType(e.target.value)}
+            className="form-control"
+          >
+            <option value="">انتخاب کنید</option>
+            {Object.entries(cancerTypesMap).map(([id, name]) => (
+              <option key={id} value={name}>{name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>سن در زمان تشخیص سرطان:</label>
+          <input
+            type="number"
+            value={cancerAge}
+            onChange={(e) => setCancerAge(e.target.value)}
+            className="form-control"
+            min="0"
+            max="120"
+            placeholder="سن تشخیص"
+          />
+        </div>
+
+        {isFamilyCancer && (
+          <div className="form-group">
+            <label>وضعیت زندگی:</label>
+            <div>
+              <label>
+                <input
+                  type="radio"
+                  name="lifeStatus"
+                  value={1}
+                  checked={lifeStatus === 1}
+                  onChange={(e) => setLifeStatus(parseInt(e.target.value))}
+                />
+                زنده
+              </label>
+              <label style={{ marginLeft: '15px' }}>
+                <input
+                  type="radio"
+                  name="lifeStatus"
+                  value={0}
+                  checked={lifeStatus === 0}
+                  onChange={(e) => setLifeStatus(parseInt(e.target.value))}
+                />
+                فوت شده
+              </label>
+            </div>
+          </div>
+        )}
+
+        <div className="form-group">
+          <label>تصویر (اختیاری):</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="form-control"
+          />
+          {imagePreview && (
+            <div className="image-preview" style={{ marginTop: '10px' }}>
+              <p>پیش نمایش تصویر:</p>
+              <img src={imagePreview} alt="Preview" style={{ maxWidth: '200px', maxHeight: '200px', border: '1px solid #ccc', borderRadius: '4px' }} />
+            </div>
+          )}
+        </div>
+
+        <div className="form-actions" style={{ marginTop: '15px', display: 'flex', gap: '10px' }}>
+          <button type="submit" className="btn_submit btn-primary">ثبت سرطان</button>
+          <button type="button" onClick={onClose} className="btn_submit btn-secondary">لغو</button>
+        </div>
+      </form>
+    </div>
   );
 }
