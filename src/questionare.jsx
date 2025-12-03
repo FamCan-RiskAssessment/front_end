@@ -15,7 +15,7 @@ import part4 from './questions/P4.json'
 import part5 from './questions/P5.json'
 import part6 from './questions/P6.json'
 import part7 from './questions/P7.json'
-// import CQs from './catchQs.json'
+import CQs from './questions/catchQs.json'
 import { useLocation, useNavigate } from "react-router-dom";
 import { APIURL } from "./utils/config";
 import { useToast } from "./toaster";
@@ -31,6 +31,9 @@ function Questions() {
     const [createdFormId, setCreatedFormId] = useState(0)
     const [typeErr, setTypeErr] = useState(false)
     const [typeErr2, setTypeErr2] = useState(false)
+    const [catchQuestions, setCatchQuestions] = useState({});
+    const [catchAnswers, setCatchAnswers] = useState({});
+    const [step3AttentionCorrect, setStep3AttentionCorrect] = useState(0);
     const formDataRef = useRef(new FormData()); // Keep formData in a ref so FileUploaders can access it
     const fileArraysRef = useRef({}); // Keep track of file arrays by field name
     console.log("changed the MF form images : ", formDataRef)
@@ -196,6 +199,50 @@ function Questions() {
         }
         innerFunc()
     }, [])
+
+    // Function to inject catch questions into specified forms
+    const injectCatchQuestions = () => {
+        // Only inject catch questions for steps 2, 3, and 6
+        if (![2, 3, 6].includes(step)) return;
+
+        // Select a random catch question
+        const randomIndex = Math.floor(Math.random() * CQs.length);
+        const selectedCatchQuestion = { ...CQs[randomIndex] };
+
+        // Handle special case for catchSum question type
+        if (selectedCatchQuestion.useName === "catchSum") {
+            const num1 = Math.floor(Math.random() * 10) + 1; // Random number between 1-10
+            const num2 = Math.floor(Math.random() * 10) + 1; // Random number between 1-10
+            const sum = num1 + num2;
+
+            // Update the question with the random numbers
+            selectedCatchQuestion.inpName = `${num1} + ${num2} = ?`;
+            selectedCatchQuestion.correctAnswer = sum; // Store the correct answer
+
+            // Update state to track this specific catch question's answer
+            setCatchAnswers(prev => ({
+                ...prev,
+                [`catchSum_${step}`]: sum
+            }));
+        } else if (selectedCatchQuestion.ans !== undefined) {
+            // For other questions, store the correct answer
+            setCatchAnswers(prev => ({
+                ...prev,
+                [selectedCatchQuestion.useName]: selectedCatchQuestion.ans
+            }));
+        }
+
+        // Store the catch question for the current step
+        setCatchQuestions(prev => ({
+            ...prev,
+            [step]: selectedCatchQuestion
+        }));
+    };
+
+    // useEffect to inject catch questions when step changes
+    useEffect(() => {
+        injectCatchQuestions();
+    }, [step]);
 
     useEffect(() => {
         if (presetform != null && id_form != null) {
@@ -738,14 +785,14 @@ function Questions() {
                 // allData[name] = null;
                 // console.log("name is the name , : ", name)
                 // pass the fucking data
-            } else if (isNumber(finalValue) && name !== "socialSecurityNumber" && name !== "postalCode") {
+            } else if (isNumber(finalValue) && name !== "socialSecurityNumber" && name !== "phone2" && name !== "phone3" && name !== "postalCode") {
                 allData[name] = parseInt(finalValue, 10);
             } else {
                 allData[name] = finalValue;
             }
         }
 
-        // convert date to number & check userId 
+        // convert date to number & check userId
         if (step == 1) {
             let theDate = formatAndValidateJalali(allData["birthYear"], allData["birthMonth"], allData["birthDay"])
             delete allData["birthYear"]
@@ -755,6 +802,11 @@ function Questions() {
             if (localStorage.getItem("operatorUserId") != null) {
                 allData["userID"] = parseInt(localStorage.getItem("operatorUserId"))
             }
+        }
+
+        // Add attentionCorrect field for step 3 if a catch question was answered correctly
+        if (step == 3) {
+            allData["attentionCorrect"] = step3AttentionCorrect;
         }
         // if (isCancer && step == 4) {
         //     let dels = ["cancerType", "cancerAge"]
@@ -994,7 +1046,30 @@ function Questions() {
     // const atba_checker = (val) => {
     //     setatba(val)
     // }
+    // Function to validate catch question answers
+    const validateCatchQuestion = (stepNum) => {
+        if (!catchQuestions[stepNum]) return true; // No catch question for this step
+
+        const catchQ = catchQuestions[stepNum];
+        const userAnswer = catchAnswers[`catch_${catchQ.useName}`];
+
+        if (catchQ.useName === "catchSum") {
+            // Special handling for catchSum - compare with calculated sum
+            const correctAnswer = catchAnswers[`catchSum_${stepNum}`];
+            return userAnswer !== undefined && parseInt(userAnswer) === correctAnswer;
+        } else {
+            // For other questions, compare with the stored answer
+            const correctAnswer = catchQ.ans;
+            return userAnswer !== undefined && userAnswer === correctAnswer;
+        }
+    };
+
     const nexter = () => {
+        // Update attentionCorrect for step 3 based on catch question answer
+        if (step === 3 && catchQuestions[3]) {
+            const isCorrect = validateCatchQuestion(3);
+            setStep3AttentionCorrect(isCorrect ? 1 : 0);
+        }
 
         if (step != 7) {
             setStep(s => s + 1)
@@ -1090,6 +1165,18 @@ function Questions() {
                         <Radio data_req={"true"} data={part2.radio_opts_alcohol} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsAlchol}></Radio>
                         <Options data={part2.combine_option_amountAlcohol} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isAlchol)}></Options>
 
+                        {/* Inject catch question randomly in step 2 if applicable */}
+                        {/* {step === 2 && catchQuestions[2] && (
+                            catchQuestions[2].input_type === "radio_input" ?
+                                <Radio data_req={"true"} data={catchQuestions[2]} class_change1={"P2"} class_change2={"P2_inner"}></Radio> :
+                                <InputBox data_req={"true"} data={catchQuestions[2]} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={(val) => {
+                                    setCatchAnswers(prev => ({
+                                        ...prev,
+                                        [`catch_${catchQuestions[2].useName}`]: val
+                                    }));
+                                }}></InputBox>
+                        )} */}
+
                         <Options data_req={"true"} data={part2.combine_option_lastMonthSabzijatMeal} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsSabzi} preSet={presetform} ></Options>
                         <Options data={part2.combine_option_lastMonthSabzijatWeight} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={null} relation={relator_S(isSabzi)}></Options>
 
@@ -1143,6 +1230,43 @@ function Questions() {
                             {/* <Radio data_req={"true"} data={part3.radio_opts_menopausal_status} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsAdat} relation={relator_gen(gender)}></Radio> */}
                             <Options data={part3.combine_option_menopause} class_change1={"P2"} class_change2={"P2_inner"} relation={!relator_R(isAdat) && relator_gen(gender)}></Options>
                         </>
+
+                        {/* Inject catch question randomly in step 3 if applicable */}
+                        {/* {step === 3 && catchQuestions[3] && (
+                            catchQuestions[3].input_type === "radio_input" ?
+                                <Radio data_req={"true"} data={catchQuestions[3]} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={(val) => {
+                                    // In step 3, if the catch question is answered correctly, set attentionCorrect = 1
+                                    const isCorrect = catchAnswers[catchQuestions[3].useName] === val;
+                                    if (isCorrect) {
+                                        setStep3AttentionCorrect(1);
+                                    } else {
+                                        setStep3AttentionCorrect(0);
+                                    }
+                                }}></Radio> :
+                                <InputBox data_req={"true"} data={catchQuestions[3]} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={(val) => {
+                                    // Check if it's catchSum question type
+                                    if (catchQuestions[3].useName === "catchSum") {
+                                        const correctAnswer = catchAnswers[`catchSum_${step}`];
+                                        if (parseInt(val) === correctAnswer) {
+                                            setStep3AttentionCorrect(1);
+                                        } else {
+                                            setStep3AttentionCorrect(0);
+                                        }
+                                    } else {
+                                        // For other input types
+                                        const isCorrect = catchAnswers[catchQuestions[3].useName] === val;
+                                        if (isCorrect) {
+                                            setStep3AttentionCorrect(1);
+                                        } else {
+                                            setStep3AttentionCorrect(0);
+                                        }
+                                    }
+                                    setCatchAnswers(prev => ({
+                                        ...prev,
+                                        [`catch_${catchQuestions[3].useName}`]: val
+                                    }));
+                                }}></InputBox>
+                        )} */}
 
                         <>
                             <Radio data_req={"true"} data={part3.radio_opts_hrt} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT} relation={!relator_R(isAdat) && relator_gen(gender)}></Radio>
@@ -1213,6 +1337,18 @@ function Questions() {
                         <Radio data_req={"true"} data={part7.radio_takmili_bime} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                         {/* <Radio data_req={"true"} data={part7.radio_chronicLungDisease} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChronic}></Radio> */}
                         <Options data_req={"true"} data={part7.combine_option_chronicLungDisease} class_change1={"P2"} class_change2={"P2_inner"}></Options>
+
+                        {/* Inject catch question randomly in step 6 if applicable */}
+                        {/* {step === 6 && catchQuestions[6] && (
+                            catchQuestions[6].input_type === "radio_input" ?
+                            <Radio data_req={"true"} data={catchQuestions[6]} class_change1={"P2"} class_change2={"P2_inner"}></Radio> :
+                            <InputBox data_req={"true"} data={catchQuestions[6]} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={(val) => {
+                                setCatchAnswers(prev => ({
+                                    ...prev,
+                                    [`catch_${catchQuestions[6].useName}`]: val
+                                }));
+                            }}></InputBox>
+                        )} */}
 
                         {/* <Radio data_req={"true"} data={part7.radio_lungCancerHistory} class_change1={"P2"} class_change2={"P2_inner"}></Radio> */}
                         <Radio data_req={"true"} data={part7.radio_lungCancerFamily} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setFirstDeg}></Radio>
@@ -1286,6 +1422,11 @@ function Questions() {
                         }}>ارسال</button>
                     ) : (
                         <button className="btn_question" onClick={(e) => {
+                            // Update attentionCorrect for step 3 before submission if there's a catch question
+                            if (step === 3 && catchQuestions[3]) {
+                                const isCorrect = validateCatchQuestion(3);
+                                setStep3AttentionCorrect(isCorrect ? 1 : 0);
+                            }
                             checkReq(formRefs[step], step)
                             handleSubmit(e)
                         }}>بعدی</button>
