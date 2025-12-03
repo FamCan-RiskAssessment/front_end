@@ -167,7 +167,7 @@ function FormsPage() {
         {role != "بیمار" ? (<button className="btn_submit place_independently" onClick={() => {
           navigate('/DashBoard', { state: { permissions: perms } })
         }}>ورود به پنل</button>) : null}
-        <button className="btn_submit spider" onClick={() => navigate("/")}>خروج</button>
+        <button className="btn_submit spider" onClick={() => navigate("/login")}>خروج</button>
       </div>
       <div className="forms-page-wrapper">
         <div className="forms-container">

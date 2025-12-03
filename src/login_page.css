@@ -3,9 +3,9 @@
     src: url('./assets/Vazir.woff2');
 }
 
-.login_container{
+.login_container {
     height: 100vh;
-    background:url('./assets/louis-reed-pwcKF7L4-no-unsplash.jpg');
+    background: url('./assets/louis-reed-pwcKF7L4-no-unsplash.jpg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -15,23 +15,27 @@
     align-items: center;
     width: 100%;
     gap: 1rem;
+    padding-bottom: 2rem;
 }
 
 .form_card {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: rgba(255, 255, 255, 0.1); /* semi-transparent white */
-    backdrop-filter: blur(12px); /* glass blur effect */
-    -webkit-backdrop-filter: blur(12px); /* for Safari */
+    background: rgba(255, 255, 255, 0.1);
+    /* semi-transparent white */
+    backdrop-filter: blur(12px);
+    /* glass blur effect */
+    -webkit-backdrop-filter: blur(12px);
+    /* for Safari */
     border-radius: 16px;
     padding: 2rem;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2) , -5px -5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2), -5px -5px 10px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.2);
     width: 320px;
 }
 
-.login_form{
+.login_form {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -39,25 +43,27 @@
     gap: 1rem;
 }
 
-.inp{
+.inp {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
     gap: 1rem;
 }
-.login_desc{
+
+.login_desc {
     font-size: 1.1rem;
 }
-.login_title{
+
+.login_title {
     font-size: 1.7rem;
     font-weight: 1500;
     color: black;
     font-family: 'vazir';
-    color:#47002d ;
+    color: #47002d;
 }
 
-.inp > input{
+.inp>input {
     width: 80%;
     height: 1rem;
     font-size: 1.3rem;
@@ -69,17 +75,17 @@
     transition: 0.3s ease;
 }
 
-.inp > input:focus{
+.inp>input:focus {
     transform: translateY(-10px);
     box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.4);
 }
 
 
-.inp > label {
+.inp>label {
     font-size: 1.2rem;
 }
 
-.login_form > button { 
+.login_form>button {
     background-color: #47002d;
     color: white;
     width: 80%;
@@ -89,13 +95,92 @@
     transition: 0.3s ease;
 }
 
-.login_form > .btn_login:hover{
+.login_form>.btn_login:hover {
     background: #8f005a;
 }
 
-.btn_disabled{
+.btn_disabled {
     /* background-color: #47002d48 !important; */
     animation: scaler 0.3s ease;
+}
+
+/* Sponsors Section Styles */
+.sponsors-section {
+    width: 90%;
+    max-width: 1200px;
+    margin: 2rem auto;
+    text-align: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    /* semi-transparent white */
+    backdrop-filter: blur(12px);
+    /* glass blur effect */
+    -webkit-backdrop-filter: blur(12px);
+    /* for Safari */
+    border-radius: 16px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2), -5px -5px 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sponsors-title {
+    font-size: 1.3rem;
+    color: #47002d;
+    margin-bottom: 1.5rem;
+    font-family: 'vazir';
+    font-weight: bold;
+}
+
+.sponsors-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+.sponsor-logo {
+    height: 60px;
+    width: auto;
+    max-width: 140px;
+    object-fit: contain;
+    /* filter: brightness(0.8) drop-shadow(0 2px 2px rgba(0,0,0,0.1)); */
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    padding: 0.5rem;
+    background: rgb(255, 255, 255);
+}
+
+.sponsor-logo:hover {
+    filter: brightness(1) drop-shadow(0 4px 4px rgba(0, 0, 0, 0.2));
+    transform: scale(1.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sponsors-grid {
+        gap: 1rem;
+    }
+
+    .sponsor-logo {
+        height: 50px;
+        max-width: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sponsors-grid {
+        gap: 0.8rem;
+    }
+
+    .sponsor-logo {
+        height: 40px;
+        max-width: 100px;
+    }
+
+    .sponsors-title {
+        font-size: 1.1rem;
+    }
 }
 
 
@@ -114,7 +199,8 @@
     font-weight: bold;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     transition: 0.3s ease;
-    z-index: 1000; /* always above other elements */
+    z-index: 1000;
+    /* always above other elements */
 }
 
 .support_call:hover {
@@ -122,7 +208,7 @@
     background: #8f005a;
 }
 
-.support_call2{
+.support_call2 {
     /* position: fixed; */
     /* bottom: 20px;
     left: 20px; */
@@ -137,7 +223,8 @@
     font-weight: bold;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     transition: 0.3s ease;
-    z-index: 1000; /* always above other elements */
+    z-index: 1000;
+    /* always above other elements */
 }
 
 .support_call2:hover {
@@ -145,7 +232,7 @@
     background: #8f005a;
 }
 
-.admin_enter{
+.admin_enter {
     position: fixed;
     top: 20px;
     left: 20px;
@@ -153,7 +240,7 @@
 
 
 
-.copy_right{
+.copy_right {
     position: fixed;
     right: 0;
     bottom: 0;
@@ -163,7 +250,7 @@
 
 /* error box */
 
-.error_container{
+.error_container {
     /* border: 1px solid; */
     border-radius: 10px;
     background-color: rgb(240, 105, 105);
@@ -178,27 +265,31 @@
     align-items: center;
     gap: 1rem;
 }
-.error_container > i {
+
+.error_container>i {
     font-size: 1.5rem;
 }
 
-.fader{
+.fader {
     animation: fader 1s 2s ease forwards;
 }
 
 @keyframes fader {
-    from{
+    from {
         opacity: 1;
     }
-    to{
+
+    to {
         opacity: 0;
     }
 }
 
 @keyframes scaler {
-    from{
+    from {
         transform: scale(0);
-    }to{
+    }
+
+    to {
         transform: scale(1);
     }
 }
@@ -210,16 +301,20 @@
     .form_card {
         padding: 1.5rem;
     }
-    .btn_login, .support_call {
+
+    .btn_login,
+    .support_call {
         font-size: 0.9rem;
     }
-    .admin_enter{
+
+    .admin_enter {
         position: absolute;
         top: 8px;
         bottom: unset;
         left: 8px;
         font-size: 0.8rem;
     }
+
     /* .support_call{
         position: unset;
     } */
@@ -230,13 +325,15 @@
         padding: 1rem;
         max-width: 90%;
     }
+
     .support_call {
         padding: 0.6rem 1rem;
         font-size: 0.85rem;
         bottom: 15px;
         left: 15px;
     }
-    .admin_enter{
+
+    .admin_enter {
         position: absolute;
         top: 8px;
         bottom: unset;
@@ -251,34 +348,40 @@
         padding: 1rem;
         max-width: 80%;
     }
+
     /* .support_call {
         padding: 0.6rem 1rem;
         font-size: 0.85rem;
         bottom: 5px;
         left: 5px;
     } */
-    .copy_right{
+    .copy_right {
         bottom: 0px;
         right: 0px;
         font-size: 0.85rem;
         padding: 0rem 0.6rem;
     }
-    .copy_right{
+
+    .copy_right {
         bottom: 0px;
         right: 0px;
         font-size: 0.7rem;
         padding: 0rem 0.6rem;
     }
-    .inp > label{
+
+    .inp>label {
         font-size: 1rem;
     }
-    .login_form > button{
+
+    .login_form>button {
         font-size: 1rem;
     }
-    .login_desc{
+
+    .login_desc {
         font-size: 1.1rem;
     }
-    .login_title{
+
+    .login_title {
         font-size: 1.2rem;
     }
 }
@@ -288,31 +391,38 @@
         padding: 1rem;
         max-width: 70%;
     }
+
     .support_call {
         padding: 0.6rem 1rem;
         font-size: 0.7rem;
         bottom: 2px;
         left: 2px;
     }
-    .copy_right{
+
+    .copy_right {
         bottom: 0px;
         right: 0px;
         font-size: 0.7rem;
         padding: 0rem 0.6rem;
     }
-    .inp > input { 
+
+    .inp>input {
         width: 70%;
     }
-    .inp > label{
+
+    .inp>label {
         font-size: 1rem;
     }
-    .login_form > button{
+
+    .login_form>button {
         font-size: 1rem;
     }
-    .login_desc{
+
+    .login_desc {
         font-size: 1.1rem;
     }
-    .login_title{
+
+    .login_title {
         font-size: 1.2rem;
     }
 }
@@ -320,7 +430,7 @@
 
 /* for the change password */
 
-.passesholder{
+.passesholder {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -331,16 +441,18 @@
     /* padding: 0rem 1rem; */
 }
 
-.passesholder input{
+.passesholder input {
     width: 60%;
 }
-.inputsholder{
+
+.inputsholder {
     padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
-.btn_submit_holder{
+
+.btn_submit_holder {
     padding: 1rem;
 }
 
@@ -422,9 +534,3 @@ weight:50
 قبول می کنم:"on"
 نوع یا انواع سرطان:"سرطان پروستات"
 } */
-
-
-
-
-
-
