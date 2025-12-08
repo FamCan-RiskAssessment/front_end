@@ -1,0 +1,364 @@
+.login_container {
+    background-image: none;
+    background: linear-gradient(135deg, #f8f5ff, #e5d4f9);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+    padding-bottom: 2rem;
+}
+
+.middles {
+    display: flex;
+    align-items: center;
+    gap: 6rem;
+}
+
+.colgroup {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.rowgroup {
+    display: flex;
+    /* width: 100%; */
+    gap: 15rem;
+    align-items: center;
+    justify-content: space-around;
+    margin-top: 3rem;
+}
+
+.middle_form {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+}
+
+.form_card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2), -5px -5px 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 320px;
+    background-color: white;
+}
+
+.login_form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.inp {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.login_desc {
+    font-size: 1.1rem;
+}
+
+.login_title {
+    font-size: 1.7rem;
+    font-weight: 1500;
+    color: black;
+    font-family: 'vazir';
+    color: #47002d;
+}
+
+.inp>input {
+    width: 80%;
+    height: 1rem;
+    font-size: 1.3rem;
+    padding: 1rem 2rem;
+    outline: none;
+    border: 1px solid rgb(0, 0, 0, 0.5);
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+    transition: 0.3s ease;
+}
+
+.inp>input:focus {
+    transform: translateY(-10px);
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.4);
+}
+
+.inp>label {
+    font-size: 1.2rem;
+}
+
+.login_form>button {
+    background-color: #47002d;
+    color: white;
+    width: 80%;
+    padding: 0.5rem;
+    font-size: 1.3rem;
+    margin-top: 2rem;
+    transition: 0.3s ease;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.login_form>.btn_login:hover {
+    background: #8f005a;
+}
+
+.btn_disabled {
+    animation: scaler 0.3s ease;
+}
+
+.sponsor-logo {
+    width: 10rem;
+    height: 8rem;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.big-logo {
+    width: 18rem;
+    max-width: unset;
+    height: auto;
+}
+
+.clear_title {
+    width: 80%;
+    text-align: center;
+}
+
+.support_call {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: #47002d;
+    color: white;
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: 0.3s ease;
+    z-index: 1000;
+}
+
+.support_call:hover {
+    background: #8f005a;
+}
+
+.support_call2 {
+    background: #47002d;
+    color: white;
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: 0.3s ease;
+    z-index: 1000;
+}
+
+.support_call2:hover {
+    background: #8f005a;
+}
+
+.admin_enter {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+}
+
+.copy_right {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    color: white;
+    padding: 0.8rem 1.2rem;
+    background: rgba(71, 0, 45, 0.7);
+    border-top-left-radius: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .middles {
+        gap: 3rem;
+    }
+
+    .rowgroup {
+        gap: 3rem;
+    }
+
+    .sponsor-logo {
+        width: 8rem;
+        height: 6rem;
+    }
+
+    .big-logo {
+        width: 12rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .middles {
+        gap: 2rem;
+        padding: 1rem;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .middle_form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .colgroup {
+        flex-direction: row;
+    }
+
+    .rowgroup {
+        gap: 2rem;
+        margin-top: 1rem;
+    }
+
+    .sponsor-logo {
+        width: 6rem;
+        height: 5rem;
+    }
+
+    .big-logo {
+        width: 10rem;
+    }
+
+    .clear_title {
+        width: 80%;
+        font-size: 1.4rem;
+    }
+
+    .login_title {
+        font-size: 1.5rem;
+    }
+
+    .inp>input {
+        width: 80%;
+    }
+
+    .login_form>button {
+        width: 80%;
+    }
+
+    .support_call,
+    .support_call2 {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .login_container {
+        height: auto;
+        min-height: 100vh;
+        padding: 1rem 0.5rem 3rem 0.5rem;
+    }
+
+    .call-holder {
+        position: fixed;
+        left: 0;
+    }
+
+    .middles {
+        gap: 1.5rem;
+        padding: 0.5rem 0;
+        flex-wrap: wrap;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .middle_form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .colgroup {
+        flex-direction: row;
+    }
+
+    .rowgroup {
+        gap: 1.5rem;
+        padding: 0.5rem 0;
+        flex-wrap: wrap;
+    }
+
+    .form_card {
+        width: 95%;
+        max-width: 300px;
+        padding: 1.5rem;
+    }
+
+    .sponsor-logo {
+        width: 5rem;
+        height: 4rem;
+    }
+
+    .big-logo {
+        width: 8rem;
+    }
+
+    .clear_title {
+        width: 80%;
+        font-size: 1.2rem;
+    }
+
+    .login_title {
+        font-size: 1.3rem;
+    }
+
+    .inp>input {
+        width: 80%;
+        padding: 0.8rem 1rem;
+        font-size: 1.1rem;
+    }
+
+    .inp>label {
+        font-size: 1rem;
+    }
+
+    .login_form>button {
+        width: 80%;
+        padding: 0.4rem;
+        font-size: 1.1rem;
+    }
+
+    .support_call,
+    .support_call2 {
+        position: static;
+        margin: 0.5rem auto;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    .admin_enter {
+        position: static;
+        display: flex;
+        justify-content: center;
+        margin: 0.5rem auto;
+    }
+
+    .copy_right {
+        display: none;
+    }
+}

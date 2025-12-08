@@ -177,7 +177,7 @@ export const fetchDataPUT = async (endpoint, token_auth, bodyData) => {
 };
 
 
-export const fetchDataPOST = async (endpoint, token_auth, bodyData) => {
+export const fetchDataPOST = async (endpoint, token_auth, bodyData, passErr) => {
   // console.log(bodyData);
   const res = await fetch(`http://${APIURL}/${endpoint}`, {
     method: "POST",
@@ -188,7 +188,7 @@ export const fetchDataPOST = async (endpoint, token_auth, bodyData) => {
     body: JSON.stringify(bodyData),
   });
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "POST request failed");
+  if (!res.ok && passErr == false) throw new Error(data.message || "POST request failed");
   console.log("this is the data in the tools: ", data);
   return data;
 };

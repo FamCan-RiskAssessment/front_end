@@ -12,6 +12,7 @@ function Radio({ data_req, data, class_change1, value, class_change2, valueSette
         'نمی دانم': 'null',
         'نمیدانم': 'null',
         'نامعین': 'null',
+        'اطلاع ندارم': 'null',
         'احتمال دارد اما دقیق اطلاع ندارم': 'null',
         'سابقاً مصرف می کرده ام اما کمتر از ۱۵ سال است که ترک کرده ام': true,
         'سابقاً مصرف می کردم اما بیش از ۱۵ سال است که ترک کرده ام': true,
@@ -20,6 +21,9 @@ function Radio({ data_req, data, class_change1, value, class_change2, valueSette
     // Default relation to true if undefined
     const effectiveRelation = relation !== undefined ? relation : true;
     const effectiveDataReq = effectiveRelation ? data_req : "false";
+    if (data.Rname == "currentHrtUse") {
+        console.log("we have passed", effectiveRelation)
+    }
 
     return (
         <>

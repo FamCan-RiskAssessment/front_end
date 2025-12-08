@@ -537,6 +537,12 @@ function Questions() {
             console.log("[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[ : ", ST)
             console.log(state)
         }
+        if (isNumber(state) && state != false && ((state == 2 && state != 1) || state == 3)) {
+            return true
+        } else if (state == 1) {
+            return false
+        }
+
         if (state == "بله" || state == "true" || state == true && (state != "false" || state != "خیر")) {
             return true
         } else {
@@ -1192,7 +1198,7 @@ function Questions() {
                             <Options data_req={"true"} data={part2.combine_option_smokingAge} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsSmokeAge} relation={relator_R(isSmoke)}></Options>
                             {/* {isSmokeAge != "انتخاب کنید" && isSmokeAge != "" && isSmokeAge != "هیچوقت به طور منظم سیگار یا قلیان نکشیده ام" && ( */}
                             <>
-                                <Radio data_req={"true"} data={part2.radio_opts_smokingNow} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsSmokingNow}></Radio>
+                                <Radio data_req={"true"} data={part2.radio_opts_smokingNow} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsSmokingNow} relation={relator_R(isSmoke)}></Radio>
                                 {/* {isSmokingNow == 'بله' && ( */}
                                 <>
                                     <InputBox data_req={"false"} data={part2.text_yearSmoke} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow)}></InputBox>
@@ -1228,7 +1234,7 @@ function Questions() {
                         <>
                             <Radio data_req={"true"} data={part3.radio_opts_menopausal_status} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsAdat} Enum={"menopausal-statuses"} relation={relator_gen(gender)}></Radio>
                             {/* <Radio data_req={"true"} data={part3.radio_opts_menopausal_status} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsAdat} relation={relator_gen(gender)}></Radio> */}
-                            <Options data={part3.combine_option_menopause} class_change1={"P2"} class_change2={"P2_inner"} relation={!relator_R(isAdat) && relator_gen(gender)}></Options>
+                            <Options data={part3.combine_option_menopause} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isAdat) && relator_gen(gender)}></Options>
                         </>
 
                         {/* Inject catch question randomly in step 3 if applicable */}
@@ -1269,12 +1275,12 @@ function Questions() {
                         )} */}
 
                         <>
-                            <Radio data_req={"true"} data={part3.radio_opts_hrt} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT} relation={!relator_R(isAdat) && relator_gen(gender)}></Radio>
-                            <Options data={part3.combine_option_hrt_use_length} class_change1={"P2"} class_change2={"P2_inner"} relation={!relator_R(isAdat) && relator_gen(gender)}></Options>
+                            <Radio data_req={"true"} data={part3.radio_opts_hrt} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT} relation={relator_R(isAdat) && relator_gen(gender)}></Radio>
+                            <Options data={part3.combine_option_hrt_use_length} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isHRT) && relator_gen(gender)}></Options>
 
-                            <Radio data_req={"true"} data={part3.radio_opts_lastFiveYears_HRT_use} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT5} relation={!relator_R(isAdat) && relator_gen(gender)}></Radio>
+                            <Radio data_req={"true"} data={part3.radio_opts_lastFiveYears_HRT_use} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT5} relation={relator_R(isAdat) && relator_gen(gender)}></Radio>
 
-                            <Radio data_req={"true"} data={part3.radio_opts_HRT_current_use} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isHRT5) && relator_gen(gender)}></Radio>
+                            <Radio data_req={"true"} data={part3.radio_opts_HRT_current_use} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isHRT5, part3.radio_opts_HRT_current_use) && relator_gen(gender)}></Radio>
                             <Options data_req={"true"} data={part3.combine_option_intended_HRT_use} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isHRT5) && relator_gen(gender)}></Options>
                             <Radio data_req={"true"} data={part3.radio_opts_hrt_Type} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isHRT5) && relator_gen(gender)}></Radio>
 

@@ -536,7 +536,20 @@ export default function FilterableTable() {
       "calcID": model_id,
       "formID": selectedFormId
     }
-    let res = await fetchDataPOST("admin/calc/model", token, bodyData)
+    let res = await fetchDataPOST("admin/calc/model", token, bodyData, true)
+    if (res.status != 200) {
+      addToast({
+        title: res.data.error,
+        type: 'error',
+        duration: 4000
+      });
+    } else {
+      addToast({
+        title: "ریسک مورد نظر با موفقیت محاسبه شد ",
+        type: 'success',
+        duration: 4000
+      });
+    }
     setSelectedFormId(0)
     setOpenModal(false)
     console.log("this is the input and model output : ", res)

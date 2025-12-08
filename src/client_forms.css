@@ -142,3 +142,7 @@
   top: 20px;
   right: 20px;
 }
+
+.aligner {
+  justify-content: center;
+}

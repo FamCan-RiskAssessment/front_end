@@ -17,6 +17,21 @@ function FormsPage() {
   const location = useLocation();
   const [perms, setPerms] = useState([])
   const [role, setRole] = useState("")
+  const [page, setPage] = useState(1)
+  const [pagiPrev, setPagiPrev] = useState(false)
+  const [PagiNext, setPagiNext] = useState(false)
+
+  const nextPage = () => {
+    if (PagiNext)
+      setPage(p => p + 1)
+
+  }
+  const prevPage = () => {
+    if (pagiPrev)
+      setPage(p => p - 1)
+  }
+
+
   const { addToast } = useToast()
   console.log(forms)
 
@@ -45,7 +60,7 @@ function FormsPage() {
   // 🔹 fetch user's forms on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch(`http://${APIURL}/form`, {
+    fetch(`http://${APIURL}/form?page=${page}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -57,17 +72,19 @@ function FormsPage() {
         // console.log("fucking data : " , json)
         setForms(json.data.data || []); // assuming API returns { data: [...] }
         setDeletedForm(0)
+        setPagiPrev(json.data.pagination.hasPrevPage)
+        setPagiNext(json.data.pagination.hasNextPage)
         setLoading(false);
       })
       .catch((err) => {
         console.error("Error fetching forms:", err);
         setLoading(false);
       });
-  }, [deletedForm]);
+  }, [deletedForm, page]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch(`http://${APIURL}/form`, {
+    fetch(`http://${APIURL}/form?page=${page}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -78,13 +95,15 @@ function FormsPage() {
       .then((json) => {
         // console.log("fucking data : " , json)
         setForms(json.data.data || []); // assuming API returns { data: [...] }
+        setPagiPrev(json.data.pagination.hasPrevPage)
+        setPagiNext(json.data.pagination.hasNextPage)
         setLoading(false);
       })
       .catch((err) => {
         console.error("Error fetching forms:", err);
         setLoading(false);
       });
-  }, []);
+  }, [page]);
   // how to pass the form
   const userSelectedForm = async (form_id) => {
     const token = localStorage.getItem("token");
@@ -212,7 +231,12 @@ function FormsPage() {
             }
 
           </div>
+          <div className="btn_holder_next_prev aligner">
+            <button className="btn_submit space-UD" onClick={nextPage}>صفحه ی بعدی</button>
+            <button className="btn_submit space-UD" onClick={prevPage}>صفحه ی قبلی</button>
+          </div>
         </div>
+
       </div>
 
       {openModalConf && (

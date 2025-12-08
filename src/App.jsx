@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import RoleChanger from './role_giver'
 import Login_page from './login_page'
+import Login_page2 from './login_page2'
 import LoginMessage from './login_message'
 import Questions from './questionare'
 import DashBoard from './Dashboard'
@@ -25,7 +26,7 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path="/login" element={<Login_page></Login_page>}></Route>
+          <Route path="/login" element={<Login_page2></Login_page2>}></Route>
           <Route path="/adminLogin" element={<AdminLogin_page></AdminLogin_page>}></Route>
           <Route path="/error" element={<ErrorShower></ErrorShower>}></Route>
 
