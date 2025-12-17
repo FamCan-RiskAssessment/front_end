@@ -8,3 +8,25 @@ services:
       - "5173:5173"
     container_name: risk-prediction-frontend
     restart: unless-stopped
+    networks:
+      - frontend_default
+
+  nginx:
+    container_name: nginx
+    image: nginx:1.25-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      - frontend
+    restart: unless-stopped
+    networks:
+      - frontend_default
+
+networks:
+  frontend_default:
+    external: true
