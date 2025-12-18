@@ -143,4 +143,28 @@
         "key": "otherRelativeCancerAge",
         "label": "سن سرطان سایر خویشاوند"
     },
+    {
+        "key": "hypertension",
+        "label": "فشار خون بالا"
+    },
+    {
+        "key": "hypertensionTreatment",
+        "label": "درمان فشار خون"
+    },
+    {
+        "key": "heartDisease",
+        "label": "بیماری قلبی"
+    },
+    {
+        "key": "heartDiseaseTreatment",
+        "label": "درمان بیماری قلبی"
+    },
+    {
+        "key": "diabetes",
+        "label": "دیابت"
+    },
+    {
+        "key": "diabetesTreatment",
+        "label": "درمان دیابت"
+    },
 ]

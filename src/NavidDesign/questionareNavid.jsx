@@ -1,30 +1,30 @@
 import { useState, useRef, useEffect } from "react";
-import InputBox from "./input_box";
-import Radio from "./radio";
-import CheckBox from "./checkbox";
-import Options from "./option";
-import CancerField from "./cancer_universal";
-import FileUploader from "./file_uploader";
-import PersonalInfo from "./personal_info";
-import Loader from "./utils/loader";
+import InputBox from "../input_box";
+import Radio from "../radio";
+import CheckBox from "../checkbox";
+import Options from "../option";
+import CancerField from "../cancer_universal";
+import FileUploader from "../file_uploader";
+import PersonalInfo from "../personal_info";
+import Loader from "../utils/loader";
 
-import part1 from './questions/P1.json'
-import part2 from './questions/P2.json'
-import part3 from './questions/P3.json'
-import part4 from './questions/P4.json'
-import part5 from './questions/P5.json'
-import part6 from './questions/P6.json'
-import part7 from './questions/P7.json'
-import CQs from './questions/catchQs.json'
+import part1 from '../questions/P1.json'
+import part2 from '../questions/P2.json'
+import part3 from '../questions/P3.json'
+import part4 from '../questions/P4.json'
+import part5 from '../questions/P5.json'
+import part6 from '../questions/P6.json'
+import part7 from '../questions/P7.json'
+import CQs from '../questions/catchQs.json'
 import { useLocation, useNavigate } from "react-router-dom";
-import { APIURL } from "./utils/config";
-import { useToast } from "./toaster";
-import ToastProvider from "./toaster";
-import { fetchDataGET, isNumber, formatAndValidateJalali, CancerAdder, fetchDataPOSTImg, persianMonths, fetchDataGETImg } from "./utils/tools";
-import "./form_elements.css"
-import "./responsive_questionare.css"
+import { APIURL } from "../utils/config";
+import { useToast } from "../toaster";
+import ToastProvider from "../toaster";
+import { fetchDataGET, isNumber, formatAndValidateJalali, CancerAdder, fetchDataPOSTImg, persianMonths, fetchDataGETImg } from "../utils/tools";
+import "./form_elementsNavid.css"
+import "../responsive_questionare.css"
 // import { set } from "animejs";
-function Questions() {
+function QuestionsNavid() {
     const [step, setStep] = useState(1)
     const [loading, setLoading] = useState(false)
     const [after, setAfter] = useState(false)
@@ -34,7 +34,6 @@ function Questions() {
     const [typeErr, setTypeErr] = useState(false)
     const [typeErr2, setTypeErr2] = useState(false)
     const [typeErr3, setTypeErr3] = useState(false)
-
     const [catchQuestions, setCatchQuestions] = useState({});
     const [catchAnswers, setCatchAnswers] = useState({});
     const [step3AttentionCorrect, setStep3AttentionCorrect] = useState(0);
@@ -137,6 +136,7 @@ function Questions() {
     //step 6
     const [smokeType, setSmokeType] = useState('')
     const [smokeTypePast, setSmokeTypePast] = useState('')
+    const [isChronic, setIsChronic] = useState('')
     const [anySmokePast, setAnySmokePast] = useState(false)
     const [anySmoke, setAnySmoke] = useState(false)
     const [firstDeg, setFirstDeg] = useState(false)
@@ -159,8 +159,8 @@ function Questions() {
         3: useRef(null),
         4: useRef(null),
         5: useRef(null),
-        6: useRef(null),
-        7: useRef(null)
+        // 6: useRef(null),
+        // 7: useRef(null)
     };
 
     const cancerTable = useRef(null)
@@ -418,6 +418,10 @@ function Questions() {
             if ('smokingTypesCurrent' in presetform) setSmokeType(presetform["smokingTypesCurrent"])
             if ('smokingTypesPast' in presetform) setSmokeTypePast(presetform["smokingTypesPast"])
             if ('lungCancerFamily' in presetform) setFirstDeg(presetform["lungCancerFamily"])
+            if ('pastSmoking' in presetform && presetform["pastSmoking"] != "خیر") {
+                setAnySmokePast(true)
+            }
+
             setAfter(true)
 
         }
@@ -502,8 +506,8 @@ function Questions() {
                     });
                     // console.log("dele bare gi : ", relativesWithCancer)
                     // Now update the radio buttons in step 5 based on cancer data
-                    if (formRefs[5]?.current) {
-                        const formElements = formRefs[5].current.querySelectorAll("input[type='radio']");
+                    if (formRefs[3]?.current) {
+                        const formElements = formRefs[3].current.querySelectorAll("input[type='radio']");
 
                         formElements.forEach(radio => {
                             // Find the field name that this radio button belongs to
@@ -581,14 +585,6 @@ function Questions() {
             if (ST != undefined)
                 console.log("bug4", ST)
             return false
-        }
-    }
-
-
-    const the_condition = (state) => {
-        console.log(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ", state)
-        if (state == 3) {
-            return true
         }
     }
 
@@ -701,7 +697,7 @@ function Questions() {
         // console.log(go1 , go2, go3)
         // if there is just one object pass that
         if (!pass1 && !pass2 && !pass3) {  // all validations passed
-            if (step == 7) {
+            if (step == 5) {
                 return true
             } else {
                 nexter()
@@ -743,7 +739,7 @@ function Questions() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const APIARR = ["basic", "generalhealth", "mamography", "cancer", "familycancer", "lungcancer", "contact"];
+        const APIARR = ["basic", "cancer", "familycancer", "navid", "contact"];
 
         const form = formRefs[`${step}`].current;
         if (!form) return;
@@ -865,6 +861,9 @@ function Questions() {
         // }
 
         console.log("Mapped allData:", allData);
+        if (step == 1) {
+            allData["formType"] = 2
+        }
 
         // ✅ Append text fields to currentFormData
         if (step == 3 || step == 7) {
@@ -904,7 +903,7 @@ function Questions() {
                 }
             }
         } else {
-            if (presetform != null && step != 4) {
+            if (presetform != null) {
                 url = `${urlBase}/${id_form}/${APIARR[step - 1]}`;
             } else {
                 url = `${urlBase}/${createdFormId}/${APIARR[step - 1]}`;
@@ -914,11 +913,11 @@ function Questions() {
                 "Content-Type": "application/json",
                 'Authorization': `Bearer ${token_auth}`
             }
-            if (step == 3 || step == 7) {
-                headers = {
-                    'Authorization': `Bearer ${token_auth}`, // ⚠️ No Content-Type
-                }
-            }
+            // if (step == 3 || step == 7) {
+            //     headers = {
+            //         'Authorization': `Bearer ${token_auth}`, // ⚠️ No Content-Type
+            //     }
+            // }
         }
 
         try {
@@ -1114,12 +1113,12 @@ function Questions() {
 
     const nexter = () => {
         // Update attentionCorrect for step 3 based on catch question answer
-        if (step === 3 && catchQuestions[3]) {
-            const isCorrect = validateCatchQuestion(3);
-            setStep3AttentionCorrect(isCorrect ? 1 : 0);
-        }
-
-        if (step != 7) {
+        // if (step === 3 && catchQuestions[3]) {
+        //     const isCorrect = validateCatchQuestion(3);
+        //     setStep3AttentionCorrect(isCorrect ? 1 : 0);
+        // }
+        console.log("///////////////////// ", step)
+        if (step != 5) {
             setStep(s => s + 1)
         }
     }
@@ -1185,11 +1184,11 @@ function Questions() {
         <>
             <div className="question_container">
                 <h2 className="question_title">سامانه ریسک سنجی آنلاین</h2>
-                <div className="progress_text">بخش {step}/7</div>
+                <div className="progress_text">بخش {step}/5</div>
                 <div className="progress_bar_container">
                     <div
                         className="progress_bar_fill"
-                        style={{ width: `${(step / 7) * 100}%` }}
+                        style={{ width: `${(step / 5) * 100}%` }}
                     ></div>
                 </div>
                 <div className="question_form_container" ref={questionContainerRef}>
@@ -1207,149 +1206,9 @@ function Questions() {
                         <InputBox data_req={"true"} data={part1[7]}></InputBox>
                         <InputBox data_req={"true"} data={part1[8]}></InputBox>
                     </form>
-                    {/* form part 2 */}
-                    <form ref={formRefs[2]} style={step == 2 ? null : { display: "none " }} className="question_form P2">
-                        <div className="form_title">{part2.title}</div>
-                        <Radio data_req={"true"} data={part2.radio_opts_alcohol} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsAlchol}></Radio>
-                        <Options data={part2.combine_option_amountAlcohol} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isAlchol, "hi bitch!")}></Options>
-
-                        {/* Inject catch question randomly in step 2 if applicable */}
-                        {/* {step === 2 && catchQuestions[2] && (
-                            catchQuestions[2].input_type === "radio_input" ?
-                                <Radio data_req={"true"} data={catchQuestions[2]} class_change1={"P2"} class_change2={"P2_inner"}></Radio> :
-                                <InputBox data_req={"true"} data={catchQuestions[2]} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={(val) => {
-                                    setCatchAnswers(prev => ({
-                                        ...prev,
-                                        [`catch_${catchQuestions[2].useName}`]: val
-                                    }));
-                                }}></InputBox>
-                        )} */}
-
-                        <Options data_req={"true"} data={part2.combine_option_lastMonthSabzijatMeal} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsSabzi} preSet={presetform} ></Options>
-                        <Options data={part2.combine_option_lastMonthSabzijatWeight} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={null} relation={relator_S(isSabzi)}></Options>
-
-                        <Options data_req={"true"} data={part2.combine_option_mediumActivityMonthInYear} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsActivity}></Options>
-                        <Options data={part2.combine_option_mediumActivityHourInWeek} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_S(isActivity)}></Options>
-
-                        <Options data_req={"true"} data={part2.combine_option_hardActivityMonthInYear} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHardActivity}></Options>
-                        <Options data={part2.combine_option_hardActivityHourInWeek} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_S(isHardActivity)}></Options>
-
-                        <Radio data_req={"true"} data={part2.radio_opts_smoking100} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsSmoke}></Radio>
-                        {/* {isSmoke == 'بله' && ( */}
-                        <>
-                            <Options data_req={"true"} data={part2.combine_option_smokingAge} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsSmokeAge} relation={relator_R(isSmoke)}></Options>
-                            {/* {isSmokeAge != "انتخاب کنید" && isSmokeAge != "" && isSmokeAge != "هیچوقت به طور منظم سیگار یا قلیان نکشیده ام" && ( */}
-                            <>
-                                <Radio data_req={"true"} data={part2.radio_opts_smokingNow} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsSmokingNow} relation={relator_R(isSmoke)}></Radio>
-                                {/* {isSmokingNow == 'بله' && ( */}
-                                <>
-                                    <InputBox data_req={"false"} data={part2.text_yearSmoke} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow)}></InputBox>
-                                    <Options data_req={"true"} data={part2.combine_option_countSmokingDaily} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow)}></Options>
-                                    <Options data_req={"true"} data={part2.combine_option_t_gh_daily} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow)}></Options>
-                                </>
-                                {/* )} */}
-                                {/* {isSmokingNow == 'خیر' && ( */}
-                                {/* <>
-                                    <Options data_req={"true"} data={part2.combine_option_leaveSmokingAge} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == false}></Options>
-                                    <Options data_req={"true"} data={part2.combine_option_countSmokingDaily_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == false}></Options>
-                                    <Options data_req={"true"} data={part2.combine_option_t_gh_daily_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == false}></Options>
-                                </> */}
-                                {/* )} */}
-                            </>
-                            {/* )} */}
-                        </>
-                        {/* )} */}
-
-                    </form>
-                    {/* form part 3 */}
-
-                    <form ref={formRefs[3]} style={step == 3 ? null : { display: "none " }} className="question_form P2">
-                        <div className="form_title">{part3.title}</div>
-
-                        <Options data_req={"true"} data={part3.combine_option_ghaedeAge} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender)}></Options>
-
-                        <Radio data_req={"true"} data={part3.radio_opts_children} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChild}></Radio>
-                        <Options data={part3.combine_option_firstChildBirthAge} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender) && relator_R(isChild)}></Options>
-                        <InputBox data_req={"false"} data={part3.text_sonCount} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isChild)}></InputBox>
-                        <InputBox data_req={"false"} data={part3.text_doughterCount} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isChild)}></InputBox>
-
-                        <>
-                            <Radio data_req={"true"} data={part3.radio_opts_menopausal_status} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsAdat} Enum={"menopausal-statuses"} relation={relator_gen(gender)}></Radio>
-                            {/* <Radio data_req={"true"} data={part3.radio_opts_menopausal_status} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsAdat} relation={relator_gen(gender)}></Radio> */}
-                            <Options data={part3.combine_option_menopause} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isAdat) && relator_gen(gender)}></Options>
-                        </>
-
-                        {/* Inject catch question randomly in step 3 if applicable */}
-                        {/* {step === 3 && catchQuestions[3] && (
-                            catchQuestions[3].input_type === "radio_input" ?
-                                <Radio data_req={"true"} data={catchQuestions[3]} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={(val) => {
-                                    // In step 3, if the catch question is answered correctly, set attentionCorrect = 1
-                                    const isCorrect = catchAnswers[catchQuestions[3].useName] === val;
-                                    if (isCorrect) {
-                                        setStep3AttentionCorrect(1);
-                                    } else {
-                                        setStep3AttentionCorrect(0);
-                                    }
-                                }}></Radio> :
-                                <InputBox data_req={"true"} data={catchQuestions[3]} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={(val) => {
-                                    // Check if it's catchSum question type
-                                    if (catchQuestions[3].useName === "catchSum") {
-                                        const correctAnswer = catchAnswers[`catchSum_${step}`];
-                                        if (parseInt(val) === correctAnswer) {
-                                            setStep3AttentionCorrect(1);
-                                        } else {
-                                            setStep3AttentionCorrect(0);
-                                        }
-                                    } else {
-                                        // For other input types
-                                        const isCorrect = catchAnswers[catchQuestions[3].useName] === val;
-                                        if (isCorrect) {
-                                            setStep3AttentionCorrect(1);
-                                        } else {
-                                            setStep3AttentionCorrect(0);
-                                        }
-                                    }
-                                    setCatchAnswers(prev => ({
-                                        ...prev,
-                                        [`catch_${catchQuestions[3].useName}`]: val
-                                    }));
-                                }}></InputBox>
-                        )} */}
-
-                        <>
-                            <Radio data_req={"true"} data={part3.radio_opts_hrt} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT} relation={relator_R(isAdat) && relator_gen(gender)}></Radio>
-                            <Options data={part3.combine_option_hrt_use_length} class_change1={"P2"} class_change2={"P2_inner"} relation={the_condition(isAdat) || (relator_R(isHRT) && relator_gen(gender))}></Options>
-
-                            <Radio data_req={"true"} data={part3.radio_opts_lastFiveYears_HRT_use} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT5} relation={relator_R(isAdat) && relator_gen(gender)}></Radio>
-
-                            <Radio data_req={"true"} data={part3.radio_opts_HRT_current_use} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isHRT5) && relator_gen(gender)}></Radio>
-                            <Options data_req={"true"} data={part3.combine_option_intended_HRT_use} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isHRT5) && relator_gen(gender)}></Options>
-                            <Radio data_req={"true"} data={part3.radio_opts_hrt_Type} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isHRT5) && relator_gen(gender)}></Radio>
-
-                            <Radio data_req={"true"} data={part3.radio_opts_oral} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsOral} relation={relator_gen(gender)}></Radio>
-                            <Radio data_req={"true"} data={part3.radio_opts_oral2LastYears} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isOral) && relator_gen(gender)}></Radio>
-                            <Options data={part3.combine_option_oralDuration} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isOral) && relator_gen(gender)}></Options>
-
-
-                            <Radio data_req={"true"} data={part3.radio_opts_mamoGraphy} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsMamoTest} relation={relator_gen(gender)}></Radio>
-                            <FileUploader data={part3.attach_mamoGraphy} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isMamoTest) && relator_gen(gender)} fillingFormData={fillingFormData} removeLastFileFromFormData={removeLastFileFromFormData}></FileUploader>
-
-                            <Radio data_req={"true"} data={part3.radio_opts_falop} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender)}></Radio>
-                            <Radio data_req={"true"} data={part3.radio_opts_andometrioz} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender)}></Radio>
-                            <Radio data_req={"true"} data={part3.radio_opts_leavePestan} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender)}></Radio>
-                            <Radio data_req={"true"} data={part3.radio_opts_leaveTokhmdan} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender)}></Radio>
-
-                        </>
-                        <Radio data_req={"true"} data={part3.radio_opts_laDe_colon} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsColon}></Radio>
-                        <Radio data={part3.radio_opts_laDe_pol} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isColon)}></Radio>
-
-                        <Radio data_req={"true"} data={part3.radio_opts_asp_la_mo} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
-                        <Radio data_req={"true"} data={part3.radio_opts_nsaiD_la_mo} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
-                        <Radio data_req={"true"} data={part3.radio_opts_lastFiveYearBloodTestInStool} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
-                    </form>
                     {/* form part 4 */}
 
-                    <form ref={formRefs[4]} style={step == 4 ? null : { display: "none " }} className="question_form P2">
+                    <form ref={formRefs[2]} style={step == 2 ? null : { display: "none " }} className="question_form P2">
                         <div className="form_title">{part4.title}</div>
 
                         <Radio data_req={"true"} class_change1={"P2"} class_change2={"P2_inner"} data={part4.radio_opts_cancer} valueSetter={setIsCancer}></Radio>
@@ -1357,7 +1216,7 @@ function Questions() {
                     </form>
                     {/* form part 5 */}
 
-                    <form ref={formRefs[5]} style={step == 5 ? null : { display: "none " }} className="question_form P2">
+                    <form ref={formRefs[3]} style={step == 3 ? null : { display: "none " }} className="question_form P2">
                         <div className="form_title">{part5.title}</div>
 
                         <Radio data_req={"true"} data={part5.radio_opts_childCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChildCncer} relation={relator_R(isChild)}></Radio>
@@ -1378,13 +1237,13 @@ function Questions() {
                         <Radio data_req={"true"} data={part5.radio_opts_khaleDaeiCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsUncAunt2Cncer}></Radio>
                         <CancerField data_req={"true"} data_Inp1={part5.khaleDaeiCard.khaleDaeiType} data_Inp2={part5.khaleDaeiCard.khaleDaeiCancerAge} data_Options={part5.khaleDaeiCard.khaleDaeiCancerType} data_Radio={part5.khaleDaeiCard.khaleDaeiLifeStatus} relation={relator_R(isUncAunt2Cancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={["خاله", "دایی"]}></CancerField>
                     </form>
-                    {/* form part 6 */}
-                    <form ref={formRefs[6]} id="form6" style={step == 6 ? null : { display: "none" }} className="question_form P2">
+                    {/* form part 7 */}
+                    <form ref={formRefs[4]} id="form7" style={step == 4 ? null : { display: "none" }} action="" className="question_form P2">
                         <div className="form_title">{part6.title}</div>
                         <Options data_req={"true"} data={part7.combine_option_insurance} class_change1={"P2"} class_change2={"P2_inner"}></Options>
                         <Radio data_req={"true"} data={part7.radio_takmili_bime} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
-                        {/* <Radio data_req={"true"} data={part7.radio_chronicLungDisease} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChronic}></Radio> */}
-                        <Options data_req={"true"} data={part7.combine_option_chronicLungDisease} class_change1={"P2"} class_change2={"P2_inner"}></Options>
+                        <Radio data_req={"true"} data={part7.radio_chronicLungDisease} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChronic}></Radio>
+                        <Options data_req={"true"} data={part7.combine_option_chronicLungDisease} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isChronic)}></Options>
 
                         {/* Inject catch question randomly in step 6 if applicable */}
                         {/* {step === 6 && catchQuestions[6] && (
@@ -1398,32 +1257,35 @@ function Questions() {
                             }}></InputBox>
                         )} */}
 
-                        {/* <Radio data_req={"true"} data={part7.radio_lungCancerHistory} class_change1={"P2"} class_change2={"P2_inner"}></Radio> */}
+                        <Radio data_req={"true"} data={part7.radio_lungCancerHistory} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                         <Radio data_req={"true"} data={part7.radio_lungCancerFamily} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setFirstDeg}></Radio>
                         <Options data_req={"true"} data={part7.combine_option_lungCancerFamilyRelation} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(firstDeg)}></Options>
                         <Options data_req={"true"} data={part7.combine_option_occupationalExposure} class_change1={"P2"} class_change2={"P2_inner"}></Options>
-                        {/* <Radio data={part7.radio_currentSmoking} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmoke}></Radio> */}
-                        {/* <Options data_req={"true"} data={part7.combine_option_smokingTypes_current} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setSmokeType} relation={relator_R(anySmoke)}></Options> */}
-                        {/* {smokeType != null && smokeType != "انتخاب کنید" && ( */}
-                        {/* <InputBox data={part7.text_using_now} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmoke)}></InputBox> */}
-                        {/* )} */}
-                        {/* {smokeType != null && smokeType == "تریاک" && ( */}
-                        {/* <InputBox data={part7.text_chewedOpiumPerDay_past} class_change1={"P2"} class_change2={"P2_inner"}></InputBox> */}
-                        {/* )} */}
-                        <Radio data_req={"true"} data={part7.radio_pastSmoking} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmokePast}></Radio>
+                        <Radio data={part7.radio_currentSmoking} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmoke}></Radio>
+                        <Options data_req={"true"} data={part7.combine_option_smokingTypes_current} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setSmokeType} relation={relator_R(anySmoke)}></Options>
+                        {smokeType != null && smokeType != "انتخاب کنید" && (
+                            <InputBox data={part7.text_using_now} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmoke)}></InputBox>
+                        )}
+                        {smokeType != null && smokeType == "تریاک" && (
+                            <InputBox data={part7.text_chewedOpiumPerDay_past} class_change1={"P2"} class_change2={"P2_inner"}></InputBox>
+                        )}
+                        <Radio data={part7.radio_heartDisease} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmoke} des={true}></Radio>
+                        <Radio data={part7.radio_diabetes} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmoke} des={true}></Radio>
+                        <Radio data={part7.radio_hypertension} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmoke} des={true}></Radio>
+
+                        <Options data={part7.combine_option_secondhandSmokeLocation} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmoke}></Options>
+                        <Radio data_req={"true"} data={part7.radio_pastSmoking} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmokePast} des={true}></Radio>
                         {/* <InputBox data_req={"false"} data={part7.text_smokingStartAge_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)}></InputBox> */}
                         <InputBox data_req={"false"} data={part7.text_leaveSmoke} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)}></InputBox>
                         <Options data={part7.combine_option_smokingTypes_past} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setSmokeTypePast} relation={relator_R(anySmokePast)}></Options>
                         {/* {smokeTypePast != null && smokeTypePast != "انتخاب کنید" && ( */}
                         <InputBox data_req={"false"} data={part7.text_using_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)}></InputBox>
-
                         {/* )} */}
                         {/* {smokeType != null && smokeTypePast == "تریاک" && ( */}
                         {/* <InputBox data_req={"true"} data={part7.text_chewedOpiumPerDay_past} class_change1={"P2"} class_change2={"P2_inner"}></InputBox> */}
                         {/* )} */}
                     </form>
-                    {/* form part 7 */}
-                    <form ref={formRefs[7]} id="form7" style={step == 7 ? null : { display: "none" }} action="" className="question_form P2">
+                    <form ref={formRefs[5]} id="form7" style={step == 5 ? null : { display: "none" }} action="" className="question_form P2">
                         <div className="form_title">{part7.title}</div>
 
                         <Radio data_req={"true"} data={part6.radio_opts_testGen} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsGeneTest}></Radio>
@@ -1439,14 +1301,12 @@ function Questions() {
                             data_inp5={part6.personalInfo.city} data_inp6={part6.personalInfo.postalCode} data_opt={part6.personalInfo.birthCountry} data_inp7={part6.personalInfo.address}
                             data_check={part6.personalInfo.confidentialityAgreement} typeErr={setTypeErr} typeErr2={setTypeErr2} typeErr3={setTypeErr3}
                         ></PersonalInfo>
-
                     </form>
-
                 </div>
                 <div className="btn_holder_next_prev">
                     <button className="btn_question" onClick={prever}>قبلی</button>
 
-                    {step == 7 ? (
+                    {step == 5 ? (
                         <button className="btn_question" onClick={(e) => {
 
                             let passOno = checkReq(formRefs[step], step)
@@ -1457,8 +1317,10 @@ function Questions() {
                                     type: 'success',
                                     duration: 4000
                                 })
-                                navigate("/forms")
+                                navigate("/formsNavid")
                             } else {
+                                console.log(passOno, typeErr, typeErr2, typeErr3)
+
                                 addToast({
                                     title: 'لطفا فیلد ها را به درستی پر کنید',
                                     type: 'error',
@@ -1471,10 +1333,10 @@ function Questions() {
                     ) : (
                         <button className="btn_question" onClick={(e) => {
                             // Update attentionCorrect for step 3 before submission if there's a catch question
-                            if (step === 3 && catchQuestions[3]) {
-                                const isCorrect = validateCatchQuestion(3);
-                                setStep3AttentionCorrect(isCorrect ? 1 : 0);
-                            }
+                            // if (step === 3 && catchQuestions[3]) {
+                            //     const isCorrect = validateCatchQuestion(3);
+                            //     setStep3AttentionCorrect(isCorrect ? 1 : 0);
+                            // }
                             checkReq(formRefs[step], step)
                             handleSubmit(e)
                         }}>بعدی</button>
@@ -1485,4 +1347,4 @@ function Questions() {
         </>
     )
 }
-export default Questions
+export default QuestionsNavid

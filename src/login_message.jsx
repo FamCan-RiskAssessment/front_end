@@ -48,7 +48,8 @@ function LoginMessage() {
           type: 'success',
           duration: 4000
         })
-        navigate("/forms");
+        // navigate("/forms");
+        navigate("/AppChoose");
       } else if (phone == adminNumber) {
         navigate("/DashBoard")
       }

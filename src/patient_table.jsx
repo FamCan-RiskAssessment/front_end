@@ -15,14 +15,16 @@ import part5 from './questions/P5.json'
 
 // Load the Persian header mapping
 const headerMapping = {};
+const gender_map = {}
 PERSIAN_HEADERS.forEach(item => {
   headerMapping[item.key] = item.label;
+  if (item.gender) {
+    gender_map[item.key] = item.gender
+  }
 });
 
 // Helper function to convert field keys to Persian labels
-const getFieldLabel = (key) => {
-  return headerMapping[key] || key; // Return Persian label if available, otherwise return the key itself
-};
+
 
 // Helper function to convert boolean/null values to Persian text
 const convertToPersianText = (value, key) => {
@@ -79,11 +81,25 @@ export default function FilterableTable() {
   const [editingCells, setEditingCells] = useState({}); // Track which cells are being edited {formId: {apiPart: {fieldName: value}}}
   const [editingFormPart, setEditingFormPart] = useState(null); // Track which form part is being edited
   const [openApiSections, setOpenApiSections] = useState({}); // Track which API sections are open for each form {formId: [apiPart1, apiPart2, ...]}
+  const [gender, setGender] = useState(1)
+  const [mode, setMode] = useState('')
   const { addToast } = useToast()
   const location = useLocation();
   const userPhone = location.state?.phone;
   // debugs
+
+  const getFieldLabel = (key) => {
+    console.log(gender_map[key])
+    if (gender_map[key] == undefined || gender_map[key] == gender) {
+      return headerMapping[key] || key; // Return Persian label if available, otherwise return the key itself
+    } else {
+
+    }
+  };
+
+
   console.log("here it comes : ", data)
+  console.log(gender)
   console.log("the detailed family data : ", detailedFamilyCancerData)
   // console.log("maybe the answer : " , editedData)
   const statuses = ["در حال بررسی", "قبول شده", "رد شده", "تکمیل نشده", "ارسال شده"]
@@ -110,6 +126,9 @@ export default function FilterableTable() {
           [apiPart]: response.data
         }
       }));
+      if (apiPart == "basic") {
+        setGender(response.data.gender)
+      }
     } catch (error) {
       console.error(`Error fetching ${apiPart} for form ${formId}:`, error);
       // Still update the state to indicate that this section had an error
@@ -142,10 +161,17 @@ export default function FilterableTable() {
 
         setLoadingDetails(prev => ({ ...prev, [formId]: false }));
       }
-
+      // console.log("goooooooooooooooooooooooooo : ", formDetails[formId])
+      if (formDetails[formId]) {
+        setGender(formDetails[formId]["basic"]["gender"])
+      }
       drawer.classList.toggle('open');
     }
   };
+
+  // useEffect(() => {
+  //   setGender(formDetails[formId]["basic"]["gender"])
+  // }, [formDetails])
 
   // Function to handle double click on a form field for editing
   const handleFieldDoubleClick = (formId, apiPart, fieldName, currentValue) => {
@@ -380,7 +406,7 @@ export default function FilterableTable() {
       }
     };
     fetchformIds();
-  }, [page, filter]);
+  }, [page, filter, mode]);
 
 
   // show me more 
@@ -650,6 +676,19 @@ export default function FilterableTable() {
           </button>
           <p>برای تغییر دادن هر فیلد دابل کلیک کنید.</p>
         </div>
+        <div className="table_controles">
+          <h3>کنترل داده ها </h3>
+          <div className="table_tools">
+            <div className="table_switch">
+              <label htmlFor="mode_switch">طرح مورد نظر</label>
+              <select className="mode_switch" name="switch" id="sw" value={mode} onChange={(e) => setMode(e.target.value)}>
+                <option value="def">انتخاب کنید</option>
+                <option value="navid">نوید</option>
+                <option value="bahar">بهار</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
         {/* Drawer-style interface for form sections */}
         <div className="form_sections_container">
@@ -793,7 +832,9 @@ export default function FilterableTable() {
                                   const editingValue = editingCells[row.id]?.[apiPart]?.[key] !== undefined
                                     ? editingCells[row.id]?.[apiPart]?.[key]
                                     : convertToPersianText(value, key);
-
+                                  if (gender_map[key] != undefined && gender_map[key] != gender) {
+                                    return;
+                                  }
                                   return (
                                     <div key={key} className="data_row">
                                       <span className="data_key">{getFieldLabel(key)}:</span>

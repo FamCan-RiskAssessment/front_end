@@ -30,15 +30,15 @@ function CancerField({
     const [imageFiles, setImageFiles] = useState([]); // Raw File
     const [isFilled, setIsFilled] = useState(false)
     const [forceIsReq, setForceIsReq] = useState(true)
-    console.log(inp1, inp2, opt, rad)
+    // console.log(inp1, inp2, opt, rad)
 
     // =============== REFS ===============
     const typeRef = useRef(null);
     const canUniRef = useRef(null)
     // =============== EFFECTS ===============
-    if (famrel == "مادر") {
-        console.log("we have found what we wanted ! :  ", famrel, preData)
-    }
+    // if (famrel == "مادر") {
+    //     console.log("we have found what we wanted ! :  ", famrel, preData)
+    // }
     // change because it is needed :
     useEffect(() => {
         if (preData != null) {
@@ -119,7 +119,7 @@ function CancerField({
                     }
                 });
 
-                console.log("I am in here , : ", filteredFamilyCancers, preData, famrel)
+                // console.log("I am in here , : ", filteredFamilyCancers, preData, famrel)
                 return { filteredFamilyCancers, relData: rel.data, Can: canType.data };
             };
 
@@ -204,7 +204,7 @@ function CancerField({
 
     const handleAddRow = useCallback(async () => {
         // Validate required fields (skip if field is null)
-        console.log("what is the inp1 : ", inp1)
+        // console.log("what is the inp1 : ", inp1)
         const hasInp1 = !data_Inp1 || inp1.trim() !== "";
         const hasInp2 = !data_Inp2 || inp2.trim() !== "";
         const hasOpt = !data_Options || opt !== "";
@@ -265,7 +265,7 @@ function CancerField({
         }
         // Reset form fields
         setInp1("");
-        console.log("////////////////////////////////////////////////////////")
+        // console.log("////////////////////////////////////////////////////////")
         setInp2("");
         setOpt("");
         setRad("");
@@ -279,7 +279,7 @@ function CancerField({
         // Reset all radio buttons within canUniRef
         if (canUniRef.current) {
             const radioButtons = canUniRef.current.querySelectorAll('input[type="radio"]');
-            console.log(radioButtons)
+            // console.log(radioButtons)
             radioButtons.forEach(radio => {
                 radio.checked = false;
             });
@@ -328,7 +328,7 @@ function CancerField({
 
     // =============== RENDER ===============
     const shouldRender = propRelation;
-    console.log("I am doing my job what else !", famrel, shouldRender, isFilled)
+    // console.log("I am doing my job what else !", famrel, shouldRender, isFilled)
     if (!shouldRender && !isFilled) {
         return null;
     }

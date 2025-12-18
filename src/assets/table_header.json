@@ -117,7 +117,8 @@
   },
   {
     "key": "ghaedeAge",
-    "label": "سن اولین قاعدگی"
+    "label": "سن اولین قاعدگی",
+    "gender": 2
   },
   {
     "key": "hasChildren",
@@ -129,71 +130,88 @@
   },
   {
     "key": "ageOfFirstBirth",
-    "label": "سن اولین زایمان"
+    "label": "سن اولین زایمان",
+    "gender": 2
   },
   {
     "key": "menopausalStatus",
-    "label": "وضعیت یائسگی"
+    "label": "وضعیت یائسگی",
+    "gender": 2
   },
   {
     "key": "menopauseAge",
-    "label": "سن یائسگی"
+    "label": "سن یائسگی",
+    "gender": 2
   },
   {
     "key": "hrt",
-    "label": "مصرف HRT"
+    "label": "مصرف HRT",
+    "gender": 2
   },
   {
     "key": "hrtUseLength",
-    "label": "مدت مصرف HRT"
+    "label": "مدت مصرف HRT",
+    "gender": 2
   },
   {
     "key": "lastFiveYearsHrtUse",
-    "label": "مصرف HRT در 5 سال گذشته"
+    "label": "مصرف HRT در 5 سال گذشته",
+    "gender": 2
   },
   {
     "key": "currentHrtUse",
-    "label": "مصرف فعلی HRT"
+    "label": "مصرف فعلی HRT",
+    "gender": 2
   },
   {
     "key": "intendedHrtUse",
-    "label": "قصد مصرف HRT"
+    "label": "قصد مصرف HRT",
+    "gender": 2
   },
   {
     "key": "hrtType",
-    "label": "نوع HRT"
+    "label": "نوع HRT",
+    "gender": 2
   },
   {
     "key": "oral",
-    "label": "مصرف قرص"
+    "label": "مصرف قرص",
+    "gender": 2
   },
   {
     "key": "oralDuration",
-    "label": "مدت مصرف قرص"
+    "label": "مدت مصرف قرص",
+    "gender": 2
   },
   {
     "key": "oralTwoLastYears",
-    "label": "مصرف قرص در 2 سال گذشته"
+    "label": "مصرف قرص در 2 سال گذشته",
+    "gender": 2
   },
   {
     "key": "mamoGraphy",
-    "label": "ماموگرافی"
+    "label": "ماموگرافی",
+    "gender": 2
   },
   {
     "key": "falop",
-    "label": "بستن لوله‌ها"
+    "label": "بستن لوله‌ها",
+    "gender": 2
   },
   {
     "key": "andometrioz",
-    "label": "اندومتریوز"
+    "label": "اندومتریوز",
+    "gender": 2
   },
   {
     "key": "leavePestan",
-    "label": "ترک پستان"
+    "label": "ترک پستان",
+    "gender": 2
   },
   {
     "key": "leaveTokhmdan",
-    "label": "ترک تخمدان"
+    "label": "ترک تخمدان",
+    "gender": 2
   },
   {
     "key": "laDeColon",
@@ -262,30 +280,6 @@
   {
     "key": "supplementaryInsurances",
     "label": "بیمه‌های تکمیلی"
-  },
-  {
-    "key": "hypertension",
-    "label": "فشار خون بالا"
-  },
-  {
-    "key": "hypertensionTreatment",
-    "label": "درمان فشار خون"
-  },
-  {
-    "key": "heartDisease",
-    "label": "بیماری قلبی"
-  },
-  {
-    "key": "heartDiseaseTreatment",
-    "label": "درمان بیماری قلبی"
-  },
-  {
-    "key": "diabetes",
-    "label": "دیابت"
-  },
-  {
-    "key": "diabetesTreatment",
-    "label": "درمان دیابت"
   },
   {
     "key": "chronicLungDisease",
@@ -369,7 +363,8 @@
   },
   {
     "key": "breastDensity",
-    "label": "breast density"
+    "label": "breast density",
+    "gender": 2
   },
   {
     "key": "yearSmoke",

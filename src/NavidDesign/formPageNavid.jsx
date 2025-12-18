@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { APIURL } from "./utils/config";
-import { permExtractor, fetchDataGET, fetchDataDELETE, formTypeChecker } from "./utils/tools";
-import "./client_forms.css"
-import ToastProvider from "./toaster";
-import { useToast } from "./toaster";
+import { APIURL } from "../utils/config";
+import { permExtractor, fetchDataGET, fetchDataDELETE, formTypeChecker } from "../utils/tools";
+import "./client_formsNavid.css"
+import ToastProvider from "../toaster";
+import { useToast } from "../toaster";
 
-function FormsPage() {
+function FormsPageNavid() {
   const [forms, setForms] = useState([]);
   const [deletedForm, setDeletedForm] = useState(0)
   const [openModalConf, setOpenModalConf] = useState(false)
@@ -109,12 +109,10 @@ function FormsPage() {
     const token = localStorage.getItem("token");
     let APIARR = [
       "basic",
-      "generalhealth",
-      "mamography",
       "cancer",
       "familycancer",
-      "contact",
-      "lungcancer"
+      "navid",
+      "contact"
     ];
 
     try {
@@ -156,7 +154,7 @@ function FormsPage() {
       localStorage.setItem("form_id", form_id);
       localStorage.setItem("trueSteps", JSON.stringify(TrueSteps))
       console.log("✅ All stages fetched:", results);
-      navigate("/forms/new");
+      navigate("/formsNavid/new");
     } catch (err) {
       console.error("Error fetching forms:", err);
     } finally {
@@ -170,7 +168,7 @@ function FormsPage() {
     localStorage.setItem("form_id", null)
     localStorage.setItem("operatorUserId", null)
     localStorage.setItem("userNeededAdress", null)
-    navigate("/forms/new"); // redirect to form creation page
+    navigate("/formsNavid/new"); // redirect to form creation page
   };
 
   const handleAddNewForPatient = () => {
@@ -192,12 +190,12 @@ function FormsPage() {
         <div className="forms-container">
           <h1 className="forms-title">لیست فرم‌های شما</h1>
 
-          {forms.length === 0 && !formTypeChecker(forms, 1) ? (
+          {forms.length === 0 && !formTypeChecker(forms, 2) ? (
             <p className="no-forms-text">فرمی ثبت نشده است.</p>
           ) : (
             <ul className="forms-list">
               {forms.map((form, index) => {
-                if (form.formType == 1) {
+                if (form.formType == 2) {
                   return (
                     <li key={form.id} className="form-item">
                       <span className="form-name">{index + 1}</span>
@@ -218,6 +216,7 @@ function FormsPage() {
                     </li>
                   )
                 }
+
               })}
             </ul>
           )}
@@ -265,4 +264,4 @@ function FormsPage() {
   );
 }
 
-export default FormsPage;
+export default FormsPageNavid;

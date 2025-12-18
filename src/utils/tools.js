@@ -306,6 +306,18 @@ export const EnumTaker = async (endP, theVal) => {
   }
 }
 
+
+export const formTypeChecker = (forms, type) => {
+  let istype = false;
+  forms.forEach(f => {
+    if (f.formType == type) {
+      istype = true
+    }
+  });
+  return istype
+}
+
+
 // export const nameEnumMap = async (elem, token) => {
 //   const enumName = elem.current.getAttribute('data-enum');
 //   if (enumName) {

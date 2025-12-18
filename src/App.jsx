@@ -19,6 +19,9 @@ import UserVerify from './UserVerification'
 import ModelResults from './model_res'
 import OperatorUserMobile from './userMobile'
 import AttentionPage from './attentionPage'
+import ChooseApp from './program_choice'
+import FormsPageNavid from './NavidDesign/formPageNavid'
+import QuestionsNavid from './NavidDesign/questionareNavid'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 function App() {
 
@@ -42,6 +45,11 @@ function App() {
           <Route path='/DashBoard/supervisorForms' element={<SupervisorPage></SupervisorPage>}></Route>
           <Route path='/DashBoard/systemLog' element={<SystemLogs></SystemLogs>}></Route>
           <Route path='/operator/userMobile' element={<OperatorUserMobile></OperatorUserMobile>}></Route>
+          <Route path='/AppChoose' element={<ChooseApp></ChooseApp>}></Route>
+          <Route path='/formsNavid' element={<FormsPageNavid></FormsPageNavid>}></Route>
+          <Route path='/formsNavid/new' element={<QuestionsNavid></QuestionsNavid>}></Route>
+
+
           <Route path='/operator/userVerification' element={<UserVerify></UserVerify>}></Route>
           <Route path='/DashBoard/modelsResults' element={<ModelResults></ModelResults>}></Route>
           <Route path='/' element={<AttentionPage></AttentionPage>}></Route>

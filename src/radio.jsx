@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { EnumTaker } from "./utils/tools";
-function Radio({ data_req, data, class_change1, value, class_change2, valueSetter, relation, Enum }) {
+function Radio({ data_req, data, class_change1, value, class_change2, valueSetter, des, relation, Enum }) {
     // Option value mapping
     // const [test, setTest] = useState('')
     // console.log("ffffffffffffffffffffffffffffffffffffffff : ", test, data.Rname)
@@ -43,7 +43,7 @@ function Radio({ data_req, data, class_change1, value, class_change2, valueSette
                                 type="radio"
                                 className="radio"
                                 name={data.Rname}
-                                value={optionValueMap[opt] !== undefined ? optionValueMap[opt] : opt}
+                                value={optionValueMap[opt] !== undefined && !des ? optionValueMap[opt] : opt}
                                 id={opt}
                                 onChange={(e) => {
                                     // Handle the enum lookup in a separate async function

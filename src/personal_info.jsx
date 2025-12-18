@@ -3,7 +3,7 @@ import InputBox from "./input_box";
 import Radio from "./radio";
 import CheckBox from "./checkbox";
 
-function PersonalInfo({ data_req, data_inp1, data_inp2, data_inp3, data_inp4, data_inp5, data_inp6, data_inp7, data_opt, data_check, typeErr, typeErr2 }) {
+function PersonalInfo({ data_req, data_inp1, data_inp2, data_inp3, data_inp4, data_inp5, data_inp6, data_inp7, data_opt, data_check, typeErr, typeErr2, typeErr3 }) {
     return (
         <>
             <h2>لطفا اطلاعات خود را وارد کنید</h2>

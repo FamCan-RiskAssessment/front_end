@@ -30,7 +30,8 @@
     "ask": "سابقه فشارخون",
     "options": [
       "بله",
-      "خیر"
+      "خیر",
+      "تحت درمان"
     ]
   },
   "radio_hypertension_treatment": {
@@ -47,7 +48,8 @@
     "ask": "سابقه بیماری قلبی عروقی",
     "options": [
       "بله",
-      "خیر"
+      "خیر",
+      "تحت درمان"
     ]
   },
   "radio_heartDisease_treatment": {
@@ -64,7 +66,8 @@
     "ask": "سابقه دیابت",
     "options": [
       "بله",
-      "خیر"
+      "خیر",
+      "تحت درمان"
     ]
   },
   "radio_diabetes_treatment": {
@@ -340,7 +343,7 @@
     "condition": "if currentSmoking == 'بله'"
   },
   "text_using_now": {
-    "engName": "smokeCurrent",
+    "engName": "smokeCurrentAvg",
     "placeHolder": "xx",
     "inpName": "به طور متوسط چه میزان از مورد انتخابی را استفاده میکنید (سیگار به صورت روزانه نخی ، قلیان هفتگی نوبتی، تریاک تدخینی چند مرتبه روزانه ، چپق روزانه چند مرتبه ، پیپ روزانه چند مرتبه ،سیگار الکترونیک یا محصولات مشابه روزانه چند مرتبه ، سیگار برگ روزانه چند نخ ، سیگار روزانه چند نخ )",
     "type": "number",
@@ -440,7 +443,7 @@
     "condition": "if pastSmoking != 'خیر'"
   },
   "text_using_past": {
-    "engName": "smokePast",
+    "engName": "smokePastAvg",
     "placeHolder": "xx",
     "inpName": " به طور متوسط چه میزان از دخانیات را استفاده می کردید (نخ در روز، سر در روز)",
     "type": "number",
@@ -455,12 +458,13 @@
     ]
   },
   "combine_option_secondhandSmokeLocation": {
-    "ask": "secondhandSmokeLocation",
-    "Oname": "محل قرارگیری در معرض دود دخانی",
+    "ask": "محل قرارگیری در معرض دود دخانی",
+    "Oname": "secondhandSmokeLocation",
     "options": [
       "انتخاب کنید",
       "در منزل",
-      "در محل کار"
+      "در محل کار",
+      "خیر"
     ],
     "condition": "if secondhandSmoke == 'بله'"
   }
