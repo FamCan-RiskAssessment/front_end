@@ -1,0 +1,43 @@
+.gallery-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.main-swiper {
+    width: 100%;
+    height: 400px;
+    margin-bottom: 16px;
+}
+
+.thumbs-swiper {
+    height: 100px;
+    /* height of thumbnail bar */
+    width: 100%;
+    padding: 8px 0;
+}
+
+.thumb-slide {
+    width: 120px !important;
+    /* fixed width for each thumb */
+    height: 80px !important;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* Active thumb highlight */
+.thumbs-swiper .swiper-slide-thumb-active {
+    outline: 3px solid #1e90ff;
+    outline-offset: -3px;
+    border-radius: 6px;
+}
+
+.thumb-btn {
+    width: 10rem;
+    height: 10rem;
+}
+
+.thumb-btn.active {
+    border-color: #1e90ff;
+    box-shadow: 0 0 0 2px #0a0a0a, 0 0 0 4px #1e90ff;
+}

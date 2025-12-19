@@ -22,6 +22,7 @@ import AttentionPage from './attentionPage'
 import ChooseApp from './program_choice'
 import FormsPageNavid from './NavidDesign/formPageNavid'
 import QuestionsNavid from './NavidDesign/questionareNavid'
+import LandingPage from './LandingPage/totalLand'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 function App() {
 
@@ -29,6 +30,9 @@ function App() {
     <>
       <Router>
         <Routes>
+
+          <Route path="/" element={<LandingPage></LandingPage>}></Route>
+
           <Route path="/login" element={<Login_page2></Login_page2>}></Route>
           <Route path="/adminLogin" element={<AdminLogin_page></AdminLogin_page>}></Route>
           <Route path="/error" element={<ErrorShower></ErrorShower>}></Route>
@@ -52,7 +56,7 @@ function App() {
 
           <Route path='/operator/userVerification' element={<UserVerify></UserVerify>}></Route>
           <Route path='/DashBoard/modelsResults' element={<ModelResults></ModelResults>}></Route>
-          <Route path='/' element={<AttentionPage></AttentionPage>}></Route>
+          <Route path='/attention' element={<AttentionPage></AttentionPage>}></Route>
 
 
 

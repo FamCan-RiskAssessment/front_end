@@ -1,0 +1,376 @@
+:root {
+    --text-blue: #0088FF;
+    --font-s-titr: 30px;
+    font-family: Vazirmatn;
+    --hover1: #cccccc;
+    scroll-behavior: smooth;
+}
+
+.hover1,
+.hover2,
+.hover3 {
+    transition: all 0.3s ease;
+}
+
+
+.hover1:hover {
+    background-color: var(--hover1) !important;
+}
+
+.hover2:hover {
+    transform: translate(0px, -100px) !important;
+}
+
+.hover3:hover {
+    transform: scale(1.1) !important;
+}
+
+@keyframes floated {
+    0% {
+        transform: translate(0px, -50px);
+    }
+
+    20% {
+        transform: translate(0px, -25px);
+    }
+
+    40% {
+        transform: translate(0px, -12px);
+    }
+
+    60% {
+        transform: translate(0px, -12px);
+    }
+
+    80% {
+        transform: translate(0px, -25px);
+    }
+
+    100% {
+        transform: translate(0px, -50px);
+    }
+
+}
+
+
+
+/* landNav part */
+.modernNav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.5rem 5rem;
+    align-items: center;
+}
+
+.logo-holder>h2 {
+    font-size: 30px;
+    /* font-weight: bolder; */
+    color: white;
+}
+
+.btns {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+}
+
+.enter {
+    background-color: white;
+    color: var(--text-blue);
+    border-radius: 10px;
+    padding: 0.5rem 3rem;
+    /* font-weight: 900; */
+    font-size: larger;
+}
+
+.callsup {
+    background-color: transparent;
+    font-size: larger;
+    color: white;
+}
+
+/* total page part */
+.first-land {
+    background: url('./background1.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    /* height: 80vh; */
+    display: flex;
+    flex-direction: column;
+    gap: 8rem;
+    /* align-items: center; */
+    /* justify-content: center; */
+}
+
+
+.item1B1>img {
+    animation: floated 2s linear infinite;
+}
+
+.gate {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20rem;
+    align-items: center;
+
+}
+
+.gate-bell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+}
+
+.gate-bell>h2 {
+    width: 70%;
+    color: white;
+}
+
+.gate-bell>.gate-enter {
+    width: 80%;
+    color: var(--text-blue);
+    background-color: white;
+    border-radius: 20px;
+    padding: 0.5rem 3rem;
+    font-size: larger;
+    font-weight: 900;
+    /* text-align: center; */
+}
+
+.gate-bell>.gate-enter.active {
+    /* outline: none; */
+    border: none;
+}
+
+.moreInf {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+/* second land */
+
+.second-land {
+    display: flex;
+    flex-direction: column;
+    background: url('./background2.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    /* height: 80vh; */
+    gap: 8rem;
+    /* align-items: center; */
+    /* justify-content: center; */
+}
+
+
+.approaches {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.approaches>h3 {
+    font-size: var(--font-s-titr);
+}
+
+.innapproaches {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+}
+
+.approach1 {
+    background: url('./Card1B2.svg');
+    background-repeat: no-repeat;
+    width: 20rem;
+    height: 20rem;
+    background-size: cover;
+}
+
+.approach2 {
+    background: url('./Card2B2.svg');
+    background-repeat: no-repeat;
+    width: 20rem;
+    height: 20rem;
+    background-size: cover;
+}
+
+.approach3 {
+    background: url('./Card3B2.svg');
+    background-repeat: no-repeat;
+    width: 20rem;
+    height: 20rem;
+    background-size: cover;
+}
+
+.inntext {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.inntext>h2,
+.inntext>h3 {
+    padding: 0rem 1rem;
+    color: white;
+}
+
+.inntext>h2 {
+    margin: 0;
+}
+
+.image-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5rem;
+    width: 80%;
+}
+
+.image-list>h2 {
+    font-size: var(--font-s-titr);
+}
+
+.aboutus>h3 {
+    font-size: var(--font-s-titr);
+}
+
+.image-list>div {
+    display: flex;
+    flex-direction: row;
+    gap: 5rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.teammate,
+.teammate2 {
+    padding: 0.5rem;
+    box-shadow: 5px 5px 10px rgb(0, 0, 0, 0.2), -5px -5px 10px rgb(0, 0, 0, 0.2);
+    background-color: white;
+    border-radius: 10px;
+}
+
+.teammate>img {
+    width: 10rem;
+    height: 10rem;
+}
+
+.teammates {
+    display: flex;
+    justify-content: center;
+}
+
+.innteammates {
+    display: flex;
+    justify-content: center;
+    /* width: 60%; */
+    /* overflow: hidden; */
+    flex-wrap: wrap;
+}
+
+.bigLandlogos {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.bigLandlogos img {
+    max-width: 20%;
+    border: 10px solid white;
+}
+
+.aboutus {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.about-info {
+    padding: 3rem 7rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10rem;
+}
+
+.desctext {
+    width: 20rem;
+}
+
+.image-aboutus {
+    width: 30rem;
+}
+
+
+/* third Land */
+
+.third-land {
+    background: url('./B3Texture.svg') #16253C;
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    /* justify-content: space-between; */
+    align-items: flex-start;
+    height: 30rem;
+    padding: 3rem 5rem;
+}
+
+.explanations {
+    width: 50%;
+    text-justify: auto;
+}
+
+.right-holder {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3rem;
+    width: 50%;
+}
+
+.left-holder {
+    display: flex;
+    flex-direction: row;
+    gap: 3rem;
+}
+
+.left-holder div>ul {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.Footer-images {
+    display: flex;
+    gap: 1rem;
+    width: 80%;
+}
+
+.Footer-image {
+    width: 5rem;
+    height: 5rem;
+    background-color: #ccc;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
