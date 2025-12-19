@@ -418,6 +418,8 @@ function Questions() {
             if ('smokingTypesCurrent' in presetform) setSmokeType(presetform["smokingTypesCurrent"])
             if ('smokingTypesPast' in presetform) setSmokeTypePast(presetform["smokingTypesPast"])
             if ('lungCancerFamily' in presetform) setFirstDeg(presetform["lungCancerFamily"])
+            if ('pastSmoking' in presetform) setAnySmokePast(presetform["pastSmoking"])
+
             setAfter(true)
 
         }
@@ -560,6 +562,9 @@ function Questions() {
             console.log("[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[ : ", ST)
             console.log(state)
         }
+        if (state == "سابقاً مصرف می کرده ام اما کمتر از ۱۵ سال است که ترک کرده ام" || state == "سابقاً مصرف می کردم اما بیش از ۱۵ سال است که ترک کرده ام") {
+            return true
+        }
         if (isNumber(state) && state != false && ((state == 2 && state != 1) || state == 3)) {
             if (ST != undefined)
                 console.log("bug1", ST)
@@ -570,6 +575,7 @@ function Questions() {
                 console.log("bug2", ST, typeof state)
             return false
         }
+
         if (state == "بله" || state == "true" || state == true && (state != "false" || state != "خیر")) {
             if (ST != undefined)
                 console.log("bug3", ST)
@@ -1400,6 +1406,10 @@ function Questions() {
 
                         {/* <Radio data_req={"true"} data={part7.radio_lungCancerHistory} class_change1={"P2"} class_change2={"P2_inner"}></Radio> */}
                         <Radio data_req={"true"} data={part7.radio_lungCancerFamily} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setFirstDeg}></Radio>
+                        <Radio data_req={"true"} data={part7.radio_bronshit} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                        <Radio data_req={"true"} data={part7.radio_fibroz} class_change1={"P2"} class_change2={"P2_inner"} ></Radio>
+                        <Radio data_req={"true"} data={part7.radio_lungill} class_change1={"P2"} class_change2={"P2_inner"} ></Radio>
+
                         <Options data_req={"true"} data={part7.combine_option_lungCancerFamilyRelation} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(firstDeg)}></Options>
                         <Options data_req={"true"} data={part7.combine_option_occupationalExposure} class_change1={"P2"} class_change2={"P2_inner"}></Options>
                         {/* <Radio data={part7.radio_currentSmoking} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmoke}></Radio> */}

@@ -140,12 +140,16 @@ function QuestionsNavid() {
     const [anySmokePast, setAnySmokePast] = useState(false)
     const [anySmoke, setAnySmoke] = useState(false)
     const [firstDeg, setFirstDeg] = useState(false)
+    const [multiSmokeTypePast, setMultiSmokeTypePast] = useState([])
+    const [multiSmokeTypeCurrent, setMultiSmokeTypeCurrent] = useState([])
+
     // const [isChronic, setIsChronic] = useState(false)
     //step 7
 
     const [isGeneTest, setIsGeneTest] = useState('')
     const [isFamGeneTest, setIsFamGeneTest] = useState('')
 
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>> : ", multiSmokeTypePast)
 
     const ArrofVals = [isAlchol, isSabzi, isActivity, isHardActivity, isSmoke, isSmokeAge, isSmokingNow, isChild, isAdat, isHRT, isHRT5, isOral, isColon, isCancer
         , isChildCancer, isMotherCancer, isFatherCancer, isSibsCancer, isUncAuntCancer, isUncAunt2Cancer, isGeneTest, isFamGeneTest
@@ -564,6 +568,9 @@ function QuestionsNavid() {
             console.log("[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[ : ", ST)
             console.log(state)
         }
+        if (state == "سابقاً مصرف می کرده ام اما کمتر از ۱۵ سال است که ترک کرده ام" || state == "سابقاً مصرف می کردم اما بیش از ۱۵ سال است که ترک کرده ام") {
+            return true
+        }
         if (isNumber(state) && state != false && ((state == 2 && state != 1) || state == 3)) {
             if (ST != undefined)
                 console.log("bug1", ST)
@@ -590,6 +597,15 @@ function QuestionsNavid() {
 
     const relator_gen = (state) => {
         if (state == 2) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    const relator_multiCheck = (Arr, state) => {
+        console.log(Arr, state, Arr.includes(state))
+        if (Arr.includes(state)) {
             return true
         } else {
             return false
@@ -757,9 +773,13 @@ function QuestionsNavid() {
             let value = '';
 
             if (type === 'radio' || type === 'checkbox') {
+                console.log(elem)
                 if (elem.checked) {
                     shouldProcess = true;
                     value = elem.value;
+                    if (elem.value == "on") {
+                        value = elem.checked
+                    }
                 }
             } else if (tagName === 'SELECT') {
                 value = elem.value;
@@ -1261,29 +1281,51 @@ function QuestionsNavid() {
                         <Radio data_req={"true"} data={part7.radio_lungCancerFamily} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setFirstDeg}></Radio>
                         <Options data_req={"true"} data={part7.combine_option_lungCancerFamilyRelation} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(firstDeg)}></Options>
                         <Options data_req={"true"} data={part7.combine_option_occupationalExposure} class_change1={"P2"} class_change2={"P2_inner"}></Options>
-                        <Radio data={part7.radio_currentSmoking} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmoke}></Radio>
-                        <Options data_req={"true"} data={part7.combine_option_smokingTypes_current} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setSmokeType} relation={relator_R(anySmoke)}></Options>
-                        {smokeType != null && smokeType != "انتخاب کنید" && (
+                        <Radio data={part7.radio_currentSmoking} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmoke} ></Radio>
+                        {/* <Options data_req={"true"} data={part7.combine_option_smokingTypes_current} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setSmokeType} relation={relator_R(anySmoke)}></Options> */}
+                        <CheckBox data={part7.check_smokeTypeCurrent} class_change1={"P2"} class_change2={"P2_inner"} checker={setMultiSmokeTypeCurrent} multicheck={true} checkArray={multiSmokeTypeCurrent} relation={relator_R(anySmoke)}></CheckBox>
+                        <InputBox data_req={"false"} data={part7.text_cigarettesPerDay_current} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypeCurrent, 'Csig')}></InputBox>
+                        <InputBox data_req={"false"} data={part7.text_cigarPerDay_current} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypeCurrent, "CsigBarg")}></InputBox>
+                        <InputBox data_req={"false"} data={part7.text_eCigPerDay_current} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypeCurrent, 'CelecSig')}></InputBox>
+                        <InputBox data_req={"false"} data={part7.text_pipePerDay_current} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypeCurrent, 'Cpip')}></InputBox>
+                        <InputBox data_req={"false"} data={part7.text_chapoghPerDay_current} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypeCurrent, 'Cchop')}></InputBox>
+                        <InputBox data_req={"false"} data={part7.text_smokedOpiumPerDay_current} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypeCurrent, 'Cteryak')}></InputBox>
+                        <InputBox data_req={"false"} data={part7.text_hookahPerWeek_current} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypeCurrent, 'Cghel')}></InputBox>
+
+                        {/* {smokeType != null && smokeType != "انتخاب کنید" && (
                             <InputBox data={part7.text_using_now} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmoke)}></InputBox>
                         )}
                         {smokeType != null && smokeType == "تریاک" && (
                             <InputBox data={part7.text_chewedOpiumPerDay_past} class_change1={"P2"} class_change2={"P2_inner"}></InputBox>
-                        )}
-                        <Radio data={part7.radio_heartDisease} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmoke} des={true}></Radio>
-                        <Radio data={part7.radio_diabetes} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmoke} des={true}></Radio>
-                        <Radio data={part7.radio_hypertension} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmoke} des={true}></Radio>
+                        )} */}
+                        <Radio data={part7.radio_heartDisease} class_change1={"P2"} class_change2={"P2_inner"} des={true}></Radio>
+                        <Radio data={part7.radio_diabetes} class_change1={"P2"} class_change2={"P2_inner"} des={true}></Radio>
+                        <Radio data={part7.radio_hypertension} class_change1={"P2"} class_change2={"P2_inner"} des={true}></Radio>
 
-                        <Options data={part7.combine_option_secondhandSmokeLocation} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmoke}></Options>
+
+                        <Options data={part7.combine_option_secondhandSmokeLocation} class_change1={"P2"} class_change2={"P2_inner"}></Options>
                         <Radio data_req={"true"} data={part7.radio_pastSmoking} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmokePast} des={true}></Radio>
                         {/* <InputBox data_req={"false"} data={part7.text_smokingStartAge_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)}></InputBox> */}
-                        <InputBox data_req={"false"} data={part7.text_leaveSmoke} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)}></InputBox>
-                        <Options data={part7.combine_option_smokingTypes_past} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setSmokeTypePast} relation={relator_R(anySmokePast)}></Options>
+                        {/* <InputBox data_req={"false"} data={part7.text_leaveSmoke} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)}></InputBox> */}
+                        {/* <Options data={part7.combine_option_smokingTypes_past} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setSmokeTypePast} relation={relator_R(anySmokePast)}></Options> */}
                         {/* {smokeTypePast != null && smokeTypePast != "انتخاب کنید" && ( */}
-                        <InputBox data_req={"false"} data={part7.text_using_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)}></InputBox>
+                        {/* <InputBox data_req={"false"} data={part7.text_using_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)}></InputBox> */}
                         {/* )} */}
                         {/* {smokeType != null && smokeTypePast == "تریاک" && ( */}
                         {/* <InputBox data_req={"true"} data={part7.text_chewedOpiumPerDay_past} class_change1={"P2"} class_change2={"P2_inner"}></InputBox> */}
                         {/* )} */}
+                        <CheckBox data={part7.check_smokeTypePast} class_change1={"P2"} class_change2={"P2_inner"} checker={setMultiSmokeTypePast} multicheck={true} checkArray={multiSmokeTypePast} relation={relator_R(anySmokePast)}></CheckBox>
+
+                        <InputBox data_req={"false"} data={part7.text_cigarettesPerDay_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypePast, 'Psig')}></InputBox>
+                        <InputBox data_req={"false"} data={part7.text_cigarPerDay_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypePast, "PsigBarg")}></InputBox>
+                        <InputBox data_req={"false"} data={part7.text_eCigPerDay_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypePast, 'PelecSig')}></InputBox>
+                        <InputBox data_req={"false"} data={part7.text_pipePerDay_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypePast, 'Ppip')}></InputBox>
+                        <InputBox data_req={"false"} data={part7.text_chapoghPerDay_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypePast, 'Pchop')}></InputBox>
+                        <InputBox data_req={"false"} data={part7.text_smokedOpiumPerDay_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypePast, 'Pteryak')}></InputBox>
+                        <InputBox data_req={"false"} data={part7.text_hookahPerWeek_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypePast, 'Pghel')}></InputBox>
+
+
+
                     </form>
                     <form ref={formRefs[5]} id="form7" style={step == 5 ? null : { display: "none" }} action="" className="question_form P2">
                         <div className="form_title">{part7.title}</div>

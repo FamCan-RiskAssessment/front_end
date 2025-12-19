@@ -22,7 +22,7 @@ import 'swiper/css/thumbs';
 import './SwiperThumbs.css'; // see CSS below
 
 import '../VazirFontFace.css'
-
+import './responsiveLanding.css'
 import bimeSalamteMan from '../assets/logos/bime-salamte-man-icon.png';
 import logoHybrid from '../assets/logos/Logo Hybrid 2.png';
 import pajooheshkadeh from '../assets/logos/پژوهشکده.png';

@@ -83,6 +83,7 @@
     background-color: #eee;
     padding: 1rem;
     border-radius: 20px;
+    width: 100%;
 }
 
 .P1 {
@@ -210,8 +211,8 @@
 /* check boxes */
 
 .check_box_question {
-    font-size: 1.7rem;
-    font-weight: bold;
+    font-size: 1rem;
+    /* font-weight: bold; */
 }
 
 .check_box_holder {
@@ -369,7 +370,8 @@ td img {
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem;
-    max-width: 120px; /* Set a reasonable max width for the cell */
+    max-width: 120px;
+    /* Set a reasonable max width for the cell */
     max-height: 100px;
     overflow-y: auto;
     padding: 0.25rem;

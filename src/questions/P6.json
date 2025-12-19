@@ -114,8 +114,7 @@
       "options": [
         "قبول می کنم"
       ],
-      "name": "ConfidentialityAgreement",
-      "required": true
+      "name": "ConfidentialityAgreement"
     }
   }
 }

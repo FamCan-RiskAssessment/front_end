@@ -1,0 +1,164 @@
+@media (min-width:1200px) and (max-width:1440px) {
+    .image-list>div {
+        flex-wrap: wrap;
+    }
+}
+
+@media (min-width:768px) and (max-width:1200px) {
+    .image-list>div {
+        flex-wrap: wrap;
+    }
+
+    .innapproaches {
+        flex-wrap: wrap;
+    }
+
+    .about-info {
+        flex-direction: column-reverse;
+        gap: 1rem;
+    }
+
+    .gate {
+        gap: 5rem;
+    }
+
+    .third-land {
+        padding: 1rem 1rem;
+        /* flex-direction: column; */
+        height: unset;
+    }
+}
+
+@media (min-width:340px) and (max-width:768px) {
+    .image-list>div {
+        flex-wrap: wrap;
+    }
+
+    .innapproaches {
+        flex-direction: column;
+    }
+
+    .about-info {
+        flex-direction: column-reverse;
+        gap: 1rem;
+        padding: 0;
+    }
+
+    .gate {
+        gap: 5rem;
+        flex-direction: column-reverse;
+        align-items: center;
+    }
+
+    .gate-bell {
+        justify-content: center;
+        align-items: center;
+    }
+
+    .gate-bell>h2 {
+        width: 50%;
+    }
+
+    .gallery-container {
+        max-width: unset;
+        width: 20rem;
+    }
+
+    .enter {
+        font-weight: unset;
+        font-size: unset;
+    }
+
+    .callsup {
+        font-size: unset;
+    }
+
+    .btns {
+        gap: 0.5rem;
+    }
+
+    .modernNav {
+        padding: 0.5rem 1rem;
+    }
+
+    .third-land {
+        padding: 1rem 1rem;
+        flex-direction: column;
+        height: unset;
+    }
+
+    .right-holder {
+        width: 100%;
+    }
+
+    .title-famcan {
+        font-size: 16px;
+    }
+}
+
+@media (max-width:340px) {
+    .image-list>div {
+        flex-wrap: wrap;
+    }
+
+    .innapproaches {
+        flex-direction: column;
+    }
+
+    .about-info {
+        flex-direction: column-reverse;
+        gap: 1rem;
+        padding: 0;
+    }
+
+    .gate {
+        gap: 5rem;
+        flex-direction: column-reverse;
+        align-items: center;
+    }
+
+    .gate-bell {
+        justify-content: center;
+        align-items: center;
+    }
+
+    .gate-bell>h2 {
+        width: 50%;
+    }
+
+    .gallery-container {
+        max-width: unset;
+        width: 20rem;
+    }
+
+    .enter {
+        font-weight: unset;
+        font-size: unset;
+    }
+
+    .callsup {
+        font-size: unset;
+    }
+
+    .btns {
+        gap: 0.5rem;
+    }
+
+    .modernNav {
+        padding: 0.5rem 1rem;
+    }
+
+    .third-land {
+        padding: 1rem 1rem;
+        flex-direction: column;
+        height: unset;
+    }
+
+    .right-holder {
+        width: 100%;
+    }
+
+    .title-famcan {
+        font-size: 16px;
+    }
+}

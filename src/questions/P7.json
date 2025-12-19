@@ -457,6 +457,30 @@
       "خیر"
     ]
   },
+  "radio_bronshit": {
+    "Rname": "bronshit",
+    "ask": "آیا سابقه ی سابقه برونشیت مزمن دارید ؟ ",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "radio_fibroz": {
+    "Rname": "fibroz",
+    "ask": "آیا سابقه ی فیبروز ریوی دارید ؟ ",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
+  "radio_lungill": {
+    "Rname": "Lungill",
+    "ask": "آیا سابقه ی بستری یا پیگیری تخصصی به دلیل بیماری ریوی دارید ؟  ",
+    "options": [
+      "بله",
+      "خیر"
+    ]
+  },
   "combine_option_secondhandSmokeLocation": {
     "ask": "محل قرارگیری در معرض دود دخانی",
     "Oname": "secondhandSmokeLocation",
@@ -467,5 +491,77 @@
       "خیر"
     ],
     "condition": "if secondhandSmoke == 'بله'"
+  },
+  "check_smokeTypePast": {
+    "ask": "کدام مورد از موارد زیر را مصرف می کردید ؟ ",
+    "inputType": "checkbox",
+    "options": [
+      {
+        "showName": "سیگار",
+        "engName": "Psig"
+      },
+      {
+        "showName": "سیگار برگ",
+        "engName": "PsigBarg"
+      },
+      {
+        "showName": "پیپ",
+        "engName": "Ppip"
+      },
+      {
+        "showName": "قلیان",
+        "engName": "Pghel"
+      },
+      {
+        "showName": "چپق",
+        "engName": "Pchop"
+      },
+      {
+        "showName": "سیگار الکترونیک و محصولات مشابه",
+        "engName": "PelecSig"
+      },
+      {
+        "showName": "تریاک",
+        "engName": "Pteryak"
+      }
+    ],
+    "name": "multiSmokeTypePast",
+    "required": true
+  },
+  "check_smokeTypeCurrent": {
+    "ask": "کدام مورد از موارد زیر را مصرف می کنید ؟ ",
+    "inputType": "checkbox",
+    "options": [
+      {
+        "showName": "سیگار",
+        "engName": "Csig"
+      },
+      {
+        "showName": "سیگار برگ",
+        "engName": "CsigBarg"
+      },
+      {
+        "showName": "پیپ",
+        "engName": "Cpip"
+      },
+      {
+        "showName": "قلیان",
+        "engName": "Cghel"
+      },
+      {
+        "showName": "چپق",
+        "engName": "Cchop"
+      },
+      {
+        "showName": "سیگار الکترونیک و محصولات مشابه",
+        "engName": "CelecSig"
+      },
+      {
+        "showName": "تریاک",
+        "engName": "Cteryak"
+      }
+    ],
+    "name": "multiSmokeTypeCurrent",
+    "required": true
   }
 }
