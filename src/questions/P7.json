@@ -474,7 +474,7 @@
     ]
   },
   "radio_lungill": {
-    "Rname": "Lungill",
+    "Rname": "lungill",
     "ask": "آیا سابقه ی بستری یا پیگیری تخصصی به دلیل بیماری ریوی دارید ؟  ",
     "options": [
       "بله",

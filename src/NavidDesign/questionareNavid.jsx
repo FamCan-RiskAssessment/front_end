@@ -366,6 +366,14 @@ function QuestionsNavid() {
                                 //     previewContainer.appendChild(img);
                                 // }
                             }
+                        } else if (fE.name == pfk && fE.type == "checkbox") {
+                            if (presetform[pfk] == true) {
+                                fE.checked = true
+                            } else {
+                                fE.checked = false
+                            }
+                        } else if (!(fE.name in presetform) && fE.type == "checkbox") {
+                            fE.checked = false
                         }
                     }
                 })
@@ -425,6 +433,18 @@ function QuestionsNavid() {
             if ('pastSmoking' in presetform && presetform["pastSmoking"] != "خیر") {
                 setAnySmokePast(true)
             }
+            let arrOfCigsPast = ["Psig", "PsigBarg", "Ppip", "Pghel", "Pchop", "Pteryak", "PelecSig"]
+            let arrOfCigsCurrent = ["Csig", "CsigBarg", "Cpip", "Cghel", "Cchop", "Cteryak", "CelecSig"]
+            arrOfCigsPast.forEach(ac => {
+                if (ac in presetform && presetform[ac] != null) {
+                    setMultiSmokeTypePast(mstp => [...mstp, ac])
+                }
+            });
+            arrOfCigsCurrent.forEach(ac => {
+                if (ac in presetform && presetform[ac] != null) {
+                    setMultiSmokeTypeCurrent(mstc => [...mstc, ac])
+                }
+            });
 
             setAfter(true)
 
@@ -780,6 +800,9 @@ function QuestionsNavid() {
                     if (elem.value == "on") {
                         value = elem.checked
                     }
+                } else if (elem.name == "isAtba" && !elem.checked) {
+                    shouldProcess = true
+                    value = elem.checked
                 }
             } else if (tagName === 'SELECT') {
                 value = elem.value;
@@ -839,7 +862,6 @@ function QuestionsNavid() {
 
                 continue; // Skip adding this field to allData since it's handled via FormData
             }
-
             // ✅ Apply transformations for normal fields
             if (finalValue === "true" && name !== "pastSmoking") {
                 allData[name] = true;
@@ -1330,11 +1352,11 @@ function QuestionsNavid() {
                     <form ref={formRefs[5]} id="form7" style={step == 5 ? null : { display: "none" }} action="" className="question_form P2">
                         <div className="form_title">{part7.title}</div>
 
-                        <Radio data_req={"true"} data={part6.radio_opts_testGen} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsGeneTest}></Radio>
-                        <FileUploader data={part6.attachment_testGen} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isGeneTest)} fillingFormData={fillingFormData} removeLastFileFromFormData={removeLastFileFromFormData}></FileUploader>
+                        {/* <Radio data_req={"true"} data={part6.radio_opts_testGen} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsGeneTest}></Radio> */}
+                        {/* <FileUploader data={part6.attachment_testGen} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isGeneTest)} fillingFormData={fillingFormData} removeLastFileFromFormData={removeLastFileFromFormData}></FileUploader> */}
 
-                        <Radio data_req={"true"} data={part6.radio_opts_fmTestGen} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsFamGeneTest}></Radio>
-                        <FileUploader data={part6.attachment_fmTestGen} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isFamGeneTest)} fillingFormData={fillingFormData} removeLastFileFromFormData={removeLastFileFromFormData}></FileUploader>
+                        {/* <Radio data_req={"true"} data={part6.radio_opts_fmTestGen} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsFamGeneTest}></Radio> */}
+                        {/* <FileUploader data={part6.attachment_fmTestGen} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isFamGeneTest)} fillingFormData={fillingFormData} removeLastFileFromFormData={removeLastFileFromFormData}></FileUploader> */}
 
                         <Options data_req={"true"} data={part6.options_education} class_change1={"P2"} class_change2={"P2_inner"}></Options>
 

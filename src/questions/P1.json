@@ -179,10 +179,13 @@
   {
     "input_type": "checkbox_input",
     "options": [
-      "اتباع هستم"
+      {
+        "showName": "اتباع هستم",
+        "engName": "isAtba"
+      }
     ],
     "ask": "آیا اتباع هستید؟",
-    "Cname": "isAtba"
+    "name": "isAtba"
   },
   {
     "input_type": "input_text",

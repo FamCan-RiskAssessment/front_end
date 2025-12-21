@@ -2,7 +2,7 @@ import { useState } from "react";
 
 function CheckBox({ data_req, data, checker, atba, classChange1, classChange2, multicheck, checkArray, relation }) {
     const effectiveDataReq = data_req ? data_req : "false";
-    console.log(relation, "-----------------------------------")
+    console.log(data, "  : -----------------------------------")
     return (
         <>
             <div className={`form_element ${classChange1}`} style={relation == true || relation == undefined ? { display: null } : { display: "none" }}>

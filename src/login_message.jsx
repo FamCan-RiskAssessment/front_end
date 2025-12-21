@@ -3,13 +3,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { APIURL } from "./utils/config";
 import { useToast } from "./toaster";
 import ToastProvider from "./toaster";
+import { fetchDataPOST } from "./utils/tools";
 function LoginMessage() {
   const [message, setMessage] = useState('')
   const [Err, setError] = useState('')
   const location = useLocation();
   const navigate = useNavigate();
   const phone = location.state?.phone || ""; // ✅ get phone from state
-  const [timeLeft, setTimeLeft] = useState(10); // 2 minutes = 120 seconds
+  const [timeLeft, setTimeLeft] = useState(120); // 2 minutes = 120 seconds
   const adminNumber = "09123456789"
   const { addToast } = useToast()
 
@@ -71,6 +72,30 @@ function LoginMessage() {
   const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
   const seconds = String(timeLeft % 60).padStart(2, "0");
 
+  const VerifyAgain = async () => {
+    let token = localStorage.getItem("token")
+    let payload = {
+      phone: phone
+    }
+    let res = await fetchDataPOST("auth/login", token, payload)
+    if (res.status == 200) {
+      addToast({
+        title: "کد تایید برای شما ارسال شد .",
+        type: 'success',
+        duration: 4000
+      })
+      setTimeLeft(150)
+    } else {
+      addToast({
+        title: "خطا در ارسال کد لطفا دوباره تلاش کنیدُُ",
+        type: 'error',
+        duration: 4000
+
+      })
+    }
+  }
+
+
 
   return (
     <>
@@ -93,7 +118,7 @@ function LoginMessage() {
             </div>
             <button className="btn_login">ورود</button>
             {minutes == "00" && seconds == "00" && (
-              <button className="btn_disabled btn_login">ارسال دوباره</button>
+              <button type="button" className="btn_disabled btn_login" onClick={() => VerifyAgain()}>ارسال دوباره</button>
             )}
           </form>
         </div>
