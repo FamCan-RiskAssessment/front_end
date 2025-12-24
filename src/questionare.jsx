@@ -7,7 +7,7 @@ import CancerField from "./cancer_universal";
 import FileUploader from "./file_uploader";
 import PersonalInfo from "./personal_info";
 import Loader from "./utils/loader";
-
+import RangeBox from "./rangeInp";
 import part1 from './questions/P1.json'
 import part2 from './questions/P2.json'
 import part3 from './questions/P3.json'
@@ -362,6 +362,17 @@ function Questions() {
                                 //     previewContainer.appendChild(img);
                                 // }
                             }
+                        } else if (fE.name == pfk && fE.type == "checkbox") {
+                            if (presetform[pfk] == true) {
+                                fE.checked = true
+                            } else {
+                                fE.checked = false
+                            }
+                        } else if (!(fE.name in presetform) && fE.type == "checkbox") {
+                            fE.checked = false
+                        } else if (fE.type == "range" && fE.name == pfk) {
+                            console.log("FOOOOOOOOOOOOOOOOOOOOUND : ", fE.name, presetform[pfk], fE.defaultValue)
+                            fE.defaultValue = presetform[pfk]
                         }
                     }
                 })
@@ -767,9 +778,12 @@ function Questions() {
             let value = '';
 
             if (type === 'radio' || type === 'checkbox') {
-                if (elem.checked) {
+                if (elem.checked && type == 'radio') {
                     shouldProcess = true;
                     value = elem.value;
+                } else if (type == 'checkbox' && elem.checked) {
+                    shouldProcess = true
+                    value = elem.checked
                 }
             } else if (tagName === 'SELECT') {
                 value = elem.value;
@@ -1249,7 +1263,8 @@ function Questions() {
                                 <Radio data_req={"true"} data={part2.radio_opts_smokingNow} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsSmokingNow} relation={relator_R(isSmoke)}></Radio>
                                 {/* {isSmokingNow == 'بله' && ( */}
                                 <>
-                                    <InputBox data_req={"false"} data={part2.text_yearSmoke} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow)}></InputBox>
+                                    {/* <InputBox data_req={"false"} data={part2.text_yearSmoke} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow)}></InputBox> */}
+                                    <RangeBox data_req={"false"} data={part2.range_yearSmoke} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow)} preData={presetform[part2.range_yearSmoke.engName] ? presetform[part2.range_yearSmoke.engName] : null}></RangeBox>
                                     <Options data_req={"true"} data={part2.combine_option_countSmokingDaily} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow)}></Options>
                                     <Options data_req={"true"} data={part2.combine_option_t_gh_daily} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow)}></Options>
                                 </>
@@ -1276,9 +1291,10 @@ function Questions() {
 
                         <Radio data_req={"true"} data={part3.radio_opts_children} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChild}></Radio>
                         <Options data={part3.combine_option_firstChildBirthAge} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender) && relator_R(isChild)}></Options>
-                        <InputBox data_req={"false"} data={part3.text_sonCount} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isChild)}></InputBox>
-                        <InputBox data_req={"false"} data={part3.text_doughterCount} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isChild)}></InputBox>
-
+                        {/* <InputBox data_req={"false"} data={part3.text_sonCount} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isChild)}></InputBox> */}
+                        {/* <InputBox data_req={"false"} data={part3.text_doughterCount} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isChild)}></InputBox> */}
+                        <RangeBox data_req={"false"} data={part3.range_sonCount} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isChild)} preData={presetform[part3.range_sonCount.engName] ? presetform[part3.range_sonCount.engName] : null}></RangeBox>
+                        <RangeBox data_req={"false"} data={part3.range_doughterCount} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isChild)} preData={presetform[part3.range_doughterCount.engName] ? presetform[part3.range_doughterCount.engName] : null}></RangeBox>
                         <>
                             <Radio data_req={"true"} data={part3.radio_opts_menopausal_status} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsAdat} Enum={"menopausal-statuses"} relation={relator_gen(gender)}></Radio>
                             {/* <Radio data_req={"true"} data={part3.radio_opts_menopausal_status} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsAdat} relation={relator_gen(gender)}></Radio> */}
@@ -1342,8 +1358,11 @@ function Questions() {
 
                             <Radio data_req={"true"} data={part3.radio_opts_falop} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender)}></Radio>
                             <Radio data_req={"true"} data={part3.radio_opts_andometrioz} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender)}></Radio>
-                            <Radio data_req={"true"} data={part3.radio_opts_leavePestan} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender)}></Radio>
-                            <Radio data_req={"true"} data={part3.radio_opts_leaveTokhmdan} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender)}></Radio>
+                            {/* <Radio data_req={"true"} data={part3.radio_opts_leavePestan} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender)}></Radio>
+                            <Radio data_req={"true"} data={part3.radio_opts_leaveTokhmdan} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender)}></Radio> */}
+                            <CheckBox data={part3.check_opts_operations} class_change1={"P2"} class_change2={"P2_inner"} multicheck={true} relation={relator_gen(gender)}></CheckBox>
+
+
 
                         </>
                         <Radio data_req={"true"} data={part3.radio_opts_laDe_colon} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsColon}></Radio>
@@ -1367,7 +1386,7 @@ function Questions() {
                         <div className="form_title">{part5.title}</div>
 
                         <Radio data_req={"true"} data={part5.radio_opts_childCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChildCncer} relation={relator_R(isChild)}></Radio>
-                        <CancerField data_req={"true"} data_Inp1={part5.childCard.childName} data_Inp2={part5.childCard.childCancerAge} data_Options={part5.childCard.childCancerType} data_Radio={part5.childCard.childLifeStatus} relation={relator_R(isChildCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={"فرزند"}></CancerField>
+                        <CancerField data_req={"true"} data_Inp1={part5.childCard.childType} data_Inp2={part5.childCard.childCancerAge} data_Options={part5.childCard.childCancerType} data_Radio={part5.childCard.childLifeStatus} relation={relator_R(isChildCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={["پسر", "دختر"]}></CancerField>
 
                         <Radio data_req={"true"} data={part5.radio_opts_motherCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsMotherCncer}></Radio>
                         <CancerField data_req={"true"} data_Inp1={part5.motherCard.motherName} data_Inp2={part5.motherCard.motherCancerAge} data_Options={part5.motherCard.motherCancerType} data_Radio={part5.motherCard.motherLifeStatus} relation={relator_R(isMotherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={"مادر"}></CancerField>
@@ -1406,6 +1425,8 @@ function Questions() {
 
                         {/* <Radio data_req={"true"} data={part7.radio_lungCancerHistory} class_change1={"P2"} class_change2={"P2_inner"}></Radio> */}
                         <Radio data_req={"true"} data={part7.radio_lungCancerFamily} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setFirstDeg}></Radio>
+                        <InputBox data_req={"false"} data={part7.Fam_lung_desc} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(firstDeg)}></InputBox>
+
                         <Radio data_req={"true"} data={part7.radio_bronshit} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
                         <Radio data_req={"true"} data={part7.radio_fibroz} class_change1={"P2"} class_change2={"P2_inner"} ></Radio>
                         <Radio data_req={"true"} data={part7.radio_lungill} class_change1={"P2"} class_change2={"P2_inner"} ></Radio>
@@ -1422,10 +1443,10 @@ function Questions() {
                         {/* )} */}
                         <Radio data_req={"true"} data={part7.radio_pastSmoking} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmokePast} des={true}></Radio>
                         {/* <InputBox data_req={"false"} data={part7.text_smokingStartAge_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)}></InputBox> */}
-                        <InputBox data_req={"false"} data={part7.text_leaveSmoke} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)}></InputBox>
+                        <RangeBox data_req={"false"} data={part7.text_leaveSmoke} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)} preData={presetform[part7.text_leaveSmoke.engName] ? presetform[part7.text_leaveSmoke.engName] : null}></RangeBox>
                         <Options data={part7.combine_option_smokingTypes_past} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setSmokeTypePast} relation={relator_R(anySmokePast)}></Options>
                         {/* {smokeTypePast != null && smokeTypePast != "انتخاب کنید" && ( */}
-                        <InputBox data_req={"false"} data={part7.text_using_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)}></InputBox>
+                        <RangeBox data_req={"false"} data={part7.text_using_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)} preData={presetform[part7.text_using_past.engName] ? presetform[part7.text_using_past.engName] : null}></RangeBox>
 
                         {/* )} */}
                         {/* {smokeType != null && smokeTypePast == "تریاک" && ( */}
@@ -1444,7 +1465,7 @@ function Questions() {
 
                         <Options data_req={"true"} data={part6.options_education} class_change1={"P2"} class_change2={"P2_inner"}></Options>
 
-                        <Radio data_req={"true"} data={part6.radio_opts_callExpert} class_change1={"P2"} class_change2={"P2_inner"}></Radio>
+                        {/* <Radio data_req={"true"} data={part6.radio_opts_callExpert} class_change1={"P2"} class_change2={"P2_inner"}></Radio> */}
                         <PersonalInfo data_req={"true"} data_inp1={part6.personalInfo.fullName} data_inp2={part6.personalInfo.mobileNumber1} data_inp3={part6.personalInfo.mobileNumber2} data_inp4={part6.personalInfo.province}
                             data_inp5={part6.personalInfo.city} data_inp6={part6.personalInfo.postalCode} data_opt={part6.personalInfo.birthCountry} data_inp7={part6.personalInfo.address}
                             data_check={part6.personalInfo.confidentialityAgreement} typeErr={setTypeErr} typeErr2={setTypeErr2} typeErr3={setTypeErr3}

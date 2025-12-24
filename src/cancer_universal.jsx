@@ -374,7 +374,7 @@ function CancerField({
                     <div className="tah_holder">
                         <div className="form_element">
                             <div className="total_file_uploader">
-                                <label htmlFor="file_uploader">لطفا عکسی بارگذاری کنید</label>
+                                <label htmlFor="file_uploader">عکس جواب پاتولوژی را بارگذاری کنید : </label>
                                 <input
                                     id="file_uploader"
                                     type="file"

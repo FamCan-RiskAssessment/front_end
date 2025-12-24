@@ -30,6 +30,7 @@
     width: 80%;
     overflow-y: scroll;
     box-sizing: border-box;
+    direction: ltr;
     /* Added to include padding in width calculation */
     /* padding-left: 1rem; */
 }
@@ -72,6 +73,7 @@
     flex-wrap: wrap;
     gap: 1rem;
     width: 100%;
+    direction: rtl;
 }
 
 .form_element {
@@ -291,6 +293,29 @@
     flex-direction: row;
     gap: 1rem;
 }
+
+/* range box */
+
+.rangeBox_holder {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 5rem;
+}
+
+.rangeBox_holder>.number {
+    background-color: white;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    border: 1px solid black;
+    padding: 0.5rem 1rem;
+}
+
+
 
 
 

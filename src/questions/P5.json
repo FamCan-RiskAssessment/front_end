@@ -9,11 +9,14 @@
     ]
   },
   "childCard": {
-    "childName": {
-      "engName": "childName",
-      "inpName": "نام فرزند",
-      "type": "text",
-      "placeHolder": "نام فرزند"
+    "childType": {
+      "ask": "نسبت",
+      "Oname": "childRelation",
+      "options": [
+        "انتخاب کنید",
+        "دختر",
+        "پسر"
+      ]
     },
     "childCancerType": {
       "ask": "نوع یا انواع سرطان",

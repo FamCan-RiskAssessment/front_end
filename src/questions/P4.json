@@ -37,7 +37,7 @@
       "placeHolder": "سن ابتلا"
     },
     "attachment": {
-      "fieldName": "لطفاً تصویر را بارگذاری کنید.",
+      "fieldName": "عکس جواب پاتولوژی را بارگذاری کنید : ",
       "inputType": "file",
       "name": "cancerFiles",
       "required": true

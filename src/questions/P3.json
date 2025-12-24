@@ -28,14 +28,21 @@
   },
   "text_sonCount": {
     "engName": "sonCount",
+    "inpName": "تعداد فرزندان پسر"
+  },
+  "range_sonCount": {
+    "engName": "sonCount",
     "type": "number",
-    "placeHolder": "xx",
     "inpName": "تعداد فرزندان پسر"
   },
   "text_doughterCount": {
     "engName": "daughterCount",
     "type": "number",
     "placeHolder": "xx",
+    "inpName": "تعداد فرزندان دختر"
+  },
+  "range_doughterCount": {
+    "engName": "daughterCount",
     "inpName": "تعداد فرزندان دختر"
   },
   "combine_option_firstChildBirthAge": {
@@ -250,7 +257,7 @@
     ]
   },
   "attach_mamoGraphy": {
-    "fieldName": "لطفاً تصویر گزارش آزمایش ماموگرافی خود را بارگذاری کنید.",
+    "fieldName": "لطفاً تصویر گزارش آزمون ماموگرافی خود را بارگذاری کنید.",
     "inputType": "file",
     "name": "mamoGraphyPictures"
   },
@@ -288,6 +295,21 @@
       "خیر"
     ]
   },
+  "check_opts_operations": {
+    "ask": "(در صورتی که اجام نداده اید خالی بگذارید)کدام یک از جراحی های زیر را انجام داده اید؟ ",
+    "inputType": "checkbox",
+    "options": [
+      {
+        "showName": "برداشتن هر دو پستان ",
+        "engName": "leavePestan"
+      },
+      {
+        "showName": "برداشتن هر دو تخمدان",
+        "engName": "leaveTokhmdan"
+      }
+    ],
+    "name": "multiSmokeTypeCurrent"
+  },
   "radio_opts_laDe_colon": {
     "Rname": "laDeColon",
     "ask": "در طول 10 سال گذشته، آیا کولونوسکوپی انجام داده‌اید؟",
@@ -317,7 +339,7 @@
   },
   "radio_opts_nsaiD_la_mo": {
     "Rname": "nsaiDLaMo",
-    "ask": "در طول 30 روز گذشته، آیا داروهایی زیر را حداقل 3 بار در هفته مصرف کرده‌اید؟ (ایبوبروفن، ژلوفن، نوافن، سِلِکسیب، ایبوپروفن، موترین، ناپروکسن) ",
+    "ask": "در طول 30 روز گذشته، آیا داروهایی زیر را حداقل 3 بار در هفته مصرف کرده‌اید؟ (ژلوفن، نوافن، سِلِکسیب، ایبوپروفن، موترین، ناپروکسن) ",
     "options": [
       "بله",
       "خیر",
@@ -332,5 +354,11 @@
       "خیر",
       "نمیدانم"
     ]
+  },
+  "Range_test_data": {
+    "max": 10,
+    "min": 0,
+    "step": 1,
+    "defaultValue": 0
   }
 }

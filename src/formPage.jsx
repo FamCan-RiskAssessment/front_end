@@ -6,6 +6,9 @@ import { permExtractor, fetchDataGET, fetchDataDELETE, formTypeChecker } from ".
 import "./client_forms.css"
 import ToastProvider from "./toaster";
 import { useToast } from "./toaster";
+import RangeBox from "./rangeInp";
+
+import part3 from './questions/P3.json'
 
 function FormsPage() {
   const [forms, setForms] = useState([]);
@@ -20,6 +23,7 @@ function FormsPage() {
   const [page, setPage] = useState(1)
   const [pagiPrev, setPagiPrev] = useState(false)
   const [PagiNext, setPagiNext] = useState(false)
+  const [pageCount, setPageCount] = useState(0)
 
   const nextPage = () => {
     if (PagiNext)
@@ -74,6 +78,7 @@ function FormsPage() {
         setDeletedForm(0)
         setPagiPrev(json.data.pagination.hasPrevPage)
         setPagiNext(json.data.pagination.hasNextPage)
+        setPageCount(json.data.pagination.totalPages)
         setLoading(false);
       })
       .catch((err) => {
@@ -97,6 +102,7 @@ function FormsPage() {
         setForms(json.data.data || []); // assuming API returns { data: [...] }
         setPagiPrev(json.data.pagination.hasPrevPage)
         setPagiNext(json.data.pagination.hasNextPage)
+        setPageCount(json.data.pagination.totalPages)
         setLoading(false);
       })
       .catch((err) => {
@@ -235,10 +241,13 @@ function FormsPage() {
             }
 
           </div>
-          <div className="btn_holder_next_prev aligner">
-            <button className="btn_submit space-UD" onClick={nextPage}>صفحه ی بعدی</button>
-            <button className="btn_submit space-UD" onClick={prevPage}>صفحه ی قبلی</button>
-          </div>
+          {pageCount > 1 ? (
+            <div className="btn_holder_next_prev aligner">
+              <button className="btn_submit space-UD" onClick={nextPage}>صفحه ی بعدی</button>
+              <button className="btn_submit space-UD" onClick={prevPage}>صفحه ی قبلی</button>
+            </div>
+          ) : null}
+
         </div>
 
       </div>
@@ -260,7 +269,7 @@ function FormsPage() {
           </div>
         </div>
       )}
-
+      <RangeBox data={part3.Range_test_data}></RangeBox>
     </>
   );
 }

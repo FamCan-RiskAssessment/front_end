@@ -563,5 +563,12 @@
     ],
     "name": "multiSmokeTypeCurrent",
     "required": true
+  },
+  "Fam_lung_desc": {
+    "engName": "famLungCanDesc",
+    "placeHolder": "نسبت",
+    "inpName": "نسبت آنها را بنویسید : ",
+    "type": "number",
+    "condition": "if currentSmoking == 'بله'"
   }
 }
