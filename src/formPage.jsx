@@ -269,7 +269,6 @@ function FormsPage() {
           </div>
         </div>
       )}
-      <RangeBox data={part3.Range_test_data}></RangeBox>
     </>
   );
 }

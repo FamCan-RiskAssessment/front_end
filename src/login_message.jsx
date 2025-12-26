@@ -113,8 +113,8 @@ function LoginMessage() {
               <input type="text" name="message" id="message" placeholder="xxxxx" value={message} onChange={(e) => setMessage(e.target.value)} />
             </div>
             <div className="desc">
-              <span>کدی به شماره تلفن شما ارسال شد لطفاآن را وارد کنید.</span>
-              <span>{minutes}:{seconds}</span>
+              <span>کدی به شماره تلفن شما ارسال شد لطفا آن را وارد کنید.</span>
+              <span> &nbsp; {minutes}:{seconds}</span>
             </div>
             <button className="btn_login">ورود</button>
             {minutes == "00" && seconds == "00" && (

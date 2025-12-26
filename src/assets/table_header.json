@@ -205,12 +205,12 @@
   },
   {
     "key": "leavePestan",
-    "label": "ترک پستان",
+    "label": "عمل برداشتن پستان",
     "gender": 2
   },
   {
     "key": "leaveTokhmdan",
-    "label": "ترک تخمدان",
+    "label": "عمل برداشتن تخمدان",
     "gender": 2
   },
   {
@@ -409,5 +409,85 @@
   {
     "key": "lungDiseaseHistory",
     "label": "بیماری مزمن ریوی"
+  },
+  {
+    "key": "formType",
+    "label": "نوع طرح"
+  },
+  {
+    "key": "smokePastAvg",
+    "label": "  نخ سیگار در روز (سر قلیان) گذشته"
+  },
+  {
+    "key": "smokeCurrentAvg",
+    "label": "  نخ سیگار در روز (سر قلیان) حال"
+  },
+  {
+    "key": "bronshit",
+    "label": "سابقه ی برونشیت"
+  },
+  {
+    "key": "fibroz",
+    "label": "سابقه ی فیبروز"
+  },
+  {
+    "key": "lungill",
+    "label": "سابقه ی بیماری ریوی حاد"
+  },
+  {
+    "key": "Csig",
+    "label": "سیگار در حال "
+  },
+  {
+    "key": "CsigBarg",
+    "label": "سیگار برگ حال"
+  },
+  {
+    "key": "Cpip",
+    "label": "پیپ حال"
+  },
+  {
+    "key": "Cghel",
+    "label": "قلیان حال"
+  },
+  {
+    "key": "Cchop",
+    "label": "چپق حال"
+  },
+  {
+    "key": "Cteryak",
+    "label": "تریاک حال"
+  },
+  {
+    "key": "Psig",
+    "label": "سیگار گذشته"
+  },
+  {
+    "key": "PsigBarg",
+    "label": "سیگار برگ گذشته "
+  },
+  {
+    "key": "Ppip",
+    "label": "پیپ گذشته"
+  },
+  {
+    "key": "Pghel",
+    "label": "قلیان گذشته"
+  },
+  {
+    "key": "Pchop",
+    "label": "چپق گذشته"
+  },
+  {
+    "key": "Pteryak",
+    "label": "تریاک گذشته"
+  },
+  {
+    "key": "PelecSig",
+    "label": "سیگار الکترونیکی گذشته"
+  },
+  {
+    "key": "CelecSig",
+    "label": "سیگار الکترونیکی حال"
   }
 ]

@@ -21,7 +21,7 @@ import { APIURL } from "../utils/config";
 import { useToast } from "../toaster";
 import ToastProvider from "../toaster";
 import { fetchDataGET, isNumber, formatAndValidateJalali, CancerAdder, fetchDataPOSTImg, persianMonths, fetchDataGETImg } from "../utils/tools";
-import "./form_elementsNavid.css"
+// import "./form_elementsNavid.css"
 import "../responsive_questionare.css"
 // import { set } from "animejs";
 function QuestionsNavid() {

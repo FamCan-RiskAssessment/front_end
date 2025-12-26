@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import NavBar from "./navBar";
 import "./patient_table.css";
-import { APIARR, APIURL } from "./utils/config";
+import { APIARR, APIARR_Navid, APIURL } from "./utils/config";
 import { fetchDataGET, fetchDataGETTab, fetchDataPOST, key_stage_matcher, stageMatcher, fetchDataGETImg, cancerTypeEx, relativeTypeEx, fetchDataDELETE } from "./utils/tools";
 import PERSIAN_HEADERS from "./assets/table_header.json"
 import { useLocation } from "react-router-dom";
@@ -82,12 +82,14 @@ export default function FilterableTable() {
   const [editingFormPart, setEditingFormPart] = useState(null); // Track which form part is being edited
   const [openApiSections, setOpenApiSections] = useState({}); // Track which API sections are open for each form {formId: [apiPart1, apiPart2, ...]}
   const [gender, setGender] = useState(1)
+  const [formType, setFormType] = useState(0)
+  // const [apiArray, setapiArray] = useState([])
   const [mode, setMode] = useState('')
   const { addToast } = useToast()
   const location = useLocation();
   const userPhone = location.state?.phone;
   // debugs
-
+  // console.log("we are running on this API : ", apiArray)
   const getFieldLabel = (key) => {
     console.log(gender_map[key])
     if (gender_map[key] == undefined || gender_map[key] == gender) {
@@ -96,6 +98,8 @@ export default function FilterableTable() {
 
     }
   };
+
+  console.log("this is the formType : ", formType)
 
 
   console.log("here it comes : ", data)
@@ -128,6 +132,7 @@ export default function FilterableTable() {
       }));
       if (apiPart == "basic") {
         setGender(response.data.gender)
+        setFormType(response.data.formType)
       }
     } catch (error) {
       console.error(`Error fetching ${apiPart} for form ${formId}:`, error);
@@ -143,7 +148,7 @@ export default function FilterableTable() {
   };
 
   // Function to toggle drawer and fetch data if not already loaded
-  const toggleDrawer = async (formId) => {
+  const toggleDrawer = async (formId, APIarray) => {
     const drawer = document.getElementById(`drawer-${formId}`);
     if (drawer) {
       const isCurrentlyOpen = drawer.classList.contains('open');
@@ -153,7 +158,8 @@ export default function FilterableTable() {
         setLoadingDetails(prev => ({ ...prev, [formId]: true }));
 
         // Fetch all API parts for this form
-        for (const apiPart of APIARR) {
+        for (const apiPart of APIarray) {
+
           if (!formDetails[formId] || !formDetails[formId][apiPart]) {
             await fetchFormPartDetails(formId, apiPart);
           }
@@ -466,6 +472,17 @@ export default function FilterableTable() {
       )
     );
   };
+
+
+
+  const APIGIVER = (typeF) => {
+    if (typeF == 1) {
+      return APIARR
+    } else {
+      return APIARR_Navid
+    }
+  }
+
   //  TO DO : Ask kian about that and let him change how data is managed
   const handleSave = () => {
     const updatedData = data.map(row =>
@@ -647,8 +664,16 @@ export default function FilterableTable() {
     "سوالات مصرف دارو",
     "سوالات سرطان فردی",
     "سوالات سرطان خانواده",
+    "سوالات سرطان ریه",
     "سوالات اطلاعات کامل فردی",
-    "سوالات سرطان ریه"
+
+  ];
+  const partNamesNavid = [
+    "اطلاعات شخصی",
+    "سوالات سرطان فردی",
+    "سوالات سرطان خانواده",
+    "سوالات سرطان ریه",
+    "سوالات اطلاعات کامل فردی"
   ];
 
   return (
@@ -697,7 +722,11 @@ export default function FilterableTable() {
               <div key={`form-${row.id || rowIndex}`} className="form_section_drawer">
                 <div
                   className="drawer_header"
-                  onClick={() => toggleDrawer(row.id)}
+                  onClick={() => {
+                    console.log(" row pain : ", row)
+                    let apiArray = row.formType == 1 ? APIARR : APIARR_Navid
+                    toggleDrawer(row.id, apiArray)
+                  }}
                 >
                   <h3 className="drawer_title">فرم {row.id || rowIndex + 1} - {row.name || "نامشخص"}</h3>
                   <div className="drawer_controls">
@@ -718,9 +747,9 @@ export default function FilterableTable() {
                   {loadingDetails[row.id] ? (
                     <p>در حال بارگذاری...</p>
                   ) : (
-                    APIARR.map((apiPart, partIndex) => {
+                    APIGIVER(row.formType).map((apiPart, partIndex) => {
                       const partData = formDetails[row.id]?.[apiPart] || {};
-
+                      console.log("I am going to hell ! : ", apiPart)
                       // Filter out metadata fields
                       const filteredData = {};
                       Object.keys(partData).forEach(key => {
@@ -729,14 +758,14 @@ export default function FilterableTable() {
                           filteredData[key] = partData[key];
                         }
                       });
-
+                      console.log("this is the data we are showing :  ", filteredData)
                       return (
                         <div key={apiPart} id={`form-${row.id}-section-${apiPart}`} className="api_part_drawer">
                           <div
                             className="api_part_header"
                             onClick={() => toggleApiSection(row.id, apiPart)}
                           >
-                            <h4 className="part_title">{partNames[partIndex] || `بخش ${partIndex + 1}`}</h4>
+                            <h4 className="part_title">{row.formType == 1 ? (partNames[partIndex] || `بخش ${partIndex + 1}`) : (partNamesNavid[partIndex] || `بخش ${partIndex + 1}`)}</h4>
                             <span className="api_part_arrow">
                               {isApiSectionOpen(row.id, apiPart) ? '▲' : '▼'}
                             </span>
@@ -834,6 +863,9 @@ export default function FilterableTable() {
                                     : convertToPersianText(value, key);
                                   if (gender_map[key] != undefined && gender_map[key] != gender) {
                                     return;
+                                  }
+                                  if (key == "formType") {
+                                    value = row.formType == 1 ? "بهار" : "نوید"
                                   }
                                   return (
                                     <div key={key} className="data_row">

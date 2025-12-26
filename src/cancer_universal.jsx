@@ -2,6 +2,11 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import InputBox from "./input_box";
 import Options from "./option";
 import Radio from "./radio";
+import RadioV2 from "./RadioV2";
+import InputBoxV2 from "./input_boxV2";
+import OptionsV2 from "./optionV2";
+import uploadSign from './V2Form/upload.svg'
+import trashSign from './V2Form/trashCan.svg'
 import { isNumber, fetchDataGET, fetchDataDELETE } from "./utils/tools";
 
 function CancerField({
@@ -53,7 +58,7 @@ function CancerField({
     const RelationFinder = (famrel) => {
         if (famrel !== undefined && typeof famrel == "string") {
             return (
-                <InputBox
+                <InputBoxV2
                     data_req={"false"}
                     data={data_Inp1}
                     valueSetter={setInp1}
@@ -62,7 +67,7 @@ function CancerField({
             )
         } else if (famrel !== undefined && famrel.length == 2) {
             return (
-                <Options
+                <OptionsV2
                     data_req={"false"}
                     data={data_Inp1}
                     valueSetter={setInp1}
@@ -344,7 +349,7 @@ function CancerField({
                 <div className="total_cancer_holder" ref={canUniRef}>
                     {data_Inp1 && RelationFinder(famrel)}
                     {data_Options && (
-                        <Options
+                        <OptionsV2
                             data_req={"false"}
                             data={data_Options}
                             valueSetter={handleOptChange}
@@ -354,7 +359,7 @@ function CancerField({
                         />
                     )}
                     {data_Inp2 && (
-                        <InputBox
+                        <InputBoxV2
                             data_req={"false"}
                             data={data_Inp2}
                             valueSetter={handleInp2Change}
@@ -363,7 +368,7 @@ function CancerField({
                         />
                     )}
                     {data_Radio && (
-                        <Radio
+                        <RadioV2
                             data_req={"false"}
                             data={data_Radio}
                             valueSetter={handleRadChange}
@@ -374,15 +379,22 @@ function CancerField({
                     <div className="tah_holder">
                         <div className="form_element">
                             <div className="total_file_uploader">
-                                <label htmlFor="file_uploader">عکس جواب پاتولوژی را بارگذاری کنید : </label>
-                                <input
-                                    id="file_uploader"
-                                    type="file"
-                                    className="file_uploader"
-                                    accept="image/*"
-                                    onChange={handleFileChange}
-                                // value={imageFile}
-                                />
+                                <label htmlFor="file_uploader" className="file-wrapper">
+                                    <input
+                                        id="file_uploader"
+                                        type="file"
+                                        className="file_uploader"
+                                        accept="image/*"
+                                        onChange={handleFileChange}
+                                    // value={imageFile}
+                                    />
+                                    <div className="file-ui">
+                                        <span className="icon">
+                                            <img src={uploadSign} alt="" />
+                                        </span>
+                                        <span className="text">لطفا عکس پاتولوژی خود را آپلود کنید</span>
+                                    </div>
+                                </label>
                                 {(imagePreviewUrls || []).map((ipu, index) => {
                                     return (
                                         < div style={{ marginTop: "0.5rem", textAlign: "center" }}>
@@ -468,13 +480,12 @@ function CancerField({
                                         ) : null}
                                     </td>
                                     <td>
-                                        <button
-                                            type="button"
-                                            className="btn_question"
-                                            onClick={() => handleDeleteRow(index, row.id)}
-                                        >
-                                            حذف
-                                        </button>
+                                        <div className="deleteRow" onClick={() => handleDeleteRow(index, row.id)}>
+                                            <span>حذف</span>
+                                            <span>
+                                                <img src={trashSign} alt="" />
+                                            </span>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

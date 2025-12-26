@@ -64,9 +64,9 @@ td {
     width: 95%;
     max-width: 100%;
     margin: 0 auto;
-    border: 1px solid #ddd;
+    /* border: 1px solid #ddd; */
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
 }
 
 .table_holder table {
@@ -74,15 +74,15 @@ td {
     width: 100%;
     min-width: 600px;
     /* Ensure table has minimum width for readability */
-    border-collapse: collapse;
+    /* border-collapse: collapse; */
 }
 
 .table_holder thead th {
     position: sticky;
     top: 0;
-    background-color: #f8f5ff;
+    background-color: #f8f8f8;
     z-index: 10;
-    border-bottom: 2px solid #ddd;
+    /* border-bottom: 2px solid #ddd; */
 }
 
 .table_holder tbody tr {

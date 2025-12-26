@@ -13,7 +13,7 @@ function LandNav() {
             </div>
             <div className="btns">
                 <button className="callsup">تماس با پشتیبانی</button>
-                <button className="enter hover1" onClick={() => navigate("/attention")}>ورود</button>
+                <button className="enter hover1" onClick={() => navigate("/gate")}>ورود</button>
             </div>
         </div>
     )

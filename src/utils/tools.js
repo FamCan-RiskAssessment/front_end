@@ -111,6 +111,9 @@ export const fetchDataGETTab = async (endpoint, token_auth) => {
   });
 
   const data = await res.json();
+  if (res.ok && "formType" in data.data) {
+    delete data.data.formType
+  }
   // if (!res.ok) throw new Error(data.message || "Request failed");
 
   return data;

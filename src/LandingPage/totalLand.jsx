@@ -50,7 +50,7 @@ function LandingPage() {
                 <div className="gate">
                     <div className="gate-bell">
                         <h2>ارزیابی ریسک سرطان هوشمند و محرمانه</h2>
-                        <button className="gate-enter hover1" onClick={() => navigate("/attention")}>شروع تست</button>
+                        <button className="gate-enter hover1" onClick={() => navigate("/gate")}>شروع تست</button>
                     </div>
                     <div className="item1B1">
                         <img src={canlogo} alt="canlogo" />
