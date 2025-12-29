@@ -63,6 +63,7 @@
     flex-direction: column;
     align-content: center;
     align-items: center;
+    gap: 2rem;
 }
 
 .form_cardV3 {

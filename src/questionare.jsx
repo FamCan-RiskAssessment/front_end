@@ -11,6 +11,8 @@ import OptionsV2 from "./optionV2";
 import InputBoxV2 from "./input_boxV2";
 import Loader from "./utils/loader";
 import RangeBox from "./rangeInp";
+import prevSign from './V2Form/arrow_right.svg'
+import homeSign from './V2Form/home.svg'
 import part1 from './questions/P1.json'
 import part2 from './questions/P2.json'
 import part3 from './questions/P3.json'
@@ -183,17 +185,8 @@ function Questions() {
     const presetform = raw ? JSON.parse(raw) : null;
     // const id_form = id_form_raw ? JSON.parse(id_form_raw) : null;
     console.log("this is the fetched preset form  : ", presetform)
-    // console.log("here is the form id from above : ", typeof id_form)
+    console.log("here is the gender from: ", gender)
     // console.log("there is a data that you neeeed : ", selfCancersPreData)
-    // useEffect(() => {
-    //     let token = localStorage.getItem("token")
-    //     const fucking_func = async () => {
-    //         const res = await fetchDataGET(`enum/genders`, token);
-    //         console.log("the fucking Enums : ", res)
-    //     }
-    //     // let sele = formRefs[1].current
-    //     fucking_func()
-    // }, [])
 
     useEffect(() => {
         let token = localStorage.getItem("token")
@@ -306,7 +299,11 @@ function Questions() {
                                 }
                                 // });
                             } else if (fE.name == pfk) {
-                                fE.value = presetform[pfk]
+                                if (fE.nodeName == "SELECT" && (presetform[pfk] == null || presetform[pfk] == "")) {
+                                    fE.value = "انتخاب کنید"
+                                } else {
+                                    fE.value = presetform[pfk]
+                                }
                             }
                         } else if (fE.name == pfk && fE.type == "radio") {
                             if (fE.getAttribute("FaVal") == presetform[pfk]) {
@@ -329,8 +326,7 @@ function Questions() {
                             } else if (fE.getAttribute("FaVal") == "خیر" && (presetform[pfk] == false || presetform[pfk] == "false")) {
                                 fE.checked = true
                             }
-                        } else if (!(fE.name in presetform) && fE.getAttribute("FaVal") != "بله" && fE.getAttribute("FaVal") != "خیر") { //&& localStorage.getItem("imperfectForm") == false
-                            // console.log("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN: ", fE.name)
+                        } else if (fE.name == pfk && presetform[pfk] == null && fE.getAttribute("FaVal") != "بله" && fE.getAttribute("FaVal") != "خیر") { //&& localStorage.getItem("imperfectForm") == false
                             fE.checked = true
                         } else if (fE.name == pfk && fE.type == "file") {
                             // Handle file inputs - presetform value is a URL to an image
@@ -765,7 +761,7 @@ function Questions() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const APIARR = ["basic", "generalhealth", "mamography", "cancer", "familycancer", "lungcancer", "contact"];
+        const APIARR = ["basic", "generalhealth", "mamography", "cancer", "listfamilycancer", "lungcancer", "contact"];
 
         const form = formRefs[`${step}`].current;
         if (!form) return;
@@ -1225,14 +1221,23 @@ function Questions() {
     return (
         <>
             <div className="question_container">
-                <h2 className="question_title">سامانه ریسک سنجی آنلاین</h2>
-                <div className="progress_text">بخش {step}/7</div>
-                <div className="progress_bar_container">
-                    <div
-                        className="progress_bar_fill"
-                        style={{ width: `${(step / 7) * 100}%` }}
-                    ></div>
+                {/* Help bar with three parts - visible on mobile */}
+                <div
+                    className="help_bar_container"
+                    style={{ "--progress": `${(step / 7) * 100}%` }}
+                >
+                    <div className="help_bar_parts_container">
+                        <div className="help_bar_part1" onClick={prever}>
+                            <img src={prevSign} alt="arrow_img" />
+                            <span>قبلی</span>
+                        </div>
+                        <div className="help_bar_part2">فرم ریسک سنجی</div>
+                        <div className="help_bar_part3" onClick={() => setOpenModalConf(true)}>
+                            <img src={homeSign} alt="home" />
+                        </div>
+                    </div>
                 </div>
+
                 <div className="question_form_container" ref={questionContainerRef}>
                     {/* form part 1*/}
 
@@ -1446,7 +1451,7 @@ function Questions() {
 
                         {/* <RadioV2 data_req={"true"} data={part7.radio_lungCancerHistory} class_change1={"P2"} class_change2={"P2_inner"}></RadioV2> */}
                         <RadioV2 data_req={"true"} data={part7.radio_lungCancerFamily} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setFirstDeg}></RadioV2>
-                        <InputBoxV2 data_req={"false"} data={part7.Fam_lung_desc} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(firstDeg)}></InputBoxV2>
+                        {/* <InputBoxV2 data_req={"false"} data={part7.Fam_lung_desc} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(firstDeg)}></InputBoxV2> */}
 
                         <RadioV2 data_req={"true"} data={part7.radio_bronshit} class_change1={"P2"} class_change2={"P2_inner"}></RadioV2>
                         <RadioV2 data_req={"true"} data={part7.radio_fibroz} class_change1={"P2"} class_change2={"P2_inner"} ></RadioV2>
@@ -1533,6 +1538,47 @@ function Questions() {
                             }
                         }}>بعدی</button>
                     )}
+                </div>
+                {/* Bottom helper bar with 2 parts - visible on mobile */}
+                <div className="bottom_helper_container">
+                    <div className="bottom_helper_parts_container">
+                        {/* <div className="bottom_helper_part1"></div> */}
+                        <div className="bottom_helper_part2">                    {step == 7 ? (
+                            <button className="btn_question" onClick={(e) => {
+
+                                let passOno = checkReq(formRefs[step], step)
+                                if (!typeErr && !typeErr2 && !typeErr3 && passOno) {
+                                    handleSubmit(e)
+                                    addToast({
+                                        title: 'پاسخ های شما با موفقیت ذخیره شد',
+                                        type: 'success',
+                                        duration: 4000
+                                    })
+                                    navigate("/forms")
+                                } else {
+                                    addToast({
+                                        title: 'لطفا فیلد ها را به درستی پر کنید',
+                                        type: 'error',
+                                        duration: 4000
+                                    })
+                                }
+
+
+                            }}>ارسال</button>
+                        ) : (
+                            <button className="btn_question" onClick={(e) => {
+                                // Update attentionCorrect for step 3 before submission if there's a catch question
+                                if (step === 3 && catchQuestions[3]) {
+                                    const isCorrect = validateCatchQuestion(3);
+                                    setStep3AttentionCorrect(isCorrect ? 1 : 0);
+                                }
+                                let reqpass = checkReq(formRefs[step], step)
+                                if (reqpass) {
+                                    handleSubmit(e)
+                                }
+                            }}>بعدی</button>
+                        )}</div>
+                    </div>
                 </div>
                 <button className="support_call ">تماس با پشتیبانی</button>
                 <button className="questionExit" onClick={() => setOpenModalConf(true)}>

@@ -16,7 +16,7 @@ function RangeBox({ data_req, data, valueSetter, class_change1, class_change2, r
             <div className={`form_element ${class_change1}`} style={relation ? null : { display: "none" }}>
                 <div className="rangeBox_holder">
                     <label htmlFor={data.engName}>{data.inpName}</label>
-                    <input data_req={data_req} type="range" name={data.engName} value={vol} onChange={(e) => setVol(e.target.value)} max={99} min={0} step={1} defaultValue={0} className={class_change2} />
+                    <input data_req={data_req} type="range" name={data.engName} value={vol} onChange={(e) => setVol(e.target.value)} max={data.lim != undefined ? data.lim : 99} min={0} step={1} defaultValue={0} className={class_change2} />
                     <div className="number">
                         <span>عدد انتخابی :  {vol}</span>
                     </div>

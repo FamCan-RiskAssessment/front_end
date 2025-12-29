@@ -77,8 +77,9 @@ function Login_pageV3() {
 (فازهای اول و دوم پروژه ملی پیشگیری فردمحور سرطان). کد طرح: 1404-1-107-91678" className="sponsor-logo" />
                     </div>
                     <div className="middle_form">
-                        <h3 className="login_title clear_title">اعتبارسنجي سامانة پيشگيري فردمحور از
-                            سرطانهاي پستان، تخمدان، روده و ريه</h3>
+                        <h3 className="login_title clear_title">
+                            سامانه ی ریسک سنجی و تشخیص سرطان
+                        </h3>
                         <div className="form_card">
                             <Phone color="#0066ff" size={128} />
                             <h3 className="login_title">برای شروع، شماره تلفن خود را وارد کنید.</h3>

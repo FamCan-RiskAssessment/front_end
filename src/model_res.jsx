@@ -89,6 +89,14 @@ const ModelResults = () => {
                             [model_name]: res.data.AbsRisk
                         }
                     }));
+                } else if (model_name == "plco") {
+                    setRisks(prev => ({
+                        ...prev,
+                        [form_id]: {
+                            ...prev[form_id],
+                            [model_name]: res.data.plcom2012_risk_percent
+                        }
+                    }));
                 } else {
                     setRisks(prev => ({
                         ...prev,

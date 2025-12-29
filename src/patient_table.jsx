@@ -771,7 +771,7 @@ export default function FilterableTable() {
                             </span>
                           </div>
 
-                          <div className={`api_part_content ${isApiSectionOpen(row.id, apiPart) ? 'open' : ''}`}>
+                          <div className={`api_part_content can ${isApiSectionOpen(row.id, apiPart) ? 'open' : ''}`}>
                             {/* Add special buttons for cancer sections */}
                             {apiPart === "cancer" && (
                               <>
@@ -864,6 +864,11 @@ export default function FilterableTable() {
                                   if (gender_map[key] != undefined && gender_map[key] != gender) {
                                     return;
                                   }
+
+                                  if (key == "cancers" || key == "familyCancers") {
+                                    return;
+                                  }
+
                                   if (key == "formType") {
                                     value = row.formType == 1 ? "بهار" : "نوید"
                                   }

@@ -118,7 +118,7 @@ function FormsPage() {
       "generalhealth",
       "mamography",
       "cancer",
-      "familycancer",
+      "listfamilycancer",
       "contact",
       "lungcancer"
     ];
@@ -243,8 +243,8 @@ function FormsPage() {
           </div>
           {pageCount > 1 ? (
             <div className="btn_holder_next_prev aligner">
-              <button className="btn_submit space-UD" onClick={nextPage}>صفحه ی بعدی</button>
               <button className="btn_submit space-UD" onClick={prevPage}>صفحه ی قبلی</button>
+              <button className="btn_submit space-UD" onClick={nextPage}>صفحه ی بعدی</button>
             </div>
           ) : null}
 

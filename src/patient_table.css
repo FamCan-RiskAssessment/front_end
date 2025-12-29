@@ -90,6 +90,11 @@ td {
     background-color: #eee;
 }
 
+
+.role_table:nth-of-type(even) {
+    background-color: #f0e6f5;
+}
+
 .table_holder tbody tr:nth-of-type(odd) {
     background-color: #f9f9f9;
 }
@@ -356,6 +361,10 @@ td {
     max-height: fit-content;
     /* Adjust as needed based on content */
 }
+
+/* .api_part_content.can {
+    padding: 1rem;
+} */
 
 .drawer_controls {
     display: flex;

@@ -50,7 +50,7 @@ function RadioV2({ data_req, data, class_change1, value, class_change2, valueSet
                                         // Handle the enum lookup in a separate async function
                                         // setTest(e.target.value)
                                         const handleEnumChange = async () => {
-                                            const enumId = await EnumTaker(`enum/${Enum}`, e.target.id);
+                                            const enumId = await EnumTaker(`enum/${Enum}`, e.target.value);
                                             console.log("enumIdenumIdenumIdenumIdenumIdenumId : ", enumId)
                                             valueSetter?.(enumId);
                                         };
