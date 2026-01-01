@@ -1431,10 +1431,10 @@ function QuestionsNavid() {
                         }}>بعدی</button>
                     )}
                 </div>
-                <button className="support_call ">تماس با پشتیبانی</button>
+                {/* <button className="support_call ">تماس با پشتیبانی</button>
                 <button className="questionExit" onClick={() => setOpenModalConf(true)}>
                     خروج
-                </button>
+                </button> */}
 
                 <div className="bottom_helper_container">
                     <div className="bottom_helper_parts_container">
@@ -1493,7 +1493,7 @@ function QuestionsNavid() {
                     </div>
                     <div className="roles">
                         <button className="btn-add-new" onClick={() => {
-                            navigate("/forms")
+                            navigate("/formsNavid")
                             setOpenModalConf(false)
                         }}>بلی</button>
                         <button className="delete_btn2" onClick={() => setOpenModalConf(false)}>خیر</button>

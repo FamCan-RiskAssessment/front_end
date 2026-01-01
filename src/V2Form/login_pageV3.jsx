@@ -81,7 +81,7 @@ function Login_pageV3() {
                             سامانه ی ریسک سنجی و تشخیص سرطان
                         </h3>
                         <div className="form_card">
-                            <Phone color="#0066ff" size={128} />
+                            <Phone color="#cf4776" size={128} />
                             <h3 className="login_title">برای شروع، شماره تلفن خود را وارد کنید.</h3>
                             <form onSubmit={(e) => form_submitted(e)} className="login_form">
                                 <div className="inp">

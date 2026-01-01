@@ -136,7 +136,7 @@
 }
 
 .login_form>button {
-    background-color: #0066ff;
+    background-color: var(--color-main);
     color: white;
     width: 100%;
     padding: 0.5rem;
@@ -149,7 +149,7 @@
 }
 
 .login_form>.btn_login:hover {
-    background-color: #0052cc;
+    background-color: var(--color-hover);
 }
 
 .btn_disabled {
@@ -178,7 +178,7 @@
     position: fixed;
     bottom: 20px;
     left: 20px;
-    background: #0066ff;
+    background: var(--color-main);
     color: white;
     padding: 0.8rem 1.2rem;
     border-radius: 12px;
@@ -190,7 +190,7 @@
 }
 
 .support_call:hover {
-    background: #0052cc;
+    background: var(--color-hover);
 }
 
 .support_call2 {
