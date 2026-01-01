@@ -85,7 +85,10 @@ function RoleMaker() {
   }
   const permissions = []
   permData.data.map((p, index) => {
-    permissions[index] = [p.name, p.id]
+    permissions[index] = {
+      showName: p.name,
+      engName: p.id
+    }
     // console.log(p)
   })
   const check_box_data = {
@@ -116,7 +119,7 @@ function RoleMaker() {
         permissionIDs: permArray.map((id) => Number(id)), // ensure numbers
       };
 
-      const res = await fetch("http://185.231.115.28:8080/admin/role", {
+      const res = await fetch(`http://${APIURL}/admin/role`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -140,18 +143,33 @@ function RoleMaker() {
         data = {};
       }
 
+
       console.log("Response status:", res.status);
       console.log("Response body:", data);
 
       if (!res.ok) {
-        throw new Error(data.message || "Request failed");
+        if (res.status == 409) {
+          addToast({
+            title: "لطفا نقش های تکراری وارد نکنید",
+            type: 'error',
+            duration: 4000
+          })
+        } else {
+          addToast({
+            title: "مشکلی پیش آمده است لطفا دوباره تلاش کنید",
+            type: 'error',
+            duration: 4000
+          })
+        }
       }
 
       // navigate("/DashBoard");
     } catch (err) {
-      console.error("Error in collectAndSend:", err);
-      setError(err.message);
-      setTimeout(() => setError(""), 3000);
+      // console.error("Error in collectAndSend:", err);
+      // setError(err.message);
+      // setTimeout(() => setError(""), 3000);
+
+
     }
   };
 
@@ -200,7 +218,8 @@ function RoleMaker() {
               <CheckBox
                 data={check_box_data}
                 classChange1={"checkBox_column"}
-                classChange2={"width_and_centerer"}
+                classChange2={"width_and_centererV2"}
+                roleMaker_class={"columner"}
                 checker={permChooser}
               />
             </div>

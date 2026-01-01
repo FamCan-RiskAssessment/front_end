@@ -348,3 +348,21 @@ div>.identifiers {
   background-color: #ff2f2f;
   color: white;
 }
+
+
+
+.columner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  width: calc(33.33% - 1rem);
+  justify-content: center;
+}
+
+.width_and_centererV2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}

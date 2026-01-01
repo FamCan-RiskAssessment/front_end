@@ -29,7 +29,6 @@ function FileUploader({ data, class_change1, class_change2, handleFileChange, re
 
     const handleFileChangeWithPreview = (e) => {
         const files = e.target.files; // Get all selected files
-
         if (files && files.length > 0) {
             const newPreviews = [];
             const newFiles = [];
@@ -85,7 +84,10 @@ function FileUploader({ data, class_change1, class_change2, handleFileChange, re
                         ref={fileInputRef}
                         className={`file_uploader ${class_change2}`}
                         accept="image/*"
-                        onChange={handleFileChangeWithPreview}
+                        onChange={(e) => {
+                            handleFileChangeWithPreview(e)
+                            console.log(e)
+                        }}
                         multiple  // Add this to allow multiple file selection
                     />
                     <div className="image_holder_fileUploader">

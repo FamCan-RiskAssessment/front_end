@@ -15,6 +15,7 @@ function CancerField({
     data_Options,
     data_Radio,
     data_Inp2,
+    data_file,
     relation: propRelation = true,
     Enum,
     canArrFunc,
@@ -189,8 +190,11 @@ function CancerField({
 
     const handleFileChange = useCallback((e) => {
         const files = e.target.files; // Get all selected files
+        console.log("###################################### : ")
+
         if (!files || files.length === 0) return;
 
+        console.log("####### : you know that I am here ? : ", e.target)
         // Process all selected files
         const newPreviewUrls = [];
         const newFiles = [];
@@ -379,13 +383,14 @@ function CancerField({
                     <div className="tah_holder">
                         <div className="form_element">
                             <div className="total_file_uploader">
-                                <label htmlFor="file_uploader" className="file-wrapper">
+                                <label htmlFor={data_file.name} className="file-wrapper">
                                     <input
-                                        id="file_uploader"
+                                        id={data_file.name}
                                         type="file"
-                                        className="file_uploader"
+                                        className={`file_uploader`}
                                         accept="image/*"
                                         onChange={handleFileChange}
+
                                     // value={imageFile}
                                     />
                                     <div className="file-ui">
@@ -453,14 +458,16 @@ function CancerField({
                                             // Handle multiple images in a container
                                             <div className="multiple-images-container">
                                                 {row.image.map((img, imgIndex) => (
-                                                    <img
-                                                        key={imgIndex}
-                                                        src={img}
-                                                        alt={`تصویر ${imgIndex + 1}`}
-                                                        onError={(e) => {
-                                                            e.target.style.display = "none";
-                                                        }}
-                                                    />
+                                                    <a href={img} download>
+                                                        <img
+                                                            key={imgIndex}
+                                                            src={img}
+                                                            alt={`تصویر ${imgIndex + 1}`}
+                                                            onError={(e) => {
+                                                                e.target.style.display = "none";
+                                                            }}
+                                                        />
+                                                    </a>
                                                 ))}
                                             </div>
                                         ) : row.image ? (

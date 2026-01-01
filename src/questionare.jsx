@@ -251,7 +251,7 @@ function Questions() {
 
     // console.log("33333333333333333333333333333333333333333333333333333333333333 : ", selfCancers)
 
-    console.log("SAMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR", loading)
+    console.log("SAMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR", gender)
 
 
 
@@ -398,6 +398,7 @@ function Questions() {
 
     useEffect(() => {
         // Only update states if the properties exist in presetform
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> : I was today years old : ")
         if (presetform != null) {
             if ('gender' in presetform) setGender(presetform["gender"])
             if ('drinksAlcohol' in presetform) setIsAlchol(presetform["drinksAlcohol"])
@@ -435,10 +436,11 @@ function Questions() {
 
         }
 
-    }, [loading])
+    }, [])
 
     useEffect(() => {
         console.log("After has changed lilililililil : ", after, loading)
+        setLoading(false)
         // setIsAlchol(true)
     }, [after])
 
@@ -610,6 +612,7 @@ function Questions() {
     }
 
     const relator_gen = (state) => {
+        console.log("here choosing is important : ", state)
         if (state == 2) {
             return true
         } else {
@@ -1218,9 +1221,24 @@ function Questions() {
     // }
     console.log("preset form for the fuck : ", presetform)
 
+    // if (loading) {
+    //     return <Loader></Loader>
+    // }
+
     return (
         <>
             <div className="question_container">
+                {/* <div className="desktop_helper">
+                    <h2 className="question_title">سامانه ریسک سنجی آنلاین</h2>
+                    <div className="progress_text">بخش {step}/7</div>
+                    <div className="progress_bar_container">
+                        <div
+                            className="progress_bar_fill"
+                            style={{ width: `${(step / 7) * 100}%` }}
+                        ></div>
+                    </div>
+                </div> */}
+
                 {/* Help bar with three parts - visible on mobile */}
                 <div
                     className="help_bar_container"
@@ -1404,30 +1422,30 @@ function Questions() {
                         <div className="form_title">{part4.title}</div>
 
                         <RadioV2 data_req={"true"} class_change1={"P2"} class_change2={"P2_inner"} data={part4.radio_opts_cancer} valueSetter={setIsCancer}></RadioV2>
-                        <CancerField data_req={selfCancersPreData != null ? "false" : "true"} data_Inp1={null} data_Options={part4.cancerCard.cancerType} data_Radio={null} data_Inp2={part4.cancerCard.cancerAge} relation={relator_R(isCancer)} Enum={"cancer-types"} canArrFunc={null} canArr={null} senderFunc={selfCancerSender} preData={selfCancersPreData}></CancerField>
+                        <CancerField data_req={selfCancersPreData != null ? "false" : "true"} file_up={"not_the_target"} data_Inp1={null} data_Options={part4.cancerCard.cancerType} data_Radio={null} data_Inp2={part4.cancerCard.cancerAge} data_file={part4.cancerCard.attachment} relation={relator_R(isCancer)} Enum={"cancer-types"} canArrFunc={null} canArr={null} senderFunc={selfCancerSender} preData={selfCancersPreData}></CancerField>
                     </form>
                     {/* form part 5 */}
 
                     <form ref={formRefs[5]} style={step == 5 ? null : { display: "none " }} className="question_form P2">
                         <div className="form_title">{part5.title}</div>
 
-                        <RadioV2 data_req={"true"} data={part5.radio_opts_childCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChildCncer} relation={relator_R(isChild)}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.childCard.childType} data_Inp2={part5.childCard.childCancerAge} data_Options={part5.childCard.childCancerType} data_Radio={part5.childCard.childLifeStatus} relation={relator_R(isChildCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={["پسر", "دختر"]}></CancerField>
+                        <RadioV2 data_req={"true"} data={part5.radio_opts_childCancer} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsChildCncer} relation={relator_R(isChild)}></RadioV2>
+                        <CancerField data_req={"true"} file_up={"target"} data_Inp1={part5.childCard.childType} data_Inp2={part5.childCard.childCancerAge} data_Options={part5.childCard.childCancerType} data_Radio={part5.childCard.childLifeStatus} data_file={part5.childCard.attachment} relation={relator_R(isChildCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={["پسر", "دختر"]}></CancerField>
 
-                        <RadioV2 data_req={"true"} data={part5.radio_opts_motherCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsMotherCncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.motherCard.motherName} data_Inp2={part5.motherCard.motherCancerAge} data_Options={part5.motherCard.motherCancerType} data_Radio={part5.motherCard.motherLifeStatus} relation={relator_R(isMotherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={"مادر"}></CancerField>
+                        <RadioV2 data_req={"true"} data={part5.radio_opts_motherCancer} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsMotherCncer}></RadioV2>
+                        <CancerField data_req={"true"} data_Inp1={part5.motherCard.motherName} data_Inp2={part5.motherCard.motherCancerAge} data_Options={part5.motherCard.motherCancerType} data_Radio={part5.motherCard.motherLifeStatus} data_file={part5.motherCard.attachment} relation={relator_R(isMotherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={"مادر"}></CancerField>
 
-                        <RadioV2 data_req={"true"} data={part5.radio_opts_fatherCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsFatherCncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.fatherCard.fatherName} data_Inp2={part5.fatherCard.fatherCancerAge} data_Options={part5.fatherCard.fatherCancerType} data_Radio={part5.fatherCard.fatherLifeStatus} relation={relator_R(isFatherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={"پدر"}></CancerField>
+                        <RadioV2 data_req={"true"} data={part5.radio_opts_fatherCancer} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsFatherCncer}></RadioV2>
+                        <CancerField data_req={"true"} data_Inp1={part5.fatherCard.fatherName} data_Inp2={part5.fatherCard.fatherCancerAge} data_Options={part5.fatherCard.fatherCancerType} data_Radio={part5.fatherCard.fatherLifeStatus} data_file={part5.fatherCard.attachment} relation={relator_R(isFatherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={"پدر"}></CancerField>
 
-                        <RadioV2 data_req={"true"} data={part5.radio_opts_bsCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsSibsCncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.siblingCard.siblingType} data_Inp2={part5.siblingCard.siblingCancerAge} data_Options={part5.siblingCard.siblingCancerType} data_Radio={part5.siblingCard.siblingLifeStatus} relation={relator_R(isSibsCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={["برادر", "خواهر"]}></CancerField>
+                        <RadioV2 data_req={"true"} data={part5.radio_opts_bsCancer} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsSibsCncer}></RadioV2>
+                        <CancerField data_req={"true"} data_Inp1={part5.siblingCard.siblingType} data_Inp2={part5.siblingCard.siblingCancerAge} data_Options={part5.siblingCard.siblingCancerType} data_Radio={part5.siblingCard.siblingLifeStatus} data_file={part5.siblingCard.attachment} relation={relator_R(isSibsCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={["برادر", "خواهر"]}></CancerField>
 
-                        <RadioV2 data_req={"true"} data={part5.radio_opts_ameAmoCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsUncAuntCncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.uncleAuntCard.uncleAuntType} data_Inp2={part5.uncleAuntCard.uncleAuntCancerAge} data_Options={part5.uncleAuntCard.uncleAuntCancerType} data_Radio={part5.uncleAuntCard.uncleAuntLifeStatus} relation={relator_R(isUncAuntCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={["عمه", "عمو"]}></CancerField>
+                        <RadioV2 data_req={"true"} data={part5.radio_opts_ameAmoCancer} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsUncAuntCncer}></RadioV2>
+                        <CancerField data_req={"true"} data_Inp1={part5.uncleAuntCard.uncleAuntType} data_Inp2={part5.uncleAuntCard.uncleAuntCancerAge} data_Options={part5.uncleAuntCard.uncleAuntCancerType} data_Radio={part5.uncleAuntCard.uncleAuntLifeStatus} data_file={part5.uncleAuntCard.attachment} relation={relator_R(isUncAuntCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={["عمه", "عمو"]}></CancerField>
 
-                        <RadioV2 data_req={"true"} data={part5.radio_opts_khaleDaeiCancer} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsUncAunt2Cncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.khaleDaeiCard.khaleDaeiType} data_Inp2={part5.khaleDaeiCard.khaleDaeiCancerAge} data_Options={part5.khaleDaeiCard.khaleDaeiCancerType} data_Radio={part5.khaleDaeiCard.khaleDaeiLifeStatus} relation={relator_R(isUncAunt2Cancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={["خاله", "دایی"]}></CancerField>
+                        <RadioV2 data_req={"true"} data={part5.radio_opts_khaleDaeiCancer} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsUncAunt2Cncer}></RadioV2>
+                        <CancerField data_req={"true"} data_Inp1={part5.khaleDaeiCard.khaleDaeiType} data_Inp2={part5.khaleDaeiCard.khaleDaeiCancerAge} data_Options={part5.khaleDaeiCard.khaleDaeiCancerType} data_Radio={part5.khaleDaeiCard.khaleDaeiLifeStatus} data_file={part5.khaleDaeiCard.attachment} relation={relator_R(isUncAunt2Cancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={["خاله", "دایی"]}></CancerField>
                     </form>
                     {/* form part 6 */}
                     <form ref={formRefs[6]} id="form6" style={step == 6 ? null : { display: "none" }} className="question_form P2">
@@ -1500,7 +1518,7 @@ function Questions() {
                     </form>
 
                 </div>
-                <div className="btn_holder_next_prev">
+                {/* <div className="btn_holder_next_prev">
                     <button className="btn_question" onClick={prever}>قبلی</button>
 
                     {step == 7 ? (
@@ -1538,7 +1556,7 @@ function Questions() {
                             }
                         }}>بعدی</button>
                     )}
-                </div>
+                </div> */}
                 {/* Bottom helper bar with 2 parts - visible on mobile */}
                 <div className="bottom_helper_container">
                     <div className="bottom_helper_parts_container">
@@ -1580,8 +1598,8 @@ function Questions() {
                         )}</div>
                     </div>
                 </div>
-                <button className="support_call ">تماس با پشتیبانی</button>
-                <button className="questionExit" onClick={() => setOpenModalConf(true)}>
+                {/* <button className="support_call ">تماس با پشتیبانی</button> */}
+                <button className="questionExit" style={{ display: "none" }} onClick={() => setOpenModalConf(true)}>
                     خروج
                 </button>
                 {openModalConf && (

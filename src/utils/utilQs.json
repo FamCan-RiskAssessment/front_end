@@ -1,0 +1,19 @@
+{
+    "fromSearch": {
+        "input_type": "input_text",
+        "inpName": "",
+        "type": "number",
+        "placeHolder": "جستجو",
+        "condition": "",
+        "engName": "formSearch"
+    },
+    "formSort": {
+        "ask": "",
+        "Oname": "formSort",
+        "options": [
+            "انتخاب کنید",
+            "قدیمی ترین ",
+            "جدید ترین "
+        ]
+    }
+}

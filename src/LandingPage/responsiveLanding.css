@@ -67,10 +67,11 @@
     .enter {
         font-weight: unset;
         font-size: unset;
+        padding: 0.5rem 1rem;
     }
 
     .callsup {
-        font-size: unset;
+        font-size: 12px;
     }
 
     .btns {
@@ -92,7 +93,12 @@
     }
 
     .title-famcan {
-        font-size: 16px;
+        font-size: 12px !important;
+    }
+
+    .logo>img {
+        width: 3rem;
+        height: 3rem;
     }
 }
 
@@ -134,10 +140,12 @@
     .enter {
         font-weight: unset;
         font-size: unset;
+        padding: 0.5rem 1rem;
+
     }
 
     .callsup {
-        font-size: unset;
+        font-size: 12px;
     }
 
     .btns {
@@ -159,6 +167,11 @@
     }
 
     .title-famcan {
-        font-size: 16px;
+        font-size: 12px !important;
+    }
+
+    .logo>img {
+        width: 3rem;
+        height: 3rem;
     }
 }

@@ -1,7 +1,7 @@
 .forms-page-wrapper {
   min-height: 100vh;
   padding: 2rem;
-  background: linear-gradient(135deg, #f8f5ff, #e5d4f9);
+  background: #f1f1f1;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -17,14 +17,14 @@
 }
 
 .forms-title {
-  font-size: 2rem;
-  color: #4b006e;
+  font-size: 1rem;
+  color: var(--color-main);
   margin-bottom: 1rem;
   text-align: center;
 }
 
 .no-forms-text {
-  color: #7a4ca0;
+  color: var(--color-main);
   text-align: center;
   margin: 1rem 0;
 }
@@ -57,7 +57,7 @@
 }
 
 .btn-view-form {
-  background-color: #7a4ca0;
+  /* background-color: #eee; */
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 0.8rem;
@@ -67,7 +67,7 @@
 }
 
 .btn-view-form:hover {
-  background-color: #9a5cc0;
+  /* background-color: #ee; */
   transform: scale(1.05);
 }
 
