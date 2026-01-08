@@ -25,3 +25,24 @@ export const formStatusLabels = {
     6: "آماده محاسبه",
     7: "محاسبه شده"
 }
+
+export const statusAPIs = {
+    1: "",
+    2: "",
+    3: "request-response",
+    4: "request-documents",
+    5: "reject",
+    6: "accept",
+    7: ""
+}
+
+
+export const stateColors = {
+    1: "#8f005a",
+    2: "#c00000",
+    3: "#ffc000",
+    4: "#00b050",
+    5: "#ccc",
+    6: "#00b0f0",
+    7: "#0070c0"
+}

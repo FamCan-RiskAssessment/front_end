@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import NavBar from "./navBar";
 import "./patient_table.css";
-import { APIARR, APIARR_Navid, APIURL } from "./utils/config";
-import { fetchDataGET, fetchDataGETTab, fetchDataPOST, key_stage_matcher, stageMatcher, fetchDataGETImg, cancerTypeEx, relativeTypeEx, fetchDataDELETE } from "./utils/tools";
+import { APIARR, APIARR_Navid, APIURL, formStatusLabels, statusAPIs, stateColors } from "./utils/config";
+import { fetchDataGET, fetchDataGETTab, fetchDataPOST, key_stage_matcher, stageMatcher, fetchDataGETImg, cancerTypeEx, relativeTypeEx, fetchDataDELETE, activeStats, fetchDataPUT } from "./utils/tools";
 import PERSIAN_HEADERS from "./assets/table_header.json"
 import { useLocation } from "react-router-dom";
 import { useToast } from "./toaster";
@@ -62,6 +62,8 @@ export default function FilterableTable() {
   const [pagiNext, setPagiNext] = useState(false)
   const [selectedFormId, setSelectedFormId] = useState(0)
   const [openModal, setOpenModal] = useState(false)
+  const [openStatusModal, setOpenStatusModal] = useState(false)
+
   const [risks, setRisks] = useState({})
   const [openModalRisks, setOpenModalRisks] = useState(false)
   const [modelList, setModelList] = useState([])
@@ -592,6 +594,13 @@ export default function FilterableTable() {
         type: 'success',
         duration: 4000
       });
+      setData(prevData =>
+        prevData.map(form =>
+          form.id === form_id
+            ? { ...form, status: getNewStatusFromAPI("محاسبه شده") }
+            : form
+        )
+      );
     }
     setSelectedFormId(0)
     setOpenModal(false)
@@ -657,6 +666,47 @@ export default function FilterableTable() {
       console.log("delete was successful!")
     }
   }
+  // this is for statuses :
+
+  const adminStatChanger = async (API, form_id) => {
+    let token = localStorage.getItem("token")
+    let res = await fetchDataPUT(`admin/operator/form/${form_id}/${API}`, token, {})
+    if (res.status == 200 || res.status == 201) {
+      addToast({
+        title: "وضعیت فرم با موفقیت تغییر کرد",
+        type: 'success',
+        duration: 4000
+      });
+
+      // Update the local data state to reflect the status change
+      setData(prevData =>
+        prevData.map(form =>
+          form.id === form_id
+            ? { ...form, status: getNewStatusFromAPI(API) }
+            : form
+        )
+      );
+    } else {
+      addToast({
+        title: "خطا در اتصال به سرور لطفا دوباره تلاش کنید",
+        type: 'error',
+        duration: 4000
+      });
+    }
+  }
+
+  // Helper function to determine the new status based on the API endpoint
+  const getNewStatusFromAPI = (apiEndpoint) => {
+    // Find the status key that corresponds to the API endpoint
+    const statusKey = Object.keys(statusAPIs).find(key => statusAPIs[key] === apiEndpoint);
+    return statusKey ? formStatusLabels[statusKey] : 'وضعیت نامشخص';
+  }
+
+
+
+
+
+
   // Part names for the drawer titles
   const partNames = [
     "اطلاعات شخصی",
@@ -727,8 +777,10 @@ export default function FilterableTable() {
                     let apiArray = row.formType == 1 ? APIARR : APIARR_Navid
                     toggleDrawer(row.id, apiArray)
                   }}
+                  style={{ background: stateColors[Object.keys(formStatusLabels).find(key => formStatusLabels[key] === row.status)] }}
                 >
-                  <h3 className="drawer_title">فرم {row.id || rowIndex + 1} - {row.name || "نامشخص"}</h3>
+                  <h3 className="drawer_title">فرم {row.id || rowIndex + 1} - {row.name || "نامشخص"} - وضعیت :  {row.status || "نامشخص"}</h3>
+                  {/* <h3 className="drawer_title">وضعیت : </h3> */}
                   <div className="drawer_controls">
                     <button
                       className="model_enter_btn"
@@ -738,6 +790,15 @@ export default function FilterableTable() {
                       }}
                     >
                       ورودی به مدل
+                    </button>
+                    <button className="status_changer model_enter_btn"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent triggering the drawer toggle
+                        setSelectedFormId(row.id)
+                        setOpenStatusModal(true);
+                      }}
+                    >
+                      تغییر وضعیت
                     </button>
                     <span className="drawer_arrow">▼</span>
                   </div>
@@ -956,6 +1017,32 @@ export default function FilterableTable() {
                 onClick={() => sendToCalcModel(m.id)} // pass role directly instead of e.target.value
               >
                 {m.name.toUpperCase()}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {openStatusModal && (
+        <div className="role_modal">
+          <div className="modal_header">
+            <h3>تغییر وضعیت به ...</h3>
+            <div className="modal_close" onClick={() => {
+              setOpenStatusModal(false)
+              setSelectedFormId(0)
+            }}>✕</div>
+          </div>
+          <div className="roles">
+            {activeStats(selectedFormId, data).map((m, index) => (
+              <div
+                key={index}
+                className="role_table"
+                onClick={() => {
+                  adminStatChanger(m.api, selectedFormId)
+                  setOpenStatusModal(false)
+                }}
+              >
+                {m.name}
               </div>
             ))}
           </div>

@@ -78,6 +78,11 @@
 
 }
 
+.btn-view-form>img {
+  width: 22px;
+  height: 22px;
+}
+
 .btn-view-form.top {
   background-color: var(--color-main);
   color: white;

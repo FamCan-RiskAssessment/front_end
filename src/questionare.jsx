@@ -25,7 +25,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { APIURL } from "./utils/config";
 import { useToast } from "./toaster";
 import ToastProvider from "./toaster";
-import { fetchDataGET, isNumber, formatAndValidateJalali, CancerAdder, fetchDataPOSTImg, persianMonths, fetchDataGETImg } from "./utils/tools";
+import {
+    fetchDataGET, isNumber, formatAndValidateJalali,
+    CancerAdder, fetchDataPOSTImg, persianMonths, fetchDataGETImg, fetchDataPUT,
+    nullTracker
+} from "./utils/tools";
 import "./form_elements.css"
 import "./responsive_questionare.css"
 // import { set } from "animejs";
@@ -325,8 +329,12 @@ function Questions() {
                                 fE.checked = true
                             } else if (fE.getAttribute("FaVal") == "خیر" && (presetform[pfk] == false || presetform[pfk] == "false")) {
                                 fE.checked = true
-                            }
+                            }  // else if (presetform[pfk] == null && fE.getAttribute("FaVal") != "بله" && fE.getAttribute("FaVal") != "خیر") {
+                            //     fE.checked = true
+                            // }
+                            // console.log("++++++++++++++++++++++++++++ : ", fE, presetform[pfk] == null, fE.getAttribute("FaVal"))
                         } else if (fE.name == pfk && presetform[pfk] == null && fE.getAttribute("FaVal") != "بله" && fE.getAttribute("FaVal") != "خیر") { //&& localStorage.getItem("imperfectForm") == false
+                            // console.log()
                             fE.checked = true
                         } else if (fE.name == pfk && fE.type == "file") {
                             // Handle file inputs - presetform value is a URL to an image
@@ -854,7 +862,7 @@ function Questions() {
             } else if (finalValue === "false" && name !== "pastSmoking") {
                 allData[name] = false;
             } else if (finalValue === "null" && name !== "pastSmoking") {
-                // allData[name] = null;
+                allData[name] = null;
                 // console.log("name is the name , : ", name)
                 // pass the fucking data
             } else if (isNumber(finalValue) && name !== "socialSecurityNumber" && name !== "phone2" && name !== "phone3" && name !== "postalCode") {
@@ -1562,7 +1570,7 @@ function Questions() {
                     <div className="bottom_helper_parts_container">
                         {/* <div className="bottom_helper_part1"></div> */}
                         <div className="bottom_helper_part2">                    {step == 7 ? (
-                            <button className="btn_question" onClick={(e) => {
+                            <button className="btn_question" onClick={async (e) => {
 
                                 let passOno = checkReq(formRefs[step], step)
                                 if (!typeErr && !typeErr2 && !typeErr3 && passOno) {
@@ -1572,6 +1580,9 @@ function Questions() {
                                         type: 'success',
                                         duration: 4000
                                     })
+                                    let token = localStorage.getItem("token")
+                                    let changeState = await fetchDataPUT(`form/${createdFormId}/status`, token, {})
+                                    console.log("++++++++++++++++++++++++++ : ", changeState)
                                     navigate("/forms")
                                 } else {
                                     addToast({

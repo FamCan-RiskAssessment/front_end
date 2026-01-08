@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { APIURL } from "./utils/config";
-import { permExtractor, fetchDataGET, fetchDataDELETE, formTypeChecker } from "./utils/tools";
+import { permExtractor, fetchDataGET, fetchDataDELETE, formTypeChecker, statusChecker, fetchDataPUT } from "./utils/tools";
 import UQs from './utils/utilQs.json'
 import "./client_forms.css"
 import ToastProvider from "./toaster";
@@ -16,6 +16,10 @@ import panelSign from './V2Form/panelSign.svg'
 import eyeSign from './V2Form/view.svg'
 import settingsSign from './V2Form/settings.svg'
 import deleteSign from './V2Form/trashCan.svg'
+import subSign from './V2Form/checkSub.svg'
+import restoreSign from './V2Form/restore.svg'
+import fileUplode from './V2Form/files.svg'
+
 
 
 function FormsPage() {
@@ -286,9 +290,36 @@ function FormsPage() {
                             <div className="btn_formPage_holder">
                               <button
                                 className="btn-view-form"
-                                onClick={() => userSelectedForm(form.id)}
+                                onClick={async () => {
+                                  if (statusChecker(form.status) == 5) {
+                                    let token = localStorage.getItem("token")
+                                    let res = await fetchDataPUT(`form/${form.id}/resubmit`, token, {})
+                                  }
+                                  userSelectedForm(form.id)
+                                }}
+                                disabled={statusChecker(form.status) == 1 || statusChecker(form.status) == 4 || statusChecker(form.status) == 5 ? null : true}
                               >
-                                <img src={eyeSign} alt="view form" />
+
+                                {(() => {
+                                  let checkedSt = statusChecker(form.status)
+                                  if (checkedSt == 1) {
+                                    return (
+                                      <img src={eyeSign} alt="eye Sign" />
+                                    )
+                                  } else if (checkedSt == 2) {
+                                    return (
+                                      <img src={subSign} alt="submitted" title="فرم در انتظار تایید است لطفا منتظر بمانید" />
+                                    )
+                                  } else if (checkedSt == 5) {
+                                    return (
+                                      <img src={restoreSign} alt="submitted" title="فرم شما رد شده است لطفا دوباره فرم خود را بفرستید" />
+                                    )
+                                  } else if (checkedSt == 4) {
+                                    return (
+                                      <img src={fileUplode} alt="submitted" title="فایل های لازم را آپلود کرده و سپس فرم را دوباره بفرستید" />
+                                    )
+                                  }
+                                })()}
                               </button>
                               {/* <div className="setting_holder"> */}
                               {/* <img src={settingsSign} alt="form settings" /> */}

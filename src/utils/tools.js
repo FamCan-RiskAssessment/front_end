@@ -1,4 +1,4 @@
-import { APIURL } from "./config";
+import { APIURL, formStatusLabels, statusAPIs } from "./config";
 import jalaali from 'jalaali-js';
 
 export const permExtractor = (perms, permCheck) => {
@@ -318,6 +318,43 @@ export const formTypeChecker = (forms, type) => {
     }
   });
   return istype
+}
+
+
+export const nullTracker = (compVal) => {
+  let arr = ["نمیدانم", "نمی دانم", "نامعین", "اطلاع ندارم", "احتمال دارد اما دقیق اطلاع ندارم"]
+  arr.forEach(a => {
+    if (a == compVal) {
+      return true
+    }
+  });
+  return false
+}
+
+
+export const statusChecker = (sta) => {
+  let stakey = Object.keys(formStatusLabels).find(key => formStatusLabels[key] === sta)
+  return stakey
+}
+
+export const activeStats = (form_id, forms) => {
+  let sta;
+  forms.forEach(f => {
+    if (f.id == form_id) {
+      sta = f.status
+    }
+  });
+  let stakey = Object.keys(formStatusLabels).find(key => formStatusLabels[key] === sta)
+  console.log("wwwwwwwwwwwwwwwwwwwwwww : ", stakey, sta, form_id, forms)
+  let resArr = [];
+  if (stakey == 2) {
+    resArr.push({ name: formStatusLabels[3], api: statusAPIs[3] })
+    resArr.push({ name: formStatusLabels[5], api: statusAPIs[5] })
+    resArr.push({ name: formStatusLabels[6], api: statusAPIs[6] })
+  } else if (stakey == 3) {
+    resArr.push({ name: formStatusLabels[4], api: statusAPIs[4] })
+  }
+  return resArr
 }
 
 

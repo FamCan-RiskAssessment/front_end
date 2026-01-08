@@ -131,6 +131,10 @@ td {
     width: auto;
 }
 
+.status_changer {
+    background-color: #449d44 !important;
+}
+
 .model_in_btn:hover {
     background-color: #9a5cc0;
     transform: scale(1.05);
