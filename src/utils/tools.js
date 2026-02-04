@@ -1,3 +1,4 @@
+// import { Aod } from "@mui/icons-material";
 import { APIURL, formStatusLabels, statusAPIs } from "./config";
 import jalaali from 'jalaali-js';
 
@@ -355,6 +356,46 @@ export const activeStats = (form_id, forms) => {
     resArr.push({ name: formStatusLabels[4], api: statusAPIs[4] })
   }
   return resArr
+}
+
+export const dict_transformer = (arrOfDic) => {
+  let newdict = {}
+  // console.log("ARRRRRRRRRRRRs : ", arrOfDic)
+  arrOfDic.forEach(ad => {
+    newdict[ad.name] = ad.id
+  });
+  return newdict
+}
+
+// S H function
+export const getKeyVal = (obj, Val) => {
+  console.log("INTHETOOLSSSSSSSSSSSSSS :  ", obj, typeof Val)
+  let foundedKey = Object.keys(obj).find(key => obj[key] === Val)
+  return foundedKey
+}
+
+export const cancerDictRefiner = (obj, cancerPreData) => {
+  let mask_obj = {}
+  console.log("whyyyyyyyyyyyyyyyyyyy : ", obj, cancerPreData)
+  if (cancerPreData.length > 0) {
+    Object.keys(obj).forEach(oe => {
+      cancerPreData.data.familyCancers.forEach(fc => {
+        console.log("whyInnerrrrrrrrrrrrrrrrr : ", fc)
+        let relFa = getKeyVal(obj, fc.relative)
+        if (relFa == oe) {
+          mask_obj[oe] = "بله"
+        } else {
+          mask_obj[oe] = "خیر"
+        }
+      });
+    });
+  } else {
+    Object.keys(obj).forEach(oe => {
+      mask_obj[oe] = "خیر"
+    });
+  }
+
+  return mask_obj
 }
 
 

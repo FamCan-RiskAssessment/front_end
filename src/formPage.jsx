@@ -19,6 +19,8 @@ import deleteSign from './V2Form/trashCan.svg'
 import subSign from './V2Form/checkSub.svg'
 import restoreSign from './V2Form/restore.svg'
 import fileUplode from './V2Form/files.svg'
+import waitSign from './V2Form/timer.png'
+import checkFull from './V2Form/checkfull.png'
 
 
 
@@ -317,6 +319,14 @@ function FormsPage() {
                                   } else if (checkedSt == 4) {
                                     return (
                                       <img src={fileUplode} alt="submitted" title="فایل های لازم را آپلود کرده و سپس فرم را دوباره بفرستید" />
+                                    )
+                                  } else if (checkedSt == 3) {
+                                    return (
+                                      <img src={waitSign} alt="waitSign" title="فرم شما در دست بررسی است ، کارشناسان در حال ارتباط گرفتن با شما هستند لطفا منتظر بمانید" />
+                                    )
+                                  } else if (checkedSt == 6 || checkedSt == 7) {
+                                    return (
+                                      <img src={checkFull} alt="submitted success" title="فرم شما تایید شد ، از مشارکت شما متشکریم " />
                                     )
                                   }
                                 })()}

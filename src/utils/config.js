@@ -46,3 +46,12 @@ export const stateColors = {
     6: "#00b0f0",
     7: "#0070c0"
 }
+
+export const cancerRefs = {
+    "childCancer": ["فرزند"],
+    "motherCancer": ["مادر"],
+    "fatherCancer": ["پدر"],
+    "siblingCancer": ["برادر", "خواهر"],
+    "ameAmoCancer": ["عمه", "عمو"],
+    "khaleDaeiCancer": ["دایی", "خاله"],
+}

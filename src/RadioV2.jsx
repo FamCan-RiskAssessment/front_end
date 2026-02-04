@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { EnumTaker } from "./utils/tools";
-function RadioV2({ data_req, data, class_change1, value, class_change2, valueSetter, des, relation, Enum }) {
+function RadioV2({ data_req, data, class_change1, value, class_change2, valueSetter, des, relation, Enum, mapper }) {
     // Option value mapping
     // const [test, setTest] = useState('')
     // console.log("ffffffffffffffffffffffffffffffffffffffff : ", test, data.Rname)
     const optionValueMap = {
         'بله': true,
         'خیر': false,
-        // 'بله (Postmenopausal)': true,
-        // 'خیر (Premenopausal)': false,
         'نمی دانم': 'null',
         'نمیدانم': 'null',
         'نامعین': 'null',
@@ -21,10 +19,17 @@ function RadioV2({ data_req, data, class_change1, value, class_change2, valueSet
     // Default relation to true if undefined
     const effectiveRelation = relation !== undefined ? relation : true;
     const effectiveDataReq = effectiveRelation ? data_req : "false";
+    const tempFunction = (opt, optVals) => {
+        if (optVals[opt] == 'null') {
+            return 3
+        } else {
+            return opt
+        }
+    }
     if (data.Rname == "currentHrtUse") {
         console.log("we have passed", effectiveRelation)
     }
-
+    // console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa : ", mapper)
     return (
         <>
             <div
@@ -43,7 +48,7 @@ function RadioV2({ data_req, data, class_change1, value, class_change2, valueSet
                                     type="radio"
                                     className="radio"
                                     name={data.Rname}
-                                    value={optionValueMap[opt] !== undefined && !des ? optionValueMap[opt] : opt}
+                                    value={!Enum && mapper && mapper[opt] !== undefined && !des ? mapper[opt] : tempFunction(opt, optionValueMap)}
                                     FaVal={opt}
                                     id={`${data.Rname}-${index}`}
                                     onChange={(e) => {
@@ -57,7 +62,7 @@ function RadioV2({ data_req, data, class_change1, value, class_change2, valueSet
                                         if (Enum !== undefined) {
                                             handleEnumChange();
                                         } else {
-                                            valueSetter?.(e.target.value)
+                                            valueSetter?.(opt)
                                         }
                                     }}
                                     {...Enum !== undefined ? { 'data-enum': Enum } : {}}
