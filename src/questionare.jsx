@@ -76,7 +76,6 @@ function Questions() {
         // }
     }, [])
 
-    console.log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb : ", RadioMap)
 
 
 
@@ -152,6 +151,8 @@ function Questions() {
     const [isSmoke, setIsSmoke] = useState('')
     const [isSmokeAge, setIsSmokeAge] = useState('')
     const [isSmokingNow, setIsSmokingNow] = useState('')
+    const [cigNow, setCigNow] = useState(false)
+    const [ghelNow, setGhelNow] = useState(false)
     // step 3 
     const [isChild, setIsChild] = useState('')
     const [isAdat, setIsAdat] = useState('')
@@ -209,7 +210,7 @@ function Questions() {
     // const cancerTable = useRef(null)
     // const cancerMotherTable = useRef(null)
     // const cancerMotherTable = useRef(null)
-
+    console.log("SAAAAAAAAAAAAAAAAAAAA : ", loading)
 
 
 
@@ -306,6 +307,8 @@ function Questions() {
 
     useEffect(() => {
         if (presetform != null && familyCancersPreData != null) {
+            setLoading(true); // Set loading to true when starting to load preset data
+            
             let masked_cancers = cancerDictRefiner(RelMap, familyCancersPreData)
             let formElems = []
             let stepsLoaded = JSON.parse(localStorage.getItem("trueSteps"))
@@ -384,7 +387,7 @@ function Questions() {
                             }
                             // else if (fE.getAttribute("FaVal") == "خیر" && (presetform[pfk] == false || presetform[pfk] == "false")) {
                             //     fE.checked = true
-                            // }  
+                            // }
                             // else if (presetform[pfk] == null && fE.getAttribute("FaVal") != "بله" && fE.getAttribute("FaVal") != "خیر") {
                             //     fE.checked = true
                             // }
@@ -393,7 +396,6 @@ function Questions() {
                             //     // console.log()
                             //     fE.checked = true
                         } else if (fE.name in cancerRefs) {
-                            console.log("maskedmaskedmaskedmasked : ", masked_cancers)
                             cancerRefs[fE.name].forEach(ce => {
                                 if (masked_cancers[ce] == fE.getAttribute("FaVal")) {
                                     fE.checked = true
@@ -442,7 +444,7 @@ function Questions() {
                         } else if (!(fE.name in presetform) && fE.type == "checkbox") {
                             fE.checked = false
                         } else if (fE.type == "range" && fE.name == pfk) {
-                            console.log("FOOOOOOOOOOOOOOOOOOOOUND : ", fE.name, presetform[pfk], fE.defaultValue)
+                            // console.log("FOOOOOOOOOOOOOOOOOOOOUND : ", fE.name, presetform[pfk], fE.defaultValue)
                             fE.defaultValue = presetform[pfk]
                         }
                     }
@@ -460,8 +462,11 @@ function Questions() {
             //     setFamilyCancersPreData(res)
             // }
             // familyFunc()
+            
+            // Set loading to false after preset data has been loaded
+            setLoading(false);
         }
-        setLoading(true)
+        // setLoading(true)
     }, [RadioMap, selfCancersPreData, familyCancersPreData])
 
 
@@ -469,7 +474,6 @@ function Questions() {
 
     useEffect(() => {
         // Only update states if the properties exist in presetform
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> : I was today years old : ")
         if (presetform != null) {
             if ('gender' in presetform) setGender(presetform["gender"])
             if ('drinksAlcohol' in presetform) setIsAlchol(relator_R(getKeyVal(RadioMap, presetform["drinksAlcohol"])))
@@ -507,7 +511,7 @@ function Questions() {
 
         }
 
-    }, [])
+    }, [RadioMap])
 
     useEffect(() => {
         console.log("After has changed lilililililil : ", after, loading)
@@ -683,7 +687,6 @@ function Questions() {
     }
 
     const relator_gen = (state) => {
-        console.log("here choosing is important : ", state)
         if (state == 2) {
             return true
         } else {
@@ -834,6 +837,7 @@ function Questions() {
     // const smokes
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true); // Set loading to true when starting submission
 
         const APIARR = ["basic", "generalhealth", "mamography", "cancer", "listfamilycancer", "lungcancer", "contact"];
 
@@ -853,6 +857,9 @@ function Questions() {
             let value = '';
 
             if (type === 'radio' || type === 'checkbox') {
+                if (elem.name == "smokingNow") {
+                    console.log("smokingNowsmokingNowsmokingNowsmokingNow : ", elem.value)
+                }
                 if (elem.checked && type == 'radio') {
                     shouldProcess = true;
                     value = elem.value;
@@ -1017,7 +1024,6 @@ function Questions() {
         }
 
         try {
-            setLoading(true)
             const res = await fetch(url, {
                 method,
                 headers,
@@ -1292,9 +1298,9 @@ function Questions() {
     // }
     console.log("preset form for the fuck : ", presetform)
 
-    // if (loading) {
-    //     return <Loader></Loader>
-    // }
+    if (loading) {
+        return <Loader></Loader>
+    }
 
     return (
         <>
@@ -1560,6 +1566,9 @@ function Questions() {
                         {/* <InputBox data_req={"false"} data={part7.text_smokingStartAge_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)}></InputBox> */}
                         <RangeBox data_req={"false"} data={part7.text_leaveSmoke} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)} preData={presetform && presetform[part7.text_leaveSmoke.engName] ? presetform[part7.text_leaveSmoke.engName] : null}></RangeBox>
                         <OptionsV2 data={part7.combine_option_smokingTypes_past} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setSmokeTypePast} relation={relator_R(anySmokePast)}></OptionsV2>
+                        {/* <CheckBox data={part7.check_smokeTypeCurrent} class_change1={"P2"} class_change2={"P2_inner"} multicheck={true} checkArray={multiSmokeTypeCurrent} relation={relator_R(anySmoke)}></CheckBox> */}
+
+
                         {/* {smokeTypePast != null && smokeTypePast != "انتخاب کنید" && ( */}
                         <RangeBox data_req={"false"} data={part7.text_using_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)} preData={presetform && presetform[part7.text_using_past.engName] ? presetform[part7.text_using_past.engName] : null}></RangeBox>
 
@@ -1637,6 +1646,7 @@ function Questions() {
 
                                 let passOno = checkReq(formRefs[step], step)
                                 if (!typeErr && !typeErr2 && !typeErr3 && passOno) {
+                                    setLoading(true)
                                     handleSubmit(e)
                                     addToast({
                                         title: 'پاسخ های شما با موفقیت ذخیره شد',

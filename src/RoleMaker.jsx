@@ -1,11 +1,19 @@
 import { useState, useEffect, useRef } from 'react'
 import { useLocation, useNavigate } from "react-router-dom";
 import NavBar from './navBar'
-import CheckBox from './checkbox';
 import { useToast } from "./toaster";
 import ToastProvider from "./toaster";
 import { fetchDataGET, fetchDataDELETE } from './utils/tools';
 import { APIURL } from './utils/config';
+import "./client_forms.css";
+import plusSign from './V2Form/plus.svg'
+import leftSign from './V2Form/form_left.png'
+import rightSign from './V2Form/form_right.png'
+import prevSign from './V2Form/arrow_right.svg'
+import settingsSign from './V2Form/settings.svg'
+import deleteSign from './V2Form/trashCan.svg'
+import checkSign from './V2Form/Check.svg'
+
 function RoleMaker() {
   const [clicked, setClicked] = useState(false)
   const [roleName, setRoleName] = useState("");
@@ -46,8 +54,6 @@ function RoleMaker() {
     }
   }
 
-
-
   useEffect(() => {
     const fetchPermissions = async () => {
       try {
@@ -77,7 +83,7 @@ function RoleMaker() {
     fetchPermissions();
   }, []); // run once on mount
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="text-center mt-10">Loading...</p>;
 
   let person = {
     name: "امیر",
@@ -101,14 +107,13 @@ function RoleMaker() {
     setPermArray((prev) => {
       if (isChecked) {
         // ✅ add id if not already present
-        return [...prev, id];
+        return prev.includes(id) ? prev : [...prev, id];
       } else {
         // ✅ remove id if unchecked
         return prev.filter((permId) => permId !== id);
       }
     });
   };
-
 
   const collectAndSend = async (e) => {
     e.preventDefault();
@@ -143,7 +148,6 @@ function RoleMaker() {
         data = {};
       }
 
-
       console.log("Response status:", res.status);
       console.log("Response body:", data);
 
@@ -168,68 +172,126 @@ function RoleMaker() {
       // console.error("Error in collectAndSend:", err);
       // setError(err.message);
       // setTimeout(() => setError(""), 3000);
-
-
     }
   };
 
+  const lineMaker = (total_page) => {
+    let spans = []
+    for (let i = 0; i < total_page; i++) {
+      spans.push(i)
+    }
+    return spans
+  }
+
   return (
     <>
-      <NavBar account={userPhone}></NavBar>
-      <div className="all_holder">
-        {Err.length != 0 &&
-          <div className={Err.length != 0 ? "error_container fader" : null}>
-            <span>لطفا نقش های تکراری وارد نکنید</span>
-            <i className="fa fa-ban"></i>
-          </div>
-        }
-        <div className='role_holder'>
-          {roles.map((r, index) => {
-            return (
-              <>
-                <div key={index} className='role_card'>
-                  <div className='role_name'>{r.name}</div>
-                  <button className='delete_btn' onClick={() => deleteRole(r.id)}>حذف نقش</button>
+      <div className="forms_page_holder">
+        <NavBar account={userPhone}></NavBar>
+        <div className="forms-page-wrapper">
+          <div className="forms-container" style={{ display: 'flex', flexDirection: 'row', gap: '2rem', alignItems: 'flex-start' }}>
+            {/* Left side: Table of existing roles */}
+            <div style={{ flex: '1', minWidth: '40%' }}>
+              <div className="title-holder">
+                <h1>ساخت نقش جدید</h1>
+                <p className="subtitle">انتخاب دسترسی‌ها و ایجاد نقش برای مدیریت بهتر</p>
+              </div>
+
+              <form className="role_form" onSubmit={collectAndSend} ref={roleMakerForm}>
+                <div className="form_group">
+                  <label htmlFor="roleName" className="form_label">نام نقش</label>
+                  <input
+                    name="name"
+                    type="text"
+                    placeholder="مثلاً مدیر بیماران"
+                    className="form_input"
+                    onChange={(e) => setRoleName(e.target.value)}
+                  />
                 </div>
-              </>
-            )
-          })}
-        </div>
-        <div className="title-holder">
-          <h1>ساخت نقش جدید</h1>
-          <p className="subtitle">انتخاب دسترسی‌ها و ایجاد نقش برای مدیریت بهتر</p>
-        </div>
 
-        <form className="role_form" onSubmit={collectAndSend} ref={roleMakerForm}>
-          <div className="form_group">
-            <label htmlFor="roleName" className="form_label">نام نقش</label>
-            <input
-              name="name"
-              type="text"
-              placeholder="مثلاً مدیر بیماران"
-              className="form_input"
-              onChange={(e) => setRoleName(e.target.value)}
-            />
-          </div>
+                <div className="perm_section">
+                  <h2 className="perm_title">لیست دسترسی‌ها</h2>
+                  <div className="perm_holder" style={{ maxHeight: '300px', overflowY: 'auto', padding: '10px', border: '1px solid #ddd', borderRadius: '8px' }}>
+                    {permissions.map((perm, index) => (
+                      <label key={perm.engName} className="checkbox-card" htmlFor={perm.engName}>
+                        <input
+                          type="checkbox"
+                          className="check_box"
+                          name={perm.engName}
+                          id={perm.engName}
+                          onChange={(e) => permChooser(perm.engName, e.target.checked)}
+                          checked={permArray.includes(perm.engName)}
+                        />
+                        <span className="checkbox-box">
+                          <img className="checkbox-icon" src={checkSign} alt="" />
+                        </span>
+                        <span className="checkbox-text">{perm.showName}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
 
-          <div className="perm_section">
-            <h2 className="perm_title">لیست دسترسی‌ها</h2>
-            <div className="perm_holder">
-              <CheckBox
-                data={check_box_data}
-                classChange1={"checkBox_column"}
-                classChange2={"width_and_centererV2"}
-                roleMaker_class={"columner"}
-                checker={permChooser}
-              />
+                <button type="submit" className="btn_submit">ساخت نقش</button>
+              </form>
+            </div>
+
+
+
+
+
+
+
+            {/* Right side: Form to create new role */}
+            <div style={{ flex: '1', minWidth: '40%' }}>
+              <div className="forms_tools">
+                <div className="form_tool">
+                  <div className="form_search_bar">
+                    <input type="text" className="form_search inp_question V2" placeholder="جستجو" />
+                  </div>
+                  <div className="sorter">
+                    <select name="roleSort" id="" className="select_optionsV2">
+                      <option value="انتخاب کنید">انتخاب کنید</option>
+                      <option value="جدید ترین">جدید ترین</option>
+                      <option value="قدیمی ترین">قدیمی ترین</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {roles.length === 0 ? (
+                <p className="no-forms-text">نقشی یافت نشد.</p>
+              ) : (
+                <table className="forms-table">
+                  <thead>
+                    <tr>
+                      <th className="table-header">نام نقش</th>
+                      <th className="table-header">عملیات</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {roles.map((role, index) => (
+                      <tr key={role.id} className="form-row">
+                        <td className="table-cell">{role.name}</td>
+                        <td className="table-cell">
+                          <div className="btn_formPage_holder RM">
+                            <button
+                              className="btn-view-form"
+                              onClick={() => deleteRole(role.id)}
+                            >
+                              <img src={deleteSign} alt="delete role" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
-
-          <button type="submit" className="btn_submit">ساخت نقش</button>
-        </form>
+        </div>
       </div>
-
     </>
   )
 }
+
 export default RoleMaker

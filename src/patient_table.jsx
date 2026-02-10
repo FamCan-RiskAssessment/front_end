@@ -2,7 +2,10 @@ import { useState, useEffect, useCallback } from "react";
 import NavBar from "./navBar";
 import "./patient_table.css";
 import { APIARR, APIARR_Navid, APIURL, formStatusLabels, statusAPIs, stateColors } from "./utils/config";
-import { fetchDataGET, fetchDataGETTab, fetchDataPOST, key_stage_matcher, stageMatcher, fetchDataGETImg, cancerTypeEx, relativeTypeEx, fetchDataDELETE, activeStats, fetchDataPUT } from "./utils/tools";
+import {
+  fetchDataGET, fetchDataGETTab, fetchDataPOST, key_stage_matcher, stageMatcher, fetchDataGETImg, cancerTypeEx, relativeTypeEx,
+  fetchDataDELETE, activeStats, fetchDataPUT, dict_transformer, backwardEnum, getKeyVal
+} from "./utils/tools";
 import PERSIAN_HEADERS from "./assets/table_header.json"
 import { useLocation } from "react-router-dom";
 import { useToast } from "./toaster";
@@ -12,14 +15,21 @@ import Loader from "./utils/loader";
 import CancerField from "./cancer_universal";
 import part4 from './questions/P4.json'
 import part5 from './questions/P5.json'
+import stateChangeSign from './V2Form/stateChange.svg'
+import arrowLeftSign from './V2Form/arrowLeft.svg'
+
 
 // Load the Persian header mapping
 const headerMapping = {};
 const gender_map = {}
+const mapper_map = {}
 PERSIAN_HEADERS.forEach(item => {
   headerMapping[item.key] = item.label;
   if (item.gender) {
     gender_map[item.key] = item.gender
+  }
+  if (item.mapper) {
+    mapper_map[item.key] = item.mapper
   }
 });
 
@@ -27,15 +37,14 @@ PERSIAN_HEADERS.forEach(item => {
 
 
 // Helper function to convert boolean/null values to Persian text
-const convertToPersianText = (value, key) => {
-  if (value === true) return "بله";
-  if (value === false) return "خیر";
-  if (value === null) return "نمیدانم";
-  if (value == undefined) return "موجود نیست"
-  if (key == "birthDate") {
-    return String(value.split("T")[0])
+const convertToPersianText = (value, RM, key) => {
+  if (mapper_map[key] && RM[mapper_map[key]]) {
+    // console.log(mapper_map, key, mapper_map[key], RM, RM[mapper_map[key]], value, RM[mapper_map[key]][value])
+    return getKeyVal(RM[mapper_map[key]], value)
+  } else {
+    // console.log(value, RM, key)
+    return value
   }
-  return String(value);
 };
 
 // Helper functions are now part of the component state,
@@ -85,6 +94,7 @@ export default function FilterableTable() {
   const [openApiSections, setOpenApiSections] = useState({}); // Track which API sections are open for each form {formId: [apiPart1, apiPart2, ...]}
   const [gender, setGender] = useState(1)
   const [formType, setFormType] = useState(0)
+  const [RadioMap, setRadioMap] = useState({})
   // const [apiArray, setapiArray] = useState([])
   const [mode, setMode] = useState('')
   const { addToast } = useToast()
@@ -92,6 +102,47 @@ export default function FilterableTable() {
   const userPhone = location.state?.phone;
   // debugs
   // console.log("we are running on this API : ", apiArray)
+  // console.log("bbbbbbbbbbbbbbbbbbbbbb  : ", RadioMap)
+  useEffect(() => {
+    let token = localStorage.getItem("token")
+    const getMappers = async () => {
+      try {
+        // Fetch data from both endpoints concurrently
+        const [ansMap, relMap, genMap, menoMap] = await Promise.all([
+          fetchDataGET("enum/answers", token),
+          fetchDataGET("enum/relatives", token),
+          fetchDataGET("enum/genders", token),
+          fetchDataGET("enum/menopausal-statuses", token)
+
+        ]);
+
+        // Transform the data using dict_transformer
+        const answersData = dict_transformer(ansMap.data);
+        const relativesData = dict_transformer(relMap.data);
+        const genderData = dict_transformer(genMap.data)
+        const menoData = dict_transformer(menoMap.data)
+        // Set the RadioMap state with both mappers in the required structure
+        setRadioMap({
+          "answers": answersData,
+          "relatives": relativesData,
+          "gender": genderData,
+          "menopausalMap": menoData
+        });
+      } catch (error) {
+        console.error("Error fetching mapper data:", error);
+      }
+    }
+
+    getMappers();
+  }, [])
+
+
+
+
+
+
+
+
   const getFieldLabel = (key) => {
     console.log(gender_map[key])
     if (gender_map[key] == undefined || gender_map[key] == gender) {
@@ -125,6 +176,7 @@ export default function FilterableTable() {
     const token = localStorage.getItem("token");
     try {
       const response = await fetchDataGET(`admin/form/${formId}/${apiPart}`, token);
+      console.log(backwardEnum(response.data, RadioMap, ["gender", "menopausalStatus", "id"]))
       setFormDetails(prev => ({
         ...prev,
         [formId]: {
@@ -215,11 +267,14 @@ export default function FilterableTable() {
     const token = localStorage.getItem("token");
     try {
       // Convert the field value based on its type
-      let processedValue = fieldValue;
-      if (fieldValue === "بله") processedValue = true;
-      else if (fieldValue === "خیر") processedValue = false;
-      else if (fieldValue === "null" || fieldValue === null) processedValue = null;
-      else if (!isNaN(fieldValue) && fieldValue !== "" && fieldValue !== "انتخاب کنید" && fieldValue !== "انتخاب نمایید") {
+      console.log("KLKKKKKKKKKKKKKKKKKKKK : ", fieldName, fieldValue)
+
+      let processedValue = fieldValue
+      if (mapper_map[fieldName] && RadioMap[mapper_map[fieldName]]) {
+        processedValue = RadioMap[mapper_map[fieldName]][fieldValue]
+      }
+
+      if (!isNaN(fieldValue) && fieldValue !== "" && fieldValue !== "انتخاب کنید" && fieldValue !== "انتخاب نمایید") {
         processedValue = Number(fieldValue);
       }
 
@@ -420,12 +475,14 @@ export default function FilterableTable() {
   // show me more 
   const showMore = () => {
     if (pagiNext) {
+      setLoading(true)
       setPage(p => p + 1)
     }
   }
 
   const showPrev = () => {
     if (pagiPrev) {
+      setLoading(true)
       setPage(p => p - 1)
     }
   }
@@ -455,7 +512,7 @@ export default function FilterableTable() {
     setEditingCell({ rowId, field });
     setEditedData(prev => ({
       ...prev,
-      [rowId]: { ...prev[rowId], [field]: convertToPersianText(value) }
+      [rowId]: { ...prev[rowId], [field]: convertToPersianText(value, RadioMap, field) }
     }));
   };
 
@@ -584,7 +641,7 @@ export default function FilterableTable() {
     let res = await fetchDataPOST("admin/calc/model", token, bodyData, true)
     if (res.status != 200) {
       addToast({
-        title: res.data.error,
+        title: res.data != null ? res.data.error : res.message,
         type: 'error',
         duration: 4000
       });
@@ -596,8 +653,8 @@ export default function FilterableTable() {
       });
       setData(prevData =>
         prevData.map(form =>
-          form.id === form_id
-            ? { ...form, status: getNewStatusFromAPI("محاسبه شده") }
+          form.id === selectedFormId
+            ? { ...form, status: getNewStatusFromAPI("calculated") }
             : form
         )
       );
@@ -699,6 +756,7 @@ export default function FilterableTable() {
   const getNewStatusFromAPI = (apiEndpoint) => {
     // Find the status key that corresponds to the API endpoint
     const statusKey = Object.keys(statusAPIs).find(key => statusAPIs[key] === apiEndpoint);
+    console.log(statusKey, statusAPIs, apiEndpoint)
     return statusKey ? formStatusLabels[statusKey] : 'وضعیت نامشخص';
   }
 
@@ -728,493 +786,514 @@ export default function FilterableTable() {
 
   return (
     <>
-      <NavBar account={userPhone} />
-      <div className="total_patients_holder">
-        <div className="filter_holder">
-          <div className="select_filter">
-            <label className="label_title">فیلتر وضعیت</label>
-            <select
-              className="select_options"
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-            >
-              <option value="All">همه</option>
-              {statuses.map(status => (
-                <option key={status} value={status}>
-                  {status}
-                </option>
-              ))}
-            </select>
-          </div>
-          <button onClick={handleSave} className="btn_question">
-            ذخیره تغییرات
-          </button>
-          <p>برای تغییر دادن هر فیلد دابل کلیک کنید.</p>
-        </div>
-        <div className="table_controles">
-          <h3>کنترل داده ها </h3>
-          <div className="table_tools">
-            <div className="table_switch">
-              <label htmlFor="mode_switch">طرح مورد نظر</label>
-              <select className="mode_switch" name="switch" id="sw" value={mode} onChange={(e) => setMode(e.target.value)}>
-                <option value="def">انتخاب کنید</option>
-                <option value="navid">نوید</option>
-                <option value="bahar">بهار</option>
-              </select>
+      <div className="forms_page_holder">
+        <NavBar account={userPhone} />
+        <div className="forms-page-wrapper PT">
+          <div className="forms-container PT">
+
+            <div className="total_patients_holder">
+              <div className="filter_holder">
+                <div className="select_filter">
+                  <label className="label_title">فیلتر وضعیت</label>
+                  <select
+                    className="select_options"
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                  >
+                    <option value="All">همه</option>
+                    {statuses.map(status => (
+                      <option key={status} value={status}>
+                        {status}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <button onClick={handleSave} className="btn_question">
+                  ذخیره تغییرات
+                </button>
+                <p>برای تغییر دادن هر فیلد دابل کلیک کنید.</p>
+              </div>
+              <div className="table_controles">
+                <h3>کنترل داده ها </h3>
+                <div className="table_tools">
+                  <div className="table_switch">
+                    <label htmlFor="mode_switch">طرح مورد نظر</label>
+                    <select className="mode_switch" name="switch" id="sw" value={mode} onChange={(e) => setMode(e.target.value)}>
+                      <option value="def">انتخاب کنید</option>
+                      <option value="navid">نوید</option>
+                      <option value="bahar">بهار</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Drawer-style interface for form sections */}
+              <div className="form_sections_container">
+                {data.length > 0 ? (
+                  data.map((row, rowIndex) => (
+                    <div key={`form-${row.id || rowIndex}`} className="form_section_drawer">
+                      <div
+                        className="drawer_header"
+                        onClick={() => {
+                          console.log(" row pain : ", row)
+                          let apiArray = row.formType == 1 ? APIARR : APIARR_Navid
+                          toggleDrawer(row.id, apiArray)
+                        }}
+                      // style={{ background: stateColors[Object.keys(formStatusLabels).find(key => formStatusLabels[key] === row.status)] }}
+                      >
+                        <div className="drawer_title">
+                          <span> شماره فرم : {row.id || rowIndex + 1}</span>
+                          <span>نام : {row.name || "نامشخص"}</span>
+                          <span
+                            style={{ background: stateColors[Object.keys(formStatusLabels).find(key => formStatusLabels[key] === row.status)] }}
+                            className="form_status_show"
+                          >
+                            {row.status || "نامشخص"}
+                          </span>
+                        </div>
+                        {/* <h3 className="drawer_title">وضعیت : </h3> */}
+                        <div className="drawer_controls">
+                          <button
+                            className="model_enter_btn"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent triggering the drawer toggle
+                              saveTheIdAndOpetions(row.id);
+                            }}
+                          >
+                            <span>
+                              <img src={arrowLeftSign} alt="model input" />
+                            </span>
+                            <span>ورودی به مدل</span>
+
+                          </button>
+                          <button className="status_changer model_enter_btn"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent triggering the drawer toggle
+                              setSelectedFormId(row.id)
+                              setOpenStatusModal(true);
+                            }}
+                          >
+                            <span>
+                              <img src={stateChangeSign} alt="status change" />
+                            </span>
+                            <span>تغییر وضعیت</span>
+                          </button>
+                          {/* <span className="drawer_arrow">▼</span> */}
+                        </div>
+                      </div>
+
+                      <div id={`drawer-${row.id || `row-${rowIndex}`}`} className="drawer_content">
+                        {loadingDetails[row.id] ? (
+                          <p>در حال بارگذاری...</p>
+                        ) : (
+                          APIGIVER(row.formType).map((apiPart, partIndex) => {
+                            const partData = formDetails[row.id]?.[apiPart] || {};
+                            // Filter out metadata fields
+                            const filteredData = {};
+                            Object.keys(partData).forEach(key => {
+                              if (key !== "id" && key !== "userID" && key !== "__typename" &&
+                                key !== "status" && key !== "createdAt" && key !== "updatedAt") {
+                                filteredData[key] = partData[key];
+                              }
+                            });
+                            return (
+                              <div key={apiPart} id={`form-${row.id}-section-${apiPart}`} className="api_part_drawer">
+                                <div
+                                  className="api_part_header"
+                                  onClick={() => toggleApiSection(row.id, apiPart)}
+                                >
+                                  <h4 className="part_title">{row.formType == 1 ? (partNames[partIndex] || `بخش ${partIndex + 1}`) : (partNamesNavid[partIndex] || `بخش ${partIndex + 1}`)}</h4>
+                                  <span className="api_part_arrow">
+                                    {isApiSectionOpen(row.id, apiPart) ? '▲' : '▼'}
+                                  </span>
+                                </div>
+
+                                <div className={`api_part_content can ${isApiSectionOpen(row.id, apiPart) ? 'open' : ''}`}>
+                                  {/* Add special buttons for cancer sections */}
+                                  {apiPart === "cancer" && (
+                                    <>
+                                      <button
+                                        className="cancer_btn"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setSelectedFormForSelfCancer(row.id);
+                                          setCancerDeled([]); // Reset deleted self cancers tracking
+                                          // Fetch self cancer details for this specific form
+                                          const fetchDetails = async () => {
+                                            const token = localStorage.getItem("token");
+                                            try {
+                                              const selfCancerRes = await fetchDataGETImg(`admin/form/${row.id}/cancer`, token);
+                                              setDetailedCancerData(prev => ({
+                                                ...prev,
+                                                [row.id]: selfCancerRes.data?.cancers || []
+                                              }));
+                                              setOpenCancerModal(true);
+                                            } catch (error) {
+                                              console.error(`Error fetching self cancer details for form ${row.id}:`, error);
+                                            }
+                                          };
+                                          fetchDetails();
+                                        }}
+                                      >
+                                        نمایش جزئیات سرطان فردی
+                                      </button>
+                                      <button
+                                        className="add_cancer"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setAddCancerModal(true);
+                                          setSelectedFormForSelfCancer(row.id);
+                                        }}
+                                      >
+                                        اضافه کردن سرطان
+                                      </button>
+                                    </>
+                                  )}
+                                  {apiPart === "familycancer" && (
+                                    <>
+                                      <button
+                                        className="family_cancer_btn"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setSelectedFormForFamilyCancer(row.id);
+                                          setFamilyCancerDeled([]); // Reset deleted family cancers tracking
+                                          // Fetch family cancer details for this specific form
+                                          const fetchDetails = async () => {
+                                            const token = localStorage.getItem("token");
+                                            try {
+                                              const familyCancerRes = await fetchDataGETImg(`admin/form/${row.id}/familycancer`, token);
+                                              setDetailedFamilyCancerData(prev => ({
+                                                ...prev,
+                                                [row.id]: familyCancerRes.data?.familyCancers || []
+                                              }));
+                                              setOpenFamilyCancerModal(true);
+                                            } catch (error) {
+                                              console.error(`Error fetching family cancer details for form ${row.id}:`, error);
+                                            }
+                                          };
+                                          fetchDetails();
+                                        }}
+                                      >
+                                        نمایش جزئیات سرطان خانوادگی
+                                      </button>
+                                      <button
+                                        className="add_cancer"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setAddCancerModal(true);
+                                          setSelectedFormForFamilyCancer(row.id);
+                                        }}
+                                      >
+                                        اضافه کردن سرطان خانوادگی
+                                      </button>
+                                    </>
+                                  )}
+
+                                  <div className="part_data">
+                                    {partData.error ? (
+                                      <p className="error_message">خطا در بارگذاری داده‌ها: {partData.error}</p>
+                                    ) : Object.keys(filteredData).length > 0 ? (
+                                      Object.entries(filteredData).map(([key, value]) => {
+                                        const isCurrentlyEditing = editingFormPart === `${row.id}-${apiPart}-${key}`;
+                                        const editingValue = editingCells[row.id]?.[apiPart]?.[key] !== undefined
+                                          ? editingCells[row.id]?.[apiPart]?.[key]
+                                          : convertToPersianText(value, RadioMap, key);
+                                        if (gender_map[key] != undefined && gender_map[key] != gender) {
+                                          return;
+                                        }
+
+                                        if (key == "cancers" || key == "familyCancers") {
+                                          return;
+                                        }
+
+                                        if (key == "formType") {
+                                          value = row.formType == 1 ? "بهار" : "نوید"
+                                        }
+                                        return (
+                                          <div key={key} className="data_row">
+                                            <span className="data_key">{getFieldLabel(key)}:</span>
+                                            <span
+                                              className="data_value"
+                                              onDoubleClick={() => handleFieldDoubleClick(row.id, apiPart, key, convertToPersianText(value, RadioMap, key))}
+                                            >
+                                              {isCurrentlyEditing ? (
+                                                <input
+                                                  type="text"
+                                                  value={editingValue}
+                                                  onChange={(e) => handleFieldChange(row.id, apiPart, key, e.target.value)}
+                                                  onBlur={() => saveFieldToServer(row.id, apiPart, key, editingValue)}
+                                                  onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                      saveFieldToServer(row.id, apiPart, key, editingValue);
+                                                    }
+                                                  }}
+                                                  autoFocus
+                                                  style={{ width: "100%" }}
+                                                />
+                                              ) : (
+                                                // Check if the field is an array of images and render as downloadable links
+                                                (key === 'testGenPictures' || key === 'fatherTestGenPictures' || key === 'grandFatherCancerPictures' || key === 'grandMotherCancerPictures' || key === "mamoGraphyPictures") && Array.isArray(value) && value.length > 0 ? (
+                                                  <div className="image-pictures-container">
+                                                    {value.map((pictureUrl, index) => (
+                                                      <a
+                                                        key={index}
+                                                        href={pictureUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="download-link"
+                                                      >
+                                                        دانلود تصویر {index + 1}
+                                                      </a>
+                                                    ))}
+                                                  </div>
+                                                ) : (
+                                                  convertToPersianText(value, RadioMap, key)
+                                                )
+                                              )}
+                                            </span>
+                                          </div>
+                                        );
+                                      })
+                                    ) : (
+                                      <p className="no_data">اطلاعاتی موجود نیست</p>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="no_data_message">داده‌ای موجود نیست</div>
+                )}
+              </div>
+
+              <div className="btn_holder_next_prev">
+                <button className="btn_submit space-UD" onClick={showPrev}>صفحه ی قبلی</button>
+                <button className="btn_submit space-UD" onClick={showMore}>صفحه ی بعدی</button>
+              </div>
             </div>
           </div>
         </div>
-
-        {/* Drawer-style interface for form sections */}
-        <div className="form_sections_container">
-          {data.length > 0 ? (
-            data.map((row, rowIndex) => (
-              <div key={`form-${row.id || rowIndex}`} className="form_section_drawer">
+        {openModal && (
+          <div className="role_modal">
+            <div className="modal_header">
+              <h3>مدل ها</h3>
+              <div className="modal_close" onClick={() => {
+                setOpenModal(false)
+                setSelectedFormId(0)
+              }}>✕</div>
+            </div>
+            <div className="roles">
+              {modelList.map((m, index) => (
                 <div
-                  className="drawer_header"
-                  onClick={() => {
-                    console.log(" row pain : ", row)
-                    let apiArray = row.formType == 1 ? APIARR : APIARR_Navid
-                    toggleDrawer(row.id, apiArray)
-                  }}
-                  style={{ background: stateColors[Object.keys(formStatusLabels).find(key => formStatusLabels[key] === row.status)] }}
+                  key={index}
+                  className="role_table"
+                  onClick={() => sendToCalcModel(m.id)} // pass role directly instead of e.target.value
                 >
-                  <h3 className="drawer_title">فرم {row.id || rowIndex + 1} - {row.name || "نامشخص"} - وضعیت :  {row.status || "نامشخص"}</h3>
-                  {/* <h3 className="drawer_title">وضعیت : </h3> */}
-                  <div className="drawer_controls">
-                    <button
-                      className="model_enter_btn"
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent triggering the drawer toggle
-                        saveTheIdAndOpetions(row.id);
-                      }}
-                    >
-                      ورودی به مدل
-                    </button>
-                    <button className="status_changer model_enter_btn"
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent triggering the drawer toggle
-                        setSelectedFormId(row.id)
-                        setOpenStatusModal(true);
-                      }}
-                    >
-                      تغییر وضعیت
-                    </button>
-                    <span className="drawer_arrow">▼</span>
-                  </div>
+                  {m.name.toUpperCase()}
                 </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-                <div id={`drawer-${row.id || `row-${rowIndex}`}`} className="drawer_content">
-                  {loadingDetails[row.id] ? (
-                    <p>در حال بارگذاری...</p>
-                  ) : (
-                    APIGIVER(row.formType).map((apiPart, partIndex) => {
-                      const partData = formDetails[row.id]?.[apiPart] || {};
-                      console.log("I am going to hell ! : ", apiPart)
-                      // Filter out metadata fields
-                      const filteredData = {};
-                      Object.keys(partData).forEach(key => {
-                        if (key !== "id" && key !== "userID" && key !== "__typename" &&
-                          key !== "status" && key !== "createdAt" && key !== "updatedAt") {
-                          filteredData[key] = partData[key];
-                        }
-                      });
-                      console.log("this is the data we are showing :  ", filteredData)
-                      return (
-                        <div key={apiPart} id={`form-${row.id}-section-${apiPart}`} className="api_part_drawer">
-                          <div
-                            className="api_part_header"
-                            onClick={() => toggleApiSection(row.id, apiPart)}
-                          >
-                            <h4 className="part_title">{row.formType == 1 ? (partNames[partIndex] || `بخش ${partIndex + 1}`) : (partNamesNavid[partIndex] || `بخش ${partIndex + 1}`)}</h4>
-                            <span className="api_part_arrow">
-                              {isApiSectionOpen(row.id, apiPart) ? '▲' : '▼'}
-                            </span>
-                          </div>
-
-                          <div className={`api_part_content can ${isApiSectionOpen(row.id, apiPart) ? 'open' : ''}`}>
-                            {/* Add special buttons for cancer sections */}
-                            {apiPart === "cancer" && (
-                              <>
-                                <button
-                                  className="cancer_btn"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setSelectedFormForSelfCancer(row.id);
-                                    setCancerDeled([]); // Reset deleted self cancers tracking
-                                    // Fetch self cancer details for this specific form
-                                    const fetchDetails = async () => {
-                                      const token = localStorage.getItem("token");
-                                      try {
-                                        const selfCancerRes = await fetchDataGETImg(`admin/form/${row.id}/cancer`, token);
-                                        setDetailedCancerData(prev => ({
-                                          ...prev,
-                                          [row.id]: selfCancerRes.data?.cancers || []
-                                        }));
-                                        setOpenCancerModal(true);
-                                      } catch (error) {
-                                        console.error(`Error fetching self cancer details for form ${row.id}:`, error);
-                                      }
-                                    };
-                                    fetchDetails();
-                                  }}
-                                >
-                                  نمایش جزئیات سرطان فردی
-                                </button>
-                                <button
-                                  className="add_cancer"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setAddCancerModal(true);
-                                    setSelectedFormForSelfCancer(row.id);
-                                  }}
-                                >
-                                  اضافه کردن سرطان
-                                </button>
-                              </>
-                            )}
-                            {apiPart === "familycancer" && (
-                              <>
-                                <button
-                                  className="family_cancer_btn"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setSelectedFormForFamilyCancer(row.id);
-                                    setFamilyCancerDeled([]); // Reset deleted family cancers tracking
-                                    // Fetch family cancer details for this specific form
-                                    const fetchDetails = async () => {
-                                      const token = localStorage.getItem("token");
-                                      try {
-                                        const familyCancerRes = await fetchDataGETImg(`admin/form/${row.id}/familycancer`, token);
-                                        setDetailedFamilyCancerData(prev => ({
-                                          ...prev,
-                                          [row.id]: familyCancerRes.data?.familyCancers || []
-                                        }));
-                                        setOpenFamilyCancerModal(true);
-                                      } catch (error) {
-                                        console.error(`Error fetching family cancer details for form ${row.id}:`, error);
-                                      }
-                                    };
-                                    fetchDetails();
-                                  }}
-                                >
-                                  نمایش جزئیات سرطان خانوادگی
-                                </button>
-                                <button
-                                  className="add_cancer"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setAddCancerModal(true);
-                                    setSelectedFormForFamilyCancer(row.id);
-                                  }}
-                                >
-                                  اضافه کردن سرطان خانوادگی
-                                </button>
-                              </>
-                            )}
-
-                            <div className="part_data">
-                              {partData.error ? (
-                                <p className="error_message">خطا در بارگذاری داده‌ها: {partData.error}</p>
-                              ) : Object.keys(filteredData).length > 0 ? (
-                                Object.entries(filteredData).map(([key, value]) => {
-                                  const isCurrentlyEditing = editingFormPart === `${row.id}-${apiPart}-${key}`;
-                                  const editingValue = editingCells[row.id]?.[apiPart]?.[key] !== undefined
-                                    ? editingCells[row.id]?.[apiPart]?.[key]
-                                    : convertToPersianText(value, key);
-                                  if (gender_map[key] != undefined && gender_map[key] != gender) {
-                                    return;
-                                  }
-
-                                  if (key == "cancers" || key == "familyCancers") {
-                                    return;
-                                  }
-
-                                  if (key == "formType") {
-                                    value = row.formType == 1 ? "بهار" : "نوید"
-                                  }
-                                  return (
-                                    <div key={key} className="data_row">
-                                      <span className="data_key">{getFieldLabel(key)}:</span>
-                                      <span
-                                        className="data_value"
-                                        onDoubleClick={() => handleFieldDoubleClick(row.id, apiPart, key, convertToPersianText(value, key))}
-                                      >
-                                        {isCurrentlyEditing ? (
-                                          <input
-                                            type="text"
-                                            value={editingValue}
-                                            onChange={(e) => handleFieldChange(row.id, apiPart, key, e.target.value)}
-                                            onBlur={() => saveFieldToServer(row.id, apiPart, key, editingValue)}
-                                            onKeyDown={(e) => {
-                                              if (e.key === 'Enter') {
-                                                saveFieldToServer(row.id, apiPart, key, editingValue);
-                                              }
-                                            }}
-                                            autoFocus
-                                            style={{ width: "100%" }}
-                                          />
-                                        ) : (
-                                          // Check if the field is an array of images and render as downloadable links
-                                          (key === 'testGenPictures' || key === 'fatherTestGenPictures' || key === 'grandFatherCancerPictures' || key === 'grandMotherCancerPictures' || key === "mamoGraphyPictures") && Array.isArray(value) && value.length > 0 ? (
-                                            <div className="image-pictures-container">
-                                              {value.map((pictureUrl, index) => (
-                                                <a
-                                                  key={index}
-                                                  href={pictureUrl}
-                                                  target="_blank"
-                                                  rel="noopener noreferrer"
-                                                  className="download-link"
-                                                >
-                                                  دانلود تصویر {index + 1}
-                                                </a>
-                                              ))}
-                                            </div>
-                                          ) : (
-                                            convertToPersianText(value, key)
-                                          )
-                                        )}
-                                      </span>
-                                    </div>
-                                  );
-                                })
-                              ) : (
-                                <p className="no_data">اطلاعاتی موجود نیست</p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })
-                  )}
+        {openStatusModal && (
+          <div className="role_modal">
+            <div className="modal_header">
+              <h3>تغییر وضعیت به ...</h3>
+              <div className="modal_close" onClick={() => {
+                setOpenStatusModal(false)
+                setSelectedFormId(0)
+              }}>✕</div>
+            </div>
+            <div className="roles">
+              {activeStats(selectedFormId, data).map((m, index) => (
+                <div
+                  key={index}
+                  className="role_table"
+                  onClick={() => {
+                    adminStatChanger(m.api, selectedFormId)
+                    setOpenStatusModal(false)
+                  }}
+                >
+                  {m.name}
                 </div>
-              </div>
-            ))
-          ) : (
-            <div className="no_data_message">داده‌ای موجود نیست</div>
-          )}
-        </div>
-
-        <div className="btn_holder_next_prev">
-          <button className="btn_submit space-UD" onClick={showPrev}>صفحه ی قبلی</button>
-          <button className="btn_submit space-UD" onClick={showMore}>صفحه ی بعدی</button>
-        </div>
-      </div>
-      {openModal && (
-        <div className="role_modal">
-          <div className="modal_header">
-            <h3>مدل ها</h3>
-            <div className="modal_close" onClick={() => {
-              setOpenModal(false)
-              setSelectedFormId(0)
-            }}>✕</div>
+              ))}
+            </div>
           </div>
-          <div className="roles">
-            {modelList.map((m, index) => (
-              <div
-                key={index}
-                className="role_table"
-                onClick={() => sendToCalcModel(m.id)} // pass role directly instead of e.target.value
-              >
-                {m.name.toUpperCase()}
-              </div>
-            ))}
+        )}
+
+
+        {openModalRisks && (
+          <div className="role_modal">
+            {innerloading ? <Loader></Loader> : (
+              <>
+                <div className="modal_header">
+                  <h3>احتمال ریسک ها</h3>
+                  <div className="modal_close" onClick={() => {
+                    setOpenModalRisks(false)
+                    setRisks({})
+                  }}>✕</div>
+                </div>
+                <div className="roles">
+                  {Object.keys(risks).length == 0 ? "ریسک هنوز محاسبه نشده است!" : null}
+                  {Object.keys(risks).map((rk, index) => (
+                    <div
+                      key={index}
+                      className="role_table"
+                    >
+                      نتیجه ی احتمال {rk} : {risks[rk]}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
           </div>
-        </div>
-      )}
+        )}
 
-      {openStatusModal && (
-        <div className="role_modal">
-          <div className="modal_header">
-            <h3>تغییر وضعیت به ...</h3>
-            <div className="modal_close" onClick={() => {
-              setOpenStatusModal(false)
-              setSelectedFormId(0)
-            }}>✕</div>
-          </div>
-          <div className="roles">
-            {activeStats(selectedFormId, data).map((m, index) => (
-              <div
-                key={index}
-                className="role_table"
-                onClick={() => {
-                  adminStatChanger(m.api, selectedFormId)
-                  setOpenStatusModal(false)
-                }}
-              >
-                {m.name}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-
-      {openModalRisks && (
-        <div className="role_modal">
-          {innerloading ? <Loader></Loader> : (
-            <>
-              <div className="modal_header">
-                <h3>احتمال ریسک ها</h3>
-                <div className="modal_close" onClick={() => {
-                  setOpenModalRisks(false)
-                  setRisks({})
-                }}>✕</div>
-              </div>
-              <div className="roles">
-                {Object.keys(risks).length == 0 ? "ریسک هنوز محاسبه نشده است!" : null}
-                {Object.keys(risks).map((rk, index) => (
-                  <div
-                    key={index}
-                    className="role_table"
-                  >
-                    نتیجه ی احتمال {rk} : {risks[rk]}
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-
-        </div>
-      )}
-
-      {openFamilyCancerModal && (
-        <div className="role_modal">
-          <div className="modal_header">
-            <h3>تاریخچه سرطان خانوادگی</h3>
-            <div className="modal_close" onClick={() => {
-              setOpenFamilyCancerModal(false)
-              setSelectedFormForFamilyCancer(null)
-              setFamilyCancerDeled([]) // Reset deleted family cancers tracking
-            }}>✕</div>
-          </div>
-          <div className="roles cancer-mode">
-            {detailedFamilyCancerData[selectedFormForFamilyCancer]?.length === 0 || !detailedFamilyCancerData[selectedFormForFamilyCancer] ? "تاریخچه سرطان خانوادگی موجود نیست" :
-              detailedFamilyCancerData[selectedFormForFamilyCancer]?.map((familyMember, index) => (
-                <div key={index} className="role_table">
-                  <div className="family-member-info">
-                    <p><strong>خویشاوند:</strong> {relativeTypesMap[familyMember.relative]}</p>
-                    <p><strong>وضعیت زندگی:</strong>
-                      {familyMember.lifeStatus === 0 ? "فوت شده" :
-                        familyMember.lifeStatus === 1 ? "زنده" :
-                          familyMember.lifeStatus === 2 ? "نامشخص" : "نامشخص"}
-                    </p>
-                    <div className="cancers-list">
-                      <p style={{ fontWeight: "bold", fontSize: "20px", borderBottom: "1px solid #ccc", padding: "1rem", }}>انواع سرطان:</p>
-                      {familyMember.cancers && familyMember.cancers.length > 0 ?
-                        familyMember.cancers.map((cancer, cancerIndex) => {
-                          if (!(familyCancerDeled.includes(cancer.id))) {
-                            return (<div key={cancerIndex} className="cancer-item">
-                              <div className="top_cancer_holder">
-                                <p>نوع سرطان: {cancerTypesMap[cancer.cancerType]}</p>
-                                <button className="modal_close" onClick={() => deleteFamCancer(cancer.id, selectedFormForFamilyCancer)}>✕</button>
-                              </div>
-                              <p>سن تشخیص: {cancer.cancerAge}</p>
-                              <div className="cancer_image_holder">
-                                {cancer.pictures && cancer.pictures.map((cp, index) => {
-                                  return (
-                                    <a href={`${cp}`}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="download-link">
-                                      دانلود تصویر {index + 1}
-                                    </a>
-                                  )
-                                })}
-                              </div>
-                            </div>)
-                          }
-                        })
-                        : "اطلاعات سرطان موجود نیست"}
+        {openFamilyCancerModal && (
+          <div className="role_modal">
+            <div className="modal_header">
+              <h3>تاریخچه سرطان خانوادگی</h3>
+              <div className="modal_close" onClick={() => {
+                setOpenFamilyCancerModal(false)
+                setSelectedFormForFamilyCancer(null)
+                setFamilyCancerDeled([]) // Reset deleted family cancers tracking
+              }}>✕</div>
+            </div>
+            <div className="roles cancer-mode">
+              {detailedFamilyCancerData[selectedFormForFamilyCancer]?.length === 0 || !detailedFamilyCancerData[selectedFormForFamilyCancer] ? "تاریخچه سرطان خانوادگی موجود نیست" :
+                detailedFamilyCancerData[selectedFormForFamilyCancer]?.map((familyMember, index) => (
+                  <div key={index} className="role_table">
+                    <div className="family-member-info">
+                      <p><strong>خویشاوند:</strong> {relativeTypesMap[familyMember.relative]}</p>
+                      <p><strong>وضعیت زندگی:</strong>
+                        {familyMember.lifeStatus === 0 ? "فوت شده" :
+                          familyMember.lifeStatus === 1 ? "زنده" :
+                            familyMember.lifeStatus === 2 ? "نامشخص" : "نامشخص"}
+                      </p>
+                      <div className="cancers-list">
+                        <p style={{ fontWeight: "bold", fontSize: "20px", borderBottom: "1px solid #ccc", padding: "1rem", }}>انواع سرطان:</p>
+                        {familyMember.cancers && familyMember.cancers.length > 0 ?
+                          familyMember.cancers.map((cancer, cancerIndex) => {
+                            if (!(familyCancerDeled.includes(cancer.id))) {
+                              return (<div key={cancerIndex} className="cancer-item">
+                                <div className="top_cancer_holder">
+                                  <p>نوع سرطان: {cancerTypesMap[cancer.cancerType]}</p>
+                                  <button className="modal_close" onClick={() => deleteFamCancer(cancer.id, selectedFormForFamilyCancer)}>✕</button>
+                                </div>
+                                <p>سن تشخیص: {cancer.cancerAge}</p>
+                                <div className="cancer_image_holder">
+                                  {cancer.pictures && cancer.pictures.map((cp, index) => {
+                                    return (
+                                      <a href={`${cp}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="download-link">
+                                        دانلود تصویر {index + 1}
+                                      </a>
+                                    )
+                                  })}
+                                </div>
+                              </div>)
+                            }
+                          })
+                          : "اطلاعات سرطان موجود نیست"}
+                      </div>
                     </div>
                   </div>
+                ))
+              }
+            </div>
+          </div>
+        )}
+
+        {openCancerModal && (
+          <div className="role_modal">
+            <div className="modal_header">
+              <h3>تاریخچه سرطان</h3>
+              <div className="modal_close" onClick={() => {
+                setOpenCancerModal(false)
+                setSelectedFormForSelfCancer(null)
+                setCancerDeled([]) // Reset deleted self cancers tracking
+              }}>✕</div>
+            </div>
+            <div className="roles cancer-mode">
+              <div className="role_table">
+                <div className="cancer-list">
+                  {detailedCancerData[selectedFormForSelfCancer]?.length === 0 || !detailedCancerData[selectedFormForSelfCancer] ? "تاریخچه سرطان خانوادگی موجود نیست" :
+                    detailedCancerData[selectedFormForSelfCancer]?.map((cancer, index) => {
+                      if (!(cancerDeled.includes(cancer.id))) {
+
+                        return (
+                          <div className="cancer-item" >
+                            <div className="top_cancer_holder">
+                              <p>نوع سرطان: {cancerTypesMap[cancer.cancerType]}</p>
+                              <button className="modal_close" onClick={() => deleteCancer(cancer.id, selectedFormForSelfCancer)}>✕</button>
+                            </div>
+                            <p>سن تشخیص: {cancer.cancerAge}</p>
+                            <div className="cancer_image_holder">
+                              {cancer.pictures && cancer.pictures.map((cp, index) => {
+                                return (
+                                  <a href={`${cp}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="download-link">
+                                    دانلود تصویر {index + 1}
+                                  </a>
+                                )
+                              })}
+                            </div>
+                          </div>
+
+                        )
+                      }
+                    })
+                  }
                 </div>
-              ))
-            }
-          </div>
-        </div>
-      )}
-
-      {openCancerModal && (
-        <div className="role_modal">
-          <div className="modal_header">
-            <h3>تاریخچه سرطان</h3>
-            <div className="modal_close" onClick={() => {
-              setOpenCancerModal(false)
-              setSelectedFormForSelfCancer(null)
-              setCancerDeled([]) // Reset deleted self cancers tracking
-            }}>✕</div>
-          </div>
-          <div className="roles cancer-mode">
-            <div className="role_table">
-              <div className="cancer-list">
-                {detailedCancerData[selectedFormForSelfCancer]?.length === 0 || !detailedCancerData[selectedFormForSelfCancer] ? "تاریخچه سرطان خانوادگی موجود نیست" :
-                  detailedCancerData[selectedFormForSelfCancer]?.map((cancer, index) => {
-                    if (!(cancerDeled.includes(cancer.id))) {
-
-                      return (
-                        <div className="cancer-item" >
-                          <div className="top_cancer_holder">
-                            <p>نوع سرطان: {cancerTypesMap[cancer.cancerType]}</p>
-                            <button className="modal_close" onClick={() => deleteCancer(cancer.id, selectedFormForSelfCancer)}>✕</button>
-                          </div>
-                          <p>سن تشخیص: {cancer.cancerAge}</p>
-                          <div className="cancer_image_holder">
-                            {cancer.pictures && cancer.pictures.map((cp, index) => {
-                              return (
-                                <a href={`${cp}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="download-link">
-                                  دانلود تصویر {index + 1}
-                                </a>
-                              )
-                            })}
-                          </div>
-                        </div>
-
-                      )
-                    }
-                  })
-                }
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Add Cancer Modal */}
-      {AddCancerModal && (
-        <div className="role_modal">
-          <div className="modal_header">
-            <h3>اضافه کردن سرطان</h3>
-            <div className="modal_close" onClick={() => {
-              setAddCancerModal(false);
-              setSelectedFormForSelfCancer(null);
-              setSelectedFormForFamilyCancer(null);
-              setCancerDeled([]); // Reset deleted self cancers tracking
-              setFamilyCancerDeled([]); // Reset deleted family cancers tracking
-            }}>✕</div>
-          </div>
-          <div className="roles cancer-mode">
-            <div className="role_table">
-              <CancerAddForm
-                formId={selectedFormForSelfCancer || selectedFormForFamilyCancer}
-                isFamilyCancer={!!selectedFormForFamilyCancer}
-                onClose={() => {
-                  setAddCancerModal(false);
-                  setSelectedFormForSelfCancer(null);
-                  setSelectedFormForFamilyCancer(null);
-                  setCancerDeled([]); // Reset deleted self cancers tracking
-                  setFamilyCancerDeled([]); // Reset deleted family cancers tracking
-                }}
-                cancerTypesMap={cancerTypesMap}
-                relativeTypesMap={relativeTypesMap}
-              />
+        {/* Add Cancer Modal */}
+        {AddCancerModal && (
+          <div className="role_modal">
+            <div className="modal_header">
+              <h3>اضافه کردن سرطان</h3>
+              <div className="modal_close" onClick={() => {
+                setAddCancerModal(false);
+                setSelectedFormForSelfCancer(null);
+                setSelectedFormForFamilyCancer(null);
+                setCancerDeled([]); // Reset deleted self cancers tracking
+                setFamilyCancerDeled([]); // Reset deleted family cancers tracking
+              }}>✕</div>
+            </div>
+            <div className="roles cancer-mode">
+              <div className="role_table">
+                <CancerAddForm
+                  formId={selectedFormForSelfCancer || selectedFormForFamilyCancer}
+                  isFamilyCancer={!!selectedFormForFamilyCancer}
+                  onClose={() => {
+                    setAddCancerModal(false);
+                    setSelectedFormForSelfCancer(null);
+                    setSelectedFormForFamilyCancer(null);
+                    setCancerDeled([]); // Reset deleted self cancers tracking
+                    setFamilyCancerDeled([]); // Reset deleted family cancers tracking
+                  }}
+                  cancerTypesMap={cancerTypesMap}
+                  relativeTypesMap={relativeTypesMap}
+                />
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </>
   );
 }

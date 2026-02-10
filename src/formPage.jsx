@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { APIURL } from "./utils/config";
-import { permExtractor, fetchDataGET, fetchDataDELETE, formTypeChecker, statusChecker, fetchDataPUT } from "./utils/tools";
+import { permExtractor, fetchDataGET, fetchDataDELETE, formTypeChecker, statusChecker, fetchDataPUT, fetchDataGETNoError } from "./utils/tools";
 import UQs from './utils/utilQs.json'
 import "./client_forms.css"
 import ToastProvider from "./toaster";
@@ -206,6 +206,19 @@ function FormsPage() {
     navigate("/operator/userMobile")
   }
 
+  const checkNewUser = async () => {
+    let token = localStorage.getItem("token")
+    let res = await fetchDataGETNoError("admin/profile", token)
+    if (res.status == 404 && role != "سوپر ادمین") {
+      navigate("/residentEnter")
+    } else if (res.status == 200 || res.status == 201) {
+      navigate("/Dashboard")
+    } else if (role == "سوپر ادمین") {
+      navigate("/Dashboard")
+    }
+    console.log("]]]]]]]]]]]]]]]]]] : ", res)
+  }
+
 
   if (loading) return <p className="text-center mt-10">Loading forms...</p>;
 
@@ -227,9 +240,9 @@ function FormsPage() {
               <span onClick={() => navigate("/")}>خروج</span>
             </div>
             <h3 className="forms-title">لیست فرم‌های شما</h3>
-            <div className="help_bar_part3" onClick={() => setOpenModalConf(true)}>
-              {role != "بیمار" ? (
-                <button className="btn-view-form top align_items" onClick={() => navigate("/Dashboard")}>
+            <div className="help_bar_part3">
+              {role != "مراجعه کننده" ? (
+                <button className="btn-view-form top align_items" onClick={() => checkNewUser()}>
                   <span>پنل کاربری</span>
                   <img src={panelSign} alt="home" />
                 </button>
@@ -375,7 +388,7 @@ function FormsPage() {
 
               {JSON.parse(localStorage.getItem("roles"))[0].id == 3 ?
                 <button className="btn-add-new-oprator" onClick={handleAddNewForPatient}>
-                  فرم جدید برای بیمار
+                  فرم جدید برای کاربر دیگر
                 </button>
                 :
                 null

@@ -773,11 +773,13 @@ tbody tr:last-child {
 
 .checkbox-card {
     display: flex;
-    align-items: center;
     gap: 8px;
-    /* space between box and text */
     cursor: pointer;
     user-select: none;
+    width: 100%;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding: 1rem 0rem;
 }
 
 .checkbox-card input {

@@ -101,6 +101,20 @@ export const fetchDataGET = async (endpoint, token_auth) => {
   return data;
 };
 
+export const fetchDataGETNoError = async (endpoint, token_auth) => {
+  const res = await fetch(`http://${APIURL}/${endpoint}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      'Authorization': `Bearer ${token_auth}`
+    },
+
+  });
+
+  const data = await res.json();
+  return data;
+};
+
 export const fetchDataGETTab = async (endpoint, token_auth) => {
   const res = await fetch(`http://${APIURL}/${endpoint}`, {
     method: "GET",
@@ -367,9 +381,8 @@ export const dict_transformer = (arrOfDic) => {
   return newdict
 }
 
-// S H function
+// it would take an object and give you the key that the value of that in the dictionary is equal to the value given to the function
 export const getKeyVal = (obj, Val) => {
-  console.log("INTHETOOLSSSSSSSSSSSSSS :  ", obj, typeof Val)
   let foundedKey = Object.keys(obj).find(key => obj[key] === Val)
   return foundedKey
 }
@@ -396,6 +409,20 @@ export const cancerDictRefiner = (obj, cancerPreData) => {
   }
 
   return mask_obj
+}
+
+
+
+export const backwardEnum = (APIPARTDATA, transformer, blackList) => {
+  // console.log(transformer)
+  let resDict = {}
+  Object.keys(APIPARTDATA).forEach(APD => {
+    console.log(APD)
+    if (!blackList.includes(APD) && isNumber(APIPARTDATA[APD]) && getKeyVal(transformer, APIPARTDATA[APD])) {
+      resDict[APD] = getKeyVal(transformer, APIPARTDATA[APD])
+    }
+  });
+  return resDict
 }
 
 

@@ -26,10 +26,19 @@ function RadioV2({ data_req, data, class_change1, value, class_change2, valueSet
             return opt
         }
     }
+    const computeValue = (opt) => {
+        if (relation === false) return "null";
+
+        if (!Enum && mapper && mapper[opt] !== undefined && !des) {
+            return mapper[opt];
+        }
+
+        return tempFunction(opt, optionValueMap);
+    };
+
     if (data.Rname == "currentHrtUse") {
         console.log("we have passed", effectiveRelation)
     }
-    // console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa : ", mapper)
     return (
         <>
             <div
@@ -48,7 +57,7 @@ function RadioV2({ data_req, data, class_change1, value, class_change2, valueSet
                                     type="radio"
                                     className="radio"
                                     name={data.Rname}
-                                    value={!Enum && mapper && mapper[opt] !== undefined && !des ? mapper[opt] : tempFunction(opt, optionValueMap)}
+                                    value={computeValue(opt)}
                                     FaVal={opt}
                                     id={`${data.Rname}-${index}`}
                                     onChange={(e) => {

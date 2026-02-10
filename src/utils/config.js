@@ -19,7 +19,7 @@ export const FormStatus = {
 export const formStatusLabels = {
     1: "پیش‌نویس",
     2: "ارسال شده",
-    3: "در انتظار پاسخ بیمار",
+    3: "در انتظار پاسخ مراجعه کننده",
     4: "در انتظار مدارک",
     5: "رد شده",
     6: "آماده محاسبه",
@@ -33,7 +33,7 @@ export const statusAPIs = {
     4: "request-documents",
     5: "reject",
     6: "accept",
-    7: ""
+    7: "calculated"
 }
 
 
@@ -54,4 +54,11 @@ export const cancerRefs = {
     "siblingCancer": ["برادر", "خواهر"],
     "ameAmoCancer": ["عمه", "عمو"],
     "khaleDaeiCancer": ["دایی", "خاله"],
+}
+
+export const roleColors = {
+    "مراجعه کننده": "red",
+    "سوپر ادمین": "#6155F5",
+    "اپراتور": "#66C2A5",
+    "مدیر": "#0088FF"
 }

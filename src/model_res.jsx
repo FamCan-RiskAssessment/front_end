@@ -15,7 +15,7 @@ const ModelResults = () => {
     const [pagiPrev, setPagiPrev] = useState(false);
     const [pagiNext, setPagiNext] = useState(false);
     const [risks, setRisks] = useState({});
-
+    console.log("here is the format : ", data)
     // Function to fetch all forms with pagination
     useEffect(() => {
         const fetchFormIds = async () => {
@@ -36,24 +36,24 @@ const ModelResults = () => {
                 const updatedForms = [];
 
                 // Process each form sequentially (or use Promise.all for parallel)
-                for (const pf of pre_forms.data.data) {
-                    let updatedForm = { ...pf }; // Start with a copy of the original form
+                // for (const pf of pre_forms.data.data) {
+                //     let updatedForm = { ...pf }; // Start with a copy of the original form
 
-                    // Process each API endpoint
-                    for (const ar of APIARR) {
-                        try {
-                            let user_part_form = await fetchDataGET(`form/${pf.id}/${ar}`, token);
-                            updatedForm = { ...updatedForm, ...user_part_form.data };
-                        } catch (error) {
-                            console.error(`Error fetching form ${pf.id} for ${ar}:`, error);
-                        }
-                    }
+                //     // Process each API endpoint
+                //     for (const ar of APIARR) {
+                //         try {
+                //             let user_part_form = await fetchDataGET(`form/${pf.id}/${ar}`, token);
+                //             updatedForm = { ...updatedForm, ...user_part_form.data };
+                //         } catch (error) {
+                //             console.error(`Error fetching form ${pf.id} for ${ar}:`, error);
+                //         }
+                //     }
 
-                    updatedForms.push(updatedForm);
-                }
+                //     updatedForms.push(updatedForm);
+                // }
 
                 // Update state with the fully updated array
-                setData(updatedForms);
+                setData(pre_forms.data.data);
                 setLoading(false);
             }
         };

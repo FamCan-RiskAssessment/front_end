@@ -37,7 +37,8 @@
   },
   {
     "key": "gender",
-    "label": "جنسیت"
+    "label": "جنسیت",
+    "mapper": "gender"
   },
   {
     "key": "isAtba",
@@ -53,7 +54,8 @@
   },
   {
     "key": "drinksAlcohol",
-    "label": "مصرف الکل"
+    "label": "مصرف الکل",
+    "mapper": "answers"
   },
   {
     "key": "cupsPerWeek",
@@ -85,7 +87,8 @@
   },
   {
     "key": "smokeAtLeast100",
-    "label": "آیا حداقل 100 سیگار کشیده؟"
+    "label": "آیا حداقل 100 سیگار کشیده؟",
+    "mapper": "answers"
   },
   {
     "key": "smokingAge",
@@ -93,7 +96,8 @@
   },
   {
     "key": "smokingNow",
-    "label": "سیگار کشیدن فعلی"
+    "label": "سیگار کشیدن فعلی",
+    "mapper": "answers"
   },
   {
     "key": "leaveSmokingAge",
@@ -122,7 +126,8 @@
   },
   {
     "key": "hasChildren",
-    "label": "فرزند دارد؟"
+    "label": "فرزند دارد؟",
+    "mapper": "answers"
   },
   {
     "key": "numberOfChildren",
@@ -136,7 +141,8 @@
   {
     "key": "menopausalStatus",
     "label": "وضعیت یائسگی",
-    "gender": 2
+    "gender": 2,
+    "mapper": "menopausalMap"
   },
   {
     "key": "menopauseAge",
@@ -146,7 +152,8 @@
   {
     "key": "hrt",
     "label": "مصرف HRT",
-    "gender": 2
+    "gender": 2,
+    "mapper": "answers"
   },
   {
     "key": "hrtUseLength",
@@ -156,27 +163,32 @@
   {
     "key": "lastFiveYearsHrtUse",
     "label": "مصرف HRT در 5 سال گذشته",
-    "gender": 2
+    "gender": 2,
+    "mapper": "answers"
   },
   {
     "key": "currentHrtUse",
     "label": "مصرف فعلی HRT",
-    "gender": 2
+    "gender": 2,
+    "mapper": "answers"
   },
   {
     "key": "intendedHrtUse",
     "label": "قصد مصرف HRT",
-    "gender": 2
+    "gender": 2,
+    "mapper": "answers"
   },
   {
     "key": "hrtType",
     "label": "نوع HRT",
-    "gender": 2
+    "gender": 2,
+    "mapper": "answers"
   },
   {
     "key": "oral",
     "label": "مصرف قرص",
-    "gender": 2
+    "gender": 2,
+    "mapper": "answers"
   },
   {
     "key": "oralDuration",
@@ -186,22 +198,26 @@
   {
     "key": "oralTwoLastYears",
     "label": "مصرف قرص در 2 سال گذشته",
-    "gender": 2
+    "gender": 2,
+    "mapper": "answers"
   },
   {
     "key": "mamoGraphy",
     "label": "ماموگرافی",
-    "gender": 2
+    "gender": 2,
+    "mapper": "answers"
   },
   {
     "key": "falop",
     "label": "بستن لوله‌ها",
-    "gender": 2
+    "gender": 2,
+    "mapper": "answers"
   },
   {
     "key": "andometrioz",
     "label": "اندومتریوز",
-    "gender": 2
+    "gender": 2,
+    "mapper": "answers"
   },
   {
     "key": "leavePestan",
@@ -215,23 +231,28 @@
   },
   {
     "key": "laDeColon",
-    "label": "کولونوسکوپی"
+    "label": "کولونوسکوپی",
+    "mapper": "answers"
   },
   {
     "key": "laDePol",
-    "label": "پولیپ روده"
+    "label": "پولیپ روده",
+    "mapper": "answers"
   },
   {
     "key": "aspLaMo",
-    "label": "آسپیرین"
+    "label": "آسپیرین",
+    "mapper": "answers"
   },
   {
     "key": "nsaiDLaMo",
-    "label": "NSAID"
+    "label": "NSAID",
+    "mapper": "answers"
   },
   {
     "key": "lastFiveYearBloodTestInStool",
-    "label": "آزمایش خون در مدفوع (5 سال اخیر)"
+    "label": "آزمایش خون در مدفوع (5 سال اخیر)",
+    "mapper": "answers"
   },
   {
     "key": "cancer",
@@ -247,15 +268,18 @@
   },
   {
     "key": "testGen",
-    "label": "آزمایش ژنتیک"
+    "label": "آزمایش ژنتیک",
+    "mapper": "answers"
   },
   {
     "key": "fmTestGen",
-    "label": "آزمایش ژنتیک خانوادگی"
+    "label": "آزمایش ژنتیک خانوادگی",
+    "mapper": "answers"
   },
   {
     "key": "callExpert",
-    "label": "تماس با متخصص"
+    "label": "تماس با متخصص",
+    "mapper": "answers"
   },
   {
     "key": "birthCountry",
@@ -279,7 +303,8 @@
   },
   {
     "key": "supplementaryInsurances",
-    "label": "بیمه‌های تکمیلی"
+    "label": "بیمه‌های تکمیلی",
+    "mapper": "answers"
   },
   {
     "key": "chronicLungDisease",
@@ -303,7 +328,8 @@
   },
   {
     "key": "lungCancerFamily",
-    "label": "سرطان ریه در خانواده"
+    "label": "سرطان ریه در خانواده",
+    "mapper": "answers"
   },
   {
     "key": "lungCancerFamilyRelation",
@@ -343,7 +369,8 @@
   },
   {
     "key": "pastSmoking",
-    "label": "سابقه سیگار کشیدن"
+    "label": "سابقه سیگار کشیدن",
+    "mapper": "answers"
   },
   {
     "key": "secondhandSmoke",
@@ -424,15 +451,18 @@
   },
   {
     "key": "bronshit",
-    "label": "سابقه ی برونشیت"
+    "label": "سابقه ی برونشیت",
+    "mapper": "answers"
   },
   {
     "key": "fibroz",
-    "label": "سابقه ی فیبروز"
+    "label": "سابقه ی فیبروز",
+    "mapper": "answers"
   },
   {
     "key": "lungill",
-    "label": "سابقه ی بیماری ریوی حاد"
+    "label": "سابقه ی بیماری ریوی حاد",
+    "mapper": "answers"
   },
   {
     "key": "Csig",

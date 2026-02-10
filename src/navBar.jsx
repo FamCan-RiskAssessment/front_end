@@ -1,25 +1,57 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./defnav.css"
+import exitSign from './V2Form/exit.svg'
+import timeSign from './V2Form/time.svg'
+import homeSign from './V2Form/home.svg'
 
 function NavBar({ account }) {
     const navigate = useNavigate();
-    return (
-        <nav>
-            <div className="account-holder">
-                <h2 className="account_name">{account}</h2>
-                <h2 className="account_name mob" onClick={() => navigate("/DashBoard")}>صفحه ی اصلی</h2>
-                <h2 className="quit-btn" onClick={() => navigate("/login")}>خروج</h2>
 
+    // Get current date and time
+    const now = new Date();
+    const persianDate = now.toLocaleDateString('fa-IR');
+    const timeString = now.toLocaleTimeString('fa-IR');
+    const persianDateTime = `${persianDate} - ${timeString}`;
+
+    return (
+        <div
+            className="help_bar_container"
+        >
+            <div className="top-layer">
+                <div className="help_bar_parts_container">
+                    <div className="help_bar_part1">
+                        <h3>
+                            <img src={timeSign} alt="time_sign" />
+                            <span style={{ marginRight: '8px', fontSize: '0.9em', color: '#666' }}>{persianDateTime}</span>
+                        </h3>
+                    </div>
+                    <h3 className="forms-title">ابزار های مدیریت کاربران</h3>
+                    <div className="help_bar_part3">
+                        <button className="btn-view-form top align_items" onClick={() => navigate("/Dashboard")}>
+                            <span>صفحه ی اصلی</span>
+                            <img src={homeSign} alt="home" />
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div className="item-holder">
-                <ul className="nav-list">
-                    <li className="nav-item"><a href="/DashBoard">صفحه ی اصلی</a></li>
-                    {/* <li className="nav-item"><a href="#">تغییر نقش</a></li> */}
-                    {/* <li className="nav-item"><a href="#">ثبت نام شده ها</a></li> */}
-                </ul>
+            <div className="bottom-layer">
+                <div className="help_bar_parts_container">
+                    <div className="help_bar_part1">
+                        <span>خوش آمدید</span>
+                        <span>نام</span>
+                        <span>{account}</span>
+                        <span>نقش</span>
+                    </div>
+                    <div className="help_bar_part3 dash">
+                        <button className="dash_exit_btn">
+                            <img src={exitSign} alt="exit_sign" />
+                            <span onClick={() => navigate("/")}>خروج</span>
+                        </button>
+                    </div>
+                </div>
             </div>
-        </nav>
+        </div>
     )
 }
 

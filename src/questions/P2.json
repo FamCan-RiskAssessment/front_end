@@ -299,6 +299,7 @@
     "Oname": "countGheliandaily",
     "options": [
       "انتخاب کنید",
+      "0 سر",
       "1 سر",
       "2 سر",
       "3 سر"
@@ -319,6 +320,7 @@
     "Oname": "countGheliandailyPast",
     "options": [
       "انتخاب کنید",
+      "0 سر",
       "1 سر",
       "2 سر",
       "3 سر"

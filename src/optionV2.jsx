@@ -12,6 +12,13 @@ function OptionsV2({ data_req, data, class_change1, class_change2, valueSetter, 
         console.log("found that !")
         console.log(relation)
     }
+    const computeVal = (value) => {
+        if (!relation) {
+            return "انتخاب کنید"
+        } else {
+            return value
+        }
+    }
     return (
         <>
             <div className={`form_element optionV2 ${class_change1}`} style={relation ? null : { display: "none" }}>
@@ -24,7 +31,7 @@ function OptionsV2({ data_req, data, class_change1, class_change2, valueSetter, 
                         onChange={(e) => valueSetter?.(e.target.value)}
                         className={`select_optionsV2 ${class_change2}`} data-enum={Enum}
                         ref={colRef == undefined ? null : colRef}
-                        value={value}
+                        value={computeVal(value)}
                     >
                         {data.options.map((opt, index) =>
                             <option value={opt}>{opt}</option>

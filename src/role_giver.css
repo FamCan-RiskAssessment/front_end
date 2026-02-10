@@ -16,7 +16,7 @@
 .title-holder {
   padding: 1rem;
   /* border-bottom: 1px solid white; */
-  margin: 0rem 1rem 1rem 1rem;
+  /* margin: 0rem 1rem 1rem 1rem; */
   border-bottom: 1px solid black;
 }
 
@@ -176,13 +176,13 @@ div>.identifiers {
 
 /* Title */
 .title-holder {
-  text-align: center;
-  margin-bottom: 2rem;
+  /* text-align: center; */
+  /* margin-bottom: 2rem; */
   color: #4b006e;
 }
 
 .title-holder h1 {
-  font-size: 2rem;
+  /* font-size: 2rem; */
   margin-bottom: 0.5rem;
 }
 
@@ -199,7 +199,7 @@ div>.identifiers {
   padding: 2rem;
   width: 90%;
   max-width: 800px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); */
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -365,4 +365,27 @@ div>.identifiers {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+}
+
+.table-cell.RG {
+  text-align: center;
+}
+
+.table-cell.RG>span {
+  padding: 0.25rem 0.5rem;
+  /* width: 100%; */
+  border-radius: 10px;
+}
+
+.table-header {
+  text-align: center;
+}
+
+.roleInTable {
+  width: 80%;
+  /* paddi; */
+}
+
+.btn_formPage_holder.RM {
+  justify-content: center;
 }

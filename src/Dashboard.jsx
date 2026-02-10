@@ -5,6 +5,12 @@ import "./DashBoard.css"
 import formT from "./assets/from_transfer.svg"
 import { useLocation, useNavigate } from "react-router-dom";
 import { permExtractor, fetchDataGET } from "./utils/tools"
+import homeSign from './V2Form/home.svg'
+import timeSign from './V2Form/time.svg'
+import tool_pinkSign from './V2Form/pink_tool.svg'
+import tool_greenSign from './V2Form/green_tool.svg'
+import exitSign from './V2Form/exit.svg'
+
 
 function DashBoard() {
     const location = useLocation();
@@ -73,11 +79,146 @@ function DashBoard() {
 
     return (
         <>
-            <NavBar account={userPhone}></NavBar>
-            <div className="wrapper">
+            <div className="forms_page_holder">
+                <NavBar account={userPhone}></NavBar>
+                {/* <div
+                    className="help_bar_container"
+                >
+                    <div className="top-layer">
+                        <div className="help_bar_parts_container">
+                            <div className="help_bar_part1">
+                                <h3>
+                                    <img src={timeSign} alt="time_sign" />
+                                </h3>
+                            </div>
+                            <h3 className="forms-title">ابزار های مدیریت کاربران</h3>
+                            <div className="help_bar_part3">
+                                <button className="btn-view-form top align_items" onClick={() => navigate("/Dashboard")}>
+                                    <span>صفحه ی اصلی</span>
+                                    <img src={homeSign} alt="home" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bottom-layer">
+                        <div className="help_bar_parts_container">
+                            <div className="help_bar_part1">
+                                <span>خوش آمدید</span>
+                                <span>نام</span>
+                                <span>شماره</span>
+                                <span>نقش</span>
+                            </div>
+                            <div className="help_bar_part3 dash">
+                                <button className="dash_exit_btn">
+                                    <img src={exitSign} alt="exit_sign" />
+                                    <span onClick={() => navigate("/")}>خروج</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div> */}
+                <div className="forms-page-wrapper dash">
+                    <div className="forms-container dash">
+                        <div className="connector">
+                            <div className="tool_title">
+                                <span>
+                                    <img src={tool_greenSign} alt="tool_picker_green" />
+                                </span>
+                                <h2>مدیریت کاربران و نقش‌ها</h2>
+                            </div>
+                            <div className="user-management">
+                                <div className="tool_list">
+                                    <ul>
+                                        <li className="tool" onClick={() => tool_chooser2()}>
+                                            <span>
+                                                <img src={tool_pinkSign} alt="tool_picker_pink" />
+                                            </span>
+                                            <span>
+                                                ساخت، حذف و مدیریت نقش
+                                            </span>
+                                        </li>
+                                        <li className="tool" onClick={() => tool_chooser()}>
+                                            <span>
+                                                <img src={tool_pinkSign} alt="tool_picker_pink" />
+                                            </span>
+                                            <span>
+                                                تغییر دسترسی افراد
+                                            </span>
+                                        </li>
+                                        <li className="tool" onClick={() => tool_chooser4()}>
+                                            <span>
+                                                <img src={tool_pinkSign} alt="tool_picker_pink" />
+                                            </span>
+                                            <span>
+                                                مدیریت کاربران
+                                            </span>
+                                        </li>
+                                        <li className="tool" onClick={() => tool_chooser3()}>
+                                            <span>
+                                                <img src={tool_pinkSign} alt="tool_picker_pink" />
+                                            </span>
+                                            <span>
+                                                کاربران ثبت‌نام شده
+                                            </span>
+                                        </li>
+                                        <li className="tool" onClick={() => tool_chooser5()}>
+                                            <span>
+                                                <img src={tool_pinkSign} alt="tool_picker_pink" />
+                                            </span>
+                                            <span>
+                                                تغییر رمز
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="connector">
+                            <div className="tool_title journs">
+                                <span>
+                                    <img src={tool_greenSign} alt="tool_picker_green" />
+                                </span>
+                                <h2>گزارش‌ها و فرم‌ها</h2>
+                            </div>
+                            <div className="form-management">
+                                <div className="tool_list">
+                                    <ul>
+                                        <li className="tool" onClick={() => tool_chooser8()}>
+                                            <span>
+                                                <img src={tool_pinkSign} alt="tool_picker_pink" />
+                                            </span>
+                                            <span>
+                                                نتایج مدل‌ها
+                                            </span>
+                                        </li>
+                                        <li className="tool" onClick={() => tool_chooser6()}>
+                                            <span>
+                                                <img src={tool_pinkSign} alt="tool_picker_pink" />
+                                            </span>
+                                            <span>
+                                                ارجاع فرم
+                                            </span>
+                                        </li>
+                                        <li className="tool" onClick={() => tool_chooser7()}>
+                                            <span>
+                                                <img src={tool_pinkSign} alt="tool_picker_pink" />
+                                            </span>
+                                            <span>
+                                                گزارش سیستم
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            {/* <div className="wrapper">
                 <div className="title-holder">
                     <h1>ابزارها</h1>
-                    <p className="subtitle">مدیریت نقش‌ها و بیماران</p>
+                    <p className="subtitle">مدیریت نقش‌ها و کاربران</p>
                 </div>
                 <div className="tool_holder">
                     {(permExtractor(perms, "دسترسی کامل") || permExtractor(perms, "ویرایش نقش")) && (
@@ -107,7 +248,7 @@ function DashBoard() {
                             <div className="tool_card" onClick={tool_chooser3}>
                                 <div className="tool_image around_image patients"></div>
                                 <div className="tool_name">
-                                    <span>بیماران ثبت‌نام شده</span>
+                                    <span>کاربران ثبت‌نام شده</span>
                                 </div>
                             </div>
                         </div>
@@ -164,7 +305,7 @@ function DashBoard() {
                         </div>
                     )}
                 </div>
-            </div>
+            </div> */}
 
         </>
     )

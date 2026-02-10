@@ -25,6 +25,7 @@ import FormsPageNavid from './NavidDesign/formPageNavid'
 import QuestionsNavid from './NavidDesign/questionareNavid'
 import LandingPage from './LandingPage/totalLand'
 import GatePage from './V2Form/gatePage'
+import ResidentRegister from './V2Form/resident_login'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 function App() {
 
@@ -37,6 +38,7 @@ function App() {
 
           {/* <Route path="/login" element={<Login_page2></Login_page2>}></Route> */}
           <Route path="/login" element={<Login_pageV3></Login_pageV3>}></Route>
+
 
           <Route path="/gate" element={<GatePage></GatePage>}></Route>
 
@@ -55,6 +57,7 @@ function App() {
           <Route path='/DashBoard/usersTree' element={<RoleHierarchyTree></RoleHierarchyTree>}></Route>
           <Route path='/DashBoard/supervisorForms' element={<SupervisorPage></SupervisorPage>}></Route>
           <Route path='/DashBoard/systemLog' element={<SystemLogs></SystemLogs>}></Route>
+          <Route path='/residentEnter' element={<ResidentRegister></ResidentRegister>}></Route>
           <Route path='/operator/userMobile' element={<OperatorUserMobile></OperatorUserMobile>}></Route>
           <Route path='/AppChoose' element={<ChooseApp></ChooseApp>}></Route>
           <Route path='/formsNavid' element={<FormsPageNavid></FormsPageNavid>}></Route>

@@ -1,7 +1,24 @@
-.total_holder_sup_form{
+.total_holder_sup_form {
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
     height: 100vh;
+}
+
+.table-cell.SP {
+    text-align: center;
+}
+
+.table-header {
+    text-align: center;
+}
+
+.statusInTable {
+    padding: 0.25rem 0.5rem;
+    border-radius: 10px;
+}
+
+.btn_formPage_holder.SP {
+    justify-content: center;
 }

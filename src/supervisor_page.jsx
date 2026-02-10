@@ -1,156 +1,242 @@
-import { useState , useEffect } from "react";
-import "./supervisor.css"
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { APIURL, formStatusLabels, stateColors } from "./utils/config";
+import { fetchDataGET, fetchDataPUT, form_ids_finder, getKeyVal } from "./utils/tools";
+import "./client_forms.css";
+import "./supervisor.css";
 import NavBar from "./navBar";
-import { fetchDataGET , form_ids_finder, fetchDataPUT} from "./utils/tools";
 import ToastProvider from "./toaster";
 import { useToast } from "./toaster";
-import { isNumber } from "./utils/tools";
-import Loader from "./utils/loader";
+import leftSign from './V2Form/form_left.png';
+import rightSign from './V2Form/form_right.png';
+import prevSign from './V2Form/arrow_right.svg';
+import settingsSign from './V2Form/settings.svg';
+import roleAssignSign from './V2Form/roleAssign.svg';
 
-function SupervisorPage(){
-    let userPhone = localStorage.getItem("number")
-    const [formInfos , setFormInfos] = useState({})
-    const [OPRoleId , setOPRoleId] = useState(0)
-    const [openModal , setOpenModal] = useState(false)
-    const [OPArr , setOPArr] = useState([])
-    const [selectedFormId , setSelectedFormId] = useState(0)
-    const [changedOPId , setChangedOPId] = useState(0)
-    const [page , setPage] = useState(1)
+function SupervisorPage() {
+    const [formInfos, setFormInfos] = useState({});
+    const [OPRoleId, setOPRoleId] = useState(0);
+    const [openModal, setOpenModal] = useState(false);
+    const [OPArr, setOPArr] = useState([]);
+    const [selectedFormId, setSelectedFormId] = useState(0);
+    const [changedOPId, setChangedOPId] = useState(0);
+    const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(true);
-    const [pagiPrev , setPagiPrev] = useState(false)
-    const [pagiNext , setPagiNext] = useState(false)
-    const { addToast } = useToast()
-  // console.log(OPRoleId)
-    // console.log(formInfos)
-    useEffect(() => {
-        let token = localStorage.getItem("token")
-        const get_forms = async () =>{
-            
-            let data = await fetchDataGET(`admin/form?page=${page}&pageSize=10` , token)
-            console.log("this is the data : " , data)
-            setPagiNext(data.data.pagination.hasNextPage)
-            setPagiPrev(data.data.pagination.hasPrevPage)
-            let form_ids = form_ids_finder(data.data.data)
-            console.log("this is the form_ids : " , form_ids)
-            setFormInfos(form_ids) 
+    const [pagiPrev, setPagiPrev] = useState(false);
+    const [pagiNext, setPagiNext] = useState(false);
+    const [pageCount, setPageCount] = useState(0);
+    const navigate = useNavigate();
+    const { addToast } = useToast();
+    let userPhone = localStorage.getItem("number");
+    console.log(formInfos)
+    const lineMaker = (total_page) => {
+        let spans = [];
+        for (let i = 0; i < total_page; i++) {
+            spans.push(i);
         }
-        get_forms()
-        setLoading(false)
-    } , [changedOPId, page])
+        return spans;
+    };
 
+    const nextPage = () => {
+        if (pagiNext) setPage(p => p + 1);
+    };
 
+    const prevPage = () => {
+        if (pagiPrev) setPage(p => p - 1);
+    };
 
+    // Fetch forms
     useEffect(() => {
-        let token = localStorage.getItem("token")
+        let token = localStorage.getItem("token");
+        const get_forms = async () => {
+            try {
+                let data = await fetchDataGET(`admin/form?page=${page}&pageSize=10`, token);
+                console.log("this is the data : ", data);
+                setPagiNext(data.data.pagination.hasNextPage);
+                setPagiPrev(data.data.pagination.hasPrevPage);
+                setPageCount(data.data.pagination.totalPages);
+
+                let form_ids = form_ids_finder(data.data.data);
+                console.log("this is the form_ids : ", form_ids);
+                setFormInfos(form_ids);
+            } catch (error) {
+                console.error("Error fetching forms:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        get_forms();
+    }, [changedOPId, page]);
+
+    // Get operator role ID
+    useEffect(() => {
+        let token = localStorage.getItem("token");
         const OPRoleIdFetch = async () => {
-            let fetched = await fetchDataGET("admin/role" , token)
-            fetched.data.forEach(fd => {
-                if(fd.name == "اپراتور"){
-                    setOPRoleId(fd.id)
-                }
-            });
-        }
-        OPRoleIdFetch()
-    } , [])
+            try {
+                let fetched = await fetchDataGET("admin/role", token);
+                fetched.data.forEach(fd => {
+                    if (fd.name == "اپراتور") {
+                        setOPRoleId(fd.id);
+                    }
+                });
+            } catch (error) {
+                console.error("Error fetching role:", error);
+            }
+        };
+        OPRoleIdFetch();
+    }, []);
+
     const openOpers = async (form_id) => {
-        setOpenModal(true)
-        let token = localStorage.getItem("token")
-        let fetchedOps = await fetchDataGET(`admin/role/${OPRoleId}/owners` , token)
-        setOPArr(fetchedOps.data)
-        console.log("this is form_id : "  , form_id)
-        setSelectedFormId(form_id)
-    }
+        setOpenModal(true);
+        let token = localStorage.getItem("token");
+        let fetchedOps = await fetchDataGET(`admin/role/${OPRoleId}/owners`, token);
+        setOPArr(fetchedOps.data);
+        console.log("this is form_id : ", form_id);
+        setSelectedFormId(form_id);
+    };
+
     const changeTheOper = async (OA) => {
-        setOpenModal(false)
-        let token = localStorage.getItem("token")
+        setOpenModal(false);
+        let token = localStorage.getItem("token");
         let payload = {
-            operatorId:OA.id
-        }
-        let Opchange = await fetchDataPUT(`admin/form/${selectedFormId}/operator` , token , payload)
-        setChangedOPId(OA.id)
-        if(Opchange.status == 200){
-        addToast({
+            operatorId: OA.id
+        };
+        let Opchange = await fetchDataPUT(`admin/form/${selectedFormId}/operator`, token, payload);
+        setChangedOPId(OA.id);
+        if (Opchange.status == 200) {
+            addToast({
                 title: Opchange.message,
                 type: 'success',
                 duration: 4000
-              })
-        console.log(Opchange)
+            });
+            console.log(Opchange);
         }
-    }
+    };
 
-const showMore = () => {
-    if(pagiNext){
-        setPage(p => p + 1)
-    }
-}
+    if (loading) return <p className="text-center mt-10">Loading forms...</p>;
 
-const showPrev = () => {
-    if(pagiPrev){
-        setPage(p => p - 1)
-    }
-}
+    return (
+        <>
+            <div className="forms_page_holder">
+                <NavBar account={userPhone}></NavBar>
 
-if (loading) {
-    return <Loader></Loader>;
-  }
+                <div className="forms-page-wrapper">
+                    <div className="forms-container">
+                        <div className="forms_tools">
+                            <div className="form_tool">
+                                <div className="form_search_bar">
+                                    <input type="text" className="form_search inp_question V2" placeholder="جستجو" />
+                                </div>
+                                <div className="sorter">
+                                    <select name="formSort" id="" className="select_optionsV2">
+                                        <option value="انتخاب کنید">انتخاب کنید</option>
+                                        <option value="جدید ترین">جدید ترین</option>
+                                        <option value="قدیمی ترین">قدیمی ترین</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
-return(
-    <>
-    <NavBar account={userPhone}></NavBar>
-    <div className="total_holder_sup_form">
-    <div className="table_holder lower_width total_patients_holder mob_sup_table">
-    <table border="1" cellSpacing="0" cellPadding="8" dir="rtl" borderColor="#ddd">
-    <thead className="sar_jadval">
-        <tr>
-        <th>شناسه ی فرم</th>
-        <th>شناسه ی اپراتور</th>
-        <th>تغییر</th>
-        <th>وضعیت</th>
-        </tr>
-    </thead>
-    <tbody>
-        {Object.keys(formInfos).map((fi , index) => {
-            return(
-                <tr key={fi}>
-                <td>{fi}</td>
-                <td>{formInfos[fi].operatorId ? formInfos[fi].operatorId : "-" }</td>
-                <td><button className="btn_submit mob_btn" onClick={() => openOpers(fi)}>تغییر اپراتور</button></td>
-                <td>{formInfos[fi].status}</td>
-                </tr>
-            )
-        })}
+                        {Object.keys(formInfos).length === 0 ? (
+                            <p className="no-forms-text">فرمی یافت نشد.</p>
+                        ) : (
+                            <table className="forms-table">
+                                <thead>
+                                    <tr>
+                                        <th className="table-header SP">شناسه فرم</th>
+                                        <th className="table-header SP">اپراتور</th>
+                                        <th className="table-header SP">وضعیت</th>
+                                        <th className="table-header SP">عملیات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {Object.keys(formInfos).map((formId, index) => {
+                                        const formInfo = formInfos[formId];
+                                        const statusText = formInfo.status || 'نامشخص';
+                                        const statusColor = stateColors[getKeyVal(formStatusLabels, formInfo.status)] || '#e0e0e0';
 
-    </tbody>
-    </table>
-    </div>
-    {openModal && (
-        <div className="role_modal">
-            <div className="modal_header">
-            <h3>اپراتور ها</h3>
-            <div className="modal_close" onClick={() => setOpenModal(false)}>✕</div>
-            </div>
-            <div className="roles">
-            {OPArr.map((OA, index) => (
-                <div 
-                key={index} 
-                className="role" 
-                onClick={() => changeTheOper(OA)} // pass role   directly instead of e.target.value
-                >
-                {OA.phone}
+                                        return (
+                                            <tr key={formId} className="form-row">
+                                                <td className="table-cell SP">{formId}</td>
+                                                <td className="table-cell SP">{formInfo.operatorId ? formInfo.operatorId : "-"}</td>
+                                                <td className="table-cell SP">
+                                                    <span
+                                                        style={{
+                                                            backgroundColor: statusColor, color: 'white', fontWeight: 'bold', textAlign: 'center'
+                                                        }}
+                                                        className="statusInTable"
+                                                    >
+                                                        {statusText}
+                                                    </span>
+                                                </td>
+                                                <td className="table-cell SP">
+                                                    <div className="btn_formPage_holder SP">
+                                                        <button
+                                                            className="btn-view-form"
+                                                            onClick={() => openOpers(formId)}
+                                                        >
+                                                            <img src={roleAssignSign} alt="change operator" />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        )}
+                        <div className="page_naver">
+                            <div className="total_pages">
+                                <span>تعداد صفحات {pageCount}</span>
+                            </div>
+                            <div className="page_line">
+                                <img src={rightSign} className="arrows" alt="rightSign" onClick={prevPage} />
+                                {lineMaker(pageCount).map((p, index) => {
+                                    return (
+                                        <span
+                                            key={index}
+                                            className="page_num"
+                                            style={page == p + 1 ? { background: "#eee" } : null}
+                                            onClick={() => setPage(p + 1)}
+                                        >
+                                            {p + 1}
+                                        </span>
+                                    );
+                                })}
+                                <img src={leftSign} alt="leftSign" className="arrows" onClick={nextPage} />
+                            </div>
+                        </div>
+                        {pageCount > 1 ? (
+                            <div className="btn_holder_next_prev aligner">
+                                <button className="btn_submit space-UD" onClick={prevPage}>صفحه ی قبلی</button>
+                                <button className="btn_submit space-UD" onClick={nextPage}>صفحه ی بعدی</button>
+                            </div>
+                        ) : null}
+                    </div>
                 </div>
-            ))}
             </div>
-        </div>
-        )}
-            <div className="btn_holder_next_prev">
-            <button className="btn_submit space-UD mob_btn" onClick={showMore}>صفحه ی بعدی</button>
-            <button className="btn_submit space-UD mob_btn" onClick={showPrev}>صفحه ی قبلی</button>
-            </div>
-    </div>
-    </>
-)
 
-
+            {openModal && (
+                <div className="role_modal">
+                    <div className="modal_header">
+                        <h3>انتخاب اپراتور جدید</h3>
+                        <div className="modal_close" onClick={() => setOpenModal(false)}>✕</div>
+                    </div>
+                    <div className="roles">
+                        {OPArr.map((OA, index) => (
+                            <div
+                                key={index}
+                                className="role"
+                                onClick={() => changeTheOper(OA)}
+                            >
+                                {OA.phone}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </>
+    );
 }
 
-export default SupervisorPage
+export default SupervisorPage;

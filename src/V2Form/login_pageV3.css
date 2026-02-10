@@ -66,6 +66,7 @@
     gap: 2rem;
 }
 
+.form_card,
 .form_cardV3 {
     justify-content: space-between;
     background: rgba(255, 255, 255, 0.1);
@@ -78,6 +79,12 @@
     width: 24rem;
     min-height: 32rem;
     background-color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.resCard {
+    width: 80% !important;
 }
 
 .login_form {
@@ -125,6 +132,7 @@
     box-sizing: border-box;
     transition: all 0.3s ease;
 }
+
 
 .inp>input:focus {
     border-color: #47002d;
@@ -288,6 +296,10 @@
 
     .inp>input {
         width: 80%;
+    }
+
+    .resInp>input {
+        width: 100% !important;
     }
 
     .login_form>button {
