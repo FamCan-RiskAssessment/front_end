@@ -374,7 +374,7 @@ function Questions() {
                                 }
                                 enumFinder()
                             }
-                            // console.log("trrrrrrrrrrrrrrrrrrriple : ", pfk, fE.getAttribute("FaVal"), getKeyVal(RadioMap, presetform[pfk]), presetform[pfk])
+                            console.log("trrrrrrrrrrrrrrrrrrriple : ", pfk, fE.getAttribute("FaVal"), getKeyVal(RadioMap, presetform[pfk]), presetform[pfk], pfk)
                             // console.log(presetform)
                             if (fE.getAttribute("FaVal") == getKeyVal(RadioMap, presetform[pfk])) {
                                 fE.checked = true

@@ -18,6 +18,8 @@ function SupervisorPage() {
     const [OPRoleId, setOPRoleId] = useState(0);
     const [openModal, setOpenModal] = useState(false);
     const [OPArr, setOPArr] = useState([]);
+    const [filteredOPArr, setFilteredOPArr] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
     const [selectedFormId, setSelectedFormId] = useState(0);
     const [changedOPId, setChangedOPId] = useState(0);
     const [page, setPage] = useState(1);
@@ -91,8 +93,27 @@ function SupervisorPage() {
         let token = localStorage.getItem("token");
         let fetchedOps = await fetchDataGET(`admin/role/${OPRoleId}/owners`, token);
         setOPArr(fetchedOps.data);
+        setFilteredOPArr(fetchedOps.data); // Initially show all operators
+        setSearchTerm(""); // Reset search term when opening modal
         console.log("this is form_id : ", form_id);
         setSelectedFormId(form_id);
+    };
+
+    // Function to handle search input changes
+    const handleSearchChange = (event) => {
+        const value = event.target.value;
+        setSearchTerm(value);
+
+        // Filter operators based on search term
+        const filtered = OPArr.filter(op => {
+            const phoneMatch = op.phone && op.phone.toLowerCase().includes(value.toLowerCase());
+            const idMatch = op.id && op.id.toString().includes(value);
+            const lastNameMatch = (op.lastName || op.last_name) && (op.lastName || op.last_name).toLowerCase().includes(value.toLowerCase());
+
+            return phoneMatch || idMatch || lastNameMatch;
+        });
+
+        setFilteredOPArr(filtered);
     };
 
     const changeTheOper = async (OA) => {
@@ -222,16 +243,54 @@ function SupervisorPage() {
                         <h3>انتخاب اپراتور جدید</h3>
                         <div className="modal_close" onClick={() => setOpenModal(false)}>✕</div>
                     </div>
+                    <div className="search-bar-container" style={{ padding: '1rem' }}>
+                        <label htmlFor="userSearch">
+                            جستجو بر اساس نام خانوادگی،شماره تلفن یا شناسه
+                        </label>
+                        <input
+                            type="text"
+                            className="form_search inp_question V2"
+                            placeholder="جستجو"
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                            name="userSearch"
+                        />
+                    </div>
                     <div className="roles">
-                        {OPArr.map((OA, index) => (
-                            <div
-                                key={index}
-                                className="role"
-                                onClick={() => changeTheOper(OA)}
-                            >
-                                {OA.phone}
+                        <table className="forms-table">
+                            <thead>
+                                <tr>
+                                    <th className="table-header">شناسه</th>
+                                    <th className="table-header">نام</th>
+                                    <th className="table-header">نام خانوادگی</th>
+                                    <th className="table-header">شماره تلفن</th>
+                                    <th className="table-header">کد ملی</th>
+                                    <th className="table-header">مرکز</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filteredOPArr.map((OA, index) => (
+                                    <tr
+                                        key={index}
+                                        className="form-row"
+                                        onClick={() => changeTheOper(OA)}
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        <td className="table-cell">{OA.id || '-'}</td>
+                                        <td className="table-cell">{OA.firstName || OA.first_name || '-'}</td>
+                                        <td className="table-cell">{OA.lastName || OA.last_name || '-'}</td>
+                                        <td className="table-cell">{OA.phone || '-'}</td>
+                                        <td className="table-cell">{OA.nationalId || OA.socialSecurityNumber || OA.national_id || '-'}</td>
+                                        <td className="table-cell">{OA.center || OA.workCenter || OA.work_center || '-'}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        {filteredOPArr.length === 0 && searchTerm !== "" && (
+                            <div className="no-results-message" style={{ textAlign: 'center', padding: '1rem', color: '#7a4ca0' }}>
+                                هیچ نتیجه‌ای یافت نشد
                             </div>
-                        ))}
+                        )}
                     </div>
                 </div>
             )}

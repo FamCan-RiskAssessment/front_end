@@ -437,9 +437,10 @@
 .passesholder {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    height: 100vh;
-    background: linear-gradient(135deg, #f8f5ff, #e5d4f9);
+    justify-content: center;
+    align-items: center;
+    /* height: 100vh; */
+    /* background: linear-gradient(135deg, #f8f5ff, #e5d4f9); */
     width: 100%;
     gap: 2rem;
     /* padding: 0rem 1rem; */
@@ -453,11 +454,29 @@
     padding: 1rem;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 1rem;
 }
 
 .btn_submit_holder {
     padding: 1rem;
+}
+
+.btn_submit_holder>.PC {
+    background-color: #cf4776;
+}
+
+.RoleSpan {
+    border: 1px solid #cf4776;
+    background-color: transparent;
+    padding: 0.25rem 0.5rem;
+    color: #cf4776;
+    border-radius: 10px;
+}
+
+.help_bar_part1.Nav {
+    display: flex;
+    align-items: center;
 }
 
 

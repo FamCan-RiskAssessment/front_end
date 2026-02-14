@@ -145,14 +145,14 @@ function DashBoard() {
                                                 تغییر دسترسی افراد
                                             </span>
                                         </li>
-                                        <li className="tool" onClick={() => tool_chooser4()}>
+                                        {/* <li className="tool" onClick={() => tool_chooser4()}>
                                             <span>
                                                 <img src={tool_pinkSign} alt="tool_picker_pink" />
                                             </span>
                                             <span>
                                                 مدیریت کاربران
                                             </span>
-                                        </li>
+                                        </li> */}
                                         <li className="tool" onClick={() => tool_chooser3()}>
                                             <span>
                                                 <img src={tool_pinkSign} alt="tool_picker_pink" />

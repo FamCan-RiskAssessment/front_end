@@ -16,7 +16,10 @@ function LandNav() {
             </div>
             <div className="btns">
                 <button className="callsup">تماس با پشتیبانی</button>
-                <button className="enter hover1" onClick={() => navigate("/gate")}>ورود</button>
+                <button className="enter hover1" onClick={() => {
+                    localStorage.setItem("residentEnter", true)
+                    navigate("/login")
+                }}>ورود</button>
             </div>
         </div>
     )

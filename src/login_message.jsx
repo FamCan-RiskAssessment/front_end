@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { APIURL } from "./utils/config";
 import { useToast } from "./toaster";
 import ToastProvider from "./toaster";
-import { fetchDataPOST } from "./utils/tools";
+import { fetchDataGET, fetchDataPOST } from "./utils/tools";
 function LoginMessage() {
   const [message, setMessage] = useState('')
   const [Err, setError] = useState('')
@@ -43,16 +43,17 @@ function LoginMessage() {
       localStorage.setItem("number", phone)
       localStorage.setItem("permissions", JSON.stringify(data.data.permissions))
       localStorage.setItem("roles", JSON.stringify(data.data.roles))
-      if (phone != adminNumber) {
+      let userAuthed = await fetchDataGET("admin/profile", data.data.access_token)
+      if (localStorage.getItem("residentEnter") && (userAuthed.status == 200 || userAuthed.status == 201)) {
         addToast({
           title: 'با موفقیت وارد شدید',
           type: 'success',
           duration: 4000
         })
         // navigate("/forms");
-        navigate("/AppChoose");
-      } else if (phone == adminNumber) {
         navigate("/DashBoard")
+      } else {
+        navigate("/AppChoose");
       }
 
     } catch (err) {

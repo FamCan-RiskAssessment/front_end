@@ -75,7 +75,7 @@ function RoleChanger() {
   useEffect(() => {
     const fetchUsers = async () => {
       console.log(userSort)
-      let endPoint = endpointMaker(userSort, RoleIdFinder(roleIdSort, Roles), searchedUser, searchOrder, `http://${APIURL}/admin/user`, page)
+      let endPoint = endpointMaker(userSort, RoleIdFinder(roleIdSort, Roles), searchedUser, searchOrder, `http://${APIURL}/admin/user`, page, [])
       try {
         // ✅ Get token from localStorage (or context)
         const token = localStorage.getItem("token");

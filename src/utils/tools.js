@@ -1,5 +1,5 @@
 // import { Aod } from "@mui/icons-material";
-import { APIURL, formStatusLabels, statusAPIs } from "./config";
+import { APIURL, formStatusLabels, sortOptions, statusAPIs } from "./config";
 import jalaali from 'jalaali-js';
 
 export const permExtractor = (perms, permCheck) => {
@@ -430,11 +430,20 @@ export const endpointMaker = (sort1, sort2, searchD, order, prevendPoint, page, 
   // let endpoint = ""
   let prefix = ""
   let processDef = true
-  Object.keys(AdvanceOnes).forEach(a => {
-    if (AdvanceOnes[a] != "") {
-      processDef = false
-    }
-  });
+  console.log(sort1, page, AdvanceOnes)
+  console.log(sort2)
+  console.log(searchD)
+  console.log(order)
+  console.log(prevendPoint)
+
+  if (AdvanceOnes.length != 0 || Object.keys(AdvanceOnes).length != 0) {
+    Object.keys(AdvanceOnes).forEach(a => {
+      if (AdvanceOnes[a] != "") {
+        processDef = false
+      }
+    });
+  }
+
   if (sort1 && sort1.length != 0) {
     prefix = prevendPoint.includes("?") ? "&" : "?"
     prevendPoint += `${prefix}sortBy=${sort1}`

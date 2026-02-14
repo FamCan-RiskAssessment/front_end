@@ -1055,7 +1055,7 @@ export default function FilterableTable() {
               <div className="form_sections_container">
                 {data.length > 0 ? (
                   data.map((row, rowIndex) => (
-                    <div key={`form-${row.id || rowIndex}`} className="form_section_drawer">
+                    <div key={`form-${row.id || rowIndex}`} className={`form_section_drawer ${rowIndex === 0 ? 'first' : rowIndex === data.length - 1 ? 'last' : ''}`}>
                       <div
                         className="drawer_header"
                         onClick={() => {

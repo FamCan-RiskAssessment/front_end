@@ -22,3 +22,22 @@
 .btn_formPage_holder.SP {
     justify-content: center;
 }
+
+.role_modal .forms-table {
+    width: 100%;
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 0;
+}
+
+.role_modal .forms-table th,
+.role_modal .forms-table td {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.role_modal .roles {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 1rem 0;
+}

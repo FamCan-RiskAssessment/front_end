@@ -1,13 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./defnav.css"
+import { fetchDataGET } from "./utils/tools";
 import exitSign from './V2Form/exit.svg'
 import timeSign from './V2Form/time.svg'
 import homeSign from './V2Form/home.svg'
 
 function NavBar({ account }) {
     const navigate = useNavigate();
-
+    const [userName, setUserName] = useState('')
+    useEffect(() => {
+        let token = localStorage.getItem("token")
+        const getUserDetail = async () => {
+            let res = await fetchDataGET("admin/profile", token)
+            if (res.status == 200 || res.status == 201) {
+                let processed_data = res.data.name + " " + res.data.lastName
+                setUserName(processed_data)
+            }
+        }
+        getUserDetail()
+    }, [])
+    let role = localStorage.getItem("roles")
+    let nameRole = JSON.parse(role)[0].name
     // Get current date and time
     const now = new Date();
     const persianDate = now.toLocaleDateString('fa-IR');
@@ -37,11 +51,13 @@ function NavBar({ account }) {
             </div>
             <div className="bottom-layer">
                 <div className="help_bar_parts_container">
-                    <div className="help_bar_part1">
+                    <div className="help_bar_part1 Nav">
                         <span>خوش آمدید</span>
-                        <span>نام</span>
+                        {userName && (
+                            <span>{userName}</span>
+                        )}
                         <span>{account}</span>
-                        <span>نقش</span>
+                        <span className="RoleSpan">{nameRole}</span>
                     </div>
                     <div className="help_bar_part3 dash">
                         <button className="dash_exit_btn">

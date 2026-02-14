@@ -71,3 +71,11 @@
     background: linear-gradient(135deg, #f8f5ff, #e5d4f9);
     height: 100vh;
 }
+
+.table-cell.MR {
+    text-align: center;
+}
+
+.forms-container.MR {
+    overflow-x: scroll;
+}

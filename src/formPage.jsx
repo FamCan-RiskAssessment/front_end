@@ -8,6 +8,7 @@ import "./client_forms.css"
 import ToastProvider from "./toaster";
 import { useToast } from "./toaster";
 import plusSign from './V2Form/plus.svg'
+import plusWSign from './V2Form/plusW.svg'
 import leftSign from './V2Form/form_left.png'
 import rightSign from './V2Form/form_right.png'
 import prevSign from './V2Form/arrow_right.svg'
@@ -209,13 +210,14 @@ function FormsPage() {
   const checkNewUser = async () => {
     let token = localStorage.getItem("token")
     let res = await fetchDataGETNoError("admin/profile", token)
-    if (res.status == 404 && role != "سوپر ادمین") {
+    if (res.status == 404) {
       navigate("/residentEnter")
     } else if (res.status == 200 || res.status == 201) {
       navigate("/Dashboard")
-    } else if (role == "سوپر ادمین") {
-      navigate("/Dashboard")
     }
+    // else if (role == "سوپر ادمین") {
+    //   navigate("/Dashboard")
+    // }
     console.log("]]]]]]]]]]]]]]]]]] : ", res)
   }
 
@@ -274,7 +276,7 @@ function FormsPage() {
                 <button className="btn-add-newV2" onClick={handleAddNew}>
                   <span>فرم جدید</span>
                   <span className="add_sign">
-                    <img src={plusSign} alt="علامت جمع" />
+                    <img src={plusWSign} alt="علامت جمع" />
                   </span>
 
                 </button>
