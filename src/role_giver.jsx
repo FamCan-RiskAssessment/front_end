@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import NavBar from "./navBar";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { APIURL, roleColors } from "./utils/config";
+import { APIURL, roleColors, sortOptions } from "./utils/config";
 import { useToast } from "./toaster";
 import ToastProvider from "./toaster";
-import { fetchDataGET } from "./utils/tools";
+import { fetchDataGET, endpointMaker } from "./utils/tools";
 import "./role_giver.css"
 import "./client_forms.css"
 import leftSign from './V2Form/form_left.png'
@@ -15,18 +15,26 @@ import settingsSign from './V2Form/settings.svg'
 import { Loader } from "lucide-react";
 import roleAssignSign from './V2Form/roleAssign.svg'
 import kickUserSign from './V2Form/kickUser.svg'
+import filterSign from './V2Form/filterSign.svg'
+import magnifier from './V2Form/magnifier.svg'
 
 
 function RoleChanger() {
-  const [searchedUser, setSearchedUser] = useState('')
   const [roles, setroles] = useState(['super user', 'middle user', 'operator']) // for test only
   const [userRoles, setUserRoles] = useState({})
   const [whoToGive, setWhoToGive] = useState('')
   const [openModal, setOpenModal] = useState(false)
+  const [openSortModal, setOpenSortModal] = useState(false)
   const [Roles, setRoles] = useState([])
+  // const [RoleMap, setRoleMap] = useState({})
   const [loading, setLoading] = useState(true);
   const [idchose, setIdchose] = useState("")
   const [users, setUsers] = useState([])
+  const [searchedUser, setSearchedUser] = useState('')
+  const [AFS, setAFS] = useState(false)
+  const [userSort, setUserSort] = useState('')
+  const [searchOrder, setSearchOrder] = useState('')
+  const [roleIdSort, setRoleIdSort] = useState('')
   const [page, setPage] = useState(1)
   const [pagiPrev, setPagiPrev] = useState(false)
   const [PagiNext, setPagiNext] = useState(false)
@@ -53,14 +61,25 @@ function RoleChanger() {
     }
     return spans
   }
+  const RoleIdFinder = (role, arr) => {
+    let Role_id = ""
+    arr.forEach(a => {
+      if (a.name == role) {
+        Role_id = a.id
+      }
+    });
+    return Role_id
+  }
 
   // users fetching
   useEffect(() => {
     const fetchUsers = async () => {
+      console.log(userSort)
+      let endPoint = endpointMaker(userSort, RoleIdFinder(roleIdSort, Roles), searchedUser, searchOrder, `http://${APIURL}/admin/user`, page)
       try {
         // ✅ Get token from localStorage (or context)
         const token = localStorage.getItem("token");
-        const response = await fetch(`http://${APIURL}/admin/user?page=${page}&pageSize=10`, {
+        const response = await fetch(`${endPoint}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -87,7 +106,7 @@ function RoleChanger() {
     };
 
     fetchUsers();
-  }, [page]); // run once on mount
+  }, [page, userSort, searchOrder, AFS, roleIdSort]); // run once on mount
 
   // getting the roles present now
   useEffect(() => {
@@ -146,18 +165,18 @@ function RoleChanger() {
     }
   };
 
-  let filteredUsers = []
-  if (users.length > 0) {
-    filteredUsers = users.filter((p) =>
-      p.phone.includes(searchedUser)
-    );
-  }
+  // let filteredUsers = []
+  // if (users.length > 0) {
+  //   filteredUsers = users.filter((p) =>
+  //     p.phone.includes(searchedUser)
+  //   );
+  // }
 
   const loadRoles = async () => {
     setLoading(true);
     let roleMap = {};
 
-    for (let p of filteredUsers) {
+    for (let p of users) {
       let json_role = await fetchUserRole(p.id);
       if (json_role) {
         console.log(json_role)
@@ -170,10 +189,10 @@ function RoleChanger() {
   };
 
   useEffect(() => {
-    if (filteredUsers.length > 0) {
+    if (users.length > 0) {
       loadRoles();
     }
-  }, [users, searchedUser]);
+  }, [users]);
 
   // fetching and posting the new role 
   const updateUserRole = async (role) => {
@@ -236,20 +255,50 @@ function RoleChanger() {
                     className="form_search inp_question V2"
                     placeholder="جستجو"
                     value={searchedUser}
-                    onChange={(e) => setSearchedUser(e.target.value)}
+                    onChange={(e) => {
+                      setSearchedUser(e.target.value)
+                      if (e.target.value == "") {
+                        setAFS(p => !p)
+                      }
+                    }}
                   />
                 </div>
+                <button className="magnifier" onClick={() => setAFS(p => !p)}>
+                  <span>
+                    <img src={magnifier} alt="magnifier" />
+                  </span>
+                </button>
+
+              </div>
+
+              <div className="form_tool">
                 <div className="sorter">
-                  <select name="userSort" id="" className="select_optionsV2">
-                    <option value="انتخاب کنید">انتخاب کنید</option>
-                    <option value="جدید ترین">جدید ترین</option>
-                    <option value="قدیمی ترین">قدیمی ترین</option>
+                  <select name="roleSort" id="" className="select_optionsV2" onChange={(e) => setRoleIdSort(e.target.value)}>
+                    <option value="انتخاب کنید">نقش</option>
+                    {Roles.map((r, index) => {
+                      return <option value={r.name}>{r.name}</option>
+                    })}
                   </select>
                 </div>
+                <div className="sorter">
+                  <select name="sortOrder" id="" className="select_optionsV2" onChange={(e) => setSearchOrder(e.target.value)}>
+                    <option value="انتخاب کنید">ترتیب داده</option>
+                    <option value="asc">صعودی</option>
+                    <option value="desc">نزولی</option>
+                  </select>
+                </div>
+                <button className="filter_btn" onClick={() => setOpenSortModal(true)}>
+                  <span>
+                    اعمال فیلتر
+                  </span>
+                  <span>
+                    <img src={filterSign} alt="filter users" />
+                  </span>
+                </button>
               </div>
             </div>
 
-            {filteredUsers.length === 0 ? (
+            {users.length === 0 ? (
               <p className="no-forms-text">کاربری یافت نشد.</p>
             ) : (
               <table className="forms-table">
@@ -263,7 +312,7 @@ function RoleChanger() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredUsers.map((user, index) => {
+                  {users.map((user, index) => {
                     const userRole = userRoles[user.id] || 'بدون نقش';
                     const roleColor = roleColors[userRole] || '#e0e0e0'; // Default color if role not found
                     return (
@@ -352,6 +401,34 @@ function RoleChanger() {
                 onClick={() => updateUserRole(r)}
               >
                 {r.name}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {openSortModal && (
+        <div className="role_modal">
+          <div className="modal_header">
+            <h3>دسته بندی بر حسب</h3>
+            <div className="modal_close" onClick={() => setOpenSortModal(false)}>✕</div>
+          </div>
+          <div className="roles">
+            {Object.keys(sortOptions).map((sok, index) => (
+              <div
+                key={index}
+                className="role"
+                onClick={() => {
+                  if (sok != "None") {
+                    setUserSort(sok)
+                  } else {
+                    setUserSort('')
+                    setSearchOrder('')
+                  }
+                  setOpenSortModal(false)
+                }}
+              >
+                {sortOptions[sok]}
               </div>
             ))}
           </div>

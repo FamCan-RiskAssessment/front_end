@@ -62,3 +62,10 @@ export const roleColors = {
     "اپراتور": "#66C2A5",
     "مدیر": "#0088FF"
 }
+
+export const sortOptions = {
+    "id": "شناسه ی کاربر",
+    "phone": "شماره کاربر",
+    "created_at": "زمان ورود",
+    "None": "برداشتن فیلتر",
+}

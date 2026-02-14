@@ -4,7 +4,7 @@ import "./patient_table.css";
 import { APIARR, APIARR_Navid, APIURL, formStatusLabels, statusAPIs, stateColors } from "./utils/config";
 import {
   fetchDataGET, fetchDataGETTab, fetchDataPOST, key_stage_matcher, stageMatcher, fetchDataGETImg, cancerTypeEx, relativeTypeEx,
-  fetchDataDELETE, activeStats, fetchDataPUT, dict_transformer, backwardEnum, getKeyVal
+  fetchDataDELETE, activeStats, fetchDataPUT, dict_transformer, backwardEnum, getKeyVal, endpointMaker
 } from "./utils/tools";
 import PERSIAN_HEADERS from "./assets/table_header.json"
 import { useLocation } from "react-router-dom";
@@ -410,66 +410,141 @@ export default function FilterableTable() {
 
     loadEnums();
   }, []);
+  // State for advanced filters
+  const [advancedFilters, setAdvancedFilters] = useState({
+    sortBy: '',
+    sortOrder: '',
+    search: '',
+    formType: '',
+    gender: '',
+    birthYear: '',
+    drinksAlcohol: '',
+    smokingNow: '',
+    cancer: '',
+    filledByOperatorID: ''
+  });
+
+  // Function to build endpoint based on user role and filters
+  const buildEndpoint = (roleName, currentPage, currentFilter, filters) => {
+    let endpoint = '';
+
+    // Determine base endpoint based on user role
+    if (roleName === "اپراتور") {
+      endpoint = 'admin/operator-form';
+    } else {
+      endpoint = 'admin/form';
+    }
+
+    // Apply status filter if not "All"
+    let statusId = null;
+    if (currentFilter !== "All") {
+      statuses.forEach((s, i) => {
+        if (s === currentFilter) {
+          statusId = i + 1;
+        }
+      });
+    }
+
+    // Add additional filters based on SSAPI.md specifications
+    const additionalFilters = [
+      { key: 'formType', value: filters.formType },
+      { key: 'gender', value: filters.gender },
+      { key: 'birthYear', value: filters.birthYear },
+      { key: 'drinksAlcohol', value: filters.drinksAlcohol },
+      { key: 'smokingNow', value: filters.smokingNow },
+      { key: 'cancer', value: filters.cancer }
+    ];
+    // Use endpointMaker to build the full endpoint with pagination and status
+    endpoint = endpointMaker(
+      filters.sortBy,
+      filters.filledByOperatorID,
+      filters.search,
+      filters.sortOrder,
+      `http://${APIURL}/${endpoint}`,
+      currentPage,
+      additionalFilters
+    );
+
+    // Add status filter if applicable
+    if (statusId !== null) {
+      const separator = endpoint.includes('?') ? '&' : '?';
+      endpoint += `${separator}status=${statusId}`;
+    }
+
+
+    additionalFilters.forEach(filter => {
+      if (filter.value !== '' && filter.value !== null && filter.value !== undefined) {
+        const separator = endpoint.includes('?') ? '&' : '?';
+        endpoint += `${separator}${filter.key}=${filter.value}`;
+      }
+    });
+
+    return endpoint;
+  };
+
   useEffect(() => {
     const fetchformIds = async () => {
-      let pre_forms = null
-      let token = localStorage.getItem("token")
-      let role = JSON.parse(localStorage.getItem("roles"))
-      console.log("check the name : ", role[0])
-      if (filter == "All" && role[0].name == "اپراتور") {
-        pre_forms = await fetchDataGET(`admin/operator-form?page=${page}&pageSize=10`, token)
-      } else if (filter == "All" && role[0].name != "اپراتور") {
-        let stid = 0
-        statuses.forEach((s, i) => {
-          if (s == filter) {
-            stid = i + 1
+      let token = localStorage.getItem("token");
+      let role = JSON.parse(localStorage.getItem("roles"));
+      const roleName = role[0]?.name || '';
+
+      // Build endpoint based on role and filters
+      const endpoint = buildEndpoint(roleName, page, filter, advancedFilters);
+
+      try {
+        const response = await fetch(endpoint, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
           }
         });
-        console.log("used Operator1")
-        pre_forms = await fetchDataGET(`admin/form?page=${page}&pageSize=10`, token)
-      } else if (filter != "All" && role[0].name != "اپراتور") {
-        pre_forms = await fetchDataGET(`admin/form?page=${page}&pageSize=10&status=${stid}`, token)
-      } else {
-        let stid = 0
-        statuses.forEach((s, i) => {
-          if (s == filter) {
-            stid = i + 1
-          }
-        });
-        // console.log("here is the id : " ,  stid)
-        console.log("used Operator2")
-        pre_forms = await fetchDataGET(`admin/operator-form?page=${page}&pageSize=10&status=${stid}`, token)
-      }
-      console.log("here is the filter : ", pre_forms)
-      setPagiNext(pre_forms.data.pagination.hasNextPage)
-      setPagiPrev(pre_forms.data.pagination.hasPrevPage)
-      if (pre_forms.status === 200) {
-        const updatedForms = [];
-        // Process each form from the API exactly once to prevent duplicates
-        for (const pf of pre_forms.data.data) {
-          let updatedForm = { ...pf }; // Start with base form data
 
-          // Combine data from all API parts for this specific form
-          for (const ar of APIARR) {
-            const user_part_form = await fetchDataGETTab(`form/${pf.id}/${ar}`, token);
-
-            // Spread the additional data but keep the original id from pf
-            updatedForm = { ...updatedForm, ...user_part_form.data, id: pf.id };
-          }
-
-          // Add this form only once to the results array
-          updatedForms.push(updatedForm);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        setData(updatedForms);
-        if (!run) {
-          setRun(true)
+        const result = await response.json();
+
+        console.log("API response:", result);
+
+        if (result && result.data) {
+          setPagiNext(result.data?.pagination?.hasNextPage || false);
+          setPagiPrev(result.data?.pagination?.hasPrevPage || false);
+
+          const updatedForms = [];
+          // Process each form from the API exactly once to prevent duplicates
+          for (const pf of result.data?.data || []) {
+            let updatedForm = { ...pf }; // Start with base form data
+
+            // Combine data from all API parts for this specific form
+            for (const ar of APIARR) {
+              const user_part_form = await fetchDataGETTab(`form/${pf.id}/${ar}`, token);
+
+              // Spread the additional data but keep the original id from pf
+              updatedForm = { ...updatedForm, ...user_part_form.data, id: pf.id };
+            }
+
+            // Add this form only once to the results array
+            updatedForms.push(updatedForm);
+          }
+
+          setData(updatedForms);
+          if (!run) {
+            setRun(true);
+          }
+          setLoading(false);
+        } else {
+          console.error("API request failed - invalid response format:", result);
         }
+      } catch (error) {
+        console.error("Error fetching forms:", error);
         setLoading(false);
       }
     };
+
     fetchformIds();
-  }, [page, filter, mode]);
+  }, [page, filter, mode, advancedFilters]);
 
 
   // show me more 
@@ -823,6 +898,155 @@ export default function FilterableTable() {
                       <option value="navid">نوید</option>
                       <option value="bahar">بهار</option>
                     </select>
+                  </div>
+
+                  {/* Advanced Filters Section */}
+                  <div className="advanced_filters">
+                    <h4>فیلترهای پیشرفته</h4>
+
+                    <div className="filter_row">
+                      <div className="filter_group">
+                        <label>مرتب سازی بر اساس:</label>
+                        <select
+                          value={advancedFilters.sortBy}
+                          onChange={(e) => setAdvancedFilters({ ...advancedFilters, sortBy: e.target.value })}
+                        >
+                          <option value="">انتخاب کنید</option>
+                          <option value="id">شناسه</option>
+                          <option value="created_at">تاریخ ایجاد</option>
+                          <option value="updated_at">تاریخ بروزرسانی</option>
+                          <option value="status">وضعیت</option>
+                        </select>
+                      </div>
+
+                      <div className="filter_group">
+                        <label>ترتیب:</label>
+                        <select
+                          value={advancedFilters.sortOrder}
+                          onChange={(e) => setAdvancedFilters({ ...advancedFilters, sortOrder: e.target.value })}
+                        >
+                          <option value="">انتخاب کنید</option>
+                          <option value="asc">صعودی</option>
+                          <option value="desc">نزولی</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="filter_row">
+                      <div className="filter_group">
+                        <label>جستجو:</label>
+                        <input
+                          type="text"
+                          placeholder="جستجو بر اساس شماره تلفن..."
+                          value={advancedFilters.search}
+                          onChange={(e) => setAdvancedFilters({ ...advancedFilters, search: e.target.value })}
+                        />
+                      </div>
+
+                      <div className="filter_group">
+                        <label>نوع فرم:</label>
+                        <select
+                          value={advancedFilters.formType}
+                          onChange={(e) => setAdvancedFilters({ ...advancedFilters, formType: e.target.value })}
+                        >
+                          <option value="">همه</option>
+                          <option value="1">بهار</option>
+                          <option value="2">نوید</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="filter_row">
+                      <div className="filter_group">
+                        <label>جنسیت:</label>
+                        <select
+                          value={advancedFilters.gender}
+                          onChange={(e) => setAdvancedFilters({ ...advancedFilters, gender: e.target.value })}
+                        >
+                          <option value="">همه</option>
+                          <option value="male">مرد</option>
+                          <option value="female">زن</option>
+                        </select>
+                      </div>
+
+                      <div className="filter_group">
+                        <label>سال تولد:</label>
+                        <input
+                          type="number"
+                          placeholder="سال تولد"
+                          value={advancedFilters.birthYear}
+                          onChange={(e) => setAdvancedFilters({ ...advancedFilters, birthYear: e.target.value })}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="filter_row">
+                      <div className="filter_group">
+                        <label>مصرف الکل:</label>
+                        <select
+                          value={advancedFilters.drinksAlcohol}
+                          onChange={(e) => setAdvancedFilters({ ...advancedFilters, drinksAlcohol: e.target.value })}
+                        >
+                          <option value="">همه</option>
+                          <option value="true">دارد</option>
+                          <option value="false">ندارد</option>
+                        </select>
+                      </div>
+
+                      <div className="filter_group">
+                        <label>سیگار کشیدن:</label>
+                        <select
+                          value={advancedFilters.smokingNow}
+                          onChange={(e) => setAdvancedFilters({ ...advancedFilters, smokingNow: e.target.value })}
+                        >
+                          <option value="">همه</option>
+                          <option value="true">دارد</option>
+                          <option value="false">ندارد</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="filter_row">
+                      <div className="filter_group">
+                        <label>سابقه سرطان:</label>
+                        <select
+                          value={advancedFilters.cancer}
+                          onChange={(e) => setAdvancedFilters({ ...advancedFilters, cancer: e.target.value })}
+                        >
+                          <option value="">همه</option>
+                          <option value="true">دارد</option>
+                          <option value="false">ندارد</option>
+                        </select>
+                      </div>
+
+                      <div className="filter_group">
+                        <label>پر کننده فرم:</label>
+                        <input
+                          type="number"
+                          placeholder="شناسه اپراتور"
+                          value={advancedFilters.filledByOperatorID}
+                          onChange={(e) => setAdvancedFilters({ ...advancedFilters, filledByOperatorID: e.target.value })}
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      className="btn_reset_filters"
+                      onClick={() => setAdvancedFilters({
+                        sortBy: '',
+                        sortOrder: '',
+                        search: '',
+                        formType: '',
+                        gender: '',
+                        birthYear: '',
+                        drinksAlcohol: '',
+                        smokingNow: '',
+                        cancer: '',
+                        filledByOperatorID: ''
+                      })}
+                    >
+                      ریست فیلترها
+                    </button>
                   </div>
                 </div>
               </div>

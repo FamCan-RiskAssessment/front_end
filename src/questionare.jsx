@@ -308,7 +308,7 @@ function Questions() {
     useEffect(() => {
         if (presetform != null && familyCancersPreData != null) {
             setLoading(true); // Set loading to true when starting to load preset data
-            
+
             let masked_cancers = cancerDictRefiner(RelMap, familyCancersPreData)
             let formElems = []
             let stepsLoaded = JSON.parse(localStorage.getItem("trueSteps"))
@@ -462,7 +462,7 @@ function Questions() {
             //     setFamilyCancersPreData(res)
             // }
             // familyFunc()
-            
+
             // Set loading to false after preset data has been loaded
             setLoading(false);
         }
@@ -1298,9 +1298,9 @@ function Questions() {
     // }
     console.log("preset form for the fuck : ", presetform)
 
-    if (loading) {
-        return <Loader></Loader>
-    }
+    // if (loading) {
+    //     return <Loader></Loader>
+    // }
 
     return (
         <>

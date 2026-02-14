@@ -425,6 +425,38 @@ export const backwardEnum = (APIPARTDATA, transformer, blackList) => {
   return resDict
 }
 
+// this function would help us through sorts and searches for making API calls
+export const endpointMaker = (sort1, sort2, searchD, order, prevendPoint, page, AdvanceOnes) => {
+  // let endpoint = ""
+  let prefix = ""
+  let processDef = true
+  Object.keys(AdvanceOnes).forEach(a => {
+    if (AdvanceOnes[a] != "") {
+      processDef = false
+    }
+  });
+  if (sort1 && sort1.length != 0) {
+    prefix = prevendPoint.includes("?") ? "&" : "?"
+    prevendPoint += `${prefix}sortBy=${sort1}`
+  }
+  if (sort2 && sort2.length != 0) {
+    prefix = prevendPoint.includes("?") ? "&" : "?"
+    prevendPoint += `${prefix}roleId=${sort2}`
+  }
+  if (searchD && searchD.length != 0) {
+    prefix = prevendPoint.includes("?") ? "&" : "?"
+    prevendPoint += `${prefix}search=${searchD}`
+  }
+  if (order && order.length != 0 && order != "انتخاب کنید") {
+    prefix = prevendPoint.includes("?") ? "&" : "?"
+    prevendPoint += `${prefix}sortOrder=${order}`
+  }
+  if (order.length == 0 && searchD.length == 0 && sort2.length == 0 && sort1.length == 0 && processDef) {
+    prevendPoint += `?page=${page}&pageSize=10`
+  }
+  return prevendPoint
+}
+
 
 // export const nameEnumMap = async (elem, token) => {
 //   const enumName = elem.current.getAttribute('data-enum');

@@ -389,3 +389,40 @@ div>.identifiers {
 .btn_formPage_holder.RM {
   justify-content: center;
 }
+
+.filter_btn {
+  background-color: white;
+  color: #E34E81;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 5px 5px 20px rgb(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.magnifier {
+  display: flex;
+  align-items: center;
+  background-color: #f6d9da;
+  padding: 1rem 1rem;
+}
+
+.magnifier>span {
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+}
+
+.form_search_bar>input {
+  margin: 0;
+}
+
+.filter_btn:hover {
+  background-color: #eee;
+}
+
+.filter_btn>span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
