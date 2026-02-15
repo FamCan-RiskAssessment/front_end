@@ -51,7 +51,7 @@ function LandingPage() {
                     <div className="gate-bell">
                         <h2>ارزیابی ریسک سرطان هوشمند و محرمانه</h2>
                         <button className="gate-enter hover1" onClick={() => {
-                            localStorage.setItem("residentEnter", false)
+                            localStorage.setItem("residentEnter", JSON.stringify(false))
                             navigate("/gate")
                         }}>شروع تست</button>
                     </div>

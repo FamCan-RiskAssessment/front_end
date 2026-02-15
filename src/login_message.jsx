@@ -45,7 +45,9 @@ function LoginMessage() {
       localStorage.setItem("roles", JSON.stringify(data.data.roles))
       let userAuthed = await fetchDataGETNoError("admin/profile", data.data.access_token)
       console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
-      if (localStorage.getItem("residentEnter") && (userAuthed.status == 200 || userAuthed.status == 201)) {
+      console.log(localStorage.getItem("residentEnter") && (userAuthed.status == 200 || userAuthed.status == 201))
+      console.log(localStorage.getItem("residentEnter"), (userAuthed.status == 200 || userAuthed.status == 201))
+      if (JSON.parse(localStorage.getItem("residentEnter")) && (userAuthed.status == 200 || userAuthed.status == 201)) {
         addToast({
           title: 'با موفقیت وارد شدید',
           type: 'success',
