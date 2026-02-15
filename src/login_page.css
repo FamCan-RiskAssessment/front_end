@@ -479,6 +479,12 @@
     align-items: center;
 }
 
+.help_bar_part3.dash_bot {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
 
 
 

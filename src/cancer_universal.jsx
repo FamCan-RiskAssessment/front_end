@@ -66,7 +66,7 @@ function CancerField({
                     value={inp1}
                 />
             )
-        } else if (famrel !== undefined && famrel.length == 2) {
+        } else if (famrel !== undefined && famrel.length >= 2) {
             return (
                 <OptionsV2
                     data_req={"false"}
@@ -120,7 +120,8 @@ function CancerField({
                     // console.log("ooooooooooooooooooooooooooo : ", relationName === famrel, famrel, relationName)
                     if (typeof famrel == "string") {
                         return relationName === famrel;
-                    } else if (famrel.length == 2) {
+                    } else if (famrel.length >= 2) {
+                        console.log("Hamooooon : ", relationName, famrel)
                         return famrel.includes(relationName)
                     }
                 });

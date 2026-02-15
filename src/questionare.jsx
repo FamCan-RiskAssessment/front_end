@@ -310,6 +310,7 @@ function Questions() {
             setLoading(true); // Set loading to true when starting to load preset data
 
             let masked_cancers = cancerDictRefiner(RelMap, familyCancersPreData)
+            console.log("whyInnerrrrrrrrrrrrrrrrr : ", masked_cancers)
             let formElems = []
             let stepsLoaded = JSON.parse(localStorage.getItem("trueSteps"))
             // console.log("444444444444444444444444444444444444 :  ", stepsLoaded)
@@ -374,7 +375,7 @@ function Questions() {
                                 }
                                 enumFinder()
                             }
-                            console.log("trrrrrrrrrrrrrrrrrrriple : ", pfk, fE.getAttribute("FaVal"), getKeyVal(RadioMap, presetform[pfk]), presetform[pfk], pfk)
+                            // console.log("trrrrrrrrrrrrrrrrrrriple : ", pfk, fE.getAttribute("FaVal"), getKeyVal(RadioMap, presetform[pfk]), presetform[pfk], pfk)
                             // console.log(presetform)
                             if (fE.getAttribute("FaVal") == getKeyVal(RadioMap, presetform[pfk])) {
                                 fE.checked = true
@@ -1507,7 +1508,7 @@ function Questions() {
                         <div className="form_title">{part5.title}</div>
 
                         <RadioV2 data_req={"true"} data={part5.radio_opts_childCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsChildCncer} relation={relator_R(isChild)}></RadioV2>
-                        <CancerField data_req={"true"} file_up={"target"} data_Inp1={part5.childCard.childType} data_Inp2={part5.childCard.childCancerAge} data_Options={part5.childCard.childCancerType} data_Radio={part5.childCard.childLifeStatus} data_file={part5.childCard.attachment} relation={relator_R(isChildCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={["پسر", "دختر"]}></CancerField>
+                        <CancerField data_req={"true"} file_up={"target"} data_Inp1={part5.childCard.childType} data_Inp2={part5.childCard.childCancerAge} data_Options={part5.childCard.childCancerType} data_Radio={part5.childCard.childLifeStatus} data_file={part5.childCard.attachment} relation={relator_R(isChildCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={["فرزند پسر", "فرزند دختر"]}></CancerField>
 
                         <RadioV2 data_req={"true"} data={part5.radio_opts_motherCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsMotherCncer}></RadioV2>
                         <CancerField data_req={"true"} data_Inp1={part5.motherCard.motherName} data_Inp2={part5.motherCard.motherCancerAge} data_Options={part5.motherCard.motherCancerType} data_Radio={part5.motherCard.motherLifeStatus} data_file={part5.motherCard.attachment} relation={relator_R(isMotherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={"مادر"}></CancerField>
@@ -1516,7 +1517,7 @@ function Questions() {
                         <CancerField data_req={"true"} data_Inp1={part5.fatherCard.fatherName} data_Inp2={part5.fatherCard.fatherCancerAge} data_Options={part5.fatherCard.fatherCancerType} data_Radio={part5.fatherCard.fatherLifeStatus} data_file={part5.fatherCard.attachment} relation={relator_R(isFatherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={"پدر"}></CancerField>
 
                         <RadioV2 data_req={"true"} data={part5.radio_opts_bsCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsSibsCncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.siblingCard.siblingType} data_Inp2={part5.siblingCard.siblingCancerAge} data_Options={part5.siblingCard.siblingCancerType} data_Radio={part5.siblingCard.siblingLifeStatus} data_file={part5.siblingCard.attachment} relation={relator_R(isSibsCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={["برادر", "خواهر"]}></CancerField>
+                        <CancerField data_req={"true"} data_Inp1={part5.siblingCard.siblingType} data_Inp2={part5.siblingCard.siblingCancerAge} data_Options={part5.siblingCard.siblingCancerType} data_Radio={part5.siblingCard.siblingLifeStatus} data_file={part5.siblingCard.attachment} relation={relator_R(isSibsCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={["خواهر ناتنی", "برادر ناتنی", "برادر", "خواهر"]}></CancerField>
 
                         <RadioV2 data_req={"true"} data={part5.radio_opts_ameAmoCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsUncAuntCncer}></RadioV2>
                         <CancerField data_req={"true"} data_Inp1={part5.uncleAuntCard.uncleAuntType} data_Inp2={part5.uncleAuntCard.uncleAuntCancerAge} data_Options={part5.uncleAuntCard.uncleAuntCancerType} data_Radio={part5.uncleAuntCard.uncleAuntLifeStatus} data_file={part5.uncleAuntCard.attachment} relation={relator_R(isUncAuntCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={["عمه", "عمو"]}></CancerField>

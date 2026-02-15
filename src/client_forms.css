@@ -78,7 +78,8 @@
 
 }
 
-.btn-view-form>img {
+.btn-view-form>img,
+.formPageSign {
   width: 22px;
   height: 22px;
 }

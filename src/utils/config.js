@@ -48,10 +48,10 @@ export const stateColors = {
 }
 
 export const cancerRefs = {
-    "childCancer": ["فرزند"],
+    "childCancer": ["فرزند پسر", "فرزند دختر"],
     "motherCancer": ["مادر"],
     "fatherCancer": ["پدر"],
-    "siblingCancer": ["برادر", "خواهر"],
+    "siblingCancer": ["خواهر ناتنی", "برادر ناتنی", "برادر", "خواهر"],
     "ameAmoCancer": ["عمه", "عمو"],
     "khaleDaeiCancer": ["دایی", "خاله"],
 }

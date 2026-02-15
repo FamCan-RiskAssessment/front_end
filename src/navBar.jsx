@@ -5,6 +5,7 @@ import { fetchDataGET } from "./utils/tools";
 import exitSign from './V2Form/exit.svg'
 import timeSign from './V2Form/time.svg'
 import homeSign from './V2Form/home.svg'
+import formSign from './V2Form/formPageSign.svg'
 
 function NavBar({ account }) {
     const navigate = useNavigate();
@@ -59,10 +60,14 @@ function NavBar({ account }) {
                         <span>{account}</span>
                         <span className="RoleSpan">{nameRole}</span>
                     </div>
-                    <div className="help_bar_part3 dash">
-                        <button className="dash_exit_btn">
+                    <div className="help_bar_part3 dash_bot">
+                        <button className="dash_exit_btn" onClick={() => navigate("/forms")}>
+                            <img className="formPageSign" src={formSign} alt="formPage" />
+                            <span>صفحه ی فرم ها</span>
+                        </button>
+                        <button className="dash_exit_btn" onClick={() => navigate("/")}>
                             <img src={exitSign} alt="exit_sign" />
-                            <span onClick={() => navigate("/")}>خروج</span>
+                            <span>خروج</span>
                         </button>
                     </div>
                 </div>

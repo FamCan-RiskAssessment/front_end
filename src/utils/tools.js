@@ -389,11 +389,10 @@ export const getKeyVal = (obj, Val) => {
 
 export const cancerDictRefiner = (obj, cancerPreData) => {
   let mask_obj = {}
-  console.log("whyyyyyyyyyyyyyyyyyyy : ", obj, cancerPreData)
-  if (cancerPreData.length > 0) {
+  if (cancerPreData.data.familyCancers.length > 0) {
+    console.log("whyyyyyyyyyyyyyyyyyyy : ", obj, cancerPreData, cancerPreData.data.familyCancers.length > 0)
     Object.keys(obj).forEach(oe => {
       cancerPreData.data.familyCancers.forEach(fc => {
-        console.log("whyInnerrrrrrrrrrrrrrrrr : ", fc)
         let relFa = getKeyVal(obj, fc.relative)
         if (relFa == oe) {
           mask_obj[oe] = "بله"
