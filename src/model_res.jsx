@@ -47,7 +47,8 @@ const ModelResults = () => {
             filters.sortOrder,
             endpoint,
             currentPage,
-            []
+            [],
+            true
         );
 
         // Add status filter if applicable

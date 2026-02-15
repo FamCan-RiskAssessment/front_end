@@ -789,7 +789,6 @@ td {
 
 
 .table_controles {
-    border: 1px solid black;
     border-radius: 20px;
     width: 70%;
     padding: 1rem 1rem;
@@ -803,6 +802,7 @@ td {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+    justify-content: center;
     width: 100%;
 }
 
@@ -902,4 +902,15 @@ td {
     .advanced_filters {
         width: 100%;
     }
+}
+
+.filter_group select,
+.filter_group input {
+    font-family: 'Vazirmatn';
+}
+
+.btn_question.refined {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
 }

@@ -390,23 +390,31 @@ export const getKeyVal = (obj, Val) => {
 export const cancerDictRefiner = (obj, cancerPreData) => {
   let mask_obj = {}
   if (cancerPreData.data.familyCancers.length > 0) {
-    console.log("whyyyyyyyyyyyyyyyyyyy : ", obj, cancerPreData, cancerPreData.data.familyCancers.length > 0)
+    // console.log("whyyyyyyyyyyyyyyyyyyy : ", obj, cancerPreData, cancerPreData.data.familyCancers.length > 0)
+    // Object.keys(obj).forEach(oe => {
+    //   cancerPreData.data.familyCancers.forEach(fc => {
+    //     let relFa = getKeyVal(obj, fc.relative)
+    //     console.log("whyInnnnnn: ", oe, relFa, relFa == oe)
+    //     if (relFa == oe) {
+    //       mask_obj[oe] = "بله"
+    //     } else {
+    //       mask_obj[oe] = "خیر"
+    //     }
+    //   });
+    // });
     Object.keys(obj).forEach(oe => {
-      cancerPreData.data.familyCancers.forEach(fc => {
-        let relFa = getKeyVal(obj, fc.relative)
-        if (relFa == oe) {
-          mask_obj[oe] = "بله"
-        } else {
-          mask_obj[oe] = "خیر"
-        }
-      });
+      mask_obj[oe] = "خیر"
     });
+    cancerPreData.data.familyCancers.forEach(fc => {
+      let relFa = getKeyVal(obj, fc.relative)
+      mask_obj[relFa] = "بله"
+    });
+
   } else {
     Object.keys(obj).forEach(oe => {
       mask_obj[oe] = "خیر"
     });
   }
-
   return mask_obj
 }
 
@@ -425,10 +433,11 @@ export const backwardEnum = (APIPARTDATA, transformer, blackList) => {
 }
 
 // this function would help us through sorts and searches for making API calls
-export const endpointMaker = (sort1, sort2, searchD, order, prevendPoint, page, AdvanceOnes) => {
+export const endpointMaker = (sort1, sort2, searchD, order, prevendPoint, page, AdvanceOnes, defAdd) => {
   // let endpoint = ""
   let prefix = ""
   let processDef = true
+  let defused = false
   console.log(sort1, page, AdvanceOnes)
   console.log(sort2)
   console.log(searchD)
@@ -436,8 +445,13 @@ export const endpointMaker = (sort1, sort2, searchD, order, prevendPoint, page, 
   console.log(prevendPoint)
 
   if (AdvanceOnes.length != 0 || Object.keys(AdvanceOnes).length != 0) {
-    Object.keys(AdvanceOnes).forEach(a => {
-      if (AdvanceOnes[a] != "") {
+    // Object.keys(AdvanceOnes).forEach(a => {
+    //   if (AdvanceOnes[a] != "") {
+    //     processDef = false
+    //   }
+    // });
+    AdvanceOnes.forEach(AfO => {
+      if (AfO.value != "") {
         processDef = false
       }
     });
@@ -461,8 +475,15 @@ export const endpointMaker = (sort1, sort2, searchD, order, prevendPoint, page, 
   }
   if (order.length == 0 && searchD.length == 0 && sort2.length == 0 && sort1.length == 0 && processDef) {
     prevendPoint += `?page=${page}&pageSize=10`
+    defused = true
   }
-  return prevendPoint
+  // console.log(prevendPoint, defAdd, defused)
+  if (defused || !defAdd) {
+    return prevendPoint
+  }
+  if (!defused && defAdd) {
+    return prevendPoint + `&page=${page}&pageSize=10`
+  }
 }
 
 

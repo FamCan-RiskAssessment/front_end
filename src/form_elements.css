@@ -473,11 +473,35 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 1rem;
     font-size: 1rem;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     padding: 0.5rem 1rem;
 }
 
+.increase.R>img,
+.decrease.R>img {
+    width: 30px;
+    height: 30px;
+}
+
+.increase.R,
+.decrease.R {
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.increase.R:hover,
+.decrease.R:hover {
+    background-color: #eee;
+    cursor: pointer;
+}
+
+.self_number {
+    border: 1px solid black;
+    padding: 0.5rem 1rem;
+}
 
 
 

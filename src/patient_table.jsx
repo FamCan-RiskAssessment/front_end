@@ -17,6 +17,8 @@ import part4 from './questions/P4.json'
 import part5 from './questions/P5.json'
 import stateChangeSign from './V2Form/stateChange.svg'
 import arrowLeftSign from './V2Form/arrowLeft.svg'
+import leftSign from './V2Form/form_left.png'
+import rightSign from './V2Form/form_right.png'
 
 
 // Load the Persian header mapping
@@ -69,6 +71,7 @@ export default function FilterableTable() {
   const [page, setPage] = useState(1)
   const [pagiPrev, setPagiPrev] = useState(false)
   const [pagiNext, setPagiNext] = useState(false)
+  const [pageCount, setPageCount] = useState(0)
   const [selectedFormId, setSelectedFormId] = useState(0)
   const [openModal, setOpenModal] = useState(false)
   const [openStatusModal, setOpenStatusModal] = useState(false)
@@ -97,6 +100,7 @@ export default function FilterableTable() {
   const [RadioMap, setRadioMap] = useState({})
   // const [apiArray, setapiArray] = useState([])
   const [mode, setMode] = useState('')
+  const [filtersApplied, setFiltersApplied] = useState(false)
   const { addToast } = useToast()
   const location = useLocation();
   const userPhone = location.state?.phone;
@@ -462,7 +466,8 @@ export default function FilterableTable() {
       filters.sortOrder,
       `http://${APIURL}/${endpoint}`,
       currentPage,
-      additionalFilters
+      additionalFilters,
+      true
     );
 
     // Add status filter if applicable
@@ -490,7 +495,7 @@ export default function FilterableTable() {
 
       // Build endpoint based on role and filters
       const endpoint = buildEndpoint(roleName, page, filter, advancedFilters);
-
+      console.log("change the endpoint if it is needed : ", endpoint)
       try {
         const response = await fetch(endpoint, {
           method: "GET",
@@ -511,6 +516,7 @@ export default function FilterableTable() {
         if (result && result.data) {
           setPagiNext(result.data?.pagination?.hasNextPage || false);
           setPagiPrev(result.data?.pagination?.hasPrevPage || false);
+          setPageCount(result.data?.pagination?.totalPages || 0);
 
           const updatedForms = [];
           // Process each form from the API exactly once to prevent duplicates
@@ -534,20 +540,24 @@ export default function FilterableTable() {
             setRun(true);
           }
           setLoading(false);
+          setFiltersApplied(false); // Reset the filter applied state after data is loaded
         } else {
           console.error("API request failed - invalid response format:", result);
         }
       } catch (error) {
         console.error("Error fetching forms:", error);
         setLoading(false);
+        setFiltersApplied(false); // Reset the filter applied state even if there's an error
       }
     };
 
+    // Fetch data when any of these dependencies change
+    setLoading(true);
     fetchformIds();
-  }, [page, filter, mode, advancedFilters]);
+  }, [page, filter, mode, filtersApplied]); // Include filtersApplied in the dependency array
 
 
-  // show me more 
+  // show me more
   const showMore = () => {
     if (pagiNext) {
       setLoading(true)
@@ -560,6 +570,19 @@ export default function FilterableTable() {
       setLoading(true)
       setPage(p => p - 1)
     }
+  }
+
+  const applyFilters = () => {
+    setPage(1); // Reset to first page when applying filters
+    setFiltersApplied(true); // Trigger the useEffect to fetch data with new filters
+  }
+
+  const lineMaker = (total_page) => {
+    let spans = []
+    for (let i = 0; i < total_page; i++) {
+      spans.push(i)
+    }
+    return spans
   }
 
   // Filter by 'status'
@@ -867,39 +890,10 @@ export default function FilterableTable() {
           <div className="forms-container PT">
 
             <div className="total_patients_holder">
-              <div className="filter_holder">
-                <div className="select_filter">
-                  <label className="label_title">فیلتر وضعیت</label>
-                  <select
-                    className="select_options"
-                    value={filter}
-                    onChange={(e) => setFilter(e.target.value)}
-                  >
-                    <option value="All">همه</option>
-                    {statuses.map(status => (
-                      <option key={status} value={status}>
-                        {status}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <button onClick={handleSave} className="btn_question">
-                  ذخیره تغییرات
-                </button>
-                <p>برای تغییر دادن هر فیلد دابل کلیک کنید.</p>
-              </div>
-              <div className="table_controles">
-                <h3>کنترل داده ها </h3>
-                <div className="table_tools">
-                  <div className="table_switch">
-                    <label htmlFor="mode_switch">طرح مورد نظر</label>
-                    <select className="mode_switch" name="switch" id="sw" value={mode} onChange={(e) => setMode(e.target.value)}>
-                      <option value="def">انتخاب کنید</option>
-                      <option value="navid">نوید</option>
-                      <option value="bahar">بهار</option>
-                    </select>
-                  </div>
 
+              <div className="table_controles">
+                {/* <h3>کنترل داده ها </h3> */}
+                <div className="table_tools">
                   {/* Advanced Filters Section */}
                   <div className="advanced_filters">
                     <h4>فیلترهای پیشرفته</h4>
@@ -1030,25 +1024,44 @@ export default function FilterableTable() {
                       </div>
                     </div>
 
-                    <button
-                      className="btn_reset_filters"
-                      onClick={() => setAdvancedFilters({
-                        sortBy: '',
-                        sortOrder: '',
-                        search: '',
-                        formType: '',
-                        gender: '',
-                        birthYear: '',
-                        drinksAlcohol: '',
-                        smokingNow: '',
-                        cancer: '',
-                        filledByOperatorID: ''
-                      })}
-                    >
-                      ریست فیلترها
-                    </button>
+                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginTop: '10px' }}>
+                      <button
+                        className="btn_reset_filters"
+                        onClick={() => {
+                          setAdvancedFilters({
+                            sortBy: '',
+                            sortOrder: '',
+                            search: '',
+                            formType: '',
+                            gender: '',
+                            birthYear: '',
+                            drinksAlcohol: '',
+                            smokingNow: '',
+                            cancer: '',
+                            filledByOperatorID: ''
+                          })
+                          // setPage(1)
+                          setFiltersApplied(p => !p)
+                        }}
+                      >
+                        ریست فیلترها
+                      </button>
+
+                      <button
+                        className="btn_question refined"
+                        onClick={applyFilters}
+                      >
+                        اعمال فیلترها
+                      </button>
+                    </div>
                   </div>
                 </div>
+              </div>
+              <div className="filter_holder">
+                <button onClick={handleSave} className="btn_question">
+                  ذخیره تغییرات
+                </button>
+                <p>برای تغییر دادن هر فیلد دابل کلیک کنید.</p>
               </div>
 
               {/* Drawer-style interface for form sections */}
@@ -1295,6 +1308,22 @@ export default function FilterableTable() {
                 )}
               </div>
 
+              <div className="page_naver">
+                <div className="total_pages">
+                  <span>تعداد صفحات {pageCount}</span>
+                </div>
+                <div className="page_line">
+                  <img src={rightSign} className="arrows" alt="rightSign" onClick={() => setPage(a => Math.max(1, a - 1))} />
+                  {lineMaker(pageCount).map((p, index) => {
+                    return (
+                      <span className="page_num" style={page == p + 1 ? { background: "#eee", } : null} onClick={() => setPage(p + 1)}>
+                        {p + 1}
+                      </span>
+                    )
+                  })}
+                  <img src={leftSign} alt="leftSign" className="arrows" onClick={() => setPage(a => Math.min(pageCount, a + 1))} />
+                </div>
+              </div>
               <div className="btn_holder_next_prev">
                 <button className="btn_submit space-UD" onClick={showPrev}>صفحه ی قبلی</button>
                 <button className="btn_submit space-UD" onClick={showMore}>صفحه ی بعدی</button>

@@ -12,6 +12,8 @@ import rightSign from './V2Form/form_right.png';
 import prevSign from './V2Form/arrow_right.svg';
 import settingsSign from './V2Form/settings.svg';
 import roleAssignSign from './V2Form/roleAssign.svg';
+import magnifier from './V2Form/magnifier.svg'
+
 
 function SupervisorPage() {
     const [formInfos, setFormInfos] = useState({});
@@ -27,6 +29,14 @@ function SupervisorPage() {
     const [pagiPrev, setPagiPrev] = useState(false);
     const [pagiNext, setPagiNext] = useState(false);
     const [pageCount, setPageCount] = useState(0);
+
+    // State for advanced filters
+    const [advancedFilters, setAdvancedFilters] = useState({
+        sortBy: '',
+        sortOrder: '',
+        search: '',
+    });
+    const [tempSearch, setTempSearch] = useState(''); // Temporary storage for search input
     const navigate = useNavigate();
     const { addToast } = useToast();
     let userPhone = localStorage.getItem("number");
@@ -47,12 +57,36 @@ function SupervisorPage() {
         if (pagiPrev) setPage(p => p - 1);
     };
 
+    // Function to build endpoint based on filters
+    const buildEndpoint = (currentPage, filters) => {
+        let endpoint = 'admin/form';
+
+        // Build query parameters
+        const queryParams = [];
+
+        // Add pagination
+        queryParams.push(`page=${currentPage}`);
+        queryParams.push('pageSize=10'); // Keep pageSize consistent
+
+        // Add sorting and search filters
+        if (filters.sortBy) queryParams.push(`sortBy=${filters.sortBy}`);
+        if (filters.sortOrder) queryParams.push(`sortOrder=${filters.sortOrder}`);
+        if (filters.search) queryParams.push(`search=${filters.search}`);
+
+        // Join query parameters with '&'
+        const queryString = queryParams.join('&');
+        return `admin/form?${queryString}`;
+    };
+
     // Fetch forms
     useEffect(() => {
         let token = localStorage.getItem("token");
         const get_forms = async () => {
             try {
-                let data = await fetchDataGET(`admin/form?page=${page}&pageSize=10`, token);
+                // Build endpoint with filters
+                const endpoint = buildEndpoint(page, advancedFilters);
+
+                let data = await fetchDataGET(endpoint, token);
                 console.log("this is the data : ", data);
                 setPagiNext(data.data.pagination.hasNextPage);
                 setPagiPrev(data.data.pagination.hasPrevPage);
@@ -67,8 +101,11 @@ function SupervisorPage() {
                 setLoading(false);
             }
         };
+
+        // Fetch data when any of these dependencies change
+        setLoading(true);
         get_forms();
-    }, [changedOPId, page]);
+    }, [changedOPId, page, advancedFilters]); // Include all advancedFilters in dependency array
 
     // Get operator role ID
     useEffect(() => {
@@ -134,6 +171,15 @@ function SupervisorPage() {
         }
     };
 
+    const applyFilters = () => {
+        // Update the main search filter with the temporary value
+        setAdvancedFilters(prev => ({
+            ...prev,
+            search: tempSearch
+        }));
+        setPage(1); // Reset to first page when applying filters
+    };
+
     if (loading) return <p className="text-center mt-10">Loading forms...</p>;
 
     return (
@@ -146,13 +192,42 @@ function SupervisorPage() {
                         <div className="forms_tools">
                             <div className="form_tool">
                                 <div className="form_search_bar">
-                                    <input type="text" className="form_search inp_question V2" placeholder="جستجو" />
+                                    <input
+                                        type="text"
+                                        className="form_search inp_question V2"
+                                        placeholder="جستجو"
+                                        value={tempSearch}
+                                        onChange={(e) => {
+                                            setTempSearch(e.target.value)
+                                        }}
+                                    />
+                                </div>
+                                <button className="magnifier" onClick={applyFilters}>
+                                    <span>
+                                        <img src={magnifier} alt="search" />
+                                    </span>
+                                </button>
+                            </div>
+
+                            <div className="form_tool">
+                                <div className="sorter">
+                                    <select name="sortOrder" id="" className="select_optionsV2" value={advancedFilters.sortOrder} onChange={(e) => setAdvancedFilters({ ...advancedFilters, sortOrder: e.target.value })}>
+                                        <option value="انتخاب کنید">ترتیب داده</option>
+                                        <option value="asc">صعودی</option>
+                                        <option value="desc">نزولی</option>
+                                    </select>
                                 </div>
                                 <div className="sorter">
-                                    <select name="formSort" id="" className="select_optionsV2">
-                                        <option value="انتخاب کنید">انتخاب کنید</option>
-                                        <option value="جدید ترین">جدید ترین</option>
-                                        <option value="قدیمی ترین">قدیمی ترین</option>
+                                    <select
+                                        value={advancedFilters.sortBy}
+                                        onChange={(e) => setAdvancedFilters({ ...advancedFilters, sortBy: e.target.value })}
+                                        className="select_optionsV2"
+                                    >
+                                        <option value="">مرتب سازی بر اساس</option>
+                                        <option value="id">شناسه</option>
+                                        <option value="created_at">تاریخ ایجاد</option>
+                                        <option value="updated_at">تاریخ بروزرسانی</option>
+                                        <option value="status">وضعیت</option>
                                     </select>
                                 </div>
                             </div>

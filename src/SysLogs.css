@@ -93,3 +93,92 @@
   width: 100%;
   align-items: center;
 }
+
+/* Advanced Filters Styles */
+.log_filters {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.advanced_filters {
+  width: 80%;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: 1rem;
+  background-color: #f9f9f9;
+}
+
+.advanced_filters h4 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #8f005a;
+  text-align: center;
+}
+
+.filter_row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter_group {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.filter_group label {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #555;
+}
+
+.filter_group select,
+.filter_group input {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.filter_group select:focus,
+.filter_group input:focus {
+  outline: none;
+  border-color: #7a4ca0;
+  box-shadow: 0 0 0 2px rgba(122, 76, 160, 0.2);
+}
+
+.btn_reset_filters {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  align-self: flex-start;
+  transition: background-color 0.3s ease;
+}
+
+.btn_reset_filters:hover {
+  background-color: #c82333;
+}
+
+@media (max-width: 768px) {
+  .filter_row {
+    flex-direction: column;
+  }
+
+  .filter_group {
+    width: 100%;
+  }
+
+  .advanced_filters {
+    width: 100%;
+  }
+}

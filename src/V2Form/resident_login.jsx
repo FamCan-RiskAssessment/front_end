@@ -104,7 +104,7 @@ function ResidentRegister() {
         //     });
 
         // Navigate to a success page or login page
-        navigate("/login"); // Adjust this route as needed
+        navigate("/Dashboard"); // Adjust this route as needed
     }
     // } catch (err) {
     //     setError(err.message);
@@ -151,12 +151,12 @@ function ResidentRegister() {
                                     />
                                 </div>
                                 <div className="inp resInp">
-                                    <label htmlFor="fullName">نام و نام خانوادگی</label>
+                                    <label htmlFor="fullName">نام خانوادگی</label>
                                     <input
                                         type="text"
                                         name="fullName"
                                         id="fullName"
-                                        placeholder="نام و نام خانوادگی خود را وارد کنید"
+                                        placeholder="نام خانوادگی خود را وارد کنید"
                                         value={ulast}
                                         onChange={(e) => setUlast(e.target.value)}
                                     />
