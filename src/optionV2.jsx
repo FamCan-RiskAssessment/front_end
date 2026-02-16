@@ -23,6 +23,7 @@ function OptionsV2({ data_req, data, class_change1, class_change2, valueSetter, 
         <>
             <div className={`form_element optionV2 ${class_change1}`} style={relation ? null : { display: "none" }}>
                 <span>{data.ask}</span>
+                <p className="data_desc">{data.desc}</p>
                 <div className={`option_holderV2 ${class_change1}`}>
                     <select
                         data_req={data_req}

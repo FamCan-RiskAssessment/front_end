@@ -47,6 +47,7 @@ function RadioV2({ data_req, data, class_change1, value, class_change2, valueSet
             >
                 <div className="radio_question">
                     <p>{data.ask}</p>
+                    <p className="data_desc">{data.desc}</p>
                 </div>
                 <div className={`total_radio_holder V2 ${class_change2}`}>
                     <div className="radio-group">

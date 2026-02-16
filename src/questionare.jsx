@@ -698,7 +698,7 @@ function Questions() {
             return false
         }
     }
-
+    // console.log("UUUUUUUUUUUUUUUUUUU : ", relator_R(isSmokingNow))
 
     const the_condition = (state) => {
         console.log(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ", state)
@@ -1426,11 +1426,11 @@ function Questions() {
                                 </>
                                 {/* )} */}
                                 {/* {isSmokingNow == 'خیر' && ( */}
-                                {/* <>
-                                    <Options data_req={"true"} data={part2.combine_option_leaveSmokingAge} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == false}></Options>
-                                    <Options data_req={"true"} data={part2.combine_option_countSmokingDaily_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == false}></Options>
-                                    <Options data_req={"true"} data={part2.combine_option_t_gh_daily_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == false}></Options>
-                                </> */}
+                                <>
+                                    <OptionsV2 data_req={"true"} data={part2.combine_option_leaveSmokingAge} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == false && relator_R(isSmoke)}></OptionsV2>
+                                    <OptionsV2 data_req={"true"} data={part2.combine_option_countSmokingDaily_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == false && relator_R(isSmoke)}></OptionsV2>
+                                    <OptionsV2 data_req={"true"} data={part2.combine_option_t_gh_daily_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == false && relator_R(isSmoke)}></OptionsV2>
+                                </>
                                 {/* )} */}
                             </>
                             {/* )} */}
