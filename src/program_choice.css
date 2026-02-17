@@ -7,3 +7,7 @@
     align-items: center;
     background: #f1f1f1;
 }
+
+.less_height {
+    min-height: unset;
+}

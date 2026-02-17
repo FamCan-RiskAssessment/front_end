@@ -392,7 +392,11 @@ function RoleChanger() {
         <div className="role_modal">
           <div className="modal_header">
             <h3>انتخاب نقش جدید</h3>
-            <div className="modal_close" onClick={() => setOpenModal(false)}>✕</div>
+            <div className="modal_close" onClick={() => setOpenModal(false)}>
+              <span>
+                ✕
+              </span>
+            </div>
           </div>
           <div className="roles">
             {Roles.map((r, index) => (
@@ -412,7 +416,11 @@ function RoleChanger() {
         <div className="role_modal">
           <div className="modal_header">
             <h3>دسته بندی بر حسب</h3>
-            <div className="modal_close" onClick={() => setOpenSortModal(false)}>✕</div>
+            <div className="modal_close" onClick={() => setOpenSortModal(false)}>
+              <span>
+                ✕
+              </span>
+            </div>
           </div>
           <div className="roles">
             {Object.keys(sortOptions).map((sok, index) => (

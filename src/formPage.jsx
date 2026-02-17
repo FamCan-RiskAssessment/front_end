@@ -312,6 +312,16 @@ function FormsPage() {
                                     let token = localStorage.getItem("token")
                                     let res = await fetchDataPUT(`form/${form.id}/resubmit`, token, {})
                                   }
+                                  if (form.filledForms.familycancer) {
+                                    localStorage.setItem("famcanFilled", JSON.stringify(true))
+                                  } else {
+                                    localStorage.setItem("famcanFilled", JSON.stringify(false))
+                                  }
+                                  if (form.filledForms.cancer) {
+                                    localStorage.setItem("selfcanFilled", JSON.stringify(true))
+                                  } else {
+                                    localStorage.setItem("selfcanFilled", JSON.stringify(false))
+                                  }
                                   userSelectedForm(form.id)
                                 }}
                                 disabled={statusChecker(form.status) == 1 || statusChecker(form.status) == 4 || statusChecker(form.status) == 5 ? null : true}
@@ -414,9 +424,13 @@ function FormsPage() {
             <h3>آیا می خواهید فرم را حذف کنید ؟ </h3>
             <div className="modal_close" onClick={() => {
               setOpenModalConf(false)
-            }}>✕</div>
+            }}>
+              <span>
+                ✕
+              </span>
+            </div>
           </div>
-          <div className="roles">
+          <div className="roles Modal">
             <button className="btn-add-new" onClick={() => {
               deleteForm(selectedForm)
               setOpenModalConf(false)

@@ -18,7 +18,7 @@ function ChooseApp() {
     return (
         <>
             <div className="card_holder">
-                <div className="form_card">
+                <div className="form_card less_height">
                     <div className="title">
                         <h2>لطفا طرح خود را انتخاب کنید</h2>
                     </div>

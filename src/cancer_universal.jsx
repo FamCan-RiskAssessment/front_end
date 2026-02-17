@@ -346,7 +346,9 @@ function CancerField({
     return (
         <div className="cancer_element">
             <div className="cancer_title">
-                <p>در جدول نام، نوع یا انواع سرطان و سن ابتلا را درج کنید</p>
+                {!data_Options?.deleteF && (
+                    <p>در جدول نوع یا انواع سرطان و سن ابتلا را درج کنید</p>
+                )}
             </div>
 
             <div className="jadval_and_form">

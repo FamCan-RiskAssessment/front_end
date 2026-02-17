@@ -150,7 +150,7 @@ function Questions() {
     const [isHardActivity, setIsHardActivity] = useState('')
     const [isSmoke, setIsSmoke] = useState('')
     const [isSmokeAge, setIsSmokeAge] = useState('')
-    const [isSmokingNow, setIsSmokingNow] = useState('')
+    const [isSmokingNow, setIsSmokingNow] = useState("null")
     const [cigNow, setCigNow] = useState(false)
     const [ghelNow, setGhelNow] = useState(false)
     // step 3 
@@ -671,6 +671,9 @@ function Questions() {
             console.log("[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[ : ", ST)
             console.log(state)
         }
+        if (state == "null") {
+            return "null";
+        }
         if (state == "سابقاً مصرف می کرده ام اما کمتر از ۱۵ سال است که ترک کرده ام" || state == "سابقاً مصرف می کردم اما بیش از ۱۵ سال است که ترک کرده ام") {
             return true
         }
@@ -698,7 +701,7 @@ function Questions() {
             return false
         }
     }
-    // console.log("UUUUUUUUUUUUUUUUUUU : ", relator_R(isSmokingNow))
+    console.log("UUUUUUUUUUUUUUUUUUU : ", relator_R(isSmokingNow, "hi man"), relator_R(isSmokingNow, "hi man") == false)
 
     const the_condition = (state) => {
         console.log(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ", state)
@@ -1420,9 +1423,9 @@ function Questions() {
                                 {/* {isSmokingNow == 'بله' && ( */}
                                 <>
                                     {/* <InputBox data_req={"false"} data={part2.text_yearSmoke} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow)}></InputBox> */}
-                                    <RangeBox data_req={"false"} data={part2.range_yearSmoke} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow)} preData={presetform && presetform[part2.range_yearSmoke.engName] ? presetform[part2.range_yearSmoke.engName] : null}></RangeBox>
-                                    <OptionsV2 data_req={"true"} data={part2.combine_option_countSmokingDaily} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow)}></OptionsV2>
-                                    <OptionsV2 data_req={"true"} data={part2.combine_option_t_gh_daily} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow)}></OptionsV2>
+                                    <RangeBox data_req={"false"} data={part2.range_yearSmoke} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == true} preData={presetform && presetform[part2.range_yearSmoke.engName] ? presetform[part2.range_yearSmoke.engName] : null}></RangeBox>
+                                    <OptionsV2 data_req={"true"} data={part2.combine_option_countSmokingDaily} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == true}></OptionsV2>
+                                    <OptionsV2 data_req={"true"} data={part2.combine_option_t_gh_daily} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isSmokingNow) == true}></OptionsV2>
                                 </>
                                 {/* )} */}
                                 {/* {isSmokingNow == 'خیر' && ( */}
@@ -1751,9 +1754,13 @@ function Questions() {
                             </div>
                             <div className="modal_close" onClick={() => {
                                 setOpenModalConf(false)
-                            }}>✕</div>
+                            }}>
+                                <span>
+                                    ✕
+                                </span>
+                            </div>
                         </div>
-                        <div className="roles">
+                        <div className="roles Modal">
                             <button className="btn-add-new" onClick={() => {
                                 navigate("/forms")
                                 setOpenModalConf(false)

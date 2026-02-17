@@ -11,6 +11,7 @@
   "cancerCard": {
     "cancerType": {
       "ask": "نوع یا انواع سرطان و سن ابتلا را مشخص کنید. (حداقل یک انتخاب و بیشتر)",
+      "deleteF": true,
       "Oname": "cancerType",
       "options": [
         "انتخاب کنید",

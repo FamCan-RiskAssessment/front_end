@@ -1338,7 +1338,11 @@ export default function FilterableTable() {
               <div className="modal_close" onClick={() => {
                 setOpenModal(false)
                 setSelectedFormId(0)
-              }}>✕</div>
+              }}>
+                <span>
+                  ✕
+                </span>
+              </div>
             </div>
             <div className="roles">
               {modelList.map((m, index) => (
@@ -1361,7 +1365,11 @@ export default function FilterableTable() {
               <div className="modal_close" onClick={() => {
                 setOpenStatusModal(false)
                 setSelectedFormId(0)
-              }}>✕</div>
+              }}>
+                <span>
+                  ✕
+                </span>
+              </div>
             </div>
             <div className="roles">
               {activeStats(selectedFormId, data).map((m, index) => (
@@ -1390,7 +1398,11 @@ export default function FilterableTable() {
                   <div className="modal_close" onClick={() => {
                     setOpenModalRisks(false)
                     setRisks({})
-                  }}>✕</div>
+                  }}>
+                    <span>
+                      ✕
+                    </span>
+                  </div>
                 </div>
                 <div className="roles">
                   {Object.keys(risks).length == 0 ? "ریسک هنوز محاسبه نشده است!" : null}
@@ -1417,7 +1429,11 @@ export default function FilterableTable() {
                 setOpenFamilyCancerModal(false)
                 setSelectedFormForFamilyCancer(null)
                 setFamilyCancerDeled([]) // Reset deleted family cancers tracking
-              }}>✕</div>
+              }}>
+                <span>
+                  ✕
+                </span>
+              </div>
             </div>
             <div className="roles cancer-mode">
               {detailedFamilyCancerData[selectedFormForFamilyCancer]?.length === 0 || !detailedFamilyCancerData[selectedFormForFamilyCancer] ? "تاریخچه سرطان خانوادگی موجود نیست" :
@@ -1438,7 +1454,11 @@ export default function FilterableTable() {
                               return (<div key={cancerIndex} className="cancer-item">
                                 <div className="top_cancer_holder">
                                   <p>نوع سرطان: {cancerTypesMap[cancer.cancerType]}</p>
-                                  <button className="modal_close" onClick={() => deleteFamCancer(cancer.id, selectedFormForFamilyCancer)}>✕</button>
+                                  <button className="modal_close" onClick={() => deleteFamCancer(cancer.id, selectedFormForFamilyCancer)}>
+                                    <span>
+                                      ✕
+                                    </span>
+                                  </button>
                                 </div>
                                 <p>سن تشخیص: {cancer.cancerAge}</p>
                                 <div className="cancer_image_holder">
@@ -1474,7 +1494,11 @@ export default function FilterableTable() {
                 setOpenCancerModal(false)
                 setSelectedFormForSelfCancer(null)
                 setCancerDeled([]) // Reset deleted self cancers tracking
-              }}>✕</div>
+              }}>
+                <span>
+                  ✕
+                </span>
+              </div>
             </div>
             <div className="roles cancer-mode">
               <div className="role_table">
@@ -1487,7 +1511,11 @@ export default function FilterableTable() {
                           <div className="cancer-item" >
                             <div className="top_cancer_holder">
                               <p>نوع سرطان: {cancerTypesMap[cancer.cancerType]}</p>
-                              <button className="modal_close" onClick={() => deleteCancer(cancer.id, selectedFormForSelfCancer)}>✕</button>
+                              <button className="modal_close" onClick={() => deleteCancer(cancer.id, selectedFormForSelfCancer)}>
+                                <span>
+                                  ✕
+                                </span>
+                              </button>
                             </div>
                             <p>سن تشخیص: {cancer.cancerAge}</p>
                             <div className="cancer_image_holder">
@@ -1525,7 +1553,11 @@ export default function FilterableTable() {
                 setSelectedFormForFamilyCancer(null);
                 setCancerDeled([]); // Reset deleted self cancers tracking
                 setFamilyCancerDeled([]); // Reset deleted family cancers tracking
-              }}>✕</div>
+              }}>
+                <span>
+                  ✕
+                </span>
+              </div>
             </div>
             <div className="roles cancer-mode">
               <div className="role_table">

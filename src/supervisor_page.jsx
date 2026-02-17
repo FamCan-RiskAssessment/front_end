@@ -316,7 +316,11 @@ function SupervisorPage() {
                 <div className="role_modal">
                     <div className="modal_header">
                         <h3>انتخاب اپراتور جدید</h3>
-                        <div className="modal_close" onClick={() => setOpenModal(false)}>✕</div>
+                        <div className="modal_close" onClick={() => setOpenModal(false)}>
+                            <span>
+                                ✕
+                            </span>
+                        </div>
                     </div>
                     <div className="search-bar-container" style={{ padding: '1rem' }}>
                         <label htmlFor="userSearch">

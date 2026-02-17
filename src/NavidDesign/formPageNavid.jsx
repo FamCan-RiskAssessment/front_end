@@ -355,9 +355,13 @@ function FormsPageNavid() {
             <h3>آیا می خواهید فرم را حذف کنید ؟ </h3>
             <div className="modal_close" onClick={() => {
               setOpenModalConf(false)
-            }}>✕</div>
+            }}>
+              <span>
+                ✕
+              </span>
+            </div>
           </div>
-          <div className="roles">
+          <div className="roles Modal">
             <button className="btn-add-new" onClick={() => {
               deleteForm(selectedForm)
               setOpenModalConf(false)

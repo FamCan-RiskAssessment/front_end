@@ -486,6 +486,10 @@ export const endpointMaker = (sort1, sort2, searchD, order, prevendPoint, page, 
   }
 }
 
+// export const cancerFilledInCompleteFormCheck = (form) => {
+//   let formObj = form.cal
+// }
+
 
 // export const nameEnumMap = async (elem, token) => {
 //   const enumName = elem.current.getAttribute('data-enum');

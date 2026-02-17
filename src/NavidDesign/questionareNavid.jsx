@@ -1489,9 +1489,13 @@ function QuestionsNavid() {
                         </div>
                         <div className="modal_close" onClick={() => {
                             setOpenModalConf(false)
-                        }}>✕</div>
+                        }}>
+                            <span>
+                                ✕
+                            </span>
+                        </div>
                     </div>
-                    <div className="roles">
+                    <div className="roles Modal">
                         <button className="btn-add-new" onClick={() => {
                             navigate("/formsNavid")
                             setOpenModalConf(false)
