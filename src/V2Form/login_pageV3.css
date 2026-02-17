@@ -117,6 +117,8 @@
     margin: 0;
     text-align: center;
     /* color:aqua; */
+    display: flex;
+    align-items: center;
 }
 
 .inp>input {
@@ -141,6 +143,64 @@
 
 .inp>label {
     font-size: 1.2rem;
+}
+
+/* OTP input styles */
+.otp-container.LogM {
+    width: 100%;
+    /* background-color: white; */
+    height: unset;
+    min-height: unset;
+    background: white;
+}
+
+.changeNum>img {
+    width: 22px;
+    height: 22px;
+}
+
+.changeNum {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    padding: 0.5rem;
+}
+
+.changeNum:hover {
+    background-color: #eee;
+    cursor: pointer;
+}
+
+
+.otp-inputs {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 0.5rem;
+    justify-content: center;
+    width: 100%;
+}
+
+.otp-digit {
+    width: 3rem;
+    height: 3.75rem;
+    text-align: center;
+    font-size: 1.5rem;
+    font-family: 'vazir';
+    border: 1px solid rgba(112, 115, 124, 0.16);
+    border-radius: 0.75rem;
+    outline: none;
+    transition: all 0.3s ease;
+    background-color: white;
+    color: #414244;
+}
+
+.otp-digit:focus {
+    border-color: #47002d;
+    box-shadow: 0 0 0 3px rgba(71, 0, 45, 0.1);
 }
 
 .login_form>button {
@@ -381,6 +441,12 @@
 
     .inp>label {
         font-size: 1rem;
+    }
+
+    .otp-digit {
+        width: 1.8rem !important;
+        height: 2rem !important;
+        font-size: 1.2rem !important;
     }
 
     .login_form>button {

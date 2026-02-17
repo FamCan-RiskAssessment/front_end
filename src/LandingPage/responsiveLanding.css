@@ -27,6 +27,14 @@
         /* flex-direction: column; */
         height: unset;
     }
+
+    .minimal_sups {
+        display: none;
+    }
+
+    .gate-bell {
+        width: 50%;
+    }
 }
 
 @media (min-width:340px) and (max-width:768px) {
@@ -56,7 +64,8 @@
     }
 
     .gate-bell>h2 {
-        width: 50%;
+        width: 100%;
+        text-align: center;
     }
 
     .gallery-container {
@@ -99,6 +108,14 @@
     .logo>img {
         width: 3rem;
         height: 3rem;
+    }
+
+    .minimal_sups {
+        display: none;
+    }
+
+    .aboutus {
+        padding: 0rem 0rem 3rem 0rem;
     }
 }
 
@@ -129,7 +146,8 @@
     }
 
     .gate-bell>h2 {
-        width: 50%;
+        width: 100%;
+        text-align: center;
     }
 
     .gallery-container {
@@ -173,5 +191,13 @@
     .logo>img {
         width: 3rem;
         height: 3rem;
+    }
+
+    .minimal_sups {
+        display: none;
+    }
+
+    .aboutus {
+        padding: 0rem 0rem 3rem 0rem;
     }
 }

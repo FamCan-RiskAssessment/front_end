@@ -7,9 +7,13 @@
   align-items: flex-start;
 }
 
+.forms-page-wrapper.FM {
+  width: 60%;
+}
+
 .forms-container {
   width: 100%;
-  max-width: 800px;
+  /* max-width: 800px; */
   background-color: white;
   border-radius: 1.5rem;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
@@ -168,7 +172,7 @@
 
 .btn_formPage_holder {
   display: flex;
-  gap: 1rem;
+  /* gap: 1rem; */
 }
 
 .spider {
@@ -192,9 +196,9 @@
   padding: 0.8rem 1rem;
   text-align: right;
   font-weight: bold;
-  color: #4b006e;
+  color: #000;
   border: none;
-  border-bottom: 2px solid #e0d0f0;
+  border-bottom: 2px solid #ccc;
   /* Light purple border only at the bottom of header */
 }
 
@@ -302,3 +306,166 @@
 /* .forms_tools {} */
 
 /* deletable */
+
+/* Responsive styles for forms table */
+@media (max-width: 768px) {
+  .forms-page-wrapper.FM {
+    width: 95%;
+    padding: 1rem;
+  }
+
+  .forms-container {
+    padding: 1rem;
+  }
+
+  .forms_tools {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .form_tool {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .form_search_bar>input {
+    width: 100%;
+  }
+
+  /* Hide table header on mobile */
+  .forms-table thead {
+    display: none;
+  }
+
+  /* Convert table to card layout */
+  .forms-table,
+  .forms-table tbody,
+  .forms-table tr,
+  .forms-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .forms-table tr {
+    background-color: white;
+    border: 1px solid #ddd;
+    /* border-radius: 1rem; */
+    padding: 1rem;
+    /* margin-bottom: 1rem; */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+
+  /* .form-item:hover {
+    box-shadow: unset !important;
+    background-color: unset !important;
+  } */
+
+  .forms-table td {
+    text-align: right;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-right: 0;
+  }
+
+  .forms-table td:last-child {
+    border-bottom: none;
+  }
+
+  /* Style for action buttons - top right corner */
+  .forms-table td:last-child {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    padding: 0;
+  }
+
+  .btn_formPage_holder {
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: row;
+  }
+
+  .btn_formPage_holder .btn-view-form {
+    padding: 0.4rem;
+    background-color: transparent;
+  }
+
+  .btn_formPage_holder .btn-view-form:hover {
+    background-color: #f0f0f0;
+  }
+
+  .table-cell.FM {
+    width: 9rem !important;
+  }
+
+  /* Add labels before each data cell */
+  .forms-table td:nth-child(1)::before {
+    content: "ردیف: ";
+    font-weight: bold;
+    color: var(--color-main);
+  }
+
+  .forms-table td:nth-child(2)::before {
+    content: "کد ملی: ";
+    font-weight: bold;
+    color: var(--color-main);
+  }
+
+  .forms-table td:nth-child(3)::before {
+    content: "نام: ";
+    font-weight: bold;
+    color: var(--color-main);
+  }
+
+  .forms-table td:nth-child(1),
+  .forms-table td:nth-child(2),
+  .forms-table td:nth-child(3) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Adjust page navigation */
+  .page_naver {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .page_line {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .forms-title {
+    font-size: 0.9rem;
+  }
+
+  .help_bar_parts_container {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .help_bar_part1 {
+    font-size: 0.8rem;
+  }
+
+  .btn-add-newV2 {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn_formPage_holder {
+    /* flex-direction: column; */
+    margin-right: 1rem;
+  }
+}
+
+@media (max-width:370px) {
+  .btn_formPage_holder {
+    flex-direction: column;
+    margin-right: 4rem;
+  }
+}

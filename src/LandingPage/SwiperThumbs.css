@@ -41,3 +41,7 @@
     border-color: #1e90ff;
     box-shadow: 0 0 0 2px #0a0a0a, 0 0 0 4px #1e90ff;
 }
+
+.swiper-wrapper {
+    padding: 2rem 0rem;
+}

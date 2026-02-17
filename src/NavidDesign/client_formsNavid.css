@@ -9,7 +9,7 @@
 
 .forms-container {
   width: 100%;
-  max-width: 800px;
+  /* max-width: 800px; */
   background-color: white;
   border-radius: 1.5rem;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
@@ -134,7 +134,7 @@
 
 .btn_formPage_holder {
   display: flex;
-  gap: 1rem;
+  /* gap: 1rem; */
 }
 
 .spider {

@@ -36,6 +36,9 @@ function RadioV2({ data_req, data, class_change1, value, class_change2, valueSet
         return tempFunction(opt, optionValueMap);
     };
 
+    // Check if vertical layout is needed (more than 3 options or any label > 20 chars)
+    const needsVerticalLayout = data.options.length > 3 || data.options.some(opt => opt.length > 20);
+
     if (data.Rname == "currentHrtUse") {
         console.log("we have passed", effectiveRelation)
     }
@@ -50,7 +53,7 @@ function RadioV2({ data_req, data, class_change1, value, class_change2, valueSet
                     <p className="data_desc">{data.desc}</p>
                 </div>
                 <div className={`total_radio_holder V2 ${class_change2}`}>
-                    <div className="radio-group">
+                    <div className={`radio-group ${needsVerticalLayout ? 'radio-group-vertical' : ''}`}>
                         {data.options.map((opt, index) => (
                             <div className="nothing" key={opt}>
                                 <input
@@ -62,8 +65,6 @@ function RadioV2({ data_req, data, class_change1, value, class_change2, valueSet
                                     FaVal={opt}
                                     id={`${data.Rname}-${index}`}
                                     onChange={(e) => {
-                                        // Handle the enum lookup in a separate async function
-                                        // setTest(e.target.value)
                                         const handleEnumChange = async () => {
                                             const enumId = await EnumTaker(`enum/${Enum}`, e.target.value);
                                             console.log("enumIdenumIdenumIdenumIdenumIdenumId : ", enumId)

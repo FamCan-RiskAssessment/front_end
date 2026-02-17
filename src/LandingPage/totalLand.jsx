@@ -6,7 +6,9 @@ import { Navigation, Thumbs } from 'swiper/modules';
 import LandNav from "./landNav";
 import canlogo from './item1B1.png'
 import './totalLand.css'
+import minimul_sups from './minimal_supporters.svg'
 import AD from './arrowD.svg'
+import arrowRight from './compArrowRight.svg'
 // import C1 from './Card1B2.svg'
 // import C2 from './Card2B2.svg'
 // import C3 from './Card3B2.svg'
@@ -53,11 +55,19 @@ function LandingPage() {
                         <button className="gate-enter hover1" onClick={() => {
                             localStorage.setItem("residentEnter", JSON.stringify(false))
                             navigate("/gate")
-                        }}>شروع تست</button>
+                        }}>
+                            <span>محاسبه ی ریسک سرطان</span>
+                            <span style={{ display: "flex", alignItems: "center" }}>
+                                <img src={arrowRight} alt="" />
+                            </span>
+                        </button>
                     </div>
                     <div className="item1B1">
                         <img src={canlogo} alt="canlogo" />
                     </div>
+                </div>
+                <div className='minimal_sups'>
+                    <img src={minimul_sups} alt="miniSupporters" />
                 </div>
                 <div className="moreInf">
                     <p>اطلاعات بیشتر</p>
@@ -75,15 +85,15 @@ function LandingPage() {
                     <div className="innapproaches">
                         <div className="approach1 inntext hover3">
                             <h2>ثبت امن اطلاعات</h2>
-                            <h3>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure </h3>
+                            <h3>با پر کردن یک فرم تخصصی در کمتر از 15 دقیقه،اطلاعات و سوابق پزشکی به صورت امن و محرمانه ثبت میشوند و صرفا برای تحلیل پزشکی استفاده خواهند شد.</h3>
                         </div>
                         <div className="approach2 inntext hover3">
                             <h2>تحلیل هوشمند</h2>
-                            <h3>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure </h3>
+                            <h3>مدلهای هوش مصنوعی،دادههای شما را با نهایت دقت بررسی کرده و ریسکهای احتمالی را شناسایی میکنند.</h3>
                         </div>
                         <div className="approach3 inntext hover3">
                             <h2>دریافت گزارش</h2>
-                            <h3>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure </h3>
+                            <h3>با توجه به دادههای ورودی،یک توصیهنامۀ کاربردی دریافت میکنید.</h3>
                         </div>
                     </div>
                 </div>

@@ -26,6 +26,7 @@ import QuestionsNavid from './NavidDesign/questionareNavid'
 import LandingPage from './LandingPage/totalLand'
 import GatePage from './V2Form/gatePage'
 import ResidentRegister from './V2Form/resident_login'
+import AboutUs from './LandingPage/aboutUs'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 function App() {
 
@@ -38,6 +39,7 @@ function App() {
 
           {/* <Route path="/login" element={<Login_page2></Login_page2>}></Route> */}
           <Route path="/login" element={<Login_pageV3></Login_pageV3>}></Route>
+          {/* <Route path="/aboutUs" element={<Login_pageV3></Login_pageV3>}></Route> */}
 
 
           <Route path="/gate" element={<GatePage></GatePage>}></Route>

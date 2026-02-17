@@ -94,12 +94,19 @@
     padding: 0.5rem 3rem;
     /* font-weight: 900; */
     font-size: larger;
+    box-shadow: 2px 2px 25px rgb(0, 0, 0, 0.1), -2px -2px 25px rgb(0, 0, 0, 0.1);
 }
 
 .callsup {
     background-color: transparent;
     font-size: larger;
     color: var(--nautral-text);
+}
+
+.minimal_sups {
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
 }
 
 /* total page part */
@@ -116,15 +123,15 @@
 }
 
 
-.item1B1>img {
+/* .item1B1>img {
     animation: floated 2s linear infinite;
-}
+} */
 
 .gate {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    gap: 20rem;
+    /* gap: 20rem; */
     align-items: center;
 
 }
@@ -138,11 +145,12 @@
 
 .gate-bell>h2 {
     width: 70%;
+    font-size: 40px;
     color: var(--nautral-text);
 }
 
 .gate-bell>.gate-enter {
-    width: 80%;
+    /* width: 80%; */
     color: var(--color-main);
     background-color: white;
     border-radius: 20px;
@@ -150,6 +158,16 @@
     font-size: larger;
     font-weight: 900;
     /* text-align: center; */
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 2px 2px 25px rgb(0, 0, 0, 0.1), -2px -2px 25px rgb(0, 0, 0, 0.1);
+}
+
+.flexer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .gate-bell>.gate-enter.active {
@@ -170,14 +188,28 @@
 .second-land {
     display: flex;
     flex-direction: column;
-    background: url('./background2.png');
-    background-repeat: no-repeat;
-    background-size: cover;
+    /* background: url('./background2.png'); */
+    /* background-repeat: no-repeat; */
+    /* background-size: cover; */
     /* height: 80vh; */
     gap: 8rem;
     /* align-items: center; */
     /* justify-content: center; */
+    position: relative;
+    overflow: hidden;
 }
+
+.second-land::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("./background2.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    filter: brightness(1.1);
+    z-index: -1;
+}
+
 
 
 .approaches {
@@ -234,7 +266,11 @@
 .inntext>h2,
 .inntext>h3 {
     padding: 0rem 1rem;
-    color: var(--nautral-text);
+    color: white;
+}
+
+.inntext>h3 {
+    font-size: 1rem;
 }
 
 .inntext>h2 {
@@ -302,6 +338,54 @@
 .bigLandlogos img {
     max-width: 20%;
     border: 10px solid white;
+}
+
+/* Swiper slider styles */
+.mySwiper {
+    width: 100%;
+    padding: 2rem 0;
+}
+
+.mySwiper .swiper-slide {
+    width: auto !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mySwiper .teammate {
+    padding: 0.5rem;
+    box-shadow: 5px 5px 10px rgb(0, 0, 0, 0.2), -5px -5px 10px rgb(0, 0, 0, 0.2);
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mySwiper .teammate h3,
+.mySwiper .big-logo .teammate h3 {
+    padding: 0rem 0.5rem;
+    font-size: 16px;
+    font-weight: bolder;
+}
+
+.mySwiper .teammate img {
+    width: 10rem;
+    height: 10rem;
+}
+
+.mySwiper .big-logo .teammate img {
+    max-width: 20%;
+    border: 10px solid white;
+}
+
+.mySwiper .logo-bg {
+    width: 10rem;
+    height: 10rem;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .aboutus {

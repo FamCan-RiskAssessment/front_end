@@ -65,6 +65,8 @@
     color: black;
     font-family: 'vazir';
     color: #47002d;
+    display: flex;
+    gap: 1rem;
 }
 
 .inp>input {
@@ -97,6 +99,10 @@
     font-size: 1.3rem;
     margin-top: 2rem;
     transition: 0.3s ease;
+}
+
+.btn_login.LogM {
+    margin: 0;
 }
 
 .login_form>.btn_login:hover {

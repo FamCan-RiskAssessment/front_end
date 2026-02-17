@@ -704,6 +704,19 @@ tbody tr:last-child {
     color: #818184;
 }
 
+/* Vertical layout for long labels or more than 3 options */
+.radio-group-vertical {
+    flex-direction: column;
+    padding: 10px;
+    gap: 8px;
+}
+
+.radio-group-vertical .radio-card {
+    padding: 18px 20px;
+    /* width: 100%; */
+    /* justify-content: flex-start; */
+}
+
 .radio-card {
     display: flex;
     align-items: center;
@@ -712,7 +725,6 @@ tbody tr:last-child {
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
-    /* width: 2rem; */
     height: 1rem;
     justify-content: center;
 }

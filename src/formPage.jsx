@@ -253,7 +253,7 @@ function FormsPage() {
             </div>
           </div>
         </div>
-        <div className="forms-page-wrapper">
+        <div className="forms-page-wrapper FM">
 
           <div className="forms-container">
             <div className="forms_tools">
@@ -300,10 +300,10 @@ function FormsPage() {
                     if (form.formType == 1) {
                       return (
                         <tr key={form.id} className="form-row">
-                          <td className="table-cell">{index + 1}</td>
-                          <td className="table-cell">{form.socialSecurityNumber}</td>
-                          <td className="table-cell">{form.name}</td>
-                          <td className="table-cell">
+                          <td className="table-cell FM">{index + 1}</td>
+                          <td className="table-cell FM">{form.socialSecurityNumber}</td>
+                          <td className="table-cell FM">{form.name}</td>
+                          <td className="table-cell FM">
                             <div className="btn_formPage_holder">
                               <button
                                 className="btn-view-form"

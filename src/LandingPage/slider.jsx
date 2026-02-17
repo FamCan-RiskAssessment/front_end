@@ -1,15 +1,7 @@
-import { useState } from "react";
-// Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
-
-// Import Swiper styles
 import 'swiper/css';
-import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-
-// Import required modules (optional features)
-import { Pagination, Navigation, Autoplay } from 'swiper/modules';
-
+import { Navigation } from 'swiper/modules';
 
 import bimeSalamteMan from '../assets/logos/bime-salamte-man-icon.png';
 import logoHybrid from '../assets/logos/Logo Hybrid 2.png';
@@ -21,77 +13,57 @@ import mazandaran from '../assets/logos/مازندران.webp';
 import mohavateBehdashti from '../assets/logos/معاونت بهداشتی وزارت.jpg';
 
 function Slider() {
-    let arrOfIms = [{ img: bimeSalamteMan, title: "" }, {
-        img: shahidBeheshti, title: "اعتبارسنجی و بومی سازی مدل های معتبر پیش بینی خطر  سرطان‌ ریه در جمعیت ایرانی (فازهای اول و دوم پروژه ملی پیشگیری فردمحور سرطان) طبقه‌بندی خطر و ثبت موارد. کد طرح: 43017023"
-    }
-        , {
-        img: tehranUni, title: "طراحی، تولید و اعتبارسنجی سامانه ریسکسنجی سرطانهای پستان و کولورکتال در جمعیت ایرانی(فازهای اول و دوم پروژه ملی پیشگیری فردمحور سرطان).کد طرح: 1404 - 1 - 107 - 91678"
-    }
-        , { img: behdasht, title: "" }, { img: mazandaran, title: "" }, { img: mohavateBehdashti, title: "" }]
-    let arrofNames = []
+    let arrOfIms = [
+        { img: bimeSalamteMan, title: "", isBig: false, name: "بیمه سلامت" },
+        {
+            img: shahidBeheshti,
+            title: "اعتبارسنجی و بومی سازی مدل های معتبر پیش بینی خطر  سرطان‌ ریه در جمعیت ایرانی (فازهای اول و دوم پروژه ملی پیشگیری فردمحور سرطان) طبقه‌بندی خطر و ثبت موارد. کد طرح: 43017023",
+            isBig: false,
+            name: "دانشگاه شهید بهشتی"
+        },
+        {
+            img: tehranUni,
+            title: "طراحی، تولید و اعتبارسنجی سامانه ریسکسنجی سرطانهای پستان و کولورکتال در جمعیت ایرانی(فازهای اول و دوم پروژه ملی پیشگیری فردمحور سرطان).کد طرح: 1404 - 1 - 107 - 91678",
+            isBig: false,
+            name: "دانشگاه تهران"
+        },
+        { img: behdasht, title: "", isBig: false, name: "وزارت بهداشت" },
+        { img: mazandaran, title: "", isBig: false, name: "دانشگاه علوم پزشکی مازندران" },
+        { img: mohavateBehdashti, title: "", isBig: false, name: "معاونت بهداشت" },
+        { img: logoHybrid, title: "", isBig: true, name: "انجمن سرطان های ارثی و فامیلی" },
+        { img: pajooheshkadeh, title: "", isBig: true, name: "پژوهشکده ی خون و انکولوژی" }
+    ]
+
     return (
-
-        // <Swiper
-        //     modules={[Pagination, Navigation, Autoplay]}
-        //     spaceBetween={10}
-        //     slidesPerView="auto"
-        //     loop={true}
-        //     autoplay={{
-        //         delay: 3000,
-        //         disableOnInteraction: false,
-        //     }}
-        //     pagination={{
-        //         clickable: true,
-        //     }}
-        //     navigation={true}
-        //     className="mySwiper"
-        // >
-        //     <SwiperSlide>
-        //         <img className="slider-img" src={bimeSalamteMan} alt="Slide 1" />
-        //     </SwiperSlide>
-        //     <SwiperSlide>
-        //         <img className="slider-img" src={logoHybrid} alt="Slide 2" />
-        //     </SwiperSlide>
-        //     <SwiperSlide>
-        //         <img className="slider-img" src={pajooheshkadeh} alt="Slide 2" />
-        //     </SwiperSlide>
-        //     <SwiperSlide>
-        //         <img className="slider-img" src={shahidBeheshti} alt="Slide 2" />
-        //     </SwiperSlide>
-        //     <SwiperSlide>
-        //         <img className="slider-img" src={tehranUni} alt="Slide 2" />
-        //     </SwiperSlide>
-        //     <SwiperSlide>
-        //         <img className="slider-img" src={behdasht} alt="Slide 2" />
-        //     </SwiperSlide>
-        //     <SwiperSlide>
-        //         <img className="slider-img" src={mazandaran} alt="Slide 2" />
-        //     </SwiperSlide>
-        //     <SwiperSlide>
-        //         <img className="slider-img" src={mohavateBehdashti} alt="Slide 2" />
-        //     </SwiperSlide>
-        // </Swiper>
-        <>
-
-            <div className="image-list">
-                <h2>نهاد های همکار</h2>
-                <div>
-                    {arrOfIms.map((img, index) => {
-                        return (
+        <div className="image-list">
+            <h2>نهاد های همکار</h2>
+            <Swiper
+                modules={[Navigation]}
+                spaceBetween={20}
+                slidesPerView="auto"
+                loop={true}
+                navigation={true}
+                className="mySwiper"
+            >
+                {arrOfIms.map((item, index) => (
+                    <SwiperSlide key={index} className={`logo-slide ${item.isBig ? 'big-logo' : ''}`}>
+                        {item.isBig ? (
+                            <>
+                                <div className='teammate hover3'>
+                                    <div className="logo-bg" style={{ backgroundImage: `url(${item.img})` }} title={item.title}></div>
+                                    <h3>{item.name}</h3>
+                                </div>
+                            </>
+                        ) : (
                             <div className="teammate hover3">
-                                <img src={img.img} alt="" title={img.title} />
-                                {/* <div style={{ background: `url(${img})`, backgroundRepeat: "no-repeat" }}></div> */}
-                                {/* <div className="teammate-name"></div> */}
+                                <img src={item.img} alt={item.title} title={item.title} />
+                                <h3>{item.name}</h3>
                             </div>
-                        )
-                    })}
-                </div>
-                <div className="bigLandlogos">
-                    <img src={logoHybrid} className="hover3" alt="" />
-                    <img src={pajooheshkadeh} className="hover3" alt="" />
-                </div>
-            </div>
-        </>
+                        )}
+                    </SwiperSlide>
+                ))}
+            </Swiper>
+        </div>
     )
 }
 
