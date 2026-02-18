@@ -1069,7 +1069,14 @@ function Questions() {
             setLoading(false)
             if (json.status == 200 || json.status == 201) {
                 nexter()
-            } else {
+            } else if (step == 1 && json.status == 403) {
+                addToast({
+                    title: 'کد ملی وارد شده اشتباه می باشد.',
+                    type: 'error',
+                    duration: 4000
+                })
+            }
+            else {
                 addToast({
                     title: 'خطا در اتصال به سرور لطفا دوباره تلاش کنید.',
                     type: 'error',
