@@ -33,7 +33,7 @@ function LoginMessage() {
     }
 
     try {
-      const res = await fetch(`http://${APIURL}/auth/verify-otp`, {
+      const res = await fetch(`${APIURL}/auth/verify-otp`, {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

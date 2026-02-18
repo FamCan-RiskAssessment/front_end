@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { APIURL } from "./utils/config";
 import NavBar from "./navBar";
 import "./client_forms.css";
 import plusSign from './V2Form/plus.svg'
@@ -31,7 +32,7 @@ function ChangePass() {
   const updateUserPass = async (passCode) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://185.231.115.28:8080/admin/users/password`, {
+      const res = await fetch(`${APIURL}/admin/users/password`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

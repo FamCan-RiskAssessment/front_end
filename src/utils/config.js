@@ -1,4 +1,6 @@
-export const APIURL = "194.62.43.192:8080"
+// export const APIURL = "194.62.43.192:8080"
+export const APIURL = "https://api.famcan.org.ir"
+
 // const port = "8080"
 export const APIARR = ["basic", "generalhealth", "mamography", "cancer", "familycancer", "lungcancer", "contact"]
 export const APIARR_Navid = ["basic", "cancer", "familycancer", "navid", "contact"]

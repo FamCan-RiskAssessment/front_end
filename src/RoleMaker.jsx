@@ -59,7 +59,7 @@ function RoleMaker() {
       try {
         // ✅ Get token from localStorage (or context)
         const token = localStorage.getItem("token");
-        const response = await fetch(`http://${APIURL}/admin/permission`, {
+        const response = await fetch(`${APIURL}/admin/permission`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -124,7 +124,7 @@ function RoleMaker() {
         permissionIDs: permArray.map((id) => Number(id)), // ensure numbers
       };
 
-      const res = await fetch(`http://${APIURL}/admin/role`, {
+      const res = await fetch(`${APIURL}/admin/role`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

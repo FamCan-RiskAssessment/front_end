@@ -75,7 +75,7 @@ function RoleChanger() {
   useEffect(() => {
     const fetchUsers = async () => {
       console.log(userSort)
-      let endPoint = endpointMaker(userSort, RoleIdFinder(roleIdSort, Roles), searchedUser, searchOrder, `http://${APIURL}/admin/user`, page, [], true)
+      let endPoint = endpointMaker(userSort, RoleIdFinder(roleIdSort, Roles), searchedUser, searchOrder, `${APIURL}/admin/user`, page, [], true)
       console.log("here what you have done : ", endPoint)
       try {
         // ✅ Get token from localStorage (or context)
@@ -115,7 +115,7 @@ function RoleChanger() {
       try {
         // ✅ Get token from localStorage (or context)
         const token = localStorage.getItem("token");
-        const response = await fetch(`http://${APIURL}/admin/role`, {
+        const response = await fetch(`${APIURL}/admin/role`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -144,7 +144,7 @@ function RoleChanger() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://${APIURL}/admin/user/${parseInt(user_id)}/role`,
+        `${APIURL}/admin/user/${parseInt(user_id)}/role`,
         {
           method: "GET",
           headers: {
@@ -199,7 +199,7 @@ function RoleChanger() {
   const updateUserRole = async (role) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://${APIURL}/admin/user/${parseInt(idchose)}/role`, {
+      const res = await fetch(`${APIURL}/admin/user/${parseInt(idchose)}/role`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

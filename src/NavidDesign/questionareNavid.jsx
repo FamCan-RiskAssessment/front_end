@@ -929,7 +929,7 @@ function QuestionsNavid() {
 
 
         // ✅ Set URL and method logic
-        const urlBase = `http://${APIURL}/form`;
+        const urlBase = `${APIURL}/form`;
         let url, method, headers;
         if (step === 1) {
             if (presetform != null && (id_form != null || id_form != "null")) {
@@ -941,7 +941,7 @@ function QuestionsNavid() {
                 }
             } else {
                 if (localStorage.getItem("userNeededAdress").length != 0 && localStorage.getItem("userNeededAdress") != "null") {
-                    url = `http://${APIURL}/${localStorage.getItem("userNeededAdress")}`
+                    url = `${APIURL}/${localStorage.getItem("userNeededAdress")}`
                 } else {
                     url = `${urlBase}/${APIARR[step - 1]}`;
                 }

@@ -86,7 +86,7 @@ export const stageMatcher = (inStage, outStage) => {
 
 
 export const fetchDataGET = async (endpoint, token_auth) => {
-  const res = await fetch(`http://${APIURL}/${endpoint}`, {
+  const res = await fetch(`${APIURL}/${endpoint}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -102,7 +102,7 @@ export const fetchDataGET = async (endpoint, token_auth) => {
 };
 
 export const fetchDataGETNoError = async (endpoint, token_auth) => {
-  const res = await fetch(`http://${APIURL}/${endpoint}`, {
+  const res = await fetch(`${APIURL}/${endpoint}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -116,7 +116,7 @@ export const fetchDataGETNoError = async (endpoint, token_auth) => {
 };
 
 export const fetchDataGETTab = async (endpoint, token_auth) => {
-  const res = await fetch(`http://${APIURL}/${endpoint}`, {
+  const res = await fetch(`${APIURL}/${endpoint}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -136,7 +136,7 @@ export const fetchDataGETTab = async (endpoint, token_auth) => {
 // utils/fetchItemWithImage.js
 // utils/fetchCancerList.js
 export const fetchDataGETImg = async (endpoint, token) => {
-  const res = await fetch(`http://${APIURL}/${endpoint}`, { // adjust endpoint as needed
+  const res = await fetch(`${APIURL}/${endpoint}`, { // adjust endpoint as needed
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -154,7 +154,7 @@ export const fetchDataGETImg = async (endpoint, token) => {
 
 
 export const fetchDataDELETE = async (endpoint, token_auth) => {
-  const res = await fetch(`http://${APIURL}/${endpoint}`, {
+  const res = await fetch(`${APIURL}/${endpoint}`, {
     method: "DELETE",
     headers: {
       'Authorization': `Bearer ${token_auth}`,
@@ -179,7 +179,7 @@ export const fetchDataDELETE = async (endpoint, token_auth) => {
 
 export const fetchDataPUT = async (endpoint, token_auth, bodyData) => {
   console.log(bodyData)
-  const res = await fetch(`http://${APIURL}/${endpoint}`, {
+  const res = await fetch(`${APIURL}/${endpoint}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -197,7 +197,7 @@ export const fetchDataPUT = async (endpoint, token_auth, bodyData) => {
 
 export const fetchDataPOST = async (endpoint, token_auth, bodyData, passErr) => {
   // console.log(bodyData);
-  const res = await fetch(`http://${APIURL}/${endpoint}`, {
+  const res = await fetch(`${APIURL}/${endpoint}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -232,7 +232,7 @@ export const fetchDataPOSTImg = async (endpoint, token_auth, bodyData) => {
     }
   }
 
-  const res = await fetch(`http://${APIURL}/${endpoint}`, {
+  const res = await fetch(`${APIURL}/${endpoint}`, {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${token_auth}`,

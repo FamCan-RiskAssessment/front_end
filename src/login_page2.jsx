@@ -24,7 +24,7 @@ function Login_page2() {
     const form_submitted = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch(`http://${APIURL}/auth/login`, {
+            const res = await fetch(`${APIURL}/auth/login`, {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ phone }),

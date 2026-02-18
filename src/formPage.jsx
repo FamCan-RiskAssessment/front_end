@@ -88,7 +88,7 @@ function FormsPage() {
   // 🔹 fetch user's forms on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch(`http://${APIURL}/form?page=${page}`, {
+    fetch(`${APIURL}/form?page=${page}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -113,7 +113,7 @@ function FormsPage() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch(`http://${APIURL}/form?page=${page}`, {
+    fetch(`${APIURL}/form?page=${page}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -154,7 +154,7 @@ function FormsPage() {
       let TrueSteps = [];
       const results = await Promise.all(
         APIARR.map(async (ar, index) => {
-          const res = await fetch(`http://${APIURL}/form/${form_id}/${ar}`, {
+          const res = await fetch(`${APIURL}/form/${form_id}/${ar}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",

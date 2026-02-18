@@ -284,7 +284,7 @@ export default function FilterableTable() {
 
       const payload = { [fieldName]: processedValue };
 
-      const response = await fetch(`http://${APIURL}/admin/form/${formId}/${apiPart}`, {
+      const response = await fetch(`${APIURL}/admin/form/${formId}/${apiPart}`, {
         method: 'PATCH',
         headers: {
           "Content-Type": "application/json",
@@ -464,7 +464,7 @@ export default function FilterableTable() {
       filters.filledByOperatorID,
       filters.search,
       filters.sortOrder,
-      `http://${APIURL}/${endpoint}`,
+      `${APIURL}/${endpoint}`,
       currentPage,
       additionalFilters,
       true
@@ -674,7 +674,7 @@ export default function FilterableTable() {
                   [field]: editedData[form_id][`${field}`]
                 }
                 try {
-                  const response = await fetch(`http://${APIURL}/admin/form/${form_id}/${ar}`, {
+                  const response = await fetch(`${APIURL}/admin/form/${form_id}/${ar}`, {
                     method: 'PATCH',
                     headers: {
                       "Content-Type": "application/json",
@@ -1676,7 +1676,7 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
             formData.append('pictures', file); // Note: using 'files' plural to handle multiple files
           });
 
-          response = await fetch(`http://${APIURL}/admin/form/${formId}/familycancer`, {
+          response = await fetch(`${APIURL}/admin/form/${formId}/familycancer`, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -1692,7 +1692,7 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
             formData.append('pictures', file); // Note: using 'files' plural to handle multiple files
           });
 
-          response = await fetch(`http://${APIURL}/admin/form/${formId}/cancer`, {
+          response = await fetch(`${APIURL}/admin/form/${formId}/cancer`, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -1716,7 +1716,7 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
             cancerType: cancerTypeId
           };
 
-        response = await fetch(`http://${APIURL}/admin/form/${formId}/${isFamilyCancer ? 'familycancer' : 'cancer'}`, {
+        response = await fetch(`${APIURL}/admin/form/${formId}/${isFamilyCancer ? 'familycancer' : 'cancer'}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
