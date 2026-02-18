@@ -8,7 +8,9 @@ export default defineConfig({
     host: true,
     allowedHosts: [
       'famcan.clinic',
-      'www.famcan.clinic'
+      'www.famcan.clinic',
+      'famcan.org.ir',
+      'www.famcan.org.ir'
     ]
   }
 })
