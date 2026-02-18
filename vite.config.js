@@ -10,7 +10,8 @@ export default defineConfig({
       'famcan.clinic',
       'www.famcan.clinic',
       'famcan.org.ir',
-      'www.famcan.org.ir'
+      'www.famcan.org.ir',
+      'api.famcan.org.ir'
     ]
   }
 })
