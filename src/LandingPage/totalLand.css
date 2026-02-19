@@ -211,7 +211,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: 
+    background:
         linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
         url("./background2.png");
     background-repeat: no-repeat;
@@ -361,27 +361,27 @@
 
 .mySwiper .swiper-button-next,
 .mySwiper .swiper-button-prev {
-  background-color: white;
-  width: 1.2rem;
-  height: 1.2rem;
-  padding: 10px;
-  margin: 15px;
-  border-radius: 100%;
-  box-shadow: 2px 2.5px 8px rgb(0, 0, 0, 0.3);
+    background-color: white;
+    width: 1.2rem;
+    height: 1.2rem;
+    padding: 10px;
+    margin: 15px;
+    border-radius: 100%;
+    box-shadow: 2px 2.5px 8px rgb(0, 0, 0, 0.3);
 }
 
 .mySwiper .swiper-button-next:hover,
 .mySwiper .swiper-button-prev:hover {
-  box-shadow: 3px 3.5px 8px rgb(0, 0, 0, 0.7);
-  scale: 110%;
-  transition: 300ms;
+    box-shadow: 3px 3.5px 8px rgb(0, 0, 0, 0.7);
+    scale: 110%;
+    transition: 300ms;
 }
 
 .mySwiper .swiper-button-next:active,
 .mySwiper .swiper-button-prev:active {
-  box-shadow: 3px 3.5px 8px rgb(0, 0, 0, 0.7);
-  scale: 100%;
-  transition: 300ms;
+    box-shadow: 3px 3.5px 8px rgb(0, 0, 0, 0.7);
+    scale: 100%;
+    transition: 300ms;
 }
 
 .mySwiper .swiper-slide {
@@ -437,70 +437,72 @@
 } */
 
 .aboutus {
-  position: relative;
-  width: 100%;
+    position: relative;
+    width: 100%;
 }
 
 .top-half {
-  width: 100%;
-  position: relative;
+    width: 100%;
+    position: relative;
 }
 
 .top-half img {
-  width: 100%;
-  height: auto;
-  display: block;
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 .bottom-half {
-  width: 100%;
-  min-height: 400px;
+    width: 100%;
+    min-height: 400px;
 }
 
 .overlay-center {
-  position: absolute;
-  top: 65%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: min(700px, 85%);        /* responsive width */
-  padding: 40px 50px;
+    position: absolute;
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(700px, 85%);
+    /* responsive width */
+    padding: 40px 50px;
 
-  /* modern glass effect */
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);  /* Safari support */
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  border-radius: 20px;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+    /* modern glass effect */
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    /* Safari support */
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
 
-  /* RTL text */
-  direction: rtl;
-  text-align: right;
+    /* RTL text */
+    direction: rtl;
+    text-align: right;
 
-  z-index: 10;
+    z-index: 10;
 }
 
 .overlay-center h2 {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #be2026;
-  margin-bottom: 10px;
-  border-bottom: 3px solid rgba(0, 0, 0, 0.15);
-  padding-bottom: 12px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #be2026;
+    margin-bottom: 10px;
+    border-bottom: 3px solid rgba(0, 0, 0, 0.15);
+    padding-bottom: 12px;
 }
 
 .overlay-center .subtitle {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #2c2c54;
-  margin-bottom: 20px;
-  line-height: 1.8;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c2c54;
+    margin-bottom: 20px;
+    line-height: 1.8;
 }
 
 .overlay-center .description {
-  font-size: 0.92rem;
-  color: #3a3a3a;
-  line-height: 2;
+    font-size: 0.92rem;
+    color: #3a3a3a;
+    line-height: 2;
 }
 
 
@@ -601,4 +603,15 @@
     border-radius: 10px;
     background-color: #aaa;
     transition: background-color 0.3s ease;
+}
+
+
+@media (max-width:768px) {
+    .Footer-titr {
+        flex-direction: column;
+    }
+
+    .footer-text-logo {
+        width: 100%;
+    }
 }
