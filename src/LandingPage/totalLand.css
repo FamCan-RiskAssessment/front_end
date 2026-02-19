@@ -614,4 +614,8 @@
     .footer-text-logo {
         width: 100%;
     }
+
+    .footer-logo {
+        width: 100% !important;
+    }
 }

@@ -46,9 +46,14 @@ function QuestionsNavid() {
     const [step3AttentionCorrect, setStep3AttentionCorrect] = useState(0);
     const [RadioMap, setRadioMap] = useState({})
     const [RelMap, setRelMap] = useState({})
+    const [CheckBoxMap, setCheckBoxMap] = useState({})
     const formDataRef = useRef(new FormData()); // Keep formData in a ref so FileUploaders can access it
     const fileArraysRef = useRef({}); // Keep track of file arrays by field name
 
+    // let checkBoxMapper = {
+    //     1: true,
+    //     2: false
+    // }
     // Function to allow FileUploader components to add files to the shared formData
     const fillingFormData = (fieldName, file) => {
         formDataRef.current.append(fieldName, file);
@@ -220,6 +225,14 @@ function QuestionsNavid() {
             setRelMap(trueData)
         }
         getRels()
+        // Initialize CheckBoxMap: 1 for true (checked), 2 for false (unchecked)
+        const checkBoxMapper = {
+            true: 1,
+            false: 2,
+            1: true,
+            2: false
+        }
+        setCheckBoxMap(checkBoxMapper)
         // let temp_dict = {
         //     "بله": 1,
         //     "خیر": 2,
@@ -403,8 +416,11 @@ function QuestionsNavid() {
                                 fE.setAttribute('data-file-url', JSON.stringify(presetform[pfk]));
                             }
                         } else if (fE.name == pfk && fE.type == "checkbox") {
-                            if (presetform[pfk] == true) {
+                            // Use CheckBoxMap to handle 1/2 values from backend
+                            if (presetform[pfk] === 1 || presetform[pfk] === true) {
                                 fE.checked = true
+                            } else if (presetform[pfk] === 2 || presetform[pfk] === false) {
+                                fE.checked = false
                             } else {
                                 fE.checked = false
                             }
@@ -421,7 +437,7 @@ function QuestionsNavid() {
             // Set loading to false after preset data has been loaded
             setLoading(false);
         }
-    }, [RadioMap, selfCancersPreData, familyCancersPreData])
+    }, [RadioMap, CheckBoxMap, selfCancersPreData, familyCancersPreData])
 
 
 
@@ -820,16 +836,26 @@ function QuestionsNavid() {
             let shouldProcess = false;
             let value = '';
 
-            if (type === 'radio' || type === 'checkbox') {
+            if (type === 'radio') {
                 if (elem.checked) {
                     shouldProcess = true;
                     value = elem.value;
-                    if (elem.value == "on") {
-                        value = elem.checked
+                }
+            } else if (type === 'checkbox') {
+                // Handle both checked and unchecked states for checkboxes
+                // Exception: isAtba checkbox should keep its original behavior
+                if (elem.name === 'isAtba') {
+                    if (elem.checked) {
+                        shouldProcess = true;
+                        value = elem.checked;
+                    } else {
+                        // When unchecked, still process it (original behavior)
+                        shouldProcess = true;
+                        value = elem.checked;
                     }
-                } else if (elem.name == "isAtba" && !elem.checked) {
-                    shouldProcess = true
-                    value = elem.checked
+                } else {
+                    shouldProcess = true;
+                    value = elem.checked;  // Use boolean value directly
                 }
             } else if (tagName === 'SELECT') {
                 value = elem.value;
@@ -890,7 +916,15 @@ function QuestionsNavid() {
                 continue; // Skip adding this field to allData since it's handled via FormData
             }
             // ✅ Apply transformations for normal fields
-            if (finalValue === "true" && name !== "pastSmoking") {
+            // Handle checkboxes: convert true/false to 1/2 for backend
+            // Exception: isAtba keeps its original boolean behavior
+            if (type === 'checkbox' && name !== "pastSmoking" && name !== "isAtba") {
+                if (finalValue === true) {
+                    allData[name] = 1;  // checked = 1 (true)
+                } else if (finalValue === false) {
+                    allData[name] = 2;  // unchecked = 2 (false)
+                }
+            } else if (finalValue === "true" && name !== "pastSmoking") {
                 allData[name] = true;
             } else if (finalValue === "false" && name !== "pastSmoking") {
                 allData[name] = false;
@@ -903,6 +937,19 @@ function QuestionsNavid() {
             } else {
                 allData[name] = finalValue;
             }
+        }
+
+        // Handle multi-check checkboxes (arrays of selected options)
+        // Convert array items to individual fields with value 1 (true)
+        if (multiSmokeTypeCurrent && multiSmokeTypeCurrent.length > 0) {
+            multiSmokeTypeCurrent.forEach(item => {
+                allData[item] = 1;
+            });
+        }
+        if (multiSmokeTypePast && multiSmokeTypePast.length > 0) {
+            multiSmokeTypePast.forEach(item => {
+                allData[item] = 1;
+            });
         }
 
         // convert date to number & check userId
