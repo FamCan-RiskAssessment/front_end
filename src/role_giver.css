@@ -118,7 +118,7 @@ div>.identifiers {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  align-items: center;
+  /* align-items: center; */
 }
 
 .roles .btn-add-new,
@@ -374,9 +374,9 @@ div>.identifiers {
   gap: 1rem;
 }
 
-.table-cell.RG {
+/* .table-cell.RG {
   text-align: center;
-}
+} */
 
 .table-cell.RG>span {
   padding: 0.25rem 0.5rem;

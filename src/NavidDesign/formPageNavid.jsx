@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { APIURL } from "../utils/config";
-import { permExtractor, fetchDataGET, fetchDataDELETE, formTypeChecker } from "../utils/tools";
+import { permExtractor, fetchDataGET, fetchDataDELETE, formTypeChecker, statusChecker, fetchDataPUT, fetchDataGETNoError } from "../utils/tools";
+import UQs from '../utils/utilQs.json'
 import "./client_formsNavid.css"
 import ToastProvider from "../toaster";
 import { useToast } from "../toaster";
 import plusSign from '../V2Form/plus.svg'
+import plusWSign from '../V2Form/plusW.svg'
 import leftSign from '../V2Form/form_left.png'
 import rightSign from '../V2Form/form_right.png'
 import prevSign from '../V2Form/arrow_right.svg'
@@ -15,6 +17,11 @@ import panelSign from '../V2Form/panelSign.svg'
 import eyeSign from '../V2Form/view.svg'
 import settingsSign from '../V2Form/settings.svg'
 import deleteSign from '../V2Form/trashCan.svg'
+import subSign from '../V2Form/checkSub.svg'
+import restoreSign from '../V2Form/restore.svg'
+import fileUplode from '../V2Form/files.svg'
+import waitSign from '../V2Form/timer.png'
+import checkFull from '../V2Form/checkfull.png'
 function FormsPageNavid() {
   const [forms, setForms] = useState([]);
   const [deletedForm, setDeletedForm] = useState(0)
@@ -29,6 +36,7 @@ function FormsPageNavid() {
   const [pagiPrev, setPagiPrev] = useState(false)
   const [PagiNext, setPagiNext] = useState(false)
   const [pageCount, setPageCount] = useState(0)
+  const [opOpts, setOpOpts] = useState(false)
   console.log(";;;;;;;;;;;;;;;;;;;;;;;;;;; : ", formTypeChecker(forms, 1))
   const nextPage = () => {
     if (PagiNext)
@@ -194,6 +202,20 @@ function FormsPageNavid() {
     navigate("/operator/userMobile")
   }
 
+  const checkNewUser = async () => {
+    let token = localStorage.getItem("token")
+    let res = await fetchDataGETNoError("admin/profile", token)
+    if (res.status == 404) {
+      navigate("/residentEnter")
+    } else if (res.status == 200 || res.status == 201) {
+      navigate("/Dashboard")
+    }
+    // else if (role == "سوپر ادمین") {
+    //   navigate("/Dashboard")
+    // }
+    console.log("]]]]]]]]]]]]]]]]]] : ", res)
+  }
+
 
   if (loading) return <p className="text-center mt-10">Loading forms...</p>;
 
@@ -215,9 +237,9 @@ function FormsPageNavid() {
               <span onClick={() => navigate("/")}>خروج</span>
             </div>
             <h3 className="forms-title">لیست فرم‌های شما</h3>
-            <div className="help_bar_part3" onClick={() => setOpenModalConf(true)}>
-              {role != "بیمار" ? (
-                <button className="btn-view-form top align_items" onClick={() => navigate("/Dashboard")}>
+            <div className="help_bar_part3">
+              {role != "مراجعه کننده" ? (
+                <button className="btn-view-form top align_items" onClick={() => checkNewUser()}>
                   <span>پنل کاربری</span>
                   <img src={panelSign} alt="home" />
                 </button>
@@ -281,9 +303,54 @@ function FormsPageNavid() {
                             <div className="btn_formPage_holder">
                               <button
                                 className="btn-view-form"
-                                onClick={() => userSelectedForm(form.id)}
+                                onClick={async () => {
+                                  if (statusChecker(form.status) == 5) {
+                                    let token = localStorage.getItem("token")
+                                    let res = await fetchDataPUT(`form/${form.id}/resubmit`, token, {})
+                                  }
+                                  if (form.filledForms.familycancer) {
+                                    localStorage.setItem("famcanFilled", JSON.stringify(true))
+                                  } else {
+                                    localStorage.setItem("famcanFilled", JSON.stringify(false))
+                                  }
+                                  if (form.filledForms.cancer) {
+                                    localStorage.setItem("selfcanFilled", JSON.stringify(true))
+                                  } else {
+                                    localStorage.setItem("selfcanFilled", JSON.stringify(false))
+                                  }
+                                  userSelectedForm(form.id)
+                                }}
+                                disabled={statusChecker(form.status) == 1 || statusChecker(form.status) == 4 || statusChecker(form.status) == 5 ? null : true}
                               >
-                                <img src={eyeSign} alt="view form" />
+
+                                {(() => {
+                                  let checkedSt = statusChecker(form.status)
+                                  if (checkedSt == 1) {
+                                    return (
+                                      <img src={eyeSign} alt="eye Sign" />
+                                    )
+                                  } else if (checkedSt == 2) {
+                                    return (
+                                      <img src={subSign} alt="submitted" title="فرم در انتظار تایید است لطفا منتظر بمانید" />
+                                    )
+                                  } else if (checkedSt == 5) {
+                                    return (
+                                      <img src={restoreSign} alt="submitted" title="فرم شما رد شده است لطفا دوباره فرم خود را بفرستید" />
+                                    )
+                                  } else if (checkedSt == 4) {
+                                    return (
+                                      <img src={fileUplode} alt="submitted" title="فایل های لازم را آپلود کرده و سپس فرم را دوباره بفرستید" />
+                                    )
+                                  } else if (checkedSt == 3) {
+                                    return (
+                                      <img src={waitSign} alt="waitSign" title="فرم شما در دست بررسی است ، کارشناسان در حال ارتباط گرفتن با شما هستند لطفا منتظر بمانید" />
+                                    )
+                                  } else if (checkedSt == 6 || checkedSt == 7) {
+                                    return (
+                                      <img src={checkFull} alt="submitted success" title="فرم شما تایید شد ، از مشارکت شما متشکریم " />
+                                    )
+                                  }
+                                })()}
                               </button>
                               {/* <div className="setting_holder"> */}
                               {/* <img src={settingsSign} alt="form settings" /> */}

@@ -6,9 +6,9 @@
     height: 100vh;
 }
 
-.table-cell.SP {
+/* .table-cell.SP {
     text-align: center;
-}
+} */
 
 /* .table-header {
     text-align: center;
@@ -40,6 +40,11 @@
     max-height: 400px;
     overflow-y: auto;
     padding: 1rem 0;
+    /* align-items: center; */
+}
+
+.role_modal.QPage .roles {
+    align-items: center;
 }
 
 /* Advanced Filters Styles */

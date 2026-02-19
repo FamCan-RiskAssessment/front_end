@@ -72,9 +72,9 @@
     height: 100vh;
 }
 
-.table-cell.MR {
+/* .table-cell.MR {
     text-align: center;
-}
+} */
 
 .forms-container.MR {
     overflow-x: scroll;

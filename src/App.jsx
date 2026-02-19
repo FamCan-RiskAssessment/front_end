@@ -42,7 +42,7 @@ function App() {
           {/* <Route path="/aboutUs" element={<Login_pageV3></Login_pageV3>}></Route> */}
 
 
-          <Route path="/gate" element={<GatePage></GatePage>}></Route>
+          {/* <Route path="/gate" element={<GatePage></GatePage>}></Route> */}
 
 
           <Route path="/adminLogin" element={<AdminLogin_page></AdminLogin_page>}></Route>

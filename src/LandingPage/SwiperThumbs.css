@@ -44,4 +44,6 @@
 
 .swiper-wrapper {
     padding: 2rem 0rem;
+    width: 90%;
+    /* overflow: hidden; */
 }

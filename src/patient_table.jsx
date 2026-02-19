@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import NavBar from "./navBar";
 import "./patient_table.css";
-import { APIARR, APIARR_Navid, APIURL, formStatusLabels, statusAPIs, stateColors } from "./utils/config";
+import { APIARR, APIARR_TAB, APIARR_Navid, APIURL, formStatusLabels, statusAPIs, stateColors } from "./utils/config";
 import {
   fetchDataGET, fetchDataGETTab, fetchDataPOST, key_stage_matcher, stageMatcher, fetchDataGETImg, cancerTypeEx, relativeTypeEx,
   fetchDataDELETE, activeStats, fetchDataPUT, dict_transformer, backwardEnum, getKeyVal, endpointMaker
@@ -524,7 +524,7 @@ export default function FilterableTable() {
             let updatedForm = { ...pf }; // Start with base form data
 
             // Combine data from all API parts for this specific form
-            for (const ar of APIARR) {
+            for (const ar of APIARR_TAB) {
               const user_part_form = await fetchDataGETTab(`form/${pf.id}/${ar}`, token);
 
               // Spread the additional data but keep the original id from pf
@@ -634,7 +634,7 @@ export default function FilterableTable() {
 
   const APIGIVER = (typeF) => {
     if (typeF == 1) {
-      return APIARR
+      return APIARR_TAB
     } else {
       return APIARR_Navid
     }
@@ -652,7 +652,7 @@ export default function FilterableTable() {
     let token_auth = localStorage.getItem("token")
     console.log("this is the token man : ", token_auth)
     const matchAndSend = async () => {
-      for (const ar of APIARR) {
+      for (const ar of APIARR_TAB) {
         for (const form_id of Object.keys(editedData)) {
           try {
             let temporal_data = await fetchDataGET(`form/${form_id}/${ar}`, token_auth)
@@ -1073,7 +1073,7 @@ export default function FilterableTable() {
                         className="drawer_header"
                         onClick={() => {
                           console.log(" row pain : ", row)
-                          let apiArray = row.formType == 1 ? APIARR : APIARR_Navid
+                          let apiArray = row.formType == 1 ? APIARR_TAB : APIARR_Navid
                           toggleDrawer(row.id, apiArray)
                         }}
                       // style={{ background: stateColors[Object.keys(formStatusLabels).find(key => formStatusLabels[key] === row.status)] }}

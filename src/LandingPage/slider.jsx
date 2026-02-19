@@ -3,14 +3,22 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 
-import bimeSalamteMan from '../assets/logos/bime-salamte-man-icon.png';
-import logoHybrid from '../assets/logos/Logo Hybrid 2.png';
-import pajooheshkadeh from '../assets/logos/پژوهشکده.png';
-import shahidBeheshti from '../assets/logos/شهیدبهشتی.jpg';
-import tehranUni from '../assets/logos/لوگو انگلیسی دانشگاه تهران.jpg';
-import behdasht from '../assets/logos/لوگو-وزارت-بهداشت-2-3.jpg';
-import mazandaran from '../assets/logos/مازندران.webp';
-import mohavateBehdashti from '../assets/logos/معاونت بهداشتی وزارت.jpg';
+// import bimeSalamteMan from '../assets/logos/bime-salamte-man-icon.png';
+// import logoHybrid from '../assets/logos/Logo Hybrid 2.png';
+// import pajooheshkadeh from '../assets/logos/پژوهشکده.png';
+// import shahidBeheshti from '../assets/logos/شهیدبهشتی.jpg';
+// import tehranUni from '../assets/logos/لوگو انگلیسی دانشگاه تهران.jpg';
+// import behdasht from '../assets/logos/لوگو-وزارت-بهداشت-2-3.jpg';
+// import mazandaran from '../assets/logos/مازندران.webp';
+// import mohavateBehdashti from '../assets/logos/معاونت بهداشتی وزارت.jpg';
+import bimeSalamteMan from './logos/Bime_Salamat.svg';
+import logoHybrid from './logos/famcanmonochlogo.svg';
+import pajooheshkadeh from './logos/RIOHCT 1.svg';
+import shahidBeheshti from './logos/Beheshti 1.svg';
+import tehranUni from './logos/Tehran.svg';
+import behdasht from './logos/VBehd 1.svg';
+import mazandaran from './logos/Mazandaran 1.svg';
+import mohavateBehdashti from './logos/Moavenat_behdasht.svg';
 
 function Slider() {
     let arrOfIms = [
@@ -30,8 +38,8 @@ function Slider() {
         { img: behdasht, title: "", isBig: false, name: "وزارت بهداشت" },
         { img: mazandaran, title: "", isBig: false, name: "دانشگاه علوم پزشکی مازندران" },
         { img: mohavateBehdashti, title: "", isBig: false, name: "معاونت بهداشت" },
-        { img: logoHybrid, title: "", isBig: true, name: "انجمن سرطان های ارثی و فامیلی" },
-        { img: pajooheshkadeh, title: "", isBig: true, name: "پژوهشکده ی خون و انکولوژی" }
+        { img: logoHybrid, title: "", isBig: false, name: "انجمن سرطان های ارثی و فامیلی" },
+        { img: pajooheshkadeh, title: "", isBig: false, name: "پژوهشکده ی خون و انکولوژی" }
     ]
 
     return (
@@ -55,7 +63,7 @@ function Slider() {
                                 </div>
                             </>
                         ) : (
-                            <div className="teammate hover3">
+                            <div className="teammate hover3">                                
                                 <img src={item.img} alt={item.title} title={item.title} />
                                 <h3>{item.name}</h3>
                             </div>

@@ -9,6 +9,13 @@ import './totalLand.css'
 import minimul_sups from './minimal_supporters.svg'
 import AD from './arrowD.svg'
 import arrowRight from './compArrowRight.svg'
+import AboutUsImage from './AboutUs.jpg'
+import logoImage from './logomonochrome_white.png';
+import textLogoImage from './logotype_white.png';
+import instaLogo from './instagram.svg'
+import phoneIcon from './phone.svg'
+import mailIcon from './mail.svg'
+import FBLogo from './facebook.svg'
 // import C1 from './Card1B2.svg'
 // import C2 from './Card2B2.svg'
 // import C3 from './Card3B2.svg'
@@ -54,7 +61,7 @@ function LandingPage() {
                         <h2>ارزیابی ریسک سرطان هوشمند و محرمانه</h2>
                         <button className="gate-enter hover1" onClick={() => {
                             localStorage.setItem("residentEnter", JSON.stringify(false))
-                            navigate("/gate")
+                            navigate("/attention")
                         }}>
                             <span>محاسبه ی ریسک سرطان</span>
                             <span style={{ display: "flex", alignItems: "center" }}>
@@ -83,15 +90,15 @@ function LandingPage() {
                     <h3>رویکرد ما</h3>
                     {/* <img src={cards} alt="cards" /> */}
                     <div className="innapproaches">
-                        <div className="approach1 inntext hover3">
+                        <div className="approach1 inntext hover4">
                             <h2>ثبت امن اطلاعات</h2>
                             <h3>با پر کردن یک فرم تخصصی در کمتر از 15 دقیقه،اطلاعات و سوابق پزشکی به صورت امن و محرمانه ثبت میشوند و صرفا برای تحلیل پزشکی استفاده خواهند شد.</h3>
                         </div>
-                        <div className="approach2 inntext hover3">
+                        <div className="approach2 inntext hover4">
                             <h2>تحلیل هوشمند</h2>
                             <h3>مدلهای هوش مصنوعی،دادههای شما را با نهایت دقت بررسی کرده و ریسکهای احتمالی را شناسایی میکنند.</h3>
                         </div>
-                        <div className="approach3 inntext hover3">
+                        <div className="approach3 inntext hover4">
                             <h2>دریافت گزارش</h2>
                             <h3>با توجه به دادههای ورودی،یک توصیهنامۀ کاربردی دریافت میکنید.</h3>
                         </div>
@@ -103,104 +110,83 @@ function LandingPage() {
                     </div>
                 </div>
                 <div className="aboutus">
-                    <h3>درباره ما</h3>
-                    <div className="about-info">
-                        <div className="desctext">
-                            <p>
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit facilis culpa quas ex? Mollitia
-                                veniam reiciendis, quod labore sunt dolor doloribus cumque tempora veritatis ex ab vitae repudiandae, soluta quaerat?
-                                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolore earum consequuntur officiis eaque
-                                harum laudantium perferendis, possimus consectetur quo voluptate labore est voluptates eos incidunt exercitationem provident culpa eligendi quod!
-                            </p>
-                        </div>
-                        <div className="image-aboutus gallery-container">
-                            <Swiper
-                                modules={[Navigation, Thumbs]}
-                                spaceBetween={10}
-                                navigation={true}
-                                thumbs={{ swiper: thumbsSwiperRef.current }}
-                                onSwiper={(swiper) => (mainSwiperRef.current = swiper)}
-                                className="main-swiper"
-                            >
-                                {arrOfIms.map((img, idx) => (
-                                    <SwiperSlide key={idx}>
-                                        <img
-                                            src={img}
-                                            alt={"image"}
-                                            style={{ width: '100%', height: 'auto', display: 'block' }}
-                                        />
-                                    </SwiperSlide>
-                                ))}
-                            </Swiper>
-                        </div>
+                    <div className="top-half">
+                        <img src={AboutUsImage} alt="about us" />
                     </div>
-                    <div className="image-choose gallery-container">
-                        <Swiper
-                            modules={[Thumbs]}
-                            onSwiper={(swiper) => (thumbsSwiperRef.current = swiper)}
-                            watchSlidesProgress={true}
-                            spaceBetween={8}
-                            slidesPerView="auto" // ← key: show as many as fit
-                            className="thumbs-swiper"
-                        >
-                            {arrOfIms.map((img, idx) => (
-                                <SwiperSlide key={idx} className="thumb-slide">
-                                    <img
-                                        src={img}
-                                        alt={`thumb ${idx}`}
-                                        className={`thumb-btn ${idx === activeIndex ? 'active' : ''}`}
-                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                        onClick={() => {
-                                            mainSwiperRef.current?.slideTo(idx)
-                                            setActiveIndex(idx)
-                                        }}
-                                    />
-                                </SwiperSlide>
-                            ))}
-                        </Swiper>
+
+                    <div className="bottom-half">
+                        {/* empty */}
+                    </div>
+
+                    <div className="overlay-center">
+                        <h2>دربارۀ ما</h2>
+                        <p className="subtitle">
+                            فم‌کن – انجمن سرطان‌های ارثی-فامیلی به پیشگیری از سرطان در افراد پرخطر می‌پردازد.
+                        </p>
+                        <p className="description">
+                            فم‌کن یک رجیستری سندرم‌های استعداد ابتلا به سرطان است. کاربران فم‌کن، افراد مبتلا و در خطر این
+                            سندرم‌ها‌اند. فم‌کن یک سازمان مردم‌نهاد (NGO) غیرانتفاعی و عام‌المنفعه است که به ارگان‌های
+                            دولتی وابسته نیست. اعضای فم‌کن متخصصین فعال در زمینۀ مدیریت بیماران مبتلا به سرطان‌اند. ما در
+                            کلینیک‌های پزشکی افراد در خطر ابتلا به سرطان را شناسایی می‌کنیم، سپس به پیگیری فعال
+                            (Active Follow-up) ایشان می‌پردازیم تا قبل از رخداد سرطان در ایشان و یا خانواده‌شان اقدام
+                            به پیشگیری ‌کنیم.
+                        </p>
                     </div>
                 </div>
+
             </div>
 
 
             <div className='third-land'>
-                <div className='right-holder'>
-                    <div className='Footer-titr'>
-                        <h2>فم کن</h2>
-                        <h1></h1>
-                    </div>
+                <div className='Footer-titr'>
+                    <img src={logoImage} style={{ width: "25rem" }} alt="FamCan Logo" className='footer-logo' />
+                    <img src={textLogoImage} style={{ height: "10rem" }} alt="FamCan Text Logo" className='footer-text-logo' />
+                </div>
+                <div className='Footer-text'>
                     <div className='explanations'>
-                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minus ducimus blanditiis vel explicabo. Assumenda alias provident
-                            aliquid autem, pariatur delectus ex vero necessitatibus. Deserunt cupiditate facilis quas accusantium, fugiat error.</p>
+                        <div className='contact-item'>
+                            {/* <MdLocationOn size={20} /> */}
+                            <div>
+                                <strong>دفتر مرکزی</strong>
+                                <p>
+                                    تهران، خیابان کارگر شمالی، جنب پمپ بنزین، کوچه اکبری،
+                                    پلاک ۳۴، طبقه ۴، کد پستی: ۱۴۱۴۶۳۳۴۶۵
+                                </p>
+                            </div>
+                        </div>
+                        <div className='contact-item'>
+                            {/* <MdEmail size={20} /> */}
+                            <img src={mailIcon} style={{ height: '20', width: '20' }} alt="" />
+                            <a href="mailto:info@famcan.org">info@famcan.org</a>
+                        </div>
+                        <div className='contact-item'>
+                            <img src={phoneIcon} style={{ height: '20', width: '20' }} alt="" />
+                            <a href="tel:02187700073">۸۷۷۰۰۰۷۳ - ۰۲۱</a>
+                        </div>
                     </div>
                     <div className='Footer-images'>
-                        {range_arr.map((arri, index) => {
-                            return (
-                                <div className='Footer-image'>
-                                    <img src={altIm} alt="altIm" />
-                                </div>
-                            )
-                        })}
-                    </div>
-                </div>
-                <div className='left-holder'>
-                    <div className='set1-links'>
-                        <h2>لینک های مفید</h2>
-                        <ul>
-                            <li>لینک</li>
-                            <li>لینک</li>
-                            <li>لینک</li>
-                            <li>لینک</li>
-                        </ul>
-                    </div>
-                    <div className='set2-links'>
-                        <h2>لینک های مفید</h2>
-                        <ul>
-                            <li>لینک</li>
-                            <li>لینک</li>
-                            <li>لینک</li>
-                            <li>لینک</li>
-                        </ul>
+                        <div className='Footer-image'>
+                            <a
+                                href="https://www.instagram.com/famcan_institute/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="Instagram"
+                            >
+                                <img src={instaLogo} style={{ height: '28', width: '28' }} alt="" />
+                                {/* <FaInstagram size={28} /> */}
+                            </a>
+                        </div>
+                        <div className='Footer-image'>
+                            <a
+                                href="https://m.facebook.com/FamCanInstitute/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="Facebook"
+                            >
+                                <img src={FBLogo} style={{ height: '28', width: '28' }} alt="" />
+                                {/* <FaFacebookF size={28} /> */}
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

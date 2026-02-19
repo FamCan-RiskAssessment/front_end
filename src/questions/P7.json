@@ -31,7 +31,7 @@
     "options": [
       "بله",
       "خیر",
-      "تحت درمان"
+      "نمی‌ دانم"
     ]
   },
   "radio_hypertension_treatment": {
@@ -49,7 +49,7 @@
     "options": [
       "بله",
       "خیر",
-      "تحت درمان"
+      "نمی‌ دانم"
     ]
   },
   "radio_heartDisease_treatment": {
@@ -67,7 +67,7 @@
     "options": [
       "بله",
       "خیر",
-      "تحت درمان"
+      "نمی‌ دانم"
     ]
   },
   "radio_diabetes_treatment": {

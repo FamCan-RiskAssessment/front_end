@@ -254,7 +254,7 @@ function RoleChanger() {
                   <input
                     type="text"
                     className="form_search inp_question V2"
-                    placeholder="جستجو"
+                    placeholder="جستجوی تلفن"
                     value={searchedUser}
                     onChange={(e) => {
                       setSearchedUser(e.target.value)

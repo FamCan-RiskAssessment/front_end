@@ -240,7 +240,7 @@ const ModelResults = () => {
                                     <input
                                         type="text"
                                         className="form_search inp_question V2"
-                                        placeholder="جستجو"
+                                        placeholder="جستجوی تلفن"
                                         value={advancedFilters.search}
                                         onChange={(e) => {
                                             setAdvancedFilters({ ...advancedFilters, search: e.target.value })

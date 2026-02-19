@@ -42,6 +42,7 @@ function InputBoxV2({ data_req, data, valueSetter, value, class_change1, class_c
         }
         let res = await fetchDataPOST("form/postalcode", token, payload)
         if ((res.status == 200 || res.status == 201) && Object.keys(res.data).length > 2) {
+            localStorage.setItem("postalVerified", JSON.stringify(true))
             postalSetter(res.data)
         } else if ((res.status == 200 || res.status == 201) && Object.keys(res.data).length < 2) {
             addToast({
@@ -49,6 +50,7 @@ function InputBoxV2({ data_req, data, valueSetter, value, class_change1, class_c
                 type: 'error',
                 duration: 4000
             })
+            localStorage.setItem("postalVerified", JSON.stringify(false))
         }
         else {
             addToast({
@@ -56,6 +58,7 @@ function InputBoxV2({ data_req, data, valueSetter, value, class_change1, class_c
                 type: 'error',
                 duration: 4000
             })
+            localStorage.setItem("postalVerified", JSON.stringify(false))
         }
         console.log("postaldata tttttttttt : ", res)
     }

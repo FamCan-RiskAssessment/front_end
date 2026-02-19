@@ -214,7 +214,7 @@ export const fetchDataPOST = async (endpoint, token_auth, bodyData, passErr) => 
 
 export const fetchDataPOSTImg = async (endpoint, token_auth, bodyData) => {
   const formData = new FormData();
-
+  console.log("dataCancersssssss : ", endpoint, bodyData)
   // Append all fields - handle arrays of files by appending each item with the same field name
   for (const key in bodyData) {
     if (bodyData[key] !== null && bodyData[key] !== undefined) {

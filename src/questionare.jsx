@@ -383,10 +383,10 @@ function Questions() {
                             if (fE.getAttribute("FaVal") == getKeyVal(RadioMap, presetform[pfk])) {
                                 fE.checked = true
                             }
-                            if (fE.name == "cancer" && presetform[pfk] == true && fE.getAttribute("FaVal") == "بله") {
+                            if (fE.name == "cancer" && presetform[pfk] == true && fE.getAttribute("FaVal") == "بله" && JSON.parse(localStorage.getItem("selfcanFilled"))) {
                                 fE.checked = true
                             }
-                            if (fE.name == "cancer" && presetform[pfk] == false && fE.getAttribute("FaVal") == "خیر") {
+                            if (fE.name == "cancer" && presetform[pfk] == false && fE.getAttribute("FaVal") == "خیر" && JSON.parse(localStorage.getItem("selfcanFilled"))) {
                                 fE.checked = true
                             }
                             // else if (fE.getAttribute("FaVal") == "خیر" && (presetform[pfk] == false || presetform[pfk] == "false")) {
@@ -399,7 +399,7 @@ function Questions() {
                             // } else if (fE.name == pfk && presetform[pfk] == null && fE.getAttribute("FaVal") != "بله" && fE.getAttribute("FaVal") != "خیر") { //&& localStorage.getItem("imperfectForm") == false
                             //     // console.log()
                             //     fE.checked = true
-                        } else if (fE.name in cancerRefs) {
+                        } else if (fE.name in cancerRefs && JSON.parse(localStorage.getItem("famcanFilled"))) {
                             console.log("howisthe : ", fE.name)
                             // cancerRefs[fE.name].forEach(ce => {
                             //     // console.log("lasttt2 : ", masked_cancers[ce])
@@ -863,7 +863,7 @@ function Questions() {
         e.preventDefault();
         setLoading(true); // Set loading to true when starting submission
 
-        const APIARR = ["basic", "generalhealth", "mamography", "cancer", "listfamilycancer", "lungcancer", "contact"];
+        const APIARR = ["basic", "generalhealth", "mamography", "cancerVisit", "familycancerVisit", "lungcancer", "contact"];
 
         const form = formRefs[`${step}`].current;
         if (!form) return;
@@ -1035,6 +1035,19 @@ function Questions() {
                     'Authorization': `Bearer ${token_auth}`
                 }
             }
+        } else if (step == 4 || step == 5) {
+            if (presetform != null && step != 4) {
+                url = `${urlBase}/${id_form}/${APIARR[step - 1]}`;
+            } else {
+                url = `${urlBase}/${createdFormId}/${APIARR[step - 1]}`;
+            }
+            method = 'POST';
+            headers = {
+                // "Content-Type": "application/json",
+                'Authorization': `Bearer ${token_auth}`
+            }
+            sendData = null  // ✅ No body for steps 4/5
+            console.log("urrrrrrrrrrrrrrrrrrrL from cancers : ", url)
         } else {
             if (presetform != null && step != 4) {
                 url = `${urlBase}/${id_form}/${APIARR[step - 1]}`;
@@ -1060,7 +1073,7 @@ function Questions() {
                 // headers: {
                 //     'Authorization': `Bearer ${token_auth}`, // ⚠️ No Content-Type
                 // },
-                body: sendData, // ✅ FormData includes both files and text
+                ...(sendData !== null && { body: sendData }), // ✅ Only include body if not null
             });
             // Reset formData for this submission
             formDataRef.current = new FormData();
@@ -1075,8 +1088,13 @@ function Questions() {
                     type: 'error',
                     duration: 4000
                 })
-            }
-            else {
+            } else if (step == 7 && JSON.parse(localStorage.getItem("postalVerified"))) {
+                addToast({
+                    title: 'کد پستی درست را استعلام گرفته و دوباره تلاش کنید.',
+                    type: 'error',
+                    duration: 4000
+                })
+            } else {
                 addToast({
                     title: 'خطا در اتصال به سرور لطفا دوباره تلاش کنید.',
                     type: 'error',
@@ -1753,7 +1771,7 @@ function Questions() {
                     خروج
                 </button>
                 {openModalConf && (
-                    <div className="role_modal">
+                    <div className="role_modal QPage">
                         <div className="modal_header">
                             <div className="modalTxt">
                                 <h3>آیا می خواهید از فرم خارج شوید ؟ </h3>

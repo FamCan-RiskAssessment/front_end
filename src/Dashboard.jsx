@@ -161,14 +161,14 @@ function DashBoard() {
                                                 کاربران ثبت‌نام شده
                                             </span>
                                         </li>
-                                        <li className="tool" onClick={() => tool_chooser5()}>
+                                        {/* <li className="tool" onClick={() => tool_chooser5()}>
                                             <span>
                                                 <img src={tool_pinkSign} alt="tool_picker_pink" />
                                             </span>
                                             <span>
                                                 تغییر رمز
                                             </span>
-                                        </li>
+                                        </li> */}
                                     </ul>
                                 </div>
                             </div>

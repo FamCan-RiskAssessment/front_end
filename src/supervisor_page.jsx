@@ -195,7 +195,7 @@ function SupervisorPage() {
                                     <input
                                         type="text"
                                         className="form_search inp_question V2"
-                                        placeholder="جستجو"
+                                        placeholder="جستجوی تلفن"
                                         value={tempSearch}
                                         onChange={(e) => {
                                             setTempSearch(e.target.value)
