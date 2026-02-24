@@ -264,7 +264,10 @@ function RoleChanger() {
                     }}
                   />
                 </div>
-                <button className="magnifier" onClick={() => setAFS(p => !p)}>
+                <button className="magnifier" onClick={() => {
+                  setPage(1)
+                  setAFS(p => !p)
+                }}>
                   <span>
                     <img src={magnifier} alt="magnifier" />
                   </span>
