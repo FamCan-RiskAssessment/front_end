@@ -881,7 +881,7 @@ function Questions() {
             let value = '';
 
             if (type === 'radio' || type === 'checkbox') {
-                if (elem.name == "smokingNow") {
+                if (elem.name == "intendedHrtUse") {
                     console.log("smokingNowsmokingNowsmokingNowsmokingNow : ", elem.value)
                 }
                 if (elem.checked && type == 'radio') {
@@ -892,14 +892,15 @@ function Questions() {
                     value = elem.checked
                 }
             } else if (tagName === 'SELECT') {
-                if (name == "mediumActivityMonthInYear" || name == "hardActivityMonthInYear") {
+                console.log("smokingNowsmokingNowsmokingNowsmokingNow : ", elem.name, elem.value == "انتخاب نمایید")
+                if ((name == "mediumActivityMonthInYear" || name == "hardActivityMonthInYear" || name == "intendedHrtUse" || name == "hrtUseLength") && (elem.value != "انتخاب کنید" || elem.value != "انتخاب نمایید")) {
                     const match = elem.value.match(/\d+/);
                     const numberEx = match ? Number(match[0]) : null;
                     value = numberEx
                 } else {
                     value = elem.value;
                 }
-                if (!value || value === "انتخاب کنید" || value === "انتخاب نمایید") continue;
+                if (elem.value === false || elem.value === "انتخاب کنید" || elem.value === "انتخاب نمایید") continue;
                 shouldProcess = true;
             } else if (type === 'file') {
                 // Check if the file input has files either via the native files property or the custom data_toSend attribute
@@ -1530,7 +1531,7 @@ function Questions() {
                             <RadioV2 data_req={"true"} data={part3.radio_opts_hrt} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT} relation={relator_R(isAdat) && relator_gen(gender)}></RadioV2>
                             <OptionsV2 data={part3.combine_option_hrt_use_length} class_change1={"P2"} class_change2={"P2_inner"} relation={the_condition(isAdat) || (relator_R(isHRT) && relator_gen(gender))}></OptionsV2>
 
-                            <RadioV2 data_req={"true"} data={part3.radio_opts_lastFiveYears_HRT_use} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT5} relation={relator_R(isAdat) && relator_gen(gender)}></RadioV2>
+                            <RadioV2 data_req={"true"} data={part3.radio_opts_lastFiveYears_HRT_use} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT5} relation={relator_R(isAdat) && relator_gen(gender) && relator_R(isHRT)}></RadioV2>
 
                             <RadioV2 data_req={"true"} data={part3.radio_opts_HRT_current_use} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isHRT5) && relator_gen(gender)}></RadioV2>
                             <OptionsV2 data_req={"true"} data={part3.combine_option_intended_HRT_use} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isHRT5) && relator_gen(gender)}></OptionsV2>
@@ -1664,6 +1665,12 @@ function Questions() {
                             <span> - </span>
                             <span>بخش {`${step}/7`}</span>
                         </div>
+                        <RangeBox data_req={"true"} data={part6.range_bro_count} class_change1={"P2"} class_change2={"P2_inner"}></RangeBox>
+                        <RangeBox data_req={"true"} data={part6.range_sis_count} class_change1={"P2"} class_change2={"P2_inner"}></RangeBox>
+                        <RangeBox data_req={"true"} data={part6.range_ame_count} class_change1={"P2"} class_change2={"P2_inner"}></RangeBox>
+                        <RangeBox data_req={"true"} data={part6.range_amo_count} class_change1={"P2"} class_change2={"P2_inner"}></RangeBox>
+                        <RangeBox data_req={"true"} data={part6.range_khale_count} class_change1={"P2"} class_change2={"P2_inner"}></RangeBox>
+                        <RangeBox data_req={"true"} data={part6.range_dai_count} class_change1={"P2"} class_change2={"P2_inner"}></RangeBox>
 
                         <RadioV2 data_req={"true"} mapper={RadioMap} data={part6.radio_opts_testGen} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsGeneTest}></RadioV2>
                         <FileUploader data={part6.attachment_testGen} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isGeneTest)} fillingFormData={fillingFormData} removeLastFileFromFormData={removeLastFileFromFormData}></FileUploader>

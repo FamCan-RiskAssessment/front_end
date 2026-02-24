@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fetchDataPOST, isNumber } from "./utils/tools";
+import { fetchDataPOST, isNumber, persianToEnglishDigits } from "./utils/tools";
 import { useToast } from "./toaster";
 import ToastProvider from "./toaster";
 
@@ -38,7 +38,7 @@ function InputBoxV2({ data_req, data, valueSetter, value, class_change1, class_c
     const checkPostal = async (value) => {
         let token = localStorage.getItem('token')
         let payload = {
-            "postalCode": `${value}`
+            "postalCode": `${persianToEnglishDigits(value)}`
         }
         let res = await fetchDataPOST("form/postalcode", token, payload)
         if ((res.status == 200 || res.status == 201) && Object.keys(res.data).length > 2) {

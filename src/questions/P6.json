@@ -1,4 +1,58 @@
 {
+  "range_bro_count": {
+    "engName": "brotherNumber",
+    "max": 15,
+    "min": 1,
+    "step": 1,
+    "defaultValue": 0,
+    "placeHolder": "xx",
+    "inpName": "تعداد برادران : "
+  },
+  "range_sis_count": {
+    "engName": "sisterNumber",
+    "max": 15,
+    "min": 1,
+    "step": 1,
+    "defaultValue": 0,
+    "placeHolder": "xx",
+    "inpName": "تعداد خواهران : "
+  },
+  "range_ame_count": {
+    "engName": "paternalAuntNumber",
+    "max": 15,
+    "min": 1,
+    "step": 1,
+    "defaultValue": 0,
+    "placeHolder": "xx",
+    "inpName": "تعداد عمه  : "
+  },
+  "range_amo_count": {
+    "engName": "paternalUncleNumber",
+    "max": 15,
+    "min": 1,
+    "step": 1,
+    "defaultValue": 0,
+    "placeHolder": "xx",
+    "inpName": "تعداد عمو : "
+  },
+  "range_khale_count": {
+    "engName": "maternalAuntNumber",
+    "max": 15,
+    "min": 1,
+    "step": 1,
+    "defaultValue": 0,
+    "placeHolder": "xx",
+    "inpName": "تعداد خاله : "
+  },
+  "range_dai_count": {
+    "engName": "maternalUncleNumber",
+    "max": 15,
+    "min": 1,
+    "step": 1,
+    "defaultValue": 0,
+    "placeHolder": "xx",
+    "inpName": "تعداد دایی : "
+  },
   "title": "سوالات بیماری های ریوی",
   "radio_opts_testGen": {
     "Rname": "testGen",

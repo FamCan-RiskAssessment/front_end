@@ -180,8 +180,8 @@ function RoleChanger() {
     for (let p of users) {
       let json_role = await fetchUserRole(p.id);
       if (json_role) {
-        console.log(json_role)
-        roleMap[p.id] = json_role[0].name;
+        console.log("nan_barbari : ", json_role)
+        roleMap[p.id] = json_role.length > 0 ? json_role[0].name : "نامعلوم";
       }
     }
 

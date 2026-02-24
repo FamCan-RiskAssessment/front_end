@@ -42,10 +42,20 @@ export const formatAndValidateJalali = (year, month, day) => {
 }
 
 
+// Persian/Arabic digits: ۰-۹ (Unicode: \u06F0-\u06F9)
+// English digits: 0-9
+export const persianToEnglishDigits = (str) => {
+  return str.replace(/[۰-۹]/g, (d) => String.fromCharCode(d.charCodeAt(0) - 1728));
+};
+
 export const isNumber = (value) => {
   if (typeof value === 'number') return !isNaN(value);
   if (typeof value !== 'string') return false;
-  return value.trim() !== '' && !isNaN(value);
+  if (value.trim() === '') return false;
+
+  // Convert Persian digits to English and check if it's a valid number
+  const converted = persianToEnglishDigits(value);
+  return !isNaN(converted);
 };
 
 
