@@ -519,5 +519,33 @@
   {
     "key": "CelecSig",
     "label": "سیگار الکترونیکی حال"
+  },
+  {
+    "key": "sisterNumber",
+    "label": "تعداد خواهران"
+  },
+  {
+    "key": "brotherNumber",
+    "label": "تعداد خواهران"
+  },
+  {
+    "key": "sisNumber",
+    "label": "تعداد برادران"
+  },
+  {
+    "key": "paternalAuntNumber",
+    "label": "تعداد عمه"
+  },
+  {
+    "key": "paternalUncleNumber",
+    "label": "تعداد عمو"
+  },
+  {
+    "key": "maternalAuntNumber",
+    "label": "تعداد خاله"
+  },
+  {
+    "key": "maternalUncleNumber",
+    "label": "تعداد دایی"
   }
 ]

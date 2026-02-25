@@ -22,6 +22,7 @@ import restoreSign from './V2Form/restore.svg'
 import fileUplode from './V2Form/files.svg'
 import waitSign from './V2Form/timer.png'
 import checkFull from './V2Form/checkfull.png'
+import magnifier from './V2Form/magnifier.svg'
 
 
 
@@ -40,6 +41,15 @@ function FormsPage() {
   const [PagiNext, setPagiNext] = useState(false)
   const [pageCount, setPageCount] = useState(0)
   const [opOpts, setOpOpts] = useState(false)
+
+  // State for advanced filters
+  const [advancedFilters, setAdvancedFilters] = useState({
+    sortBy: '',
+    sortOrder: '',
+    search: '',
+  });
+  const [tempSearch, setTempSearch] = useState(''); // Temporary storage for search input
+
   const nextPage = () => {
     if (PagiNext)
       setPage(p => p + 1)
@@ -61,6 +71,35 @@ function FormsPage() {
     }
     return spans
   }
+
+  // Function to build endpoint based on filters
+  const buildEndpoint = (currentPage, filters) => {
+    let endpoint = 'form';
+
+    // Build query parameters
+    const queryParams = [];
+
+    // Add pagination
+    queryParams.push(`page=${currentPage}`);
+
+    // Add sorting and search filters
+    if (filters.sortBy) queryParams.push(`sortBy=${filters.sortBy}`);
+    if (filters.sortOrder) queryParams.push(`sortOrder=${filters.sortOrder}`);
+    if (filters.search) queryParams.push(`search=${filters.search}`);
+
+    // Join query parameters with '&'
+    const queryString = queryParams.join('&');
+    return `form?${queryString}`;
+  };
+
+  const applyFilters = () => {
+    // Update the main search filter with the temporary value
+    setAdvancedFilters(prev => ({
+      ...prev,
+      search: tempSearch
+    }));
+    setPage(1); // Reset to first page when applying filters
+  };
 
 
   // user info
@@ -88,7 +127,10 @@ function FormsPage() {
   // 🔹 fetch user's forms on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch(`${APIURL}/form?page=${page}`, {
+    // Build endpoint with filters
+    const endpoint = buildEndpoint(page, advancedFilters);
+
+    fetch(`${APIURL}/${endpoint}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -109,31 +151,7 @@ function FormsPage() {
         console.error("Error fetching forms:", err);
         setLoading(false);
       });
-  }, [deletedForm, page]);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    fetch(`${APIURL}/form?page=${page}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // ✅ token auth
-      },
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        // console.log("fucking data : " , json)
-        setForms(json.data.data || []); // assuming API returns { data: [...] }
-        setPagiPrev(json.data.pagination.hasPrevPage)
-        setPagiNext(json.data.pagination.hasNextPage)
-        setPageCount(json.data.pagination.totalPages)
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching forms:", err);
-        setLoading(false);
-      });
-  }, [page]);
+  }, [deletedForm, page, advancedFilters]);
   // how to pass the form
   const userSelectedForm = async (form_id) => {
     const token = localStorage.getItem("token");
@@ -259,16 +277,44 @@ function FormsPage() {
             <div className="forms_tools">
               <div className="form_tool">
                 <div className="form_search_bar">
-                  {/* <InputBoxV2 data={UQs.fromSearch}></InputBoxV2> */}
-                  <input type="text" className="form_search inp_question V2" placeholder="جستجو" />
+                  <input
+                    type="text"
+                    className="form_search inp_question V2"
+                    placeholder="جستجو"
+                    value={tempSearch}
+                    onChange={(e) => setTempSearch(e.target.value)}
+                  />
+                </div>
+                <button className="magnifier" onClick={applyFilters}>
+                  <span>
+                    <img src={magnifier} alt="search" />
+                  </span>
+                </button>
+              </div>
+
+              <div className="form_tool">
+                <div className="sorter">
+                  <select
+                    value={advancedFilters.sortOrder}
+                    onChange={(e) => setAdvancedFilters({ ...advancedFilters, sortOrder: e.target.value })}
+                    className="select_optionsV2"
+                  >
+                    <option value="انتخاب کنید">ترتیب داده</option>
+                    <option value="asc">صعودی</option>
+                    <option value="desc">نزولی</option>
+                  </select>
                 </div>
                 <div className="sorter">
-                  {/* <OptionsV2 data={UQs.formSort}></OptionsV2> */}
-                  <select name="formSort" id="" className="select_optionsV2">
-                    <option value="انتخاب کنید">انتخاب کنید</option>
-                    <option value="قدیمی ترین">قدیمی ترین</option>
-                    <option value="جدید ترین">جدید ترین</option>
-
+                  <select
+                    value={advancedFilters.sortBy}
+                    onChange={(e) => setAdvancedFilters({ ...advancedFilters, sortBy: e.target.value })}
+                    className="select_optionsV2"
+                  >
+                    <option value="">مرتب سازی بر اساس</option>
+                    <option value="id">شناسه</option>
+                    <option value="created_at">تاریخ ایجاد</option>
+                    <option value="updated_at">تاریخ بروزرسانی</option>
+                    <option value="status">وضعیت</option>
                   </select>
                 </div>
               </div>

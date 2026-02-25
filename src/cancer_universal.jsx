@@ -7,7 +7,8 @@ import InputBoxV2 from "./input_boxV2";
 import OptionsV2 from "./optionV2";
 import uploadSign from './V2Form/upload.svg'
 import trashSign from './V2Form/trashCan.svg'
-import { isNumber, fetchDataGET, fetchDataDELETE } from "./utils/tools";
+import { isNumber, fetchDataGET, fetchDataDELETE, fetchDataGETImg } from "./utils/tools";
+import { useToast } from "./toaster";
 
 function CancerField({
     data_req,
@@ -24,7 +25,9 @@ function CancerField({
     famrel,
     preData,
     showTab,
+    refreshFunc
 }) {
+    const { addToast } = useToast();
     // =============== STATE ===============
     const [cancerArray, setCancerArray] = useState([]);
     const [relData, setRelData] = useState("");
@@ -79,6 +82,8 @@ function CancerField({
             )
         }
     }
+
+    // defining the cancer data loader functions
 
 
 
@@ -242,15 +247,16 @@ function CancerField({
             image: imageDisplayUrls.length > 0 ? imageDisplayUrls : null,
             // Store the actual file to be used by senderFunc and to keep track of it
             imageFile: imageFiles && imageFiles.length > 0 ? imageFiles : null,
+            id: null, // Will be updated when preData refreshes
         };
 
-        // Update UI table
-        setCancerArray((prev) => [...prev, newRow]);
-
-        // Call external sender
+        // Call external sender and get the new cancer ID
         if (senderFunc) {
-            senderFunc(newRow.relation, inp2, opt, rad, imageFiles);
+            await senderFunc(newRow.relation, inp2, opt, rad, imageFiles);
         }
+
+        // Update UI table immediately (row will get id when preData refreshes)
+        setCancerArray((prev) => [...prev, newRow]);
 
         // Resolve enum & update canArr
         if (canArrFunc && typeRef.current) {
@@ -321,20 +327,35 @@ function CancerField({
         canUniRef,
     ]);
 
-    const handleDeleteRow = useCallback((index, id) => {
+    const handleDeleteRow = useCallback(async (index, id) => {
+        if (!id) {
+            // This is a newly added cancer that hasn't been saved yet, just remove from UI
+            setCancerArray((prev) => prev.filter((_, i) => i !== index));
+            addToast({
+                title: "سرطان از جدول حذف شد",
+                type: 'success',
+                duration: 3000
+            });
+            return;
+        }
+
         setCancerArray((prev) => prev.filter((_, i) => i !== index));
         let token = localStorage.getItem("token")
         let form_id = localStorage.getItem("form_id")
-        let delRow = fetchDataDELETE(`admin/form/${form_id}/cancer/${id}`)
+        let endPoint = famrel ? `form/${form_id}/familycancer/${id}` : `form/${form_id}/cancer/${id}`
+        let delRow = await fetchDataDELETE(endPoint, token)
         if (delRow.status == 200) {
             addToast({
                 title: "سرطان مورد نظر حذف شد",
                 type: 'success',
                 duration: 4000
             })
+            // Refresh preData to sync with backend
+            if (refreshFunc) {
+                refreshFunc();
+            }
         }
-        // Note: You may want to also sync deletion with canArr/sender via callback
-    }, []);
+    }, [addToast, famrel, refreshFunc]);
 
     // =============== RENDER ===============
     const shouldRender = propRelation;
@@ -377,6 +398,7 @@ function CancerField({
                     {data_Radio && (
                         <RadioV2
                             data_req={"false"}
+                            class_change2={"cancer_card_radio"}
                             data={data_Radio}
                             valueSetter={handleRadChange}
                             value={rad}

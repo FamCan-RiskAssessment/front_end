@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback, memo } from 'react';
 import './toast_css.css';
 import checkIcon from "./assets/check_sign.svg"
 import crossIcon from "./assets/error_sign.svg"
+import loadIcon from "./V2Form/toastLoading.svg"
 const ToastContext = createContext();
 
 let idCounter = 0;
@@ -11,14 +12,14 @@ export const useToast = () => useContext(ToastContext);
 export default function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
 
-  const addToast = (toast) => {
+  const addToast = useCallback((toast) => {
     const id = idCounter++;
     setToasts((prev) => [...prev, { id, ...toast }]);
-  };
+  }, []);
 
-  const removeToast = (id) => {
+  const removeToast = useCallback((id) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
-  };
+  }, []);
 
   return (
     <ToastContext.Provider value={{ addToast }}>
@@ -32,18 +33,27 @@ export default function ToastProvider({ children }) {
   );
 }
 
-function Toast({ title, description, type = 'neutral', duration = 3000, onClose }) {
+const Toast = memo(function Toast({ title, description, type = 'neutral', duration = 3000, onClose }) {
   const [progress, setProgress] = useState(100);
   const [hovered, setHovered] = useState(false);
   const progressRef = useRef(progress);
+  const idRef = useRef(null);
+
+  // Store the initial duration start time
+  const startTimeRef = useRef(Date.now());
 
   useEffect(() => {
     let interval;
-    const startTime = Date.now();
+    
+    // Reset start time when component mounts (not on re-render)
+    if (!idRef.current) {
+      idRef.current = true;
+      startTimeRef.current = Date.now();
+    }
 
     const tick = () => {
       if (hovered) return;
-      const elapsed = Date.now() - startTime;
+      const elapsed = Date.now() - startTimeRef.current;
       const percent = Math.max(0, 100 - (elapsed / duration) * 100);
       setProgress(percent);
       progressRef.current = percent;
@@ -52,7 +62,7 @@ function Toast({ title, description, type = 'neutral', duration = 3000, onClose 
 
     interval = setInterval(tick, 60);
     return () => clearInterval(interval);
-  }, [duration, hovered, onClose]);
+  }, [duration, onClose]);
 
   return (
     <div
@@ -62,9 +72,11 @@ function Toast({ title, description, type = 'neutral', duration = 3000, onClose 
     >
       <div className="toast-icon">
         {type == "error" ? (
-         <img src={crossIcon} alt="" />   
-        ):
-        (<img src={checkIcon} alt="" />)
+          <img src={crossIcon} alt="" />
+        ) : type == "loading" ?
+          (<img className='loadIcon' src={loadIcon} alt="" />)
+          :
+          (<img src={checkIcon} alt="" />)
         }
       </div>
       <div className="toast-content">
@@ -80,4 +92,4 @@ function Toast({ title, description, type = 'neutral', duration = 3000, onClose 
       <button className="toast-close" onClick={onClose}>✖</button>
     </div>
   );
-}
+});

@@ -704,6 +704,10 @@ tbody tr:last-child {
     color: #818184;
 }
 
+.cancer_card_radio>.radio-group {
+    background-color: #fff;
+}
+
 @media (max-width:768px) {
 
     /* Vertical layout for long labels or more than 3 options */
