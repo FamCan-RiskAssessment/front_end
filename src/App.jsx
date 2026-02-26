@@ -55,8 +55,8 @@ function App() {
           <Route path='/DashBoard/RoleMaker' element={<RoleMaker></RoleMaker>}></Route>
           <Route path='/DashBoard' element={<DashBoard></DashBoard>}></Route>
           <Route path='/DashBoard/patients' element={<FilterableTable></FilterableTable>}></Route>
-          <Route path="/DashBoard/passChange" element={<ChangePass></ChangePass>}></Route>
-          <Route path='/DashBoard/usersTree' element={<RoleHierarchyTree></RoleHierarchyTree>}></Route>
+          {/* <Route path="/DashBoard/passChange" element={<ChangePass></ChangePass>}></Route> */}
+          {/* <Route path='/DashBoard/usersTree' element={<RoleHierarchyTree></RoleHierarchyTree>}></Route> */}
           <Route path='/DashBoard/supervisorForms' element={<SupervisorPage></SupervisorPage>}></Route>
           <Route path='/DashBoard/systemLog' element={<SystemLogs></SystemLogs>}></Route>
           <Route path='/residentEnter' element={<ResidentRegister></ResidentRegister>}></Route>

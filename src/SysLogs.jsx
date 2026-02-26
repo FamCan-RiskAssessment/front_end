@@ -17,6 +17,7 @@ import restoreSign from './V2Form/restore.svg'
 import fileUplode from './V2Form/files.svg'
 import waitSign from './V2Form/timer.png'
 import checkFull from './V2Form/checkfull.png'
+import { useNavigate } from "react-router-dom";
 
 function SystemLogs() {
   const location = useLocation();
@@ -29,7 +30,17 @@ function SystemLogs() {
   const [pagiNext, setPagiNext] = useState(false);
   const [pageCount, setPageCount] = useState(0);
   const [filtersApplied, setFiltersApplied] = useState(false);
-
+  const navigate = useNavigate();
+  let role = JSON.parse(localStorage.getItem("roles"))
+  let perms = JSON.parse(localStorage.getItem("pagesOneCango"))
+  useEffect(() => {
+    // let checkPerms = JSON.parse(localStorage.getItem("permissions"))
+    role.forEach(r => {
+      if (r.name == "مراجعه کننده" || !perms.includes("/DashBoard/systemLog")) {
+        navigate("/error_page", { state: { error_type: 403 } })
+      }
+    });
+  }, [])
   // State for advanced filters
   const [advancedFilters, setAdvancedFilters] = useState({
     search: '',

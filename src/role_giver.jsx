@@ -43,6 +43,16 @@ function RoleChanger() {
   const navigate = useNavigate();
   const { addToast } = useToast()
   const userPhone = location.state?.phone;
+  let role = JSON.parse(localStorage.getItem("roles"))
+  let perms = JSON.parse(localStorage.getItem("pagesOneCango"))
+  useEffect(() => {
+    // let checkPerms = JSON.parse(localStorage.getItem("permissions"))
+    role.forEach(r => {
+      if (r.name == "مراجعه کننده" || !perms.includes("/DashBoard/RandP")) {
+        navigate("/error_page", { state: { error_type: 403 } })
+      }
+    });
+  }, [])
 
   const nextPage = () => {
     if (PagiNext)

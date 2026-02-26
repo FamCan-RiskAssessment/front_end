@@ -19,7 +19,7 @@ import stateChangeSign from './V2Form/stateChange.svg'
 import arrowLeftSign from './V2Form/arrowLeft.svg'
 import leftSign from './V2Form/form_left.png'
 import rightSign from './V2Form/form_right.png'
-
+import { useNavigate } from "react-router-dom";
 
 // Load the Persian header mapping
 const headerMapping = {};
@@ -103,6 +103,8 @@ export default function FilterableTable() {
   const [filtersApplied, setFiltersApplied] = useState(false)
   const { addToast } = useToast()
   const location = useLocation();
+  const navigate = useNavigate();
+
   const userPhone = location.state?.phone;
   // debugs
   // console.log("we are running on this API : ", apiArray)
@@ -141,8 +143,16 @@ export default function FilterableTable() {
   }, [])
 
 
-
-
+  let role = JSON.parse(localStorage.getItem("roles"))
+  // let perms = JSON.parse(localStorage.getItem("pagesOneCango"))
+  useEffect(() => {
+    // let checkPerms = JSON.parse(localStorage.getItem("permissions"))
+    role.forEach(r => {
+      if (r.name == "مراجعه کننده") {
+        navigate("/error_page", { state: { error_type: 403 } })
+      }
+    });
+  }, [])
 
 
 

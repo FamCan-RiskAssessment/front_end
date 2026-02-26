@@ -780,7 +780,7 @@ function QuestionsNavid() {
             if (step == 5) {
                 return true
             } else {
-                nexter()
+                // nexter()
             }
         } else {  // there are validation errors
             addToast({
@@ -1066,7 +1066,7 @@ function QuestionsNavid() {
             console.log("|||||||||||||||||||||||||| : ", res, json, step)
             setLoading(false)
             if (json.status == 200 || json.status == 201) {
-                // nexter()
+                nexter()
                 // if (step == 2 || step == 3) {
                 //     nexter()
                 // }
@@ -1600,6 +1600,11 @@ function QuestionsNavid() {
                                     }
                                     checkReq(formRefs[step], step)
                                     // console.log("the check what : ", reqpass)
+                                    addToast({
+                                        title: 'در حال ارسال داده .',
+                                        type: 'loading',
+                                        duration: 2000
+                                    })
                                     // if (reqpass) {
                                     handleSubmit(e)
                                     // }

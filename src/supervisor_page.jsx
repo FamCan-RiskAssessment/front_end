@@ -29,7 +29,16 @@ function SupervisorPage() {
     const [pagiPrev, setPagiPrev] = useState(false);
     const [pagiNext, setPagiNext] = useState(false);
     const [pageCount, setPageCount] = useState(0);
-
+    let role = JSON.parse(localStorage.getItem("roles"))
+    let perms = JSON.parse(localStorage.getItem("pagesOneCango"))
+    useEffect(() => {
+        // let checkPerms = JSON.parse(localStorage.getItem("permissions"))
+        role.forEach(r => {
+            if (r.name == "مراجعه کننده" || !perms.includes("/DashBoard/supervisorForms")) {
+                navigate("/error_page", { state: { error_type: 403 } })
+            }
+        });
+    }, [])
     // State for advanced filters
     const [advancedFilters, setAdvancedFilters] = useState({
         sortBy: '',

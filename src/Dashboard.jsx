@@ -30,6 +30,7 @@ function DashBoard() {
     }, [])
     useEffect(() => {
         let passedUrlsRaw = permissionCategoryComparer(perms, listOfcategs, listDashBoardUrls)
+        localStorage.setItem("pagesOneCango", JSON.stringify(passedUrlsRaw))
         setPassedUrls(passedUrlsRaw)
     }, [perms])
 

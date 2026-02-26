@@ -29,7 +29,16 @@ function RoleMaker() {
   const location = useLocation();
   const { addToast } = useToast()
   const userPhone = location.state?.phone;
-
+  let role = JSON.parse(localStorage.getItem("roles"))
+  let perms = JSON.parse(localStorage.getItem("pagesOneCango"))
+  useEffect(() => {
+    // let checkPerms = JSON.parse(localStorage.getItem("permissions"))
+    role.forEach(r => {
+      if (r.name == "مراجعه کننده" || r.name != "سوپر ادمین") {
+        navigate("/error_page", { state: { error_type: 403 } })
+      }
+    });
+  }, [])
   useEffect(() => {
     const fetchRoles = async () => {
       let token = localStorage.getItem("token")

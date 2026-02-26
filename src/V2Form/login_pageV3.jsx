@@ -86,7 +86,7 @@ function Login_pageV3() {
                             <form onSubmit={(e) => form_submitted(e)} className="login_form">
                                 <div className="inp">
                                     <label htmlFor="telephone">تلفن</label>
-                                    <input type="text" name="telephone" id="telephone" placeholder="مثال: 09123456789" value={phone} onChange={(e) => setphone(e.target.value)} />
+                                    <input data-clarity-mask="true" type="text" name="telephone" id="telephone" placeholder="مثال: 09123456789" value={phone} onChange={(e) => setphone(e.target.value)} />
                                 </div>
                                 {/* <div className="inp">
                     <label htmlFor="mellicode">کدملی</label>

@@ -28,6 +28,16 @@ const ModelResults = () => {
     //     "صعودی": "asc",
     //     "نزولی": "desc"
     // }
+    let role = JSON.parse(localStorage.getItem("roles"))
+    let perms = JSON.parse(localStorage.getItem("pagesOneCango"))
+    useEffect(() => {
+        // let checkPerms = JSON.parse(localStorage.getItem("permissions"))
+        role.forEach(r => {
+            if (r.name == "مراجعه کننده") {
+                navigate("/error_page", { state: { error_type: 403 } })
+            }
+        });
+    }, [])
 
     // Function to build endpoint based on user role and filters
     const buildEndpoint = (roleName, currentPage, currentFilter, filters) => {
@@ -80,7 +90,7 @@ const ModelResults = () => {
             let pre_forms = null;
             let token = localStorage.getItem("token");
             let role = JSON.parse(localStorage.getItem("roles"));
-            let endpoint = buildEndpoint(role[0], page, "", advancedFilters)
+            let endpoint = buildEndpoint(role[0].name, page, "", advancedFilters)
             console.log("check the name : ", role[0]);
 
             // Fetch forms with pagination
