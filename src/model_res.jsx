@@ -34,7 +34,11 @@ const ModelResults = () => {
         let endpoint = '';
 
         // Determine base endpoint based on user role
-        endpoint = 'admin/form';
+        if (roleName === "اپراتور") {
+            endpoint = 'admin/operator-form';
+        } else {
+            endpoint = 'admin/form';
+        }
 
         // Add additional filters based on specifications
         const additionalFilters = [];
@@ -76,7 +80,7 @@ const ModelResults = () => {
             let pre_forms = null;
             let token = localStorage.getItem("token");
             let role = JSON.parse(localStorage.getItem("roles"));
-            let endpoint = buildEndpoint("", page, "", advancedFilters)
+            let endpoint = buildEndpoint(role[0], page, "", advancedFilters)
             console.log("check the name : ", role[0]);
 
             // Fetch forms with pagination

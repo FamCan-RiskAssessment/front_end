@@ -2,6 +2,7 @@
 import { APIURL, formStatusLabels, sortOptions, statusAPIs } from "./config";
 import jalaali from 'jalaali-js';
 
+
 export const permExtractor = (perms, permCheck) => {
   return perms.some(p => p.name === permCheck);
 };
@@ -496,6 +497,49 @@ export const endpointMaker = (sort1, sort2, searchD, order, prevendPoint, page, 
   }
 }
 
+// this code would help us extract category of the user permission + find if he is valid to go in a page
+export const permissionCategoryComparer = (recUserAPIPerm, listOfcategs, DashURLs) => {
+  let flagForBoss = false
+  let whereCanWeGo = []
+  recUserAPIPerm.forEach(rUAP => {
+    if (rUAP.name == "دسترسی کامل") {
+      console.log("I have gone !")
+      flagForBoss = true
+    } else if (!flagForBoss) {
+      if (rUAP.category in listOfcategs) {
+        listOfcategs[rUAP.category] = true
+      }
+    }
+  });
+  if (flagForBoss) {
+    Object.keys(listOfcategs).forEach(lk => {
+      listOfcategs[lk] = true
+    });
+  }
+  if (flagForBoss) {
+    Object.keys(DashURLs).forEach(DUK => {
+      whereCanWeGo.push(DashURLs[DUK])
+    });
+    console.log("heyyyyyyyyyyyyy : ", whereCanWeGo)
+    return whereCanWeGo
+  } else {
+    Object.keys(DashURLs).forEach(DUK => {
+      if (DUK in listOfcategs && listOfcategs[DUK] === true) {
+        whereCanWeGo.push(DashURLs[DUK])
+      }
+    });
+    return whereCanWeGo
+  }
+
+}
+
+// /DashBoard/RandP
+// /DashBoard/roleMaker
+// /DashBoard/patients
+// /DashBoard/supervisorForms
+// /DashBoard/systemLog
+// /DashBoard/modelsResults
+
 // export const cancerFilledInCompleteFormCheck = (form) => {
 //   let formObj = form.cal
 // }
@@ -515,3 +559,4 @@ export const endpointMaker = (sort1, sort2, searchD, order, prevendPoint, page, 
 //     }
 //   }
 // };
+

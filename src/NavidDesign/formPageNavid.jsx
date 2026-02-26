@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { APIURL } from "../utils/config";
 import { permExtractor, fetchDataGET, fetchDataDELETE, formTypeChecker, statusChecker, fetchDataPUT, fetchDataGETNoError } from "../utils/tools";
 import UQs from '../utils/utilQs.json'
-import "./client_formsNavid.css"
+import "../client_forms.css"
 import ToastProvider from "../toaster";
 import { useToast } from "../toaster";
 import plusSign from '../V2Form/plus.svg'
@@ -22,7 +22,11 @@ import restoreSign from '../V2Form/restore.svg'
 import fileUplode from '../V2Form/files.svg'
 import waitSign from '../V2Form/timer.png'
 import checkFull from '../V2Form/checkfull.png'
-function FormsPageNavid() {
+import magnifier from '../V2Form/magnifier.svg'
+
+
+
+function FormsPage() {
   const [forms, setForms] = useState([]);
   const [deletedForm, setDeletedForm] = useState(0)
   const [openModalConf, setOpenModalConf] = useState(false)
@@ -37,7 +41,15 @@ function FormsPageNavid() {
   const [PagiNext, setPagiNext] = useState(false)
   const [pageCount, setPageCount] = useState(0)
   const [opOpts, setOpOpts] = useState(false)
-  console.log(";;;;;;;;;;;;;;;;;;;;;;;;;;; : ", formTypeChecker(forms, 1))
+
+  // State for advanced filters
+  const [advancedFilters, setAdvancedFilters] = useState({
+    sortBy: '',
+    sortOrder: '',
+    search: '',
+  });
+  const [tempSearch, setTempSearch] = useState(''); // Temporary storage for search input
+
   const nextPage = () => {
     if (PagiNext)
       setPage(p => p + 1)
@@ -59,6 +71,36 @@ function FormsPageNavid() {
     }
     return spans
   }
+
+  // Function to build endpoint based on filters
+  const buildEndpoint = (currentPage, filters) => {
+    let endpoint = 'form';
+
+    // Build query parameters
+    const queryParams = [];
+
+    // Add pagination
+    queryParams.push(`page=${currentPage}`);
+
+    // Add sorting and search filters
+    if (filters.sortBy) queryParams.push(`sortBy=${filters.sortBy}`);
+    if (filters.sortOrder) queryParams.push(`sortOrder=${filters.sortOrder}`);
+    if (filters.search) queryParams.push(`search=${filters.search}`);
+
+    // Join query parameters with '&'
+    const queryString = queryParams.join('&');
+    return `form?${queryString}`;
+  };
+
+  const applyFilters = () => {
+    // Update the main search filter with the temporary value
+    setAdvancedFilters(prev => ({
+      ...prev,
+      search: tempSearch
+    }));
+    setPage(1); // Reset to first page when applying filters
+  };
+
 
   // user info
   useEffect(() => {
@@ -85,7 +127,10 @@ function FormsPageNavid() {
   // 🔹 fetch user's forms on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch(`${APIURL}/form?page=${page}`, {
+    // Build endpoint with filters
+    const endpoint = buildEndpoint(page, advancedFilters);
+
+    fetch(`${APIURL}/${endpoint}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -106,31 +151,7 @@ function FormsPageNavid() {
         console.error("Error fetching forms:", err);
         setLoading(false);
       });
-  }, [deletedForm, page]);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    fetch(`${APIURL}/form?page=${page}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // ✅ token auth
-      },
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        // console.log("fucking data : " , json)
-        setForms(json.data.data || []); // assuming API returns { data: [...] }
-        setPagiPrev(json.data.pagination.hasPrevPage)
-        setPagiNext(json.data.pagination.hasNextPage)
-        setPageCount(json.data.pagination.totalPages)
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching forms:", err);
-        setLoading(false);
-      });
-  }, [page]);
+  }, [deletedForm, page, advancedFilters]);
   // how to pass the form
   const userSelectedForm = async (form_id) => {
     const token = localStorage.getItem("token");
@@ -138,8 +159,8 @@ function FormsPageNavid() {
       "basic",
       "cancer",
       "familycancer",
-      "navid",
-      "contact"
+      "contact",
+      "navid"
     ];
 
     try {
@@ -248,22 +269,50 @@ function FormsPageNavid() {
             </div>
           </div>
         </div>
-        <div className="forms-page-wrapper">
+        <div className="forms-page-wrapper FM">
 
           <div className="forms-container">
             <div className="forms_tools">
               <div className="form_tool">
                 <div className="form_search_bar">
-                  {/* <InputBoxV2 data={UQs.fromSearch}></InputBoxV2> */}
-                  <input type="text" className="form_search inp_question V2" placeholder="جستجو" />
+                  <input
+                    type="text"
+                    className="form_search inp_question V2"
+                    placeholder="جستجو"
+                    value={tempSearch}
+                    onChange={(e) => setTempSearch(e.target.value)}
+                  />
+                </div>
+                <button className="magnifier" onClick={applyFilters}>
+                  <span>
+                    <img src={magnifier} alt="search" />
+                  </span>
+                </button>
+              </div>
+
+              <div className="form_tool">
+                <div className="sorter">
+                  <select
+                    value={advancedFilters.sortOrder}
+                    onChange={(e) => setAdvancedFilters({ ...advancedFilters, sortOrder: e.target.value })}
+                    className="select_optionsV2"
+                  >
+                    <option value="انتخاب کنید">ترتیب داده</option>
+                    <option value="asc">صعودی</option>
+                    <option value="desc">نزولی</option>
+                  </select>
                 </div>
                 <div className="sorter">
-                  {/* <OptionsV2 data={UQs.formSort}></OptionsV2> */}
-                  <select name="formSort" id="" className="select_optionsV2">
-                    <option value="انتخاب کنید">انتخاب کنید</option>
-                    <option value="قدیمی ترین">قدیمی ترین</option>
-                    <option value="جدید ترین">جدید ترین</option>
-
+                  <select
+                    value={advancedFilters.sortBy}
+                    onChange={(e) => setAdvancedFilters({ ...advancedFilters, sortBy: e.target.value })}
+                    className="select_optionsV2"
+                  >
+                    <option value="">مرتب سازی بر اساس</option>
+                    <option value="id">شناسه</option>
+                    <option value="created_at">تاریخ ایجاد</option>
+                    <option value="updated_at">تاریخ بروزرسانی</option>
+                    <option value="status">وضعیت</option>
                   </select>
                 </div>
               </div>
@@ -271,14 +320,14 @@ function FormsPageNavid() {
                 <button className="btn-add-newV2" onClick={handleAddNew}>
                   <span>فرم جدید</span>
                   <span className="add_sign">
-                    <img src={plusSign} alt="علامت جمع" />
+                    <img src={plusWSign} alt="علامت جمع" />
                   </span>
 
                 </button>
               </div>
             </div>
 
-            {!formTypeChecker(forms, 2) ? (
+            {forms.length === 0 && !formTypeChecker(forms, 2) ? (
               <p className="no-forms-text">فرمی ثبت نشده است.</p>
             ) : (
               <table className="forms-table">
@@ -292,14 +341,13 @@ function FormsPageNavid() {
                 </thead>
                 <tbody>
                   {forms.map((form, index) => {
-                    console.log("########################### : ", form.formType)
                     if (form.formType == 2) {
                       return (
                         <tr key={form.id} className="form-row">
-                          <td className="table-cell">{index + 1}</td>
-                          <td className="table-cell">{form.socialSecurityNumber}</td>
-                          <td className="table-cell">{form.name}</td>
-                          <td className="table-cell">
+                          <td className="table-cell FM">{index + 1}</td>
+                          <td className="table-cell FM">{form.socialSecurityNumber}</td>
+                          <td className="table-cell FM">{form.name}</td>
+                          <td className="table-cell FM">
                             <div className="btn_formPage_holder">
                               <button
                                 className="btn-view-form"
@@ -375,8 +423,7 @@ function FormsPageNavid() {
                 </tbody>
               </table>
             )}
-
-            {formTypeChecker(forms, 2) && (<div className="page_naver">
+            <div className="page_naver">
               <div className="total_pages">
                 <span>تعداد صفحات {pageCount}</span>
               </div>
@@ -393,12 +440,11 @@ function FormsPageNavid() {
 
               </div>
             </div>
-            )}
             <div className="add-new-wrapper">
 
               {JSON.parse(localStorage.getItem("roles"))[0].id == 3 ?
                 <button className="btn-add-new-oprator" onClick={handleAddNewForPatient}>
-                  فرم جدید برای بیمار
+                  فرم جدید برای کاربر دیگر
                 </button>
                 :
                 null
@@ -438,9 +484,8 @@ function FormsPageNavid() {
         </div>
       )}
 
-
     </>
   );
 }
 
-export default FormsPageNavid;
+export default FormsPage;

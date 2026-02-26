@@ -667,7 +667,7 @@ function QuestionsNavid() {
     }
 
     const relator_multiCheck = (Arr, state) => {
-        console.log(Arr, state, Arr.includes(state))
+        // console.log(Arr, state, Arr.includes(state))
         if (Arr.includes(state)) {
             return true
         } else {
@@ -818,6 +818,7 @@ function QuestionsNavid() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true); // Set loading to true when starting submission
+        console.log("get_in_there")
 
         const APIARR = ["basic", "cancerVisit", "familycancerVisit", "navid", "contact"];
 
@@ -1451,7 +1452,7 @@ function QuestionsNavid() {
 
 
                         <OptionsV2 data={part7.combine_option_secondhandSmokeLocation} class_change1={"P2"} class_change2={"P2_inner"}></OptionsV2>
-                        <RadioV2 data_req={"true"} mapper={RadioMap} data={part7.radio_pastSmoking} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmokePast} des={true}></RadioV2>
+                        <RadioV2 data_req={"true"} mapper={RadioMap} data={part7.radio_pastSmoking} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmokePast}></RadioV2>
                         {/* <InputBoxV2 data_req={"false"} data={part7.text_smokingStartAge_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)}></InputBoxV2> */}
                         {/* <InputBoxV2 data_req={"false"} data={part7.text_leaveSmoke} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)}></InputBoxV2> */}
                         {/* <OptionsV2 data={part7.combine_option_smokingTypes_past} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setSmokeTypePast} relation={relator_R(anySmokePast)}></OptionsV2> */}
@@ -1492,7 +1493,7 @@ function QuestionsNavid() {
                         ></PersonalInfo>
                     </form>
                 </div>
-                <div className="btn_holder_next_prev">
+                <div className="btn_holder_next_prev" style={{ display: "none" }}>
                     <button className="btn_question" onClick={prever}>قبلی</button>
 
                     {step == 5 ? (
@@ -1536,14 +1537,14 @@ function QuestionsNavid() {
                     خروج
                 </button> */}
 
-                <div className="bottom_helper_container" style={{ display: "none" }}>
+                <div className="bottom_helper_container">
                     <div className="bottom_helper_parts_container">
                         {/* <div className="bottom_helper_part1"></div> */}
                         <div className="bottom_helper_part2">                    {step == 7 ? (
                             <button className="btn_question" onClick={(e) => {
 
-                                let passOno = checkReq(formRefs[step], step)
-                                if (!typeErr && !typeErr2 && !typeErr3 && passOno) {
+                                checkReq(formRefs[step], step)
+                                if (!typeErr && !typeErr2 && !typeErr3) {
                                     handleSubmit(e)
                                     addToast({
                                         title: 'پاسخ های شما با موفقیت ذخیره شد',
@@ -1568,10 +1569,11 @@ function QuestionsNavid() {
                                     const isCorrect = validateCatchQuestion(3);
                                     setStep3AttentionCorrect(isCorrect ? 1 : 0);
                                 }
-                                let reqpass = checkReq(formRefs[step], step)
-                                if (reqpass) {
-                                    handleSubmit(e)
-                                }
+                                checkReq(formRefs[step], step)
+                                // console.log("the check what : ", reqpass)
+                                // if (reqpass) {
+                                handleSubmit(e)
+                                // }
                             }}>بعدی</button>
                         )}</div>
                     </div>

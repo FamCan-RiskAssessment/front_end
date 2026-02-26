@@ -72,3 +72,22 @@ export const sortOptions = {
     "created_at": "زمان ورود",
     "None": "برداشتن فیلتر",
 }
+
+export const listOfcategs = {
+    "عمومی": false,
+    "درج داده": false,
+    "مدیریت مراجعه کنندگان": false,
+    "مدیریت کاربران": false,
+    "مدیریت دسترسی": false,
+    "مدیریت فرم ها": false,
+    "مدیریت اپراتور ها": false,
+    "مدیریت لاگ ها": false
+}
+export const listDashBoardUrls = {
+    "مدیریت مراجعه کنندگان": "/DashBoard/patients",
+    "مدیریت کاربران": "/DashBoard/RandP",
+    "مدیریت دسترسی": "/DashBoard/roleMaker",
+    "مدیریت فرم ها": "/DashBoard/modelsResults",
+    "مدیریت اپراتور ها": "/DashBoard/supervisorForms",
+    "مدیریت لاگ ها": "/DashBoard/systemLog"
+}
