@@ -24,7 +24,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { APIURL, cancerRefs } from "../utils/config";
 import { useToast } from "../toaster";
 import ToastProvider from "../toaster";
-import { fetchDataGET, isNumber, formatAndValidateJalali, CancerAdder, fetchDataPOSTImg, persianMonths, fetchDataGETImg, dict_transformer, getKeyVal, cancerDictRefiner } from "../utils/tools";
+import { fetchDataGET, isNumber, formatAndValidateJalali, CancerAdder, fetchDataPOSTImg, persianMonths, fetchDataGETImg, dict_transformer, getKeyVal, cancerDictRefiner, fetchDataPUT } from "../utils/tools";
 // import "./form_elementsNavid.css"
 import "../responsive_questionare.css"
 import RadioV2 from "../RadioV2";
@@ -297,19 +297,20 @@ function QuestionsNavid() {
     console.log("SAMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR", familyCancersPreData, selfCancersPreData)
 
     // cancer preData
+    let token = localStorage.getItem("token")
+    const selfFunc = async () => {
+        const res = await fetchDataGETImg(`form/${id_form}/cancer`, token);
+        setSelfCancersPreData(res)
+    }
+    const familyFunc = async () => {
+        const res = await fetchDataGETImg(`form/${id_form}/familycancer`, token);
+        setFamilyCancersPreData(res)
+    }
+    // cancer preData
     useEffect(() => {
-        let token = localStorage.getItem("token")
-        const selfFunc = async () => {
-            const res = await fetchDataGETImg(`form/${id_form}/cancer`, token);
-            setSelfCancersPreData(res)
-        }
         selfFunc()
-        const familyFunc = async () => {
-            const res = await fetchDataGETImg(`form/${id_form}/familycancer`, token);
-            setFamilyCancersPreData(res)
-        }
         familyFunc()
-    }, [])
+    }, [id_form])
 
 
     useEffect(() => {
@@ -479,12 +480,12 @@ function QuestionsNavid() {
             let arrOfCigsPast = ["Psig", "PsigBarg", "Ppip", "Pghel", "Pchop", "Pteryak", "PelecSig"]
             let arrOfCigsCurrent = ["Csig", "CsigBarg", "Cpip", "Cghel", "Cchop", "Cteryak", "CelecSig"]
             arrOfCigsPast.forEach(ac => {
-                if (ac in presetform && presetform[ac] != null) {
+                if (ac in presetform && presetform[ac] == 1) {
                     setMultiSmokeTypePast(mstp => [...mstp, ac])
                 }
             });
             arrOfCigsCurrent.forEach(ac => {
-                if (ac in presetform && presetform[ac] != null) {
+                if (ac in presetform && presetform[ac] == 1) {
                     setMultiSmokeTypeCurrent(mstc => [...mstc, ac])
                 }
             });
@@ -966,9 +967,9 @@ function QuestionsNavid() {
         }
 
         // Add attentionCorrect field for step 3 if a catch question was answered correctly
-        if (step == 3) {
-            allData["attentionCorrect"] = step3AttentionCorrect;
-        }
+        // if (step == 3) {
+        //     allData["attentionCorrect"] = step3AttentionCorrect;
+        // }
         // if (isCancer && step == 4) {
         //     let dels = ["cancerType", "cancerAge"]
         //     let assign = "cancers"
@@ -983,7 +984,7 @@ function QuestionsNavid() {
         }
 
         // ✅ Append text fields to currentFormData
-        if (step == 3 || step == 7) {
+        if (step == 5) {
             Object.entries(allData).forEach(([key, value]) => {
                 currentFormData.append(key, value);
             });
@@ -1020,7 +1021,7 @@ function QuestionsNavid() {
                 }
             }
         } else if (step == 2 || step == 3) {
-            if (presetform != null && step != 2) {
+            if (presetform != null) {
                 url = `${urlBase}/${id_form}/${APIARR[step - 1]}`;
             } else {
                 url = `${urlBase}/${createdFormId}/${APIARR[step - 1]}`;
@@ -1033,7 +1034,7 @@ function QuestionsNavid() {
             sendData = null  // ✅ No body for steps 2/3 (cancer steps)
             console.log("urrrrrrrrrrrrrrrrrrrL from cancers : ", url)
         } else {
-            if (presetform != null && step != 2) {
+            if (presetform != null) {
                 url = `${urlBase}/${id_form}/${APIARR[step - 1]}`;
             } else {
                 url = `${urlBase}/${createdFormId}/${APIARR[step - 1]}`;
@@ -1043,7 +1044,7 @@ function QuestionsNavid() {
                 "Content-Type": "application/json",
                 'Authorization': `Bearer ${token_auth}`
             }
-            if (step == 3 || step == 7) {
+            if (step == 5) {
                 headers = {
                     'Authorization': `Bearer ${token_auth}`, // ⚠️ No Content-Type
                 }
@@ -1066,6 +1067,9 @@ function QuestionsNavid() {
             setLoading(false)
             if (json.status == 200 || json.status == 201) {
                 // nexter()
+                // if (step == 2 || step == 3) {
+                //     nexter()
+                // }
             } else if (step == 1 && json.status == 403) {
                 addToast({
                     title: 'کد ملی وارد شده اشتباه می باشد.',
@@ -1084,9 +1088,6 @@ function QuestionsNavid() {
                 setCreatedFormId(json.data.form.id);
             }
         } catch (e) {
-            if (step == 2 || step == 3) {
-                nexter()
-            }
             console.error("Submission error:", e);
         }
     };
@@ -1363,7 +1364,11 @@ function QuestionsNavid() {
                     {/* form part 1*/}
 
                     <form ref={formRefs[1]} style={step == 1 ? null : { display: "none " }} className="question_form P1">
-                        <div className="form_title">اطلاعات شخصی</div>
+                        <div className="form_title">
+                            <span>اطلاعات شخصی</span>
+                            <span> - </span>
+                            <span>بخش {`${step}/5`}</span>
+                        </div>
                         <RadioV2 data_req={"true"} data={part1[0]} Enum={"genders"} valueSetter={setGender}></RadioV2>
                         <OptionsV2 data_req={"true"} data={part1[1]} relation={true}></OptionsV2>
                         <OptionsV2 data_req={"true"} data={part1[2]} relation={true}></OptionsV2>
@@ -1377,37 +1382,51 @@ function QuestionsNavid() {
                     {/* form part 4 */}
 
                     <form ref={formRefs[2]} style={step == 2 ? null : { display: "none " }} className="question_form P2">
-                        <div className="form_title">{part4.title}</div>
+                        <div className="form_title">
+                            <span>{part4.title}</span>
+                            <span> - </span>
+                            <span>بخش {`${step}/5`}</span>
+                        </div>
 
                         <RadioV2 data_req={"true"} class_change1={"P2"} class_change2={"P2_inner"} mapper={RadioMap} data={part4.radio_opts_cancer} valueSetter={setIsCancer}></RadioV2>
-                        <CancerField data_req={selfCancersPreData != null ? "false" : "true"} data_Inp1={null} data_Options={part4.cancerCard.cancerType} data_Radio={null} data_Inp2={part4.cancerCard.cancerAge} relation={relator_R(isCancer)} Enum={"cancer-types"} canArrFunc={null} canArr={null} senderFunc={selfCancerSender} preData={selfCancersPreData}></CancerField>
+                        <CancerField data_req={selfCancersPreData != null ? "false" : "true"} file_up={"not_the_target"} data_Inp1={null} data_Options={part4.cancerCard.cancerType} data_Radio={null} data_Inp2={part4.cancerCard.cancerAge} data_file={part4.cancerCard.attachment} relation={relator_R(isCancer)} Enum={"cancer-types"} canArrFunc={null} canArr={null} refreshFunc={selfFunc} senderFunc={selfCancerSender} preData={selfCancersPreData}></CancerField>
+
                     </form>
                     {/* form part 5 */}
 
                     <form ref={formRefs[3]} style={step == 3 ? null : { display: "none " }} className="question_form P2">
-                        <div className="form_title">{part5.title}</div>
+                        <div className="form_title">
+                            <span>{part5.title}</span>
+                            <span> - </span>
+                            <span>بخش {`${step}/5`}</span>
+                        </div>
 
-                        <RadioV2 data_req={"true"} data={part5.radio_opts_childCancer} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChildCncer} relation={relator_R(isChild)}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.childCard.childName} data_Inp2={part5.childCard.childCancerAge} data_Options={part5.childCard.childCancerType} data_Radio={part5.childCard.childLifeStatus} relation={relator_R(isChildCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={"فرزند"}></CancerField>
 
-                        <RadioV2 data_req={"true"} data={part5.radio_opts_motherCancer} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsMotherCncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.motherCard.motherName} data_Inp2={part5.motherCard.motherCancerAge} data_Options={part5.motherCard.motherCancerType} data_Radio={part5.motherCard.motherLifeStatus} relation={relator_R(isMotherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={"مادر"}></CancerField>
+                        <RadioV2 data_req={"true"} data={part5.radio_opts_childCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsChildCncer} relation={relator_R(isChild)}></RadioV2>
+                        <CancerField data_req={"true"} file_up={"target"} data_Inp1={part5.childCard.childType} data_Inp2={part5.childCard.childCancerAge} data_Options={part5.childCard.childCancerType} data_Radio={part5.childCard.childLifeStatus} data_file={part5.childCard.attachment} relation={relator_R(isChildCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={["فرزند پسر", "فرزند دختر"]}></CancerField>
 
-                        <RadioV2 data_req={"true"} data={part5.radio_opts_fatherCancer} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsFatherCncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.fatherCard.fatherName} data_Inp2={part5.fatherCard.fatherCancerAge} data_Options={part5.fatherCard.fatherCancerType} data_Radio={part5.fatherCard.fatherLifeStatus} relation={relator_R(isFatherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={"پدر"}></CancerField>
+                        <RadioV2 data_req={"true"} data={part5.radio_opts_motherCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsMotherCncer}></RadioV2>
+                        <CancerField data_req={"true"} data_Inp1={part5.motherCard.motherName} data_Inp2={part5.motherCard.motherCancerAge} data_Options={part5.motherCard.motherCancerType} data_Radio={part5.motherCard.motherLifeStatus} data_file={part5.motherCard.attachment} relation={relator_R(isMotherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={"مادر"}></CancerField>
 
-                        <RadioV2 data_req={"true"} data={part5.radio_opts_bsCancer} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsSibsCncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.siblingCard.siblingType} data_Inp2={part5.siblingCard.siblingCancerAge} data_Options={part5.siblingCard.siblingCancerType} data_Radio={part5.siblingCard.siblingLifeStatus} relation={relator_R(isSibsCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={["برادر", "خواهر"]}></CancerField>
+                        <RadioV2 data_req={"true"} data={part5.radio_opts_fatherCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsFatherCncer}></RadioV2>
+                        <CancerField data_req={"true"} data_Inp1={part5.fatherCard.fatherName} data_Inp2={part5.fatherCard.fatherCancerAge} data_Options={part5.fatherCard.fatherCancerType} data_Radio={part5.fatherCard.fatherLifeStatus} data_file={part5.fatherCard.attachment} relation={relator_R(isFatherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={"پدر"}></CancerField>
 
-                        <RadioV2 data_req={"true"} data={part5.radio_opts_ameAmoCancer} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsUncAuntCncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.uncleAuntCard.uncleAuntType} data_Inp2={part5.uncleAuntCard.uncleAuntCancerAge} data_Options={part5.uncleAuntCard.uncleAuntCancerType} data_Radio={part5.uncleAuntCard.uncleAuntLifeStatus} relation={relator_R(isUncAuntCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={["عمه", "عمو"]}></CancerField>
+                        <RadioV2 data_req={"true"} data={part5.radio_opts_bsCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsSibsCncer}></RadioV2>
+                        <CancerField data_req={"true"} data_Inp1={part5.siblingCard.siblingType} data_Inp2={part5.siblingCard.siblingCancerAge} data_Options={part5.siblingCard.siblingCancerType} data_Radio={part5.siblingCard.siblingLifeStatus} data_file={part5.siblingCard.attachment} relation={relator_R(isSibsCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={["خواهر ناتنی", "برادر ناتنی", "برادر", "خواهر"]}></CancerField>
 
-                        <RadioV2 data_req={"true"} data={part5.radio_opts_khaleDaeiCancer} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsUncAunt2Cncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.khaleDaeiCard.khaleDaeiType} data_Inp2={part5.khaleDaeiCard.khaleDaeiCancerAge} data_Options={part5.khaleDaeiCard.khaleDaeiCancerType} data_Radio={part5.khaleDaeiCard.khaleDaeiLifeStatus} relation={relator_R(isUncAunt2Cancer)} Enum={"cancer-types"} senderFunc={familycancerSender} preData={familyCancersPreData} famrel={["خاله", "دایی"]}></CancerField>
+                        <RadioV2 data_req={"true"} data={part5.radio_opts_ameAmoCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsUncAuntCncer}></RadioV2>
+                        <CancerField data_req={"true"} data_Inp1={part5.uncleAuntCard.uncleAuntType} data_Inp2={part5.uncleAuntCard.uncleAuntCancerAge} data_Options={part5.uncleAuntCard.uncleAuntCancerType} data_Radio={part5.uncleAuntCard.uncleAuntLifeStatus} data_file={part5.uncleAuntCard.attachment} relation={relator_R(isUncAuntCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={["عمه", "عمو"]}></CancerField>
+
+                        <RadioV2 data_req={"true"} data={part5.radio_opts_khaleDaeiCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsUncAunt2Cncer}></RadioV2>
+                        <CancerField data_req={"true"} data_Inp1={part5.khaleDaeiCard.khaleDaeiType} data_Inp2={part5.khaleDaeiCard.khaleDaeiCancerAge} data_Options={part5.khaleDaeiCard.khaleDaeiCancerType} data_Radio={part5.khaleDaeiCard.khaleDaeiLifeStatus} data_file={part5.khaleDaeiCard.attachment} relation={relator_R(isUncAunt2Cancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={["خاله", "دایی"]}></CancerField>
                     </form>
                     {/* form part 7 */}
                     <form ref={formRefs[4]} id="form7" style={step == 4 ? null : { display: "none" }} action="" className="question_form P2">
-                        <div className="form_title">{part6.title}</div>
+                        <div className="form_title">
+                            <span>{part6.title}</span>
+                            <span> - </span>
+                            <span>بخش {`${step}/7`}</span>
+                        </div>
                         <OptionsV2 data_req={"true"} data={part7.combine_option_insurance} class_change1={"P2"} class_change2={"P2_inner"}></OptionsV2>
                         <RadioV2 data_req={"true"} data={part7.radio_takmili_bime} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"}></RadioV2>
                         <RadioV2 data_req={"true"} data={part7.radio_chronicLungDisease} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChronic}></RadioV2>
@@ -1476,7 +1495,11 @@ function QuestionsNavid() {
 
                     </form>
                     <form ref={formRefs[5]} id="form7" style={step == 5 ? null : { display: "none" }} action="" className="question_form P2">
-                        <div className="form_title">{part7.title}</div>
+                        <div className="form_title">
+                            <span>{part7.title}</span>
+                            <span> - </span>
+                            <span>بخش {`${step}/5`}</span>
+                        </div>
 
                         {/* <RadioV2 data_req={"true"} data={part6.radio_opts_testGen} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsGeneTest}></RadioV2> */}
                         {/* <FileUploader data={part6.attachment_testGen} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isGeneTest)} fillingFormData={fillingFormData} removeLastFileFromFormData={removeLastFileFromFormData}></FileUploader> */}
@@ -1497,7 +1520,7 @@ function QuestionsNavid() {
                     <button className="btn_question" onClick={prever}>قبلی</button>
 
                     {step == 5 ? (
-                        <button className="btn_question" onClick={(e) => {
+                        <button className="btn_question" onClick={async (e) => {
 
                             let passOno = checkReq(formRefs[step], step)
                             if (!typeErr && !typeErr2 && !typeErr3 && passOno) {
@@ -1507,6 +1530,8 @@ function QuestionsNavid() {
                                     type: 'success',
                                     duration: 4000
                                 })
+                                let token = localStorage.getItem("token")
+                                let changeState = await fetchDataPUT(`formNavid/${createdFormId}/status`, token, {})
                                 navigate("/formsNavid")
                             } else {
                                 console.log(passOno, typeErr, typeErr2, typeErr3)
@@ -1540,42 +1565,46 @@ function QuestionsNavid() {
                 <div className="bottom_helper_container">
                     <div className="bottom_helper_parts_container">
                         {/* <div className="bottom_helper_part1"></div> */}
-                        <div className="bottom_helper_part2">                    {step == 7 ? (
-                            <button className="btn_question" onClick={(e) => {
+                        <div className="bottom_helper_part2">
+                            {step == 5 ? (
+                                <button className="btn_question" onClick={async (e) => {
 
-                                checkReq(formRefs[step], step)
-                                if (!typeErr && !typeErr2 && !typeErr3) {
+                                    let passOno = checkReq(formRefs[step], step)
+                                    console.log("yyyyyyyyyyyyyyyyy : ", !typeErr, !typeErr2, !typeErr3, passOno)
+                                    if (!typeErr && !typeErr2 && !typeErr3 && passOno) {
+                                        handleSubmit(e)
+                                        addToast({
+                                            title: 'پاسخ های شما با موفقیت ذخیره شد',
+                                            type: 'success',
+                                            duration: 4000
+                                        })
+                                        let token = localStorage.getItem("token")
+                                        let changeState = await fetchDataPUT(`form/${createdFormId}/status`, token, {})
+                                        navigate("/formsNavid")
+                                    } else {
+                                        addToast({
+                                            title: 'لطفا فیلد ها را به درستی پر کنید',
+                                            type: 'error',
+                                            duration: 4000
+                                        })
+                                    }
+
+
+                                }}>ارسال</button>
+                            ) : (
+                                <button className="btn_question" onClick={(e) => {
+                                    // Update attentionCorrect for step 3 before submission if there's a catch question
+                                    if (step === 3 && catchQuestions[3]) {
+                                        const isCorrect = validateCatchQuestion(3);
+                                        setStep3AttentionCorrect(isCorrect ? 1 : 0);
+                                    }
+                                    checkReq(formRefs[step], step)
+                                    // console.log("the check what : ", reqpass)
+                                    // if (reqpass) {
                                     handleSubmit(e)
-                                    addToast({
-                                        title: 'پاسخ های شما با موفقیت ذخیره شد',
-                                        type: 'success',
-                                        duration: 4000
-                                    })
-                                    navigate("/forms")
-                                } else {
-                                    addToast({
-                                        title: 'لطفا فیلد ها را به درستی پر کنید',
-                                        type: 'error',
-                                        duration: 4000
-                                    })
-                                }
-
-
-                            }}>ارسال</button>
-                        ) : (
-                            <button className="btn_question" onClick={(e) => {
-                                // Update attentionCorrect for step 3 before submission if there's a catch question
-                                if (step === 3 && catchQuestions[3]) {
-                                    const isCorrect = validateCatchQuestion(3);
-                                    setStep3AttentionCorrect(isCorrect ? 1 : 0);
-                                }
-                                checkReq(formRefs[step], step)
-                                // console.log("the check what : ", reqpass)
-                                // if (reqpass) {
-                                handleSubmit(e)
-                                // }
-                            }}>بعدی</button>
-                        )}</div>
+                                    // }
+                                }}>بعدی</button>
+                            )}</div>
                     </div>
                 </div>
             </div >
@@ -1583,7 +1612,7 @@ function QuestionsNavid() {
 
 
             {openModalConf && (
-                <div className="role_modal">
+                <div className="role_modal QPage">
                     <div className="modal_header">
                         <div className="modalTxt">
                             <h3>آیا می خواهید از فرم خارج شوید ؟ </h3>

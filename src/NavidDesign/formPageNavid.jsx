@@ -463,7 +463,7 @@ function FormsPage() {
         </div>
       </div>
       {openModalConf && (
-        <div className="role_modal">
+        <div className="role_modal QPage">
           <div className="modal_header">
             <h3>آیا می خواهید فرم را حذف کنید ؟ </h3>
             <div className="modal_close" onClick={() => {
