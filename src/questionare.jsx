@@ -544,112 +544,112 @@ function Questions() {
     }, [after])
 
     // New useEffect to handle family relatives cancer status
-    useEffect(() => {
-        const loadFamilyCancerData = async () => {
-            if (id_form && presetform) {
-                const token = localStorage.getItem("token");
+    // useEffect(() => {
+    //     const loadFamilyCancerData = async () => {
+    //         if (id_form && presetform) {
+    //             const token = localStorage.getItem("token");
 
-                try {
-                    // Fetch family cancer data
-                    const familyCancerRes = await fetchDataGETImg(`form/${id_form}/familycancer`, token);
-                    const familyCancerData = familyCancerRes.data?.familyCancers || [];
-                    // Fetch relatives enum to map relative IDs to names
-                    const relativesEnumRes = await fetchDataGET(`enum/relatives`, token);
-                    const relativesEnum = relativesEnumRes.data || [];
+    //             try {
+    //                 // Fetch family cancer data
+    //                 const familyCancerRes = await fetchDataGETImg(`form/${id_form}/familycancer`, token);
+    //                 const familyCancerData = familyCancerRes.data?.familyCancers || [];
+    //                 // Fetch relatives enum to map relative IDs to names
+    //                 const relativesEnumRes = await fetchDataGET(`enum/relatives`, token);
+    //                 const relativesEnum = relativesEnumRes.data || [];
 
-                    // Create a map from relative ID to relative name
-                    const relativeIdToName = {};
-                    relativesEnum.forEach(rel => {
-                        relativeIdToName[rel.id] = rel.name;
-                    });
+    //                 // Create a map from relative ID to relative name
+    //                 const relativeIdToName = {};
+    //                 relativesEnum.forEach(rel => {
+    //                     relativeIdToName[rel.id] = rel.name;
+    //                 });
 
-                    // Create a map of field names to relative IDs based on the state variables
-                    // isChildCancer, isMotherCancer, isFatherCancer, isSibsCancer, isUncAuntCancer, isUncAunt2Cancer, isOtherCancer
-                    const relativeFieldMap = {
-                        1: "fatherCancer",
-                        2: "motherCancer",
-                        3: "siblingCancer",
-                        4: "siblingCancer",
-                        5: "otherRelative",
-                        6: "otherRelative",
-                        7: "otherRelative",
-                        8: "otherRelative",
-                        9: "ameAmoCancer",
-                        10: "ameAmoCancer",
-                        11: "khaleDaeiCancer",
-                        12: "khaleDaeiCancer",
-                        13: "otherRelative",
+    //                 // Create a map of field names to relative IDs based on the state variables
+    //                 // isChildCancer, isMotherCancer, isFatherCancer, isSibsCancer, isUncAuntCancer, isUncAunt2Cancer, isOtherCancer
+    //                 const relativeFieldMap = {
+    //                     1: "fatherCancer",
+    //                     2: "motherCancer",
+    //                     3: "siblingCancer",
+    //                     4: "siblingCancer",
+    //                     5: "otherRelative",
+    //                     6: "otherRelative",
+    //                     7: "otherRelative",
+    //                     8: "otherRelative",
+    //                     9: "ameAmoCancer",
+    //                     10: "ameAmoCancer",
+    //                     11: "khaleDaeiCancer",
+    //                     12: "khaleDaeiCancer",
+    //                     13: "otherRelative",
 
-                    };
+    //                 };
 
-                    // Map field names to form input names based on the useState variables
-                    // const fieldToInputName = {
-                    //     "childCancer": "isChildCancer",
-                    //     "motherCancer": "isMotherCancer",
-                    //     "fatherCancer": "isFatherCancer",
-                    //     "siblingCancer": "isSibsCancer",
-                    //     "ameAmoCancer": "isUncAuntCancer",
-                    //     "khaleDaeiCancer": "isUncAunt2Cancer",
-                    //     "otherRelative": "isOtherCancer"
-                    // };
+    //                 // Map field names to form input names based on the useState variables
+    //                 // const fieldToInputName = {
+    //                 //     "childCancer": "isChildCancer",
+    //                 //     "motherCancer": "isMotherCancer",
+    //                 //     "fatherCancer": "isFatherCancer",
+    //                 //     "siblingCancer": "isSibsCancer",
+    //                 //     "ameAmoCancer": "isUncAuntCancer",
+    //                 //     "khaleDaeiCancer": "isUncAunt2Cancer",
+    //                 //     "otherRelative": "isOtherCancer"
+    //                 // };
 
-                    // Create a map of relatives that have cancer
-                    const relativesWithCancer = {};
-                    familyCancerData.forEach(familyMember => {
-                        const relativeId = familyMember.relative;
-                        // Find the corresponding field name from the enum
-                        const relativeName = relativeIdToName[relativeId];
-                        if (relativeName) {
-                            // Map the relative name to the field name
-                            const fieldName = relativeFieldMap[relativeId];
-                            if (fieldName) {
-                                // Map the field name to input name used in the form
-                                // const inputName = fieldToInputName[fieldName];
-                                // if (inputName) {
-                                // Check if this relative has any cancers
-                                if (familyMember.cancers && familyMember.cancers.length > 0) {
-                                    relativesWithCancer[fieldName] = true;
-                                }
-                                // }
-                            }
-                        }
-                    });
-                    // console.log("dele bare gi : ", relativesWithCancer)
-                    // Now update the radio buttons in step 5 based on cancer data
-                    if (formRefs[5]?.current) {
-                        const formElements = formRefs[5].current.querySelectorAll("input[type='radio']");
+    //                 // Create a map of relatives that have cancer
+    //                 const relativesWithCancer = {};
+    //                 familyCancerData.forEach(familyMember => {
+    //                     const relativeId = familyMember.relative;
+    //                     // Find the corresponding field name from the enum
+    //                     const relativeName = relativeIdToName[relativeId];
+    //                     if (relativeName) {
+    //                         // Map the relative name to the field name
+    //                         const fieldName = relativeFieldMap[relativeId];
+    //                         if (fieldName) {
+    //                             // Map the field name to input name used in the form
+    //                             // const inputName = fieldToInputName[fieldName];
+    //                             // if (inputName) {
+    //                             // Check if this relative has any cancers
+    //                             if (familyMember.cancers && familyMember.cancers.length > 0) {
+    //                                 relativesWithCancer[fieldName] = true;
+    //                             }
+    //                             // }
+    //                         }
+    //                     }
+    //                 });
+    //                 // console.log("dele bare gi : ", relativesWithCancer)
+    //                 // Now update the radio buttons in step 5 based on cancer data
+    //                 if (formRefs[5]?.current) {
+    //                     const formElements = formRefs[5].current.querySelectorAll("input[type='radio']");
 
-                        formElements.forEach(radio => {
-                            // Find the field name that this radio button belongs to
-                            const fieldName = radio.name;
-                            // console.log(fieldName)
-                            // Check if this field corresponds to a relative with cancer
-                            if (relativesWithCancer[fieldName]) {
-                                // If the relative has cancer, check the "بله" radio button
-                                if (radio.id === "بله") {
-                                    radio.checked = true;
-                                } else if (radio.id === "خیر") {
-                                    radio.checked = false;
-                                }
-                            } else {
-                                // If the relative doesn't have cancer, check the "خیر" radio button
-                                if (radio.id === "خیر") {
-                                    radio.checked = true;
-                                } else if (radio.id === "بله") {
-                                    radio.checked = false;
-                                }
-                            }
-                        });
-                    }
+    //                     formElements.forEach(radio => {
+    //                         // Find the field name that this radio button belongs to
+    //                         const fieldName = radio.name;
+    //                         // console.log(fieldName)
+    //                         // Check if this field corresponds to a relative with cancer
+    //                         if (relativesWithCancer[fieldName]) {
+    //                             // If the relative has cancer, check the "بله" radio button
+    //                             if (radio.id === "بله") {
+    //                                 radio.checked = true;
+    //                             } else if (radio.id === "خیر") {
+    //                                 radio.checked = false;
+    //                             }
+    //                         } else {
+    //                             // If the relative doesn't have cancer, check the "خیر" radio button
+    //                             if (radio.id === "خیر") {
+    //                                 radio.checked = true;
+    //                             } else if (radio.id === "بله") {
+    //                                 radio.checked = false;
+    //                             }
+    //                         }
+    //                     });
+    //                 }
 
-                } catch (error) {
-                    console.error("Error fetching family cancer data:", error);
-                }
-            }
-        };
+    //             } catch (error) {
+    //                 console.error("Error fetching family cancer data:", error);
+    //             }
+    //         }
+    //     };
 
-        loadFamilyCancerData();
-    }, [id_form, presetform]);
+    //     loadFamilyCancerData();
+    // }, [id_form, presetform]);
 
     // Scroll to top of questions container when step changes
     useEffect(() => {
@@ -1677,7 +1677,7 @@ function Questions() {
                         {/* )} */}
                     </form>
                     {/* form part 7 */}
-                    <form ref={formRefs[7]} id="form7" style={step == 7 ? null : { display: "none" }} action="" className="question_form P2">
+                    <form ref={formRefs[7]} id="form7" style={step == 7 ? null : { display: "none" }} action="" className="question_form">
                         <div className="form_title">
                             <span>{part7.title}</span>
                             <span> - </span>

@@ -1,8 +1,25 @@
+/* medium laptops */
+@media (max-width:1750px) and (min-width:1440px) {
+    .inp_question {
+        padding: 0.5rem 0.3rem;
+        width: 100%;
+    }
+
+    /* 
+    .help_bar_container {
+        display: none !important;
+    } */
+}
+
 /* small laptops */
 @media (max-width:1440px) and (min-width:1024px) {
     .inp_question {
         padding: 0.5rem 0.3rem;
         width: 100%;
+    }
+
+    .help_bar_container {
+        width: 80%;
     }
 
     /* 
@@ -112,6 +129,7 @@
 
     .rangeBox_holder {
         flex-direction: column;
+        border-bottom: 1px solid #ccc;
     }
 
     .radio-group {
@@ -371,7 +389,7 @@
     }
 
     .grider {
-        width: 100%;
+        width: 85% !important;
         margin-bottom: 0.5rem;
     }
 
@@ -432,8 +450,8 @@
     .radio_question {
         font-size: 1.1rem;
         margin-bottom: 0.6rem;
-        width: 100%;
-        text-align: right;
+        width: 90%;
+        text-align: justify;
     }
 
     /* Specific styles for form components */
@@ -492,8 +510,12 @@
 
 /* Tablet responsiveness */
 @media (min-width: 769px) and (max-width: 1024px) {
-    .help_bar_container {
+
+    /* .help_bar_container {
         display: none !important;
+    } */
+    .help_bar_container {
+        width: 80%;
     }
 
     .question_form_container {
@@ -678,6 +700,11 @@
 
     .P2 .form_element {
         width: 98% !important;
+    }
+
+    .grider {
+        width: 85% !important;
+        margin-bottom: 0.5rem;
     }
 
     .P1 .form_element {
@@ -946,6 +973,18 @@
 
     .option_holder>select {
         width: 100%;
+    }
+}
+
+@media (max-width: 361px) {
+    .radio-group {
+        flex-direction: column;
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .radio-group .radio-card {
+        padding: 18px 20px;
     }
 }
 

@@ -311,7 +311,7 @@
 @media (max-width: 768px) {
   .forms-page-wrapper.FM {
     width: 95%;
-    padding: 1rem;
+    padding: unset;
   }
 
   .forms-container {

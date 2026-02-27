@@ -38,7 +38,7 @@ function NavBar({ account }) {
                     <div className="help_bar_part1">
                         <h3>
                             <img src={timeSign} alt="time_sign" />
-                            <span style={{ marginRight: '8px', fontSize: '0.9em', color: '#666' }}>{persianDateTime}</span>
+                            <span style={{ marginRight: '8px', fontSize: '0.9em', color: '#666' }}>ورود : {persianDateTime}</span>
                         </h3>
                     </div>
                     <h3 className="forms-title">ابزار های مدیریت کاربران</h3>

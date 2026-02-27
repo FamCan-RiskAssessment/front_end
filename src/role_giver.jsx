@@ -327,7 +327,7 @@ function RoleChanger() {
                 </thead>
                 <tbody>
                   {users.map((user, index) => {
-                    const userRole = userRoles[user.id] || 'بدون نقش';
+                    const userRole = user.roles[0].name || 'بدون نقش'; // changed the API so we changed that too.
                     const roleColor = roleColors[userRole] || '#e0e0e0'; // Default color if role not found
                     return (
                       <tr key={user.id} className="form-row">
@@ -341,7 +341,7 @@ function RoleChanger() {
 
                         </td>
                         <td className="table-cell RG">{user.phone}</td>
-                        <td className="table-cell RG">{new Date(user.createdAt).toLocaleDateString('fa-IR')}</td>
+                        <td className="table-cell RG">{user.createdAt}</td>
                         <td className="table-cell RG">
                           <div className="btn_formPage_holder">
                             <button
@@ -360,7 +360,7 @@ function RoleChanger() {
                                 console.log(idchose)
                               }}
                             >
-                              <img src={kickUserSign} alt="kick User" />
+                              {/* <img src={kickUserSign} alt="kick User" /> */}
                             </button>
                           </div>
                         </td>

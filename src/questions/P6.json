@@ -1,7 +1,7 @@
 {
   "range_bro_count": {
     "engName": "brotherNumber",
-    "max": 15,
+    "lim": 15,
     "min": 1,
     "step": 1,
     "defaultValue": 0,
@@ -10,7 +10,7 @@
   },
   "range_sis_count": {
     "engName": "sisterNumber",
-    "max": 15,
+    "lim": 15,
     "min": 1,
     "step": 1,
     "defaultValue": 0,
@@ -19,7 +19,7 @@
   },
   "range_ame_count": {
     "engName": "paternalAuntNumber",
-    "max": 15,
+    "lim": 15,
     "min": 1,
     "step": 1,
     "defaultValue": 0,
@@ -28,7 +28,7 @@
   },
   "range_amo_count": {
     "engName": "paternalUncleNumber",
-    "max": 15,
+    "lim": 15,
     "min": 1,
     "step": 1,
     "defaultValue": 0,
@@ -37,7 +37,7 @@
   },
   "range_khale_count": {
     "engName": "maternalAuntNumber",
-    "max": 15,
+    "lim": 15,
     "min": 1,
     "step": 1,
     "defaultValue": 0,
@@ -46,7 +46,7 @@
   },
   "range_dai_count": {
     "engName": "maternalUncleNumber",
-    "max": 15,
+    "lim": 15,
     "min": 1,
     "step": 1,
     "defaultValue": 0,
