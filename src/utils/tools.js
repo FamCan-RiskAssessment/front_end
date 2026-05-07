@@ -503,7 +503,6 @@ export const permissionCategoryComparer = (recUserAPIPerm, listOfcategs, DashURL
   let whereCanWeGo = []
   recUserAPIPerm.forEach(rUAP => {
     if (rUAP.name == "دسترسی کامل") {
-      console.log("I have gone !")
       flagForBoss = true
     } else if (!flagForBoss) {
       if (rUAP.category in listOfcategs) {
@@ -520,7 +519,6 @@ export const permissionCategoryComparer = (recUserAPIPerm, listOfcategs, DashURL
     Object.keys(DashURLs).forEach(DUK => {
       whereCanWeGo.push(DashURLs[DUK])
     });
-    console.log("heyyyyyyyyyyyyy : ", whereCanWeGo)
     return whereCanWeGo
   } else {
     Object.keys(DashURLs).forEach(DUK => {

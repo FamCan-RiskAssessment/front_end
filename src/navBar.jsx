@@ -21,8 +21,14 @@ function NavBar({ account }) {
         }
         getUserDetail()
     }, [])
-    let role = localStorage.getItem("roles")
-    let nameRole = JSON.parse(role)[0].name
+    const roleString = localStorage.getItem("roles");
+    let nameRole = "";
+    try {
+        const parsedRoles = roleString ? JSON.parse(roleString) : [];
+        nameRole = parsedRoles?.[0]?.name || "";
+    } catch (error) {
+        nameRole = "";
+    }
     // Get current date and time
     const now = new Date();
     const persianDate = now.toLocaleDateString('fa-IR');

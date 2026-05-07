@@ -1,7 +1,8 @@
-import { useState } from "react";
+import {useState} from "react";
 import './login_page.css'
-import { useLocation, useNavigate } from "react-router-dom";
-import { APIURL } from "./utils/config";
+import {useNavigate} from "react-router-dom";
+import {APIURL} from "./utils/config";
+
 function AdminLogin_page() {
     const [phone, setphone] = useState('')
     const [Apassword, setApassword] = useState('')
@@ -12,7 +13,7 @@ function AdminLogin_page() {
         try {
             const res = await fetch(`${APIURL}/auth/admin/login`, {
                 method: 'POST',
-                headers: { "Content-Type": "application/json" },
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
                     "phone": phone,
                     "password": Apassword
@@ -21,6 +22,23 @@ function AdminLogin_page() {
             const data = await res.json()
             if (!res.ok) throw new Error(data.message || "Login failed");
             if (res.ok) {
+                const token =
+                    data?.data?.access_token ||
+                    data?.data?.token ||
+                    data?.access_token ||
+                    data?.token;
+                const roles = data?.data?.roles || data?.roles;
+                const permissions = data?.data?.permissions || data?.permissions;
+
+                if (token) {
+                    localStorage.setItem("token", token);
+                }
+                if (roles) {
+                    localStorage.setItem("roles", JSON.stringify(roles));
+                }
+                if (permissions) {
+                    localStorage.setItem("permissions", JSON.stringify(permissions));
+                }
                 navigate("/DashBoard");
             }
         } catch (err) {
@@ -32,12 +50,10 @@ function AdminLogin_page() {
     }
 
 
-
-
     return (
         <>
-            {Err.length != 0 &&
-                <div className={Err.length != 0 ? "error_container fader" : null}>
+            {Err.length !== 0 &&
+                <div className={Err.length !== 0 ? "error_container fader" : null}>
                     <span>{Err}</span>
                     <i className="fa fa-ban"></i>
                 </div>
@@ -49,11 +65,13 @@ function AdminLogin_page() {
                     <form onSubmit={(e) => form_submitted(e)} className="login_form">
                         <div className="inp">
                             <label htmlFor="telephone">نام کاربری</label>
-                            <input type="text" name="telephone" id="telephone" placeholder="09xxxxxxxxx" value={phone} onChange={(e) => setphone(e.target.value)} />
+                            <input type="text" name="telephone" id="telephone" placeholder="09xxxxxxxxx" value={phone}
+                                   onChange={(e) => setphone(e.target.value)}/>
                         </div>
                         <div className="inp">
                             <label htmlFor="mellicode">رمز عبور</label>
-                            <input type="password" placeholder="xxxxxxxxxx" value={Apassword} onChange={(e) => setApassword(e.target.value)} />
+                            <input type="password" placeholder="xxxxxxxxxx" value={Apassword}
+                                   onChange={(e) => setApassword(e.target.value)}/>
                         </div>
                         <button className="btn_login">ورود</button>
                     </form>
