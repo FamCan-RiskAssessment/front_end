@@ -3,10 +3,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL}
     image: ghcr.io/famcan-riskassessment/frontend:latest
     ports:
       - "5173:5173"
-    container_name: risk-prediction-frontend
+    pull_policy: always
+    container_name: frontend
     restart: unless-stopped
     networks:
       - famcan-network

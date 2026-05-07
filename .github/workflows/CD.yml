@@ -29,6 +29,8 @@ jobs:
           password: ${{ secrets.PAT }}
 
       - name: Build and Push Docker Image
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: |
           docker compose build
           docker compose push

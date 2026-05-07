@@ -1,5 +1,5 @@
 // export const APIURL = "194.62.43.192:8080"
-export const APIURL = "http://localhost:8080"
+export const APIURL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:8080" : "")
 
 // const port = "8080"
 export const APIARR = ["basic", "generalhealth", "mamography", "cancerVisit", "familycancerVisit", "lungcancer", "contact"]
