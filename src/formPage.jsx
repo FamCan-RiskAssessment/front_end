@@ -342,7 +342,7 @@ function FormsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {forms.map((form, index) => {
+                  {forms.map((  form, index) => {
                     if (form.formType == 1) {
                       return (
                         <tr key={form.id} className="form-row">

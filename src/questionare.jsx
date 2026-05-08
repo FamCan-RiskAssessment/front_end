@@ -731,9 +731,47 @@ function Questions() {
         return obj[st]?.[name];
     }
 
+    const clearServerValidationHighlights = (FP) => {
+        if (!FP?.current) return;
+        const formInputs = FP.current.querySelectorAll("input, select, textarea");
+        formInputs.forEach((fi) => {
+            if (fi.type === "radio" || fi.type === "checkbox") {
+                if (fi.parentElement?.parentElement) {
+                    fi.parentElement.parentElement.style.border = "";
+                }
+            } else {
+                fi.style.border = "";
+            }
+        });
+    };
+
+    const highlightServerValidationErrors = (FP, messages = {}) => {
+        if (!FP?.current || !messages || typeof messages !== "object") return false;
+
+        let hasFieldError = false;
+        Object.keys(messages).forEach((fieldName) => {
+            const targets = FP.current.querySelectorAll(`[name="${fieldName}"]`);
+            if (!targets.length) return;
+
+            hasFieldError = true;
+            targets.forEach((el) => {
+                if (el.type === "radio" || el.type === "checkbox") {
+                    if (el.parentElement?.parentElement) {
+                        el.parentElement.parentElement.style.border = "2px solid red";
+                    }
+                } else {
+                    el.style.border = "2px solid red";
+                }
+            });
+        });
+
+        return hasFieldError;
+    };
+
     //   const isNumber = (str) => str.trim() !== "" && !isNaN(str);
 
     const checkReq = (FP, st) => {
+        clearServerValidationHighlights(FP);
         let form_inps = FP.current.querySelectorAll("input, select");
         let rads = {};
         let chks = {};
@@ -1101,6 +1139,13 @@ function Questions() {
             } else if (step == 7 && JSON.parse(localStorage.getItem("postalVerified"))) {
                 addToast({
                     title: 'کد پستی درست را استعلام گرفته و دوباره تلاش کنید.',
+                    type: 'error',
+                    duration: 4000
+                })
+            } else if (json.status == 422 && json.messages) {
+                const hasPaintedFields = highlightServerValidationErrors(formRefs[`${step}`], json.messages);
+                addToast({
+                    title: hasPaintedFields ? 'لطفا فیلدهای مشخص شده را تکمیل کنید.' : 'لطفا تمامی سوال ها را پر کنید',
                     type: 'error',
                     duration: 4000
                 })
@@ -1562,6 +1607,7 @@ function Questions() {
 
                             <RadioV2 data_req={"true"} data={part3.radio_opts_mamoGraphy} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsMamoTest} relation={relator_gen(gender)}></RadioV2>
                             <FileUploader data={part3.attach_mamoGraphy} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isMamoTest) && relator_gen(gender)} fillingFormData={fillingFormData} removeLastFileFromFormData={removeLastFileFromFormData}></FileUploader>
+                            <OptionsV2 data_req={"true"} data={part3.combine_option_breastDensity} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isMamoTest) && relator_gen(gender)}></OptionsV2>
 
                             <RadioV2 data_req={"true"} data={part3.radio_opts_falop} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender)}></RadioV2>
                             <RadioV2 data_req={"true"} data={part3.radio_opts_andometrioz} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_gen(gender)}></RadioV2>

@@ -260,6 +260,29 @@
       "نمی دانم"
     ]
   },
+  "combine_option_breastDensity": {
+    "Oname": "breastDensity",
+    "ask": "در گزارش ماموگرافی، تراکم پستان شما در کدام دسته قرار گرفته است؟",
+    "options": [
+      "انتخاب کنید",
+      {
+        "title": "تقریباً کاملاً چرب (Category A)",
+        "value": "a"
+      },
+      {
+        "title": "نواحی پراکنده فیبروگلاندولار / تراکم پراکنده (Category B)",
+        "value": "b"
+      },
+      {
+        "title": "متراکم ناهمگون (Category C)",
+        "value": "c"
+      },
+      {
+        "title": "بسیار متراکم / فوق‌العاده متراکم (Category D)",
+        "value": "d"
+      }
+    ]
+  },
   "attach_mamoGraphy": {
     "fieldName": "لطفاً تصویر گزارش آزمون ماموگرافی خود را بارگذاری کنید. 📎🩻",
     "inputType": "file",

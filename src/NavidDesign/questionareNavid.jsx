@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import {useState, useRef, useEffect} from "react";
 import InputBox from "../input_box";
 import InputBoxV2 from "../input_boxV2";
 import Radio from "../radio";
@@ -20,14 +20,27 @@ import part5 from '../questions/P5.json'
 import part6 from '../questions/P6.json'
 import part7 from '../questions/P7.json'
 import CQs from '../questions/catchQs.json'
-import { useLocation, useNavigate } from "react-router-dom";
-import { APIURL, cancerRefs } from "../utils/config";
-import { useToast } from "../toaster";
+import {useLocation, useNavigate} from "react-router-dom";
+import {APIURL, cancerRefs} from "../utils/config";
+import {useToast} from "../toaster";
 import ToastProvider from "../toaster";
-import { fetchDataGET, isNumber, formatAndValidateJalali, CancerAdder, fetchDataPOSTImg, persianMonths, fetchDataGETImg, dict_transformer, getKeyVal, cancerDictRefiner, fetchDataPUT } from "../utils/tools";
+import {
+    fetchDataGET,
+    isNumber,
+    formatAndValidateJalali,
+    CancerAdder,
+    fetchDataPOSTImg,
+    persianMonths,
+    fetchDataGETImg,
+    dict_transformer,
+    getKeyVal,
+    cancerDictRefiner,
+    fetchDataPUT
+} from "../utils/tools";
 // import "./form_elementsNavid.css"
 import "../responsive_questionare.css"
 import RadioV2 from "../RadioV2";
+
 // import { set } from "animejs";
 function QuestionsNavid() {
     const [step, setStep] = useState(1)
@@ -113,7 +126,7 @@ function QuestionsNavid() {
 
     // const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-    const { addToast } = useToast()
+    const {addToast} = useToast()
 
     // step 1
     const [atba, setatba] = useState(false)
@@ -190,8 +203,6 @@ function QuestionsNavid() {
     // const cancerMotherTable = useRef(null)
 
 
-
-
     const raw = localStorage.getItem("form_data");
     const id_form = localStorage.getItem("form_id")
     const presetform = raw ? JSON.parse(raw) : null;
@@ -247,7 +258,7 @@ function QuestionsNavid() {
 
         // Select a random catch question
         const randomIndex = Math.floor(Math.random() * CQs.length);
-        const selectedCatchQuestion = { ...CQs[randomIndex] };
+        const selectedCatchQuestion = {...CQs[randomIndex]};
 
         // Handle special case for catchSum question type
         if (selectedCatchQuestion.useName === "catchSum") {
@@ -290,11 +301,6 @@ function QuestionsNavid() {
         }
     })
 
-
-
-    // console.log("33333333333333333333333333333333333333333333333333333333333333 : ", selfCancers)
-
-    console.log("SAMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOR", familyCancersPreData, selfCancersPreData)
 
     // cancer preData
     let token = localStorage.getItem("token")
@@ -439,8 +445,6 @@ function QuestionsNavid() {
             setLoading(false);
         }
     }, [RadioMap, CheckBoxMap, selfCancersPreData, familyCancersPreData])
-
-
 
 
     useEffect(() => {
@@ -677,11 +681,7 @@ function QuestionsNavid() {
     }
 
 
-
-
-
-
-    // I do not know but you should 
+    // I do not know but you should
     function getValue(obj, st, name) {
         return obj[st]?.[name];
     }
@@ -831,7 +831,7 @@ function QuestionsNavid() {
         const currentFormData = formDataRef.current; // Use the shared formData
         let sendData;
         for (const elem of form.elements) {
-            const { name, type, tagName } = elem;
+            const {name, type, tagName} = elem;
             if (!name || elem.disabled) continue;
             if (['BUTTON', 'FIELDSET'].includes(tagName)) continue;
 
@@ -1058,7 +1058,7 @@ function QuestionsNavid() {
                 // headers: {
                 //     'Authorization': `Bearer ${token_auth}`, // ⚠️ No Content-Type
                 // },
-                ...(sendData !== null && { body: sendData }), // ✅ Only include body if not null
+                ...(sendData !== null && {body: sendData}), // ✅ Only include body if not null
             });
             // Reset formData for this submission
             formDataRef.current = new FormData();
@@ -1236,11 +1236,6 @@ function QuestionsNavid() {
     }
 
 
-
-
-
-
-
     // const atba_checker = (val) => {
     //     setatba(val)
     // }
@@ -1347,23 +1342,23 @@ function QuestionsNavid() {
 
                 <div
                     className="help_bar_container"
-                    style={{ "--progress": `${(step / 7) * 100}%` }}
+                    style={{"--progress": `${(step / 7) * 100}%`}}
                 >
                     <div className="help_bar_parts_container">
                         <div className="help_bar_part1" onClick={prever}>
-                            <img src={prevSign} alt="arrow_img" />
+                            <img src={prevSign} alt="arrow_img"/>
                             <span>قبلی</span>
                         </div>
                         <div className="help_bar_part2">فرم ریسک سنجی</div>
                         <div className="help_bar_part3" onClick={() => setOpenModalConf(true)}>
-                            <img src={homeSign} alt="home" />
+                            <img src={homeSign} alt="home"/>
                         </div>
                     </div>
                 </div>
                 <div className="question_form_container" ref={questionContainerRef}>
                     {/* form part 1*/}
 
-                    <form ref={formRefs[1]} style={step == 1 ? null : { display: "none " }} className="question_form P1">
+                    <form ref={formRefs[1]} style={step == 1 ? null : {display: "none "}} className="question_form P1">
                         <div className="form_title">
                             <span>اطلاعات شخصی</span>
                             <span> - </span>
@@ -1381,20 +1376,26 @@ function QuestionsNavid() {
                     </form>
                     {/* form part 4 */}
 
-                    <form ref={formRefs[2]} style={step == 2 ? null : { display: "none " }} className="question_form P2">
+                    <form ref={formRefs[2]} style={step == 2 ? null : {display: "none "}} className="question_form P2">
                         <div className="form_title">
                             <span>{part4.title}</span>
                             <span> - </span>
                             <span>بخش {`${step}/5`}</span>
                         </div>
 
-                        <RadioV2 data_req={"true"} class_change1={"P2"} class_change2={"P2_inner"} mapper={RadioMap} data={part4.radio_opts_cancer} valueSetter={setIsCancer}></RadioV2>
-                        <CancerField data_req={selfCancersPreData != null ? "false" : "true"} file_up={"not_the_target"} data_Inp1={null} data_Options={part4.cancerCard.cancerType} data_Radio={null} data_Inp2={part4.cancerCard.cancerAge} data_file={part4.cancerCard.attachment} relation={relator_R(isCancer)} Enum={"cancer-types"} canArrFunc={null} canArr={null} refreshFunc={selfFunc} senderFunc={selfCancerSender} preData={selfCancersPreData}></CancerField>
+                        <RadioV2 data_req={"true"} class_change1={"P2"} class_change2={"P2_inner"} mapper={RadioMap}
+                                 data={part4.radio_opts_cancer} valueSetter={setIsCancer}></RadioV2>
+                        <CancerField data_req={selfCancersPreData != null ? "false" : "true"} file_up={"not_the_target"}
+                                     data_Inp1={null} data_Options={part4.cancerCard.cancerType} data_Radio={null}
+                                     data_Inp2={part4.cancerCard.cancerAge} data_file={part4.cancerCard.attachment}
+                                     relation={relator_R(isCancer)} Enum={"cancer-types"} canArrFunc={null}
+                                     canArr={null} refreshFunc={selfFunc} senderFunc={selfCancerSender}
+                                     preData={selfCancersPreData}></CancerField>
 
                     </form>
                     {/* form part 5 */}
 
-                    <form ref={formRefs[3]} style={step == 3 ? null : { display: "none " }} className="question_form P2">
+                    <form ref={formRefs[3]} style={step == 3 ? null : {display: "none "}} className="question_form P2">
                         <div className="form_title">
                             <span>{part5.title}</span>
                             <span> - </span>
@@ -1402,35 +1403,89 @@ function QuestionsNavid() {
                         </div>
 
 
-                        <RadioV2 data_req={"true"} data={part5.radio_opts_childCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsChildCncer} relation={relator_R(isChild)}></RadioV2>
-                        <CancerField data_req={"true"} file_up={"target"} data_Inp1={part5.childCard.childType} data_Inp2={part5.childCard.childCancerAge} data_Options={part5.childCard.childCancerType} data_Radio={part5.childCard.childLifeStatus} data_file={part5.childCard.attachment} relation={relator_R(isChildCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={["فرزند پسر", "فرزند دختر"]}></CancerField>
+                        <RadioV2 data_req={"true"} data={part5.radio_opts_childCancer} mapper={RadioMap}
+                                 class_change1={"P2 color_change"} class_change2={"P2_inner"}
+                                 valueSetter={setIsChildCncer} relation={relator_R(isChild)}></RadioV2>
+                        <CancerField data_req={"true"} file_up={"target"} data_Inp1={part5.childCard.childType}
+                                     data_Inp2={part5.childCard.childCancerAge}
+                                     data_Options={part5.childCard.childCancerType}
+                                     data_Radio={part5.childCard.childLifeStatus} data_file={part5.childCard.attachment}
+                                     relation={relator_R(isChildCancer)} Enum={"cancer-types"}
+                                     senderFunc={familycancerSender} refreshFunc={familyFunc}
+                                     preData={familyCancersPreData} famrel={["فرزند پسر", "فرزند دختر"]}></CancerField>
 
-                        <RadioV2 data_req={"true"} data={part5.radio_opts_motherCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsMotherCncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.motherCard.motherName} data_Inp2={part5.motherCard.motherCancerAge} data_Options={part5.motherCard.motherCancerType} data_Radio={part5.motherCard.motherLifeStatus} data_file={part5.motherCard.attachment} relation={relator_R(isMotherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={"مادر"}></CancerField>
+                        <RadioV2 data_req={"true"} data={part5.radio_opts_motherCancer} mapper={RadioMap}
+                                 class_change1={"P2 color_change"} class_change2={"P2_inner"}
+                                 valueSetter={setIsMotherCncer}></RadioV2>
+                        <CancerField data_req={"true"} data_Inp1={part5.motherCard.motherName}
+                                     data_Inp2={part5.motherCard.motherCancerAge}
+                                     data_Options={part5.motherCard.motherCancerType}
+                                     data_Radio={part5.motherCard.motherLifeStatus}
+                                     data_file={part5.motherCard.attachment} relation={relator_R(isMotherCancer)}
+                                     Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc}
+                                     preData={familyCancersPreData} famrel={"مادر"}></CancerField>
 
-                        <RadioV2 data_req={"true"} data={part5.radio_opts_fatherCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsFatherCncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.fatherCard.fatherName} data_Inp2={part5.fatherCard.fatherCancerAge} data_Options={part5.fatherCard.fatherCancerType} data_Radio={part5.fatherCard.fatherLifeStatus} data_file={part5.fatherCard.attachment} relation={relator_R(isFatherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={"پدر"}></CancerField>
+                        <RadioV2 data_req={"true"} data={part5.radio_opts_fatherCancer} mapper={RadioMap}
+                                 class_change1={"P2 color_change"} class_change2={"P2_inner"}
+                                 valueSetter={setIsFatherCncer}></RadioV2>
+                        <CancerField data_req={"true"} data_Inp1={part5.fatherCard.fatherName}
+                                     data_Inp2={part5.fatherCard.fatherCancerAge}
+                                     data_Options={part5.fatherCard.fatherCancerType}
+                                     data_Radio={part5.fatherCard.fatherLifeStatus}
+                                     data_file={part5.fatherCard.attachment} relation={relator_R(isFatherCancer)}
+                                     Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc}
+                                     preData={familyCancersPreData} famrel={"پدر"}></CancerField>
 
-                        <RadioV2 data_req={"true"} data={part5.radio_opts_bsCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsSibsCncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.siblingCard.siblingType} data_Inp2={part5.siblingCard.siblingCancerAge} data_Options={part5.siblingCard.siblingCancerType} data_Radio={part5.siblingCard.siblingLifeStatus} data_file={part5.siblingCard.attachment} relation={relator_R(isSibsCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={["خواهر ناتنی", "برادر ناتنی", "برادر", "خواهر"]}></CancerField>
+                        <RadioV2 data_req={"true"} data={part5.radio_opts_bsCancer} mapper={RadioMap}
+                                 class_change1={"P2 color_change"} class_change2={"P2_inner"}
+                                 valueSetter={setIsSibsCncer}></RadioV2>
+                        <CancerField data_req={"true"} data_Inp1={part5.siblingCard.siblingType}
+                                     data_Inp2={part5.siblingCard.siblingCancerAge}
+                                     data_Options={part5.siblingCard.siblingCancerType}
+                                     data_Radio={part5.siblingCard.siblingLifeStatus}
+                                     data_file={part5.siblingCard.attachment} relation={relator_R(isSibsCancer)}
+                                     Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc}
+                                     preData={familyCancersPreData}
+                                     famrel={["خواهر ناتنی", "برادر ناتنی", "برادر", "خواهر"]}></CancerField>
 
-                        <RadioV2 data_req={"true"} data={part5.radio_opts_ameAmoCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsUncAuntCncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.uncleAuntCard.uncleAuntType} data_Inp2={part5.uncleAuntCard.uncleAuntCancerAge} data_Options={part5.uncleAuntCard.uncleAuntCancerType} data_Radio={part5.uncleAuntCard.uncleAuntLifeStatus} data_file={part5.uncleAuntCard.attachment} relation={relator_R(isUncAuntCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={["عمه", "عمو"]}></CancerField>
+                        <RadioV2 data_req={"true"} data={part5.radio_opts_ameAmoCancer} mapper={RadioMap}
+                                 class_change1={"P2 color_change"} class_change2={"P2_inner"}
+                                 valueSetter={setIsUncAuntCncer}></RadioV2>
+                        <CancerField data_req={"true"} data_Inp1={part5.uncleAuntCard.uncleAuntType}
+                                     data_Inp2={part5.uncleAuntCard.uncleAuntCancerAge}
+                                     data_Options={part5.uncleAuntCard.uncleAuntCancerType}
+                                     data_Radio={part5.uncleAuntCard.uncleAuntLifeStatus}
+                                     data_file={part5.uncleAuntCard.attachment} relation={relator_R(isUncAuntCancer)}
+                                     Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc}
+                                     preData={familyCancersPreData} famrel={["عمه", "عمو"]}></CancerField>
 
-                        <RadioV2 data_req={"true"} data={part5.radio_opts_khaleDaeiCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsUncAunt2Cncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.khaleDaeiCard.khaleDaeiType} data_Inp2={part5.khaleDaeiCard.khaleDaeiCancerAge} data_Options={part5.khaleDaeiCard.khaleDaeiCancerType} data_Radio={part5.khaleDaeiCard.khaleDaeiLifeStatus} data_file={part5.khaleDaeiCard.attachment} relation={relator_R(isUncAunt2Cancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={["خاله", "دایی"]}></CancerField>
+                        <RadioV2 data_req={"true"} data={part5.radio_opts_khaleDaeiCancer} mapper={RadioMap}
+                                 class_change1={"P2 color_change"} class_change2={"P2_inner"}
+                                 valueSetter={setIsUncAunt2Cncer}></RadioV2>
+                        <CancerField data_req={"true"} data_Inp1={part5.khaleDaeiCard.khaleDaeiType}
+                                     data_Inp2={part5.khaleDaeiCard.khaleDaeiCancerAge}
+                                     data_Options={part5.khaleDaeiCard.khaleDaeiCancerType}
+                                     data_Radio={part5.khaleDaeiCard.khaleDaeiLifeStatus}
+                                     data_file={part5.khaleDaeiCard.attachment} relation={relator_R(isUncAunt2Cancer)}
+                                     Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc}
+                                     preData={familyCancersPreData} famrel={["خاله", "دایی"]}></CancerField>
                     </form>
                     {/* form part 7 */}
-                    <form ref={formRefs[4]} id="form7" style={step == 4 ? null : { display: "none" }} action="" className="question_form P2">
+                    <form ref={formRefs[4]} id="form7" style={step == 4 ? null : {display: "none"}} action=""
+                          className="question_form P2">
                         <div className="form_title">
                             <span>{part6.title}</span>
                             <span> - </span>
                             <span>بخش {`${step}/7`}</span>
                         </div>
-                        <OptionsV2 data_req={"true"} data={part7.combine_option_insurance} class_change1={"P2"} class_change2={"P2_inner"}></OptionsV2>
-                        <RadioV2 data_req={"true"} data={part7.radio_takmili_bime} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"}></RadioV2>
-                        <RadioV2 data_req={"true"} data={part7.radio_chronicLungDisease} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChronic}></RadioV2>
-                        <OptionsV2 data_req={"true"} data={part7.combine_option_chronicLungDisease} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isChronic)}></OptionsV2>
+                        <OptionsV2 data_req={"true"} data={part7.combine_option_insurance} class_change1={"P2"}
+                                   class_change2={"P2_inner"}></OptionsV2>
+                        <RadioV2 data_req={"true"} data={part7.radio_takmili_bime} mapper={RadioMap}
+                                 class_change1={"P2"} class_change2={"P2_inner"}></RadioV2>
+                        <RadioV2 data_req={"true"} data={part7.radio_chronicLungDisease} mapper={RadioMap}
+                                 class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsChronic}></RadioV2>
+                        <OptionsV2 data_req={"true"} data={part7.combine_option_chronicLungDisease} class_change1={"P2"}
+                                   class_change2={"P2_inner"} relation={relator_R(isChronic)}></OptionsV2>
 
                         {/* Inject catch question randomly in step 6 if applicable */}
                         {/* {step === 6 && catchQuestions[6] && (
@@ -1444,20 +1499,42 @@ function QuestionsNavid() {
                             }}></InputBoxV2>
                         )} */}
 
-                        <RadioV2 data_req={"true"} data={part7.radio_lungCancerHistory} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"}></RadioV2>
-                        <RadioV2 data_req={"true"} data={part7.radio_lungCancerFamily} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setFirstDeg}></RadioV2>
-                        <OptionsV2 data_req={"true"} data={part7.combine_option_lungCancerFamilyRelation} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(firstDeg)}></OptionsV2>
-                        <OptionsV2 data_req={"true"} data={part7.combine_option_occupationalExposure} class_change1={"P2"} class_change2={"P2_inner"}></OptionsV2>
-                        <RadioV2 data={part7.radio_currentSmoking} class_change1={"P2"} mapper={RadioMap} class_change2={"P2_inner"} valueSetter={setAnySmoke} ></RadioV2>
+                        <RadioV2 data_req={"true"} data={part7.radio_lungCancerHistory} mapper={RadioMap}
+                                 class_change1={"P2"} class_change2={"P2_inner"}></RadioV2>
+                        <RadioV2 data_req={"true"} data={part7.radio_lungCancerFamily} mapper={RadioMap}
+                                 class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setFirstDeg}></RadioV2>
+                        <OptionsV2 data_req={"true"} data={part7.combine_option_lungCancerFamilyRelation}
+                                   class_change1={"P2"} class_change2={"P2_inner"}
+                                   relation={relator_R(firstDeg)}></OptionsV2>
+                        <OptionsV2 data_req={"true"} data={part7.combine_option_occupationalExposure}
+                                   class_change1={"P2"} class_change2={"P2_inner"}></OptionsV2>
+                        <RadioV2 data={part7.radio_currentSmoking} class_change1={"P2"} mapper={RadioMap}
+                                 class_change2={"P2_inner"} valueSetter={setAnySmoke}></RadioV2>
                         {/* <OptionsV2 data_req={"true"} data={part7.combine_option_smokingTypes_current} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setSmokeType} relation={relator_R(anySmoke)}></OptionsV2> */}
-                        <CheckBox data={part7.check_smokeTypeCurrent} class_change1={"P2"} class_change2={"P2_inner"} checker={setMultiSmokeTypeCurrent} multicheck={true} checkArray={multiSmokeTypeCurrent} relation={relator_R(anySmoke)}></CheckBox>
-                        <InputBoxV2 data_req={"false"} data={part7.text_cigarettesPerDay_current} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypeCurrent, 'Csig')}></InputBoxV2>
-                        <InputBoxV2 data_req={"false"} data={part7.text_cigarPerDay_current} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypeCurrent, "CsigBarg")}></InputBoxV2>
-                        <InputBoxV2 data_req={"false"} data={part7.text_eCigPerDay_current} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypeCurrent, 'CelecSig')}></InputBoxV2>
-                        <InputBoxV2 data_req={"false"} data={part7.text_pipePerDay_current} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypeCurrent, 'Cpip')}></InputBoxV2>
-                        <InputBoxV2 data_req={"false"} data={part7.text_chapoghPerDay_current} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypeCurrent, 'Cchop')}></InputBoxV2>
-                        <InputBoxV2 data_req={"false"} data={part7.text_smokedOpiumPerDay_current} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypeCurrent, 'Cteryak')}></InputBoxV2>
-                        <InputBoxV2 data_req={"false"} data={part7.text_hookahPerWeek_current} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypeCurrent, 'Cghel')}></InputBoxV2>
+                        <CheckBox data={part7.check_smokeTypeCurrent} class_change1={"P2"} class_change2={"P2_inner"}
+                                  checker={setMultiSmokeTypeCurrent} multicheck={true}
+                                  checkArray={multiSmokeTypeCurrent} relation={relator_R(anySmoke)}></CheckBox>
+                        <InputBoxV2 data_req={"false"} data={part7.text_cigarettesPerDay_current} class_change1={"P2"}
+                                    class_change2={"P2_inner"}
+                                    relation={relator_multiCheck(multiSmokeTypeCurrent, 'Csig')}></InputBoxV2>
+                        <InputBoxV2 data_req={"false"} data={part7.text_cigarPerDay_current} class_change1={"P2"}
+                                    class_change2={"P2_inner"}
+                                    relation={relator_multiCheck(multiSmokeTypeCurrent, "CsigBarg")}></InputBoxV2>
+                        <InputBoxV2 data_req={"false"} data={part7.text_eCigPerDay_current} class_change1={"P2"}
+                                    class_change2={"P2_inner"}
+                                    relation={relator_multiCheck(multiSmokeTypeCurrent, 'CelecSig')}></InputBoxV2>
+                        <InputBoxV2 data_req={"false"} data={part7.text_pipePerDay_current} class_change1={"P2"}
+                                    class_change2={"P2_inner"}
+                                    relation={relator_multiCheck(multiSmokeTypeCurrent, 'Cpip')}></InputBoxV2>
+                        <InputBoxV2 data_req={"false"} data={part7.text_chapoghPerDay_current} class_change1={"P2"}
+                                    class_change2={"P2_inner"}
+                                    relation={relator_multiCheck(multiSmokeTypeCurrent, 'Cchop')}></InputBoxV2>
+                        <InputBoxV2 data_req={"false"} data={part7.text_smokedOpiumPerDay_current} class_change1={"P2"}
+                                    class_change2={"P2_inner"}
+                                    relation={relator_multiCheck(multiSmokeTypeCurrent, 'Cteryak')}></InputBoxV2>
+                        <InputBoxV2 data_req={"false"} data={part7.text_hookahPerWeek_current} class_change1={"P2"}
+                                    class_change2={"P2_inner"}
+                                    relation={relator_multiCheck(multiSmokeTypeCurrent, 'Cghel')}></InputBoxV2>
 
                         {/* {smokeType != null && smokeType != "انتخاب کنید" && (
                             <InputBoxV2 data={part7.text_using_now} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmoke)}></InputBoxV2>
@@ -1465,13 +1542,18 @@ function QuestionsNavid() {
                         {smokeType != null && smokeType == "تریاک" && (
                             <InputBoxV2 data={part7.text_chewedOpiumPerDay_past} class_change1={"P2"} class_change2={"P2_inner"}></InputBoxV2>
                         )} */}
-                        <RadioV2 data={part7.radio_heartDisease} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} des={true}></RadioV2>
-                        <RadioV2 data={part7.radio_diabetes} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} des={true}></RadioV2>
-                        <RadioV2 data={part7.radio_hypertension} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} des={true}></RadioV2>
+                        <RadioV2 data={part7.radio_heartDisease} mapper={RadioMap} class_change1={"P2"}
+                                 class_change2={"P2_inner"} des={true}></RadioV2>
+                        <RadioV2 data={part7.radio_diabetes} mapper={RadioMap} class_change1={"P2"}
+                                 class_change2={"P2_inner"} des={true}></RadioV2>
+                        <RadioV2 data={part7.radio_hypertension} mapper={RadioMap} class_change1={"P2"}
+                                 class_change2={"P2_inner"} des={true}></RadioV2>
 
 
-                        <OptionsV2 data={part7.combine_option_secondhandSmokeLocation} class_change1={"P2"} class_change2={"P2_inner"}></OptionsV2>
-                        <RadioV2 data_req={"true"} mapper={RadioMap} data={part7.radio_pastSmoking} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setAnySmokePast}></RadioV2>
+                        <OptionsV2 data={part7.combine_option_secondhandSmokeLocation} class_change1={"P2"}
+                                   class_change2={"P2_inner"}></OptionsV2>
+                        <RadioV2 data_req={"true"} mapper={RadioMap} data={part7.radio_pastSmoking} class_change1={"P2"}
+                                 class_change2={"P2_inner"} valueSetter={setAnySmokePast}></RadioV2>
                         {/* <InputBoxV2 data_req={"false"} data={part7.text_smokingStartAge_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)}></InputBoxV2> */}
                         {/* <InputBoxV2 data_req={"false"} data={part7.text_leaveSmoke} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(anySmokePast)}></InputBoxV2> */}
                         {/* <OptionsV2 data={part7.combine_option_smokingTypes_past} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setSmokeTypePast} relation={relator_R(anySmokePast)}></OptionsV2> */}
@@ -1481,20 +1563,36 @@ function QuestionsNavid() {
                         {/* {smokeType != null && smokeTypePast == "تریاک" && ( */}
                         {/* <InputBoxV2 data_req={"true"} data={part7.text_chewedOpiumPerDay_past} class_change1={"P2"} class_change2={"P2_inner"}></InputBoxV2> */}
                         {/* )} */}
-                        <CheckBox data={part7.check_smokeTypePast} class_change1={"P2"} class_change2={"P2_inner"} checker={setMultiSmokeTypePast} multicheck={true} checkArray={multiSmokeTypePast} relation={relator_R(anySmokePast)}></CheckBox>
+                        <CheckBox data={part7.check_smokeTypePast} class_change1={"P2"} class_change2={"P2_inner"}
+                                  checker={setMultiSmokeTypePast} multicheck={true} checkArray={multiSmokeTypePast}
+                                  relation={relator_R(anySmokePast)}></CheckBox>
 
-                        <InputBoxV2 data_req={"false"} data={part7.text_cigarettesPerDay_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypePast, 'Psig')}></InputBoxV2>
-                        <InputBoxV2 data_req={"false"} data={part7.text_cigarPerDay_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypePast, "PsigBarg")}></InputBoxV2>
-                        <InputBoxV2 data_req={"false"} data={part7.text_eCigPerDay_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypePast, 'PelecSig')}></InputBoxV2>
-                        <InputBoxV2 data_req={"false"} data={part7.text_pipePerDay_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypePast, 'Ppip')}></InputBoxV2>
-                        <InputBoxV2 data_req={"false"} data={part7.text_chapoghPerDay_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypePast, 'Pchop')}></InputBoxV2>
-                        <InputBoxV2 data_req={"false"} data={part7.text_smokedOpiumPerDay_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypePast, 'Pteryak')}></InputBoxV2>
-                        <InputBoxV2 data_req={"false"} data={part7.text_hookahPerWeek_past} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_multiCheck(multiSmokeTypePast, 'Pghel')}></InputBoxV2>
-
+                        <InputBoxV2 data_req={"false"} data={part7.text_cigarettesPerDay_past} class_change1={"P2"}
+                                    class_change2={"P2_inner"}
+                                    relation={relator_multiCheck(multiSmokeTypePast, 'Psig')}></InputBoxV2>
+                        <InputBoxV2 data_req={"false"} data={part7.text_cigarPerDay_past} class_change1={"P2"}
+                                    class_change2={"P2_inner"}
+                                    relation={relator_multiCheck(multiSmokeTypePast, "PsigBarg")}></InputBoxV2>
+                        <InputBoxV2 data_req={"false"} data={part7.text_eCigPerDay_past} class_change1={"P2"}
+                                    class_change2={"P2_inner"}
+                                    relation={relator_multiCheck(multiSmokeTypePast, 'PelecSig')}></InputBoxV2>
+                        <InputBoxV2 data_req={"false"} data={part7.text_pipePerDay_past} class_change1={"P2"}
+                                    class_change2={"P2_inner"}
+                                    relation={relator_multiCheck(multiSmokeTypePast, 'Ppip')}></InputBoxV2>
+                        <InputBoxV2 data_req={"false"} data={part7.text_chapoghPerDay_past} class_change1={"P2"}
+                                    class_change2={"P2_inner"}
+                                    relation={relator_multiCheck(multiSmokeTypePast, 'Pchop')}></InputBoxV2>
+                        <InputBoxV2 data_req={"false"} data={part7.text_smokedOpiumPerDay_past} class_change1={"P2"}
+                                    class_change2={"P2_inner"}
+                                    relation={relator_multiCheck(multiSmokeTypePast, 'Pteryak')}></InputBoxV2>
+                        <InputBoxV2 data_req={"false"} data={part7.text_hookahPerWeek_past} class_change1={"P2"}
+                                    class_change2={"P2_inner"}
+                                    relation={relator_multiCheck(multiSmokeTypePast, 'Pghel')}></InputBoxV2>
 
 
                     </form>
-                    <form ref={formRefs[5]} id="form7" style={step == 5 ? null : { display: "none" }} action="" className="question_form P2">
+                    <form ref={formRefs[5]} id="form7" style={step == 5 ? null : {display: "none"}} action=""
+                          className="question_form P2">
                         <div className="form_title">
                             <span>{part7.title}</span>
                             <span> - </span>
@@ -1507,16 +1605,22 @@ function QuestionsNavid() {
                         {/* <RadioV2 data_req={"true"} data={part6.radio_opts_fmTestGen} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsFamGeneTest}></RadioV2> */}
                         {/* <FileUploader data={part6.attachment_fmTestGen} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isFamGeneTest)} fillingFormData={fillingFormData} removeLastFileFromFormData={removeLastFileFromFormData}></FileUploader> */}
 
-                        <OptionsV2 data_req={"true"} data={part6.options_education} class_change1={"P2"} class_change2={"P2_inner"}></OptionsV2>
+                        <OptionsV2 data_req={"true"} data={part6.options_education} class_change1={"P2"}
+                                   class_change2={"P2_inner"}></OptionsV2>
 
                         {/* <RadioV2 data_req={"true"} data={part6.radio_opts_callExpert} class_change1={"P2"} class_change2={"P2_inner"}></RadioV2> */}
-                        <PersonalInfo data_req={"true"} data_inp1={part6.personalInfo.fullName} data_inp2={part6.personalInfo.mobileNumber1} data_inp3={part6.personalInfo.mobileNumber2} data_inp4={part6.personalInfo.province}
-                            data_inp5={part6.personalInfo.city} data_inp6={part6.personalInfo.postalCode} data_opt={part6.personalInfo.birthCountry} data_inp7={part6.personalInfo.address}
-                            data_check={part6.personalInfo.confidentialityAgreement} typeErr={setTypeErr} typeErr2={setTypeErr2} typeErr3={setTypeErr3}
+                        <PersonalInfo data_req={"true"} data_inp1={part6.personalInfo.fullName}
+                                      data_inp2={part6.personalInfo.mobileNumber1}
+                                      data_inp3={part6.personalInfo.mobileNumber2}
+                                      data_inp4={part6.personalInfo.province}
+                                      data_inp5={part6.personalInfo.city} data_inp6={part6.personalInfo.postalCode}
+                                      data_opt={part6.personalInfo.birthCountry} data_inp7={part6.personalInfo.address}
+                                      data_check={part6.personalInfo.confidentialityAgreement} typeErr={setTypeErr}
+                                      typeErr2={setTypeErr2} typeErr3={setTypeErr3}
                         ></PersonalInfo>
                     </form>
                 </div>
-                <div className="btn_holder_next_prev" style={{ display: "none" }}>
+                <div className="btn_holder_next_prev" style={{display: "none"}}>
                     <button className="btn_question" onClick={prever}>قبلی</button>
 
                     {step == 5 ? (
@@ -1612,8 +1716,7 @@ function QuestionsNavid() {
                             )}</div>
                     </div>
                 </div>
-            </div >
-
+            </div>
 
 
             {openModalConf && (
@@ -1635,7 +1738,8 @@ function QuestionsNavid() {
                         <button className="btn-add-new" onClick={() => {
                             navigate("/formsNavid")
                             setOpenModalConf(false)
-                        }}>بلی</button>
+                        }}>بلی
+                        </button>
                         <button className="delete_btn2" onClick={() => setOpenModalConf(false)}>خیر</button>
                     </div>
                 </div>
@@ -1643,4 +1747,5 @@ function QuestionsNavid() {
         </>
     )
 }
+
 export default QuestionsNavid

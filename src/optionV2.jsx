@@ -19,6 +19,18 @@ function OptionsV2({ data_req, data, class_change1, class_change2, valueSetter, 
             return value
         }
     }
+    const getOptionLabel = (opt) => {
+        if (opt && typeof opt === "object" && !Array.isArray(opt)) {
+            return opt.title ?? "";
+        }
+        return opt;
+    }
+    const getOptionValue = (opt) => {
+        if (opt && typeof opt === "object" && !Array.isArray(opt)) {
+            return opt.value;
+        }
+        return opt;
+    }
     return (
         <>
             <div className={`form_element optionV2 ${class_change1}`} style={relation ? null : { display: "none" }}>
@@ -35,7 +47,7 @@ function OptionsV2({ data_req, data, class_change1, class_change2, valueSetter, 
                         value={computeVal(value)}
                     >
                         {data.options.map((opt, index) =>
-                            <option value={opt}>{opt}</option>
+                            <option key={`${data.Oname}-${index}`} value={getOptionValue(opt)}>{getOptionLabel(opt)}</option>
                         )}
                     </select>
                     <span className="select-arrow">
