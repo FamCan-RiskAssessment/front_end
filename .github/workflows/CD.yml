@@ -28,6 +28,14 @@ jobs:
             exit 1
           fi
 
+      - name: Configure Docker for HTTP registry
+        uses: docker/setup-docker-action@v4
+        with:
+          daemon-config: |
+            {
+              "insecure-registries": ["${{ env.REGISTRY_HOST }}:${{ env.REGISTRY_PORT }}"]
+            }
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
