@@ -18,6 +18,12 @@
         "فرزند پسر"
       ]
     },
+    "childName": {
+      "engName": "childName",
+      "inpName": "نام فرزند",
+      "type": "text",
+      "placeHolder": "نام فرزند"
+    },
     "childCancerType": {
       "ask": "نوع یا انواع سرطان",
       "Oname": "childCancerType",
@@ -184,6 +190,12 @@
         "فوت شده"
       ]
     },
+    "siblingName": {
+      "engName": "siblingName",
+      "inpName": "نام برادر یا خواهر",
+      "type": "text",
+      "placeHolder": "نام برادر یا خواهر"
+    },
     "siblingCancerType": {
       "ask": "نوع یا انواع سرطان",
       "Oname": "siblingCancerType",
@@ -238,6 +250,12 @@
         "فوت شده"
       ]
     },
+    "uncleAuntName": {
+      "engName": "uncleAuntName",
+      "inpName": "نام عمه یا عمو",
+      "type": "text",
+      "placeHolder": "نام عمه یا عمو"
+    },
     "uncleAuntCancerType": {
       "ask": "نوع یا انواع سرطان",
       "Oname": "ameAmoCancerType",
@@ -291,6 +309,12 @@
         "در قید حیات",
         "فوت شده"
       ]
+    },
+    "khaleDaeiName": {
+      "engName": "khaleDaeiName",
+      "inpName": "نام خاله یا دایی",
+      "type": "text",
+      "placeHolder": "نام خاله یا دایی"
     },
     "khaleDaeiCancerType": {
       "ask": "نوع یا انواع سرطان",

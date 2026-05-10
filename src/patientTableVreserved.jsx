@@ -1163,6 +1163,9 @@ export default function FilterableTable() {
                                 <div key={index} className="role_table">
                                     <div className="family-member-info">
                                         <p><strong>خویشاوند:</strong> {relativeTypesMap[familyMember.relative]}</p>
+                                        {familyMember.name != null && String(familyMember.name).trim() !== "" && (
+                                            <p><strong>نام:</strong> {familyMember.name}</p>
+                                        )}
                                         <p><strong>وضعیت زندگی:</strong>
                                             {familyMember.lifeStatus === 0 ? "فوت شده" :
                                                 familyMember.lifeStatus === 1 ? "زنده" :

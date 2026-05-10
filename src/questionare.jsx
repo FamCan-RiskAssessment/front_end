@@ -35,6 +35,7 @@ import "./responsive_questionare.css"
 // import { set } from "animejs";
 function Questions() {
     const [step, setStep] = useState(1)
+    const [submissionSuccess, setSubmissionSuccess] = useState(false)
     const [loading, setLoading] = useState(false)
     const [after, setAfter] = useState(false)
     const [checkEmp, setCheckEmp] = useState(false)
@@ -907,7 +908,10 @@ function Questions() {
         const APIARR = ["basic", "generalhealth", "mamography", "cancerVisit", "familycancerVisit", "lungcancer", "contact"];
 
         const form = formRefs[`${step}`].current;
-        if (!form) return;
+        if (!form) {
+            setLoading(false);
+            return;
+        }
 
         const token_auth = localStorage.getItem("token");
         let allData = {};
@@ -1043,7 +1047,9 @@ function Questions() {
         // ✅ Append text fields to currentFormData
         if (step == 3 || step == 7) {
             Object.entries(allData).forEach(([key, value]) => {
-                currentFormData.append(key, value);
+                if (value !== null){
+                    currentFormData.append(key, value);
+                }
             });
             for (let [key, value] of currentFormData.entries()) {
                 console.log(key, value);
@@ -1123,7 +1129,37 @@ function Questions() {
             console.log("|||||||||||||||||||||||||| : ", res, json, step)
             setLoading(false)
             if (json.status == 200 || json.status == 201) {
-                nexter()
+                if (step === 7) {
+                    try {
+                        const token = localStorage.getItem("token");
+                        const formId =
+                            createdFormId ||
+                            (id_form != null &&
+                                id_form !== "" &&
+                                id_form !== "null"
+                                ? id_form
+                                : null);
+                        if (token && formId != null && formId !== "" && formId !== 0) {
+                            await fetchDataPUT(`form/${formId}/status`, token, {});
+                        }
+                    } catch (statusErr) {
+                        console.error("Form status update failed:", statusErr);
+                        addToast({
+                            title:
+                                "فرم ذخیره شد اما به‌روزرسانی وضعیت با خطا مواجه شد. از لیست فرم‌ها پیگیری کنید.",
+                            type: "warning",
+                            duration: 5000,
+                        });
+                    }
+                    addToast({
+                        title: "فرم شما با موفقیت ارسال شد.",
+                        type: "success",
+                        duration: 4000,
+                    });
+                    setSubmissionSuccess(true);
+                } else {
+                    nexter();
+                }
             } else if (step == 1 && json.status == 403) {
                 addToast({
                     title: 'کد ملی وارد شده اشتباه می باشد.',
@@ -1236,7 +1272,7 @@ function Questions() {
         return null;
     };
 
-    const familycancerSender = async (nameOrRel, age, rawCancer, isALive, img) => {
+    const familycancerSender = async (nameOrRel, age, rawCancer, isALive, img, relativePersonalName = "") => {
         // console.log("fuck you front workers~");
         // console.log("Age:", age);
         // console.log("Cancer:", rawCancer);
@@ -1278,6 +1314,14 @@ function Questions() {
             relative: firstVal,
             lifeStatus: isALive,
         };
+
+        const trimmedName =
+            relativePersonalName != null
+                ? String(relativePersonalName).trim()
+                : "";
+        if (trimmedName !== "") {
+            payload.name = trimmedName;
+        }
 
         // Handle multiple images by adding them directly to the payload
         if (Array.isArray(img)) {
@@ -1420,6 +1464,28 @@ function Questions() {
     // if (loading) {
     //     return <Loader></Loader>
     // }
+
+    if (submissionSuccess) {
+        return (
+            <>
+                <div className="question_container form-submission-success">
+                    <div className="submission-success-panel">
+                        <h2 className="form_success_title">ثبت با موفقیت انجام شد</h2>
+                        <p className="form_success_message">
+                            اطلاعات شما با موفقیت ثبت شد. می‌توانید به لیست فرم‌ها برگردید.
+                        </p>
+                        <button
+                            type="button"
+                            className="btn_question"
+                            onClick={() => navigate("/forms")}
+                        >
+                            لیست فرم های شما
+                        </button>
+                    </div>
+                </div>
+            </>
+        );
+    }
 
     return (
         <>
@@ -1647,7 +1713,7 @@ function Questions() {
                         </div>
 
                         <RadioV2 data_req={"true"} data={part5.radio_opts_childCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsChildCncer} relation={relator_R(isChild)}></RadioV2>
-                        <CancerField data_req={"true"} file_up={"target"} data_Inp1={part5.childCard.childType} data_Inp2={part5.childCard.childCancerAge} data_Options={part5.childCard.childCancerType} data_Radio={part5.childCard.childLifeStatus} data_file={part5.childCard.attachment} relation={relator_R(isChildCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={["فرزند پسر", "فرزند دختر"]}></CancerField>
+                        <CancerField data_req={"true"} file_up={"target"} data_Inp1={part5.childCard.childType} data_InpName={part5.childCard.childName} data_Inp2={part5.childCard.childCancerAge} data_Options={part5.childCard.childCancerType} data_Radio={part5.childCard.childLifeStatus} data_file={part5.childCard.attachment} relation={relator_R(isChildCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={["فرزند پسر", "فرزند دختر"]}></CancerField>
 
                         <RadioV2 data_req={"true"} data={part5.radio_opts_motherCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsMotherCncer}></RadioV2>
                         <CancerField data_req={"true"} data_Inp1={part5.motherCard.motherName} data_Inp2={part5.motherCard.motherCancerAge} data_Options={part5.motherCard.motherCancerType} data_Radio={part5.motherCard.motherLifeStatus} data_file={part5.motherCard.attachment} relation={relator_R(isMotherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={"مادر"}></CancerField>
@@ -1656,13 +1722,13 @@ function Questions() {
                         <CancerField data_req={"true"} data_Inp1={part5.fatherCard.fatherName} data_Inp2={part5.fatherCard.fatherCancerAge} data_Options={part5.fatherCard.fatherCancerType} data_Radio={part5.fatherCard.fatherLifeStatus} data_file={part5.fatherCard.attachment} relation={relator_R(isFatherCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={"پدر"}></CancerField>
 
                         <RadioV2 data_req={"true"} data={part5.radio_opts_bsCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsSibsCncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.siblingCard.siblingType} data_Inp2={part5.siblingCard.siblingCancerAge} data_Options={part5.siblingCard.siblingCancerType} data_Radio={part5.siblingCard.siblingLifeStatus} data_file={part5.siblingCard.attachment} relation={relator_R(isSibsCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={["خواهر ناتنی", "برادر ناتنی", "برادر", "خواهر"]}></CancerField>
+                        <CancerField data_req={"true"} data_Inp1={part5.siblingCard.siblingType} data_InpName={part5.siblingCard.siblingName} data_Inp2={part5.siblingCard.siblingCancerAge} data_Options={part5.siblingCard.siblingCancerType} data_Radio={part5.siblingCard.siblingLifeStatus} data_file={part5.siblingCard.attachment} relation={relator_R(isSibsCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={["خواهر ناتنی", "برادر ناتنی", "برادر", "خواهر"]}></CancerField>
 
                         <RadioV2 data_req={"true"} data={part5.radio_opts_ameAmoCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsUncAuntCncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.uncleAuntCard.uncleAuntType} data_Inp2={part5.uncleAuntCard.uncleAuntCancerAge} data_Options={part5.uncleAuntCard.uncleAuntCancerType} data_Radio={part5.uncleAuntCard.uncleAuntLifeStatus} data_file={part5.uncleAuntCard.attachment} relation={relator_R(isUncAuntCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={["عمه", "عمو"]}></CancerField>
+                        <CancerField data_req={"true"} data_Inp1={part5.uncleAuntCard.uncleAuntType} data_InpName={part5.uncleAuntCard.uncleAuntName} data_Inp2={part5.uncleAuntCard.uncleAuntCancerAge} data_Options={part5.uncleAuntCard.uncleAuntCancerType} data_Radio={part5.uncleAuntCard.uncleAuntLifeStatus} data_file={part5.uncleAuntCard.attachment} relation={relator_R(isUncAuntCancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={["عمه", "عمو"]}></CancerField>
 
                         <RadioV2 data_req={"true"} data={part5.radio_opts_khaleDaeiCancer} mapper={RadioMap} class_change1={"P2 color_change"} class_change2={"P2_inner"} valueSetter={setIsUncAunt2Cncer}></RadioV2>
-                        <CancerField data_req={"true"} data_Inp1={part5.khaleDaeiCard.khaleDaeiType} data_Inp2={part5.khaleDaeiCard.khaleDaeiCancerAge} data_Options={part5.khaleDaeiCard.khaleDaeiCancerType} data_Radio={part5.khaleDaeiCard.khaleDaeiLifeStatus} data_file={part5.khaleDaeiCard.attachment} relation={relator_R(isUncAunt2Cancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={["خاله", "دایی"]}></CancerField>
+                        <CancerField data_req={"true"} data_Inp1={part5.khaleDaeiCard.khaleDaeiType} data_InpName={part5.khaleDaeiCard.khaleDaeiName} data_Inp2={part5.khaleDaeiCard.khaleDaeiCancerAge} data_Options={part5.khaleDaeiCard.khaleDaeiCancerType} data_Radio={part5.khaleDaeiCard.khaleDaeiLifeStatus} data_file={part5.khaleDaeiCard.attachment} relation={relator_R(isUncAunt2Cancer)} Enum={"cancer-types"} senderFunc={familycancerSender} refreshFunc={familyFunc} preData={familyCancersPreData} famrel={["خاله", "دایی"]}></CancerField>
                     </form>
                     {/* form part 6 */}
                     <form ref={formRefs[6]} id="form6" style={step == 6 ? null : { display: "none" }} className="question_form P2">
@@ -1798,20 +1864,9 @@ function Questions() {
                         {/* <div className="bottom_helper_part1"></div> */}
                         <div className="bottom_helper_part2">                    {step == 7 ? (
                             <button className="btn_question" onClick={async (e) => {
-
                                 let passOno = checkReq(formRefs[step], step)
                                 if (!typeErr && !typeErr2 && !typeErr3 && passOno) {
-                                    setLoading(true)
-                                    handleSubmit(e)
-                                    addToast({
-                                        title: 'پاسخ های شما با موفقیت ذخیره شد',
-                                        type: 'success',
-                                        duration: 4000
-                                    })
-                                    let token = localStorage.getItem("token")
-                                    let changeState = await fetchDataPUT(`form/${createdFormId}/status`, token, {})
-                                    console.log("++++++++++++++++++++++++++ : ", changeState)
-                                    navigate("/forms")
+                                    await handleSubmit(e)
                                 } else {
                                     addToast({
                                         title: 'لطفا فیلد ها را به درستی پر کنید',
@@ -1819,7 +1874,6 @@ function Questions() {
                                         duration: 4000
                                     })
                                 }
-
 
                             }}>ارسال</button>
                         ) : (

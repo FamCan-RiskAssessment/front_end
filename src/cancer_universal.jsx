@@ -13,6 +13,7 @@ import { useToast } from "./toaster";
 function CancerField({
     data_req,
     data_Inp1,
+    data_InpName,
     data_Options,
     data_Radio,
     data_Inp2,
@@ -32,6 +33,7 @@ function CancerField({
     const [cancerArray, setCancerArray] = useState([]);
     const [relData, setRelData] = useState("");
     const [inp1, setInp1] = useState("");
+    const [inpName, setInpName] = useState("");
     const [inp2, setInp2] = useState("");
     const [opt, setOpt] = useState("");
     const [rad, setRad] = useState("");
@@ -59,29 +61,9 @@ function CancerField({
     //     c
     // })
 
-    const RelationFinder = (famrel) => {
-        if (famrel !== undefined && typeof famrel == "string") {
-            return (
-                <InputBoxV2
-                    data_req={"false"}
-                    data={data_Inp1}
-                    valueSetter={setInp1}
-                    value={inp1}
-                />
-            )
-        } else if (famrel !== undefined && famrel.length >= 2) {
-            return (
-                <OptionsV2
-                    data_req={"false"}
-                    data={data_Inp1}
-                    valueSetter={setInp1}
-                    Enum={Enum}
-                    value={inp1}
-                    colRef={typeRef}
-                />
-            )
-        }
-    }
+    const showNameColumn =
+        Boolean(data_InpName) ||
+        (typeof famrel === "string" && Boolean(data_Inp1));
 
     // defining the cancer data loader functions
 
@@ -144,10 +126,15 @@ function CancerField({
                         const familyCancerRows = [];
 
                         filteredFamilyCancers.forEach((familyMember) => {
-                            familyMember.cancers.forEach((cancer) => {
+                                familyMember.cancers.forEach((cancer) => {
+                                const rn =
+                                    familyMember.name ??
+                                    familyMember.relativeName ??
+                                    "";
                                 familyCancerRows.push({
                                     id: cancer.id,
                                     relation: relData[familyMember.relative - 1].name,
+                                    relativeName: rn,
                                     cancerType: Can[cancer.cancerType - 1].name,
                                     cancerAge: cancer.cancerAge,
                                     status: familyMember.lifeStatus, // lifeStatus is at the family member level
@@ -221,11 +208,21 @@ function CancerField({
         // Validate required fields (skip if field is null)
         // console.log("what is the inp1 : ", inp1)
         const hasInp1 = !data_Inp1 || inp1.trim() !== "";
+        const relationLabel =
+            typeof famrel === "string" && famrel !== "write" ? famrel : inp1;
+        const relativePersonal =
+            typeof famrel === "string"
+                ? (inp1 || "").trim()
+                : (inpName || "").trim();
+        const nameRequired =
+            Boolean(data_InpName) ||
+            (typeof famrel === "string" && Boolean(data_Inp1));
+        const hasNameOk = !nameRequired || relativePersonal !== "";
         const hasInp2 = !data_Inp2 || inp2.trim() !== "";
         const hasOpt = !data_Options || opt !== "";
         const hasRad = !data_Radio || rad !== "";
 
-        if (!hasInp1 || !hasInp2 || !hasOpt || !hasRad) {
+        if (!hasInp1 || !hasInp2 || !hasOpt || !hasRad || !hasNameOk) {
             alert("لطفاً فیلدهای الزامی را پر کنید.");
             return;
         }
@@ -240,7 +237,8 @@ function CancerField({
         }
 
         const newRow = {
-            relation: typeof famrel == "string" && famrel != "write" ? famrel : inp1,
+            relation: relationLabel,
+            relativeName: relativePersonal,
             cancerType: opt,
             cancerAge: inp2,
             status: rad,
@@ -252,7 +250,7 @@ function CancerField({
 
         // Call external sender and get the new cancer ID
         if (senderFunc) {
-            await senderFunc(newRow.relation, inp2, opt, rad, imageFiles);
+            await senderFunc(relationLabel, inp2, opt, rad, imageFiles, relativePersonal);
         }
 
         // Update UI table immediately (row will get id when preData refreshes)
@@ -281,6 +279,7 @@ function CancerField({
         }
         // Reset form fields
         setInp1("");
+        setInpName("");
         // console.log("////////////////////////////////////////////////////////")
         setInp2("");
         setOpt("");
@@ -311,10 +310,13 @@ function CancerField({
         setImagePreviewUrls(null);
     }, [
         data_Inp1,
+        data_InpName,
         data_Inp2,
         data_Options,
         data_Radio,
+        famrel,
         inp1,
+        inpName,
         inp2,
         opt,
         rad,
@@ -375,7 +377,37 @@ function CancerField({
             <div className="jadval_and_form">
                 {/* Form */}
                 <div className="total_cancer_holder" ref={canUniRef}>
-                    {data_Inp1 && RelationFinder(famrel)}
+                    {data_Inp1 && typeof famrel === "string" && (
+                        <InputBoxV2
+                            data_req={"false"}
+                            data={data_Inp1}
+                            valueSetter={setInp1}
+                            value={inp1}
+                        />
+                    )}
+                    {data_Inp1 &&
+                        famrel !== undefined &&
+                        Array.isArray(famrel) &&
+                        famrel.length >= 2 && (
+                            <>
+                                <OptionsV2
+                                    data_req={"false"}
+                                    data={data_Inp1}
+                                    valueSetter={setInp1}
+                                    Enum={Enum}
+                                    value={inp1}
+                                    colRef={typeRef}
+                                />
+                                {data_InpName && (
+                                    <InputBoxV2
+                                        data_req={"false"}
+                                        data={data_InpName}
+                                        valueSetter={setInpName}
+                                        value={inpName}
+                                    />
+                                )}
+                            </>
+                        )}
                     {data_Options && (
                         <OptionsV2
                             data_req={"false"}
@@ -462,6 +494,7 @@ function CancerField({
                         <thead className="sar_jadval">
                             <tr>
                                 {data_Inp1 && <th>ارتباط</th>}
+                                {showNameColumn && <th>نام</th>}
                                 {data_Options && <th>سرطان</th>}
                                 {data_Inp2 && <th>سن</th>}
                                 {data_Radio && <th>در قید حیات</th>}
@@ -473,6 +506,7 @@ function CancerField({
                             {(cancerArray || []).map((row, index) => (
                                 <tr key={index}>
                                     {data_Inp1 && <td>{row.relation}</td>}
+                                    {showNameColumn && <td>{row.relativeName || ""}</td>}
                                     {data_Options && <td>{row.cancerType}</td>}
                                     {data_Inp2 && <td>{row.cancerAge}</td>}
                                     {data_Radio && (

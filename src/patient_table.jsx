@@ -1,7 +1,7 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import NavBar from "./navBar";
 import "./patient_table.css";
-import {APIARR_TAB, APIARR_Navid, APIURL, formStatusLabels, statusAPIs, stateColors} from "./utils/config";
+import { APIARR_TAB, APIARR_Navid, APIURL, formStatusLabels, statusAPIs, stateColors } from "./utils/config";
 import {
     fetchDataGET,
     fetchDataGETTab,
@@ -17,15 +17,15 @@ import {
     endpointMaker
 } from "./utils/tools";
 import PERSIAN_HEADERS from "./assets/table_header.json"
-import {useLocation} from "react-router-dom";
-import {useToast} from "./toaster";
-import {isNumber} from "./utils/tools";
+import { useLocation } from "react-router-dom";
+import { useToast } from "./toaster";
+import { isNumber } from "./utils/tools";
 import Loader from "./utils/loader";
 import stateChangeSign from './V2Form/stateChange.svg'
 import arrowLeftSign from './V2Form/arrowLeft.svg'
 import leftSign from './V2Form/form_left.png'
 import rightSign from './V2Form/form_right.png'
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // Load the Persian header mapping
 const headerMapping = {};
@@ -45,7 +45,15 @@ PERSIAN_HEADERS.forEach(item => {
 
 
 // Helper function to convert boolean/null values to Persian text
+const YEARS_DURATION_FIELDS = ["intendedHrtUse", "hrtUseLength"];
+
 const convertToPersianText = (value, RM, key) => {
+    if (YEARS_DURATION_FIELDS.includes(key)) {
+        if (value === null || value === undefined || value === "") return value;
+        const n = typeof value === "number" ? value : Number(String(value).trim());
+        if (!Number.isNaN(n) && n >= 0 && n <= 25) return `${n} سال`;
+        return value;
+    }
     if (mapper_map[key] && RM[mapper_map[key]]) {
         // console.log(mapper_map, key, mapper_map[key], RM, RM[mapper_map[key]], value, RM[mapper_map[key]][value])
         return getKeyVal(RM[mapper_map[key]], value)
@@ -107,7 +115,7 @@ export default function FilterableTable() {
     // const [apiArray, setapiArray] = useState([])
     const [mode, setMode] = useState('')
     const [filtersApplied, setFiltersApplied] = useState(false)
-    const {addToast} = useToast()
+    const { addToast } = useToast()
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -155,7 +163,7 @@ export default function FilterableTable() {
         // let checkPerms = JSON.parse(localStorage.getItem("permissions"))
         role.forEach(r => {
             if (r.name == "مراجعه کننده") {
-                navigate("/error_page", {state: {error_type: 403}})
+                navigate("/error_page", { state: { error_type: 403 } })
             }
         });
     }, [])
@@ -213,7 +221,7 @@ export default function FilterableTable() {
                 ...prev,
                 [formId]: {
                     ...prev[formId],
-                    [apiPart]: {error: error.message, incomplete: true}
+                    [apiPart]: { error: error.message, incomplete: true }
                 }
             }));
         }
@@ -227,7 +235,7 @@ export default function FilterableTable() {
 
             // If opening the drawer for the first time, fetch all parts
             if (!isCurrentlyOpen) {
-                setLoadingDetails(prev => ({...prev, [formId]: true}));
+                setLoadingDetails(prev => ({ ...prev, [formId]: true }));
 
                 // Fetch all API parts for this form
                 for (const apiPart of APIarray) {
@@ -237,7 +245,7 @@ export default function FilterableTable() {
                     }
                 }
 
-                setLoadingDetails(prev => ({...prev, [formId]: false}));
+                setLoadingDetails(prev => ({ ...prev, [formId]: false }));
             }
             // console.log("goooooooooooooooooooooooooo : ", formDetails[formId])
             if (formDetails[formId]) {
@@ -296,7 +304,7 @@ export default function FilterableTable() {
                 processedValue = Number(fieldValue);
             }
 
-            const payload = {[fieldName]: processedValue};
+            const payload = { [fieldName]: processedValue };
 
             const response = await fetch(`${APIURL}/admin/form/${formId}/${apiPart}`, {
                 method: 'PATCH',
@@ -333,7 +341,7 @@ export default function FilterableTable() {
             // Clear the editing state
             setEditingFormPart(null);
             setEditingCells(prev => {
-                const newPrev = {...prev};
+                const newPrev = { ...prev };
                 if (newPrev[formId] && newPrev[formId][apiPart]) {
                     delete newPrev[formId][apiPart][fieldName];
                     if (Object.keys(newPrev[formId][apiPart]).length === 0) {
@@ -465,12 +473,12 @@ export default function FilterableTable() {
 
         // Add additional filters based on SSAPI.md specifications
         const additionalFilters = [
-            {key: 'formType', value: filters.formType},
-            {key: 'gender', value: filters.gender},
-            {key: 'birthYear', value: filters.birthYear},
-            {key: 'drinksAlcohol', value: filters.drinksAlcohol},
-            {key: 'smokingNow', value: filters.smokingNow},
-            {key: 'cancer', value: filters.cancer}
+            { key: 'formType', value: filters.formType },
+            { key: 'gender', value: filters.gender },
+            { key: 'birthYear', value: filters.birthYear },
+            { key: 'drinksAlcohol', value: filters.drinksAlcohol },
+            { key: 'smokingNow', value: filters.smokingNow },
+            { key: 'cancer', value: filters.cancer }
         ];
         // Use endpointMaker to build the full endpoint with pagination and status
         endpoint = endpointMaker(
@@ -535,14 +543,14 @@ export default function FilterableTable() {
                     const updatedForms = [];
                     // Process each form from the API exactly once to prevent duplicates
                     for (const pf of result.data?.data || []) {
-                        let updatedForm = {...pf}; // Start with base form data
+                        let updatedForm = { ...pf }; // Start with base form data
 
                         // Combine data from all API parts for this specific form
                         for (const ar of APIARR_TAB) {
                             const user_part_form = await fetchDataGETTab(`form/${pf.id}/${ar}`, token);
 
                             // Spread the additional data but keep the original id from pf
-                            updatedForm = {...updatedForm, ...user_part_form.data, id: pf.id};
+                            updatedForm = { ...updatedForm, ...user_part_form.data, id: pf.id };
                         }
 
                         // Add this form only once to the results array
@@ -621,10 +629,10 @@ export default function FilterableTable() {
     };
 
     const handleDoubleClick = (rowId, field, value) => {
-        setEditingCell({rowId, field});
+        setEditingCell({ rowId, field });
         setEditedData(prev => ({
             ...prev,
-            [rowId]: {...prev[rowId], [field]: convertToPersianText(value, RadioMap, field)}
+            [rowId]: { ...prev[rowId], [field]: convertToPersianText(value, RadioMap, field) }
         }));
     };
 
@@ -632,14 +640,14 @@ export default function FilterableTable() {
         // Optional: update editedData if you're tracking per-row edits separately
         setEditedData(prev => ({
             ...prev,
-            [rowId]: {...prev[rowId], [field]: e.target.value}
+            [rowId]: { ...prev[rowId], [field]: e.target.value }
         }));
         setEditedId(parseInt(rowId));
 
         // Update the main data array
         setData(prevData =>
             prevData.map(item =>
-                item.id === rowId ? {...item, [field]: e.target.value} : item
+                item.id === rowId ? { ...item, [field]: e.target.value } : item
             )
         );
     };
@@ -656,7 +664,7 @@ export default function FilterableTable() {
     //  TO DO : Ask kian about that and let him change how data is managed
     const handleSave = () => {
         const updatedData = data.map(row =>
-            editedData[row.id] ? {...row, ...editedData[row.id]} : row
+            editedData[row.id] ? { ...row, ...editedData[row.id] } : row
         );
         console.log(updatedData)
         setData(updatedData);
@@ -765,7 +773,7 @@ export default function FilterableTable() {
             setData(prevData =>
                 prevData.map(form =>
                     form.id === selectedFormId
-                        ? {...form, status: getNewStatusFromAPI("calculated")}
+                        ? { ...form, status: getNewStatusFromAPI("calculated") }
                         : form
                 )
             );
@@ -789,7 +797,7 @@ export default function FilterableTable() {
             }
             if (model_name === "premm5") {
                 const the_probs = res.data; // assuming res.data has gene_probs and p_any
-                const {gene_probs, p_any} = the_probs;
+                const { gene_probs, p_any } = the_probs;
 
                 // Merge gene_probs and p_any into a single flat object
                 const combinedRisks = {
@@ -850,7 +858,7 @@ export default function FilterableTable() {
             setData(prevData =>
                 prevData.map(form =>
                     form.id === form_id
-                        ? {...form, status: getNewStatusFromAPI(API)}
+                        ? { ...form, status: getNewStatusFromAPI(API) }
                         : form
                 )
             );
@@ -894,7 +902,7 @@ export default function FilterableTable() {
     return (
         <>
             <div className="forms_page_holder">
-                <NavBar account={userPhone}/>
+                <NavBar account={userPhone} />
                 <div className="forms-page-wrapper PT">
                     <div className="forms-container PT">
 
@@ -1113,7 +1121,7 @@ export default function FilterableTable() {
                                 {data.length > 0 ? (
                                     data.map((row, rowIndex) => (
                                         <div key={`form-${row.id || rowIndex}`}
-                                             className={`form_section_drawer ${rowIndex === 0 ? 'first' : rowIndex === data.length - 1 ? 'last' : ''}`}>
+                                            className={`form_section_drawer ${rowIndex === 0 ? 'first' : rowIndex === data.length - 1 ? 'last' : ''}`}>
                                             <div
                                                 className="drawer_header"
                                                 onClick={() => {
@@ -1121,17 +1129,17 @@ export default function FilterableTable() {
                                                     let apiArray = row.formType == 1 ? APIARR_TAB : APIARR_Navid
                                                     toggleDrawer(row.id, apiArray)
                                                 }}
-                                                // style={{ background: stateColors[Object.keys(formStatusLabels).find(key => formStatusLabels[key] === row.status)] }}
+                                            // style={{ background: stateColors[Object.keys(formStatusLabels).find(key => formStatusLabels[key] === row.status)] }}
                                             >
                                                 <div className="drawer_title">
                                                     <span> شماره فرم : {row.id || rowIndex + 1}</span>
                                                     <span>نام : {row.name || "نامشخص"}</span>
                                                     <span
-                                                        style={{background: stateColors[Object.keys(formStatusLabels).find(key => formStatusLabels[key] === row.status)]}}
+                                                        style={{ background: stateColors[Object.keys(formStatusLabels).find(key => formStatusLabels[key] === row.status)] }}
                                                         className="form_status_show"
                                                     >
-                            {row.status || "نامشخص"}
-                          </span>
+                                                        {row.status || "نامشخص"}
+                                                    </span>
                                                 </div>
                                                 {/* <h3 className="drawer_title">وضعیت : </h3> */}
                                                 <div className="drawer_controls">
@@ -1142,22 +1150,22 @@ export default function FilterableTable() {
                                                             saveTheIdAndOpetions(row.id);
                                                         }}
                                                     >
-                            <span>
-                              <img src={arrowLeftSign} alt="model input"/>
-                            </span>
+                                                        <span>
+                                                            <img src={arrowLeftSign} alt="model input" />
+                                                        </span>
                                                         <span>ورودی به مدل</span>
 
                                                     </button>
                                                     <button className="status_changer model_enter_btn"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation(); // Prevent triggering the drawer toggle
-                                                                setSelectedFormId(row.id)
-                                                                setOpenStatusModal(true);
-                                                            }}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation(); // Prevent triggering the drawer toggle
+                                                            setSelectedFormId(row.id)
+                                                            setOpenStatusModal(true);
+                                                        }}
                                                     >
-                            <span>
-                              <img src={stateChangeSign} alt="status change"/>
-                            </span>
+                                                        <span>
+                                                            <img src={stateChangeSign} alt="status change" />
+                                                        </span>
                                                         <span>تغییر وضعیت</span>
                                                     </button>
                                                     {/* <span className="drawer_arrow">▼</span> */}
@@ -1165,7 +1173,7 @@ export default function FilterableTable() {
                                             </div>
 
                                             <div id={`drawer-${row.id || `row-${rowIndex}`}`}
-                                                 className="drawer_content">
+                                                className="drawer_content">
                                                 {loadingDetails[row.id] ? (
                                                     <p>در حال بارگذاری...</p>
                                                 ) : (
@@ -1181,15 +1189,15 @@ export default function FilterableTable() {
                                                         });
                                                         return (
                                                             <div key={apiPart} id={`form-${row.id}-section-${apiPart}`}
-                                                                 className="api_part_drawer">
+                                                                className="api_part_drawer">
                                                                 <div
                                                                     className="api_part_header"
                                                                     onClick={() => toggleApiSection(row.id, apiPart)}
                                                                 >
                                                                     <h4 className="part_title">{row.formType == 1 ? (partNames[partIndex] || `بخش ${partIndex + 1}`) : (partNamesNavid[partIndex] || `بخش ${partIndex + 1}`)}</h4>
                                                                     <span className="api_part_arrow">
-                                    {isApiSectionOpen(row.id, apiPart) ? '▲' : '▼'}
-                                  </span>
+                                                                        {isApiSectionOpen(row.id, apiPart) ? '▲' : '▼'}
+                                                                    </span>
                                                                 </div>
 
                                                                 <div
@@ -1303,41 +1311,41 @@ export default function FilterableTable() {
                                                                                             className="data_value"
                                                                                             onDoubleClick={() => handleFieldDoubleClick(row.id, apiPart, key, convertToPersianText(value, RadioMap, key))}
                                                                                         >
-                                              {isCurrentlyEditing ? (
-                                                  <input
-                                                      type="text"
-                                                      value={editingValue}
-                                                      onChange={(e) => handleFieldChange(row.id, apiPart, key, e.target.value)}
-                                                      onBlur={() => saveFieldToServer(row.id, apiPart, key, editingValue)}
-                                                      onKeyDown={(e) => {
-                                                          if (e.key === 'Enter') {
-                                                              saveFieldToServer(row.id, apiPart, key, editingValue);
-                                                          }
-                                                      }}
-                                                      autoFocus
-                                                      style={{width: "100%"}}
-                                                  />
-                                              ) : (
-                                                  // Check if the field is an array of images and render as downloadable links
-                                                  (key === 'testGenPictures' || key === 'fatherTestGenPictures' || key === 'grandFatherCancerPictures' || key === 'grandMotherCancerPictures' || key === "mamoGraphyPictures") && Array.isArray(value) && value.length > 0 ? (
-                                                      <div className="image-pictures-container">
-                                                          {value.map((pictureUrl, index) => (
-                                                              <a
-                                                                  key={index}
-                                                                  href={pictureUrl}
-                                                                  target="_blank"
-                                                                  rel="noopener noreferrer"
-                                                                  className="download-link"
-                                                              >
-                                                                  دانلود تصویر {index + 1}
-                                                              </a>
-                                                          ))}
-                                                      </div>
-                                                  ) : (
-                                                      convertToPersianText(value, RadioMap, key)
-                                                  )
-                                              )}
-                                            </span>
+                                                                                            {isCurrentlyEditing ? (
+                                                                                                <input
+                                                                                                    type="text"
+                                                                                                    value={editingValue}
+                                                                                                    onChange={(e) => handleFieldChange(row.id, apiPart, key, e.target.value)}
+                                                                                                    onBlur={() => saveFieldToServer(row.id, apiPart, key, editingValue)}
+                                                                                                    onKeyDown={(e) => {
+                                                                                                        if (e.key === 'Enter') {
+                                                                                                            saveFieldToServer(row.id, apiPart, key, editingValue);
+                                                                                                        }
+                                                                                                    }}
+                                                                                                    autoFocus
+                                                                                                    style={{ width: "100%" }}
+                                                                                                />
+                                                                                            ) : (
+                                                                                                // Check if the field is an array of images and render as downloadable links
+                                                                                                (key === 'testGenPictures' || key === 'fatherTestGenPictures' || key === 'grandFatherCancerPictures' || key === 'grandMotherCancerPictures' || key === "mamoGraphyPictures") && Array.isArray(value) && value.length > 0 ? (
+                                                                                                    <div className="image-pictures-container">
+                                                                                                        {value.map((pictureUrl, index) => (
+                                                                                                            <a
+                                                                                                                key={index}
+                                                                                                                href={pictureUrl}
+                                                                                                                target="_blank"
+                                                                                                                rel="noopener noreferrer"
+                                                                                                                className="download-link"
+                                                                                                            >
+                                                                                                                دانلود تصویر {index + 1}
+                                                                                                            </a>
+                                                                                                        ))}
+                                                                                                    </div>
+                                                                                                ) : (
+                                                                                                    convertToPersianText(value, RadioMap, key)
+                                                                                                )
+                                                                                            )}
+                                                                                        </span>
                                                                                     </div>
                                                                                 );
                                                                             })
@@ -1365,18 +1373,18 @@ export default function FilterableTable() {
                                 </div>
                                 <div className="page_line">
                                     <img src={rightSign} className="arrows" alt="rightSign"
-                                         onClick={() => setPage(a => Math.max(1, a - 1))}/>
+                                        onClick={() => setPage(a => Math.max(1, a - 1))} />
                                     {lineMaker(pageCount).map((p, index) => {
                                         return (
                                             <span className="page_num"
-                                                  style={page == p + 1 ? {background: "#eee",} : null}
-                                                  onClick={() => setPage(p + 1)}>
-                        {p + 1}
-                      </span>
+                                                style={page == p + 1 ? { background: "#eee", } : null}
+                                                onClick={() => setPage(p + 1)}>
+                                                {p + 1}
+                                            </span>
                                         )
                                     })}
                                     <img src={leftSign} alt="leftSign" className="arrows"
-                                         onClick={() => setPage(a => Math.min(pageCount, a + 1))}/>
+                                        onClick={() => setPage(a => Math.min(pageCount, a + 1))} />
                                 </div>
                             </div>
                             <div className="btn_holder_next_prev">
@@ -1394,9 +1402,9 @@ export default function FilterableTable() {
                                 setOpenModal(false)
                                 setSelectedFormId(0)
                             }}>
-                <span>
-                  ✕
-                </span>
+                                <span>
+                                    ✕
+                                </span>
                             </div>
                         </div>
                         <div className="roles">
@@ -1421,9 +1429,9 @@ export default function FilterableTable() {
                                 setOpenStatusModal(false)
                                 setSelectedFormId(0)
                             }}>
-                <span>
-                  ✕
-                </span>
+                                <span>
+                                    ✕
+                                </span>
                             </div>
                         </div>
                         <div className="roles">
@@ -1454,9 +1462,9 @@ export default function FilterableTable() {
                                         setOpenModalRisks(false)
                                         setRisks({})
                                     }}>
-                    <span>
-                      ✕
-                    </span>
+                                        <span>
+                                            ✕
+                                        </span>
                                     </div>
                                 </div>
                                 <div className="roles">
@@ -1485,9 +1493,9 @@ export default function FilterableTable() {
                                 setSelectedFormForFamilyCancer(null)
                                 setFamilyCancerDeled([]) // Reset deleted family cancers tracking
                             }}>
-                <span>
-                  ✕
-                </span>
+                                <span>
+                                    ✕
+                                </span>
                             </div>
                         </div>
                         <div className="roles cancer-mode">
@@ -1496,6 +1504,9 @@ export default function FilterableTable() {
                                     <div key={index} className="role_table">
                                         <div className="family-member-info">
                                             <p><strong>خویشاوند:</strong> {relativeTypesMap[familyMember.relative]}</p>
+                                            {familyMember.name != null && String(familyMember.name).trim() !== "" && (
+                                                <p><strong>نام:</strong> {familyMember.name}</p>
+                                            )}
                                             <p><strong>وضعیت زندگی:</strong>
                                                 {familyMember.lifeStatus === 0 ? "فوت شده" :
                                                     familyMember.lifeStatus === 1 ? "زنده" :
@@ -1516,10 +1527,10 @@ export default function FilterableTable() {
                                                                     <p>نوع
                                                                         سرطان: {cancerTypesMap[cancer.cancerType]}</p>
                                                                     <button className="modal_close"
-                                                                            onClick={() => deleteFamCancer(cancer.id, selectedFormForFamilyCancer)}>
-                                    <span>
-                                      ✕
-                                    </span>
+                                                                        onClick={() => deleteFamCancer(cancer.id, selectedFormForFamilyCancer)}>
+                                                                        <span>
+                                                                            ✕
+                                                                        </span>
                                                                     </button>
                                                                 </div>
                                                                 <p>سن تشخیص: {cancer.cancerAge}</p>
@@ -1527,9 +1538,9 @@ export default function FilterableTable() {
                                                                     {cancer.pictures && cancer.pictures.map((cp, index) => {
                                                                         return (
                                                                             <a href={`${cp}`}
-                                                                               target="_blank"
-                                                                               rel="noopener noreferrer"
-                                                                               className="download-link">
+                                                                                target="_blank"
+                                                                                rel="noopener noreferrer"
+                                                                                className="download-link">
                                                                                 دانلود تصویر {index + 1}
                                                                             </a>
                                                                         )
@@ -1557,9 +1568,9 @@ export default function FilterableTable() {
                                 setSelectedFormForSelfCancer(null)
                                 setCancerDeled([]) // Reset deleted self cancers tracking
                             }}>
-                <span>
-                  ✕
-                </span>
+                                <span>
+                                    ✕
+                                </span>
                             </div>
                         </div>
                         <div className="roles cancer-mode">
@@ -1574,10 +1585,10 @@ export default function FilterableTable() {
                                                         <div className="top_cancer_holder">
                                                             <p>نوع سرطان: {cancerTypesMap[cancer.cancerType]}</p>
                                                             <button className="modal_close"
-                                                                    onClick={() => deleteCancer(cancer.id, selectedFormForSelfCancer)}>
-                                <span>
-                                  ✕
-                                </span>
+                                                                onClick={() => deleteCancer(cancer.id, selectedFormForSelfCancer)}>
+                                                                <span>
+                                                                    ✕
+                                                                </span>
                                                             </button>
                                                         </div>
                                                         <p>سن تشخیص: {cancer.cancerAge}</p>
@@ -1585,9 +1596,9 @@ export default function FilterableTable() {
                                                             {cancer.pictures && cancer.pictures.map((cp, index) => {
                                                                 return (
                                                                     <a href={`${cp}`}
-                                                                       target="_blank"
-                                                                       rel="noopener noreferrer"
-                                                                       className="download-link">
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        className="download-link">
                                                                         دانلود تصویر {index + 1}
                                                                     </a>
                                                                 )
@@ -1617,9 +1628,9 @@ export default function FilterableTable() {
                                 setCancerDeled([]); // Reset deleted self cancers tracking
                                 setFamilyCancerDeled([]); // Reset deleted family cancers tracking
                             }}>
-                <span>
-                  ✕
-                </span>
+                                <span>
+                                    ✕
+                                </span>
                             </div>
                         </div>
                         <div className="roles cancer-mode">
@@ -1647,14 +1658,14 @@ export default function FilterableTable() {
 }
 
 // Simple form component for adding cancers
-function CancerAddForm({formId, isFamilyCancer, onClose, cancerTypesMap, relativeTypesMap}) {
+function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relativeTypesMap }) {
     const [cancerType, setCancerType] = useState("");
     const [cancerAge, setCancerAge] = useState("");
     const [relativeType, setRelativeType] = useState("");
     const [lifeStatus, setLifeStatus] = useState(1); // 1 for alive, 0 for deceased
     const [imageFiles, setImageFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
-    const {addToast} = useToast();
+    const { addToast } = useToast();
 
     // Handle image file selection
     const handleImageChange = (e) => {
@@ -1883,7 +1894,7 @@ function CancerAddForm({formId, isFamilyCancer, onClose, cancerTypesMap, relativ
                                 />
                                 زنده
                             </label>
-                            <label style={{marginLeft: '15px'}}>
+                            <label style={{ marginLeft: '15px' }}>
                                 <input
                                     type="radio"
                                     name="lifeStatus"
@@ -1932,7 +1943,7 @@ function CancerAddForm({formId, isFamilyCancer, onClose, cancerTypesMap, relativ
                     </div>
                 </div>
 
-                <div className="form-actions" style={{marginTop: '15px', display: 'flex', gap: '10px'}}>
+                <div className="form-actions" style={{ marginTop: '15px', display: 'flex', gap: '10px' }}>
                     <button type="submit" className="btn_submit btn-primary">ثبت سرطان</button>
                     <button type="button" onClick={onClose} className="btn_submit btn-secondary">لغو</button>
                 </div>

@@ -1156,7 +1156,7 @@ function QuestionsNavid() {
         }
     };
 
-    const familycancerSender = async (nameOrRel, age, rawCancer, isALive, img) => {
+    const familycancerSender = async (nameOrRel, age, rawCancer, isALive, img, relativePersonalName = "") => {
         // console.log("fuck you front workers~");
         // console.log("Age:", age);
         // console.log("Cancer:", rawCancer);
@@ -1198,6 +1198,14 @@ function QuestionsNavid() {
             relative: firstVal,
             lifeStatus: isALive,
         };
+
+        const trimmedName =
+            relativePersonalName != null
+                ? String(relativePersonalName).trim()
+                : "";
+        if (trimmedName !== "") {
+            payload.name = trimmedName;
+        }
 
         // Handle multiple images by adding them directly to the payload
         if (Array.isArray(img)) {
@@ -1407,6 +1415,7 @@ function QuestionsNavid() {
                                  class_change1={"P2 color_change"} class_change2={"P2_inner"}
                                  valueSetter={setIsChildCncer} relation={relator_R(isChild)}></RadioV2>
                         <CancerField data_req={"true"} file_up={"target"} data_Inp1={part5.childCard.childType}
+                                     data_InpName={part5.childCard.childName}
                                      data_Inp2={part5.childCard.childCancerAge}
                                      data_Options={part5.childCard.childCancerType}
                                      data_Radio={part5.childCard.childLifeStatus} data_file={part5.childCard.attachment}
@@ -1440,6 +1449,7 @@ function QuestionsNavid() {
                                  class_change1={"P2 color_change"} class_change2={"P2_inner"}
                                  valueSetter={setIsSibsCncer}></RadioV2>
                         <CancerField data_req={"true"} data_Inp1={part5.siblingCard.siblingType}
+                                     data_InpName={part5.siblingCard.siblingName}
                                      data_Inp2={part5.siblingCard.siblingCancerAge}
                                      data_Options={part5.siblingCard.siblingCancerType}
                                      data_Radio={part5.siblingCard.siblingLifeStatus}
@@ -1452,6 +1462,7 @@ function QuestionsNavid() {
                                  class_change1={"P2 color_change"} class_change2={"P2_inner"}
                                  valueSetter={setIsUncAuntCncer}></RadioV2>
                         <CancerField data_req={"true"} data_Inp1={part5.uncleAuntCard.uncleAuntType}
+                                     data_InpName={part5.uncleAuntCard.uncleAuntName}
                                      data_Inp2={part5.uncleAuntCard.uncleAuntCancerAge}
                                      data_Options={part5.uncleAuntCard.uncleAuntCancerType}
                                      data_Radio={part5.uncleAuntCard.uncleAuntLifeStatus}
@@ -1463,6 +1474,7 @@ function QuestionsNavid() {
                                  class_change1={"P2 color_change"} class_change2={"P2_inner"}
                                  valueSetter={setIsUncAunt2Cncer}></RadioV2>
                         <CancerField data_req={"true"} data_Inp1={part5.khaleDaeiCard.khaleDaeiType}
+                                     data_InpName={part5.khaleDaeiCard.khaleDaeiName}
                                      data_Inp2={part5.khaleDaeiCard.khaleDaeiCancerAge}
                                      data_Options={part5.khaleDaeiCard.khaleDaeiCancerType}
                                      data_Radio={part5.khaleDaeiCard.khaleDaeiLifeStatus}

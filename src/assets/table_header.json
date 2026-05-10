@@ -175,8 +175,7 @@
   {
     "key": "intendedHrtUse",
     "label": "قصد مصرف HRT",
-    "gender": 2,
-    "mapper": "answers"
+    "gender": 2
   },
   {
     "key": "hrtType",
