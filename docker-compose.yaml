@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_API_URL: ${VITE_API_URL}
-    image: ghcr.io/famcan-riskassessment/frontend:latest
+    image: ${DOCKER_IMAGE:-ghcr.io/famcan-riskassessment/frontend:latest}
     ports:
       - "5173:5173"
     pull_policy: always
