@@ -45,6 +45,7 @@ import RadioV2 from "../RadioV2";
 function QuestionsNavid() {
     const [step, setStep] = useState(1)
     const [loading, setLoading] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const [after, setAfter] = useState(false)
     const [checkEmp, setCheckEmp] = useState(false)
     const [requiredMap, setRequiredMap] = useState({});
@@ -818,13 +819,19 @@ function QuestionsNavid() {
     // const smokes
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (isSubmitting) return;
+        setIsSubmitting(true);
         setLoading(true); // Set loading to true when starting submission
         console.log("get_in_there")
 
         const APIARR = ["basic", "cancerVisit", "familycancerVisit", "navid", "contact"];
 
         const form = formRefs[`${step}`].current;
-        if (!form) return;
+        if (!form) {
+            setIsSubmitting(false);
+            setLoading(false);
+            return;
+        }
 
         const token_auth = localStorage.getItem("token");
         let allData = {};
@@ -1089,6 +1096,9 @@ function QuestionsNavid() {
             }
         } catch (e) {
             console.error("Submission error:", e);
+        } finally {
+            setIsSubmitting(false);
+            setLoading(false);
         }
     };
 
@@ -1353,17 +1363,23 @@ function QuestionsNavid() {
                     style={{"--progress": `${(step / 7) * 100}%`}}
                 >
                     <div className="help_bar_parts_container">
-                        <div className="help_bar_part1" onClick={prever}>
+                        <div className="help_bar_part1" onClick={() => !isSubmitting && prever()}>
                             <img src={prevSign} alt="arrow_img"/>
                             <span>قبلی</span>
                         </div>
                         <div className="help_bar_part2">فرم ریسک سنجی</div>
-                        <div className="help_bar_part3" onClick={() => setOpenModalConf(true)}>
+                        <div className="help_bar_part3" onClick={() => !isSubmitting && setOpenModalConf(true)}>
                             <img src={homeSign} alt="home"/>
                         </div>
                     </div>
                 </div>
-                <div className="question_form_container" ref={questionContainerRef}>
+                <div className="question_form_container" ref={questionContainerRef} aria-busy={isSubmitting}>
+                    {isSubmitting && (
+                        <div className="form_submit_overlay" role="status" aria-live="polite">
+                            <div className="form_submit_spinner" aria-hidden="true"></div>
+                            <div className="form_submit_text">در حال ارسال...</div>
+                        </div>
+                    )}
                     {/* form part 1*/}
 
                     <form ref={formRefs[1]} style={step == 1 ? null : {display: "none "}} className="question_form P1">
@@ -1629,6 +1645,12 @@ function QuestionsNavid() {
                                       data_opt={part6.personalInfo.birthCountry} data_inp7={part6.personalInfo.address}
                                       data_check={part6.personalInfo.confidentialityAgreement} typeErr={setTypeErr}
                                       typeErr2={setTypeErr2} typeErr3={setTypeErr3}
+                                      addressPreset={presetform ? {
+                                          province: presetform.province,
+                                          city: presetform.city,
+                                          address: presetform.address,
+                                          postalCode: presetform.postalCode,
+                                      } : undefined}
                         ></PersonalInfo>
                     </form>
                 </div>
@@ -1683,12 +1705,12 @@ function QuestionsNavid() {
                         {/* <div className="bottom_helper_part1"></div> */}
                         <div className="bottom_helper_part2">
                             {step == 5 ? (
-                                <button className="btn_question" onClick={async (e) => {
+                                <button className="btn_question" disabled={isSubmitting} onClick={async (e) => {
 
                                     let passOno = checkReq(formRefs[step], step)
                                     console.log("yyyyyyyyyyyyyyyyy : ", !typeErr, !typeErr2, !typeErr3, passOno)
                                     if (!typeErr && !typeErr2 && !typeErr3 && passOno) {
-                                        handleSubmit(e)
+                                        await handleSubmit(e)
                                         addToast({
                                             title: 'پاسخ های شما با موفقیت ذخیره شد',
                                             type: 'success',
@@ -1708,7 +1730,7 @@ function QuestionsNavid() {
 
                                 }}>ارسال</button>
                             ) : (
-                                <button className="btn_question" onClick={(e) => {
+                                <button className="btn_question" disabled={isSubmitting} onClick={(e) => {
                                     // Update attentionCorrect for step 3 before submission if there's a catch question
                                     if (step === 3 && catchQuestions[3]) {
                                         const isCorrect = validateCatchQuestion(3);

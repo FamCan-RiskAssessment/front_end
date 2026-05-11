@@ -1,6 +1,24 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 
-function FileUploader({ data, class_change1, class_change2, handleFileChange, relation, fillingFormData, removeLastFileFromFormData }) {
+function normalizeServerUrls(presetUrls) {
+    if (presetUrls == null || presetUrls === "") return [];
+    if (Array.isArray(presetUrls)) return presetUrls.filter(Boolean);
+    return [presetUrls].filter(Boolean);
+}
+
+function readUrlsFromDataAttribute(inputEl) {
+    if (!inputEl) return [];
+    const presetUrl = inputEl.getAttribute("data-file-url");
+    if (!presetUrl) return [];
+    try {
+        const parsed = JSON.parse(presetUrl);
+        return normalizeServerUrls(parsed);
+    } catch {
+        return normalizeServerUrls(presetUrl);
+    }
+}
+
+function FileUploader({ data, class_change1, class_change2, handleFileChange, relation, fillingFormData, removeLastFileFromFormData, presetUrls }) {
     const [imagePreview, setImagePreview] = useState([]);
     const [selectedFiles, setSelectedFiles] = useState([]); // Store the actual file objects
     const fileInputRef = useRef(null);
@@ -9,23 +27,28 @@ function FileUploader({ data, class_change1, class_change2, handleFileChange, re
         relation = true
     }
 
-    useEffect(() => {
-        // Check if there's a preset file URL in the input element
-        if (fileInputRef.current && fileInputRef.current.getAttribute('data-file-url')) {
-            const presetUrl = fileInputRef.current.getAttribute('data-file-url');
-            try {
-                const urlsArray = JSON.parse(presetUrl);
-                if (Array.isArray(urlsArray)) {
-                    setImagePreview(urlsArray);
-                } else {
-                    setImagePreview([urlsArray]);
-                }
-            } catch {
-                // Handle if it's a single URL string
-                setImagePreview([presetUrl]);
-            }
+    const presetUrlsKey = useMemo(() => {
+        if (presetUrls == null || presetUrls === "") return "";
+        try {
+            return JSON.stringify(presetUrls);
+        } catch {
+            return String(presetUrls);
         }
-    }, []);
+    }, [presetUrls]);
+
+    // Sync server image URLs when preset data arrives. The parent questionnaire sets
+    // `data-file-url` on the file input only after async preset hydration; a mount-only
+    // effect runs before that, so we also react to `presetUrls` from form_data.
+    useEffect(() => {
+        const fromProp = normalizeServerUrls(presetUrls);
+        const fromAttr = readUrlsFromDataAttribute(fileInputRef.current);
+        const serverUrls = fromProp.length > 0 ? fromProp : fromAttr;
+        if (serverUrls.length === 0) return;
+        setImagePreview((prev) => {
+            const userBlobs = prev.filter((u) => String(u).startsWith("blob:"));
+            return [...serverUrls, ...userBlobs];
+        });
+    }, [presetUrlsKey]);
 
     const handleFileChangeWithPreview = (e) => {
         const files = e.target.files; // Get all selected files
@@ -60,7 +83,9 @@ function FileUploader({ data, class_change1, class_change2, handleFileChange, re
         if (imagePreview.length > 0) {
             // Get the last preview URL and revoke it to free memory
             const lastPreviewUrl = imagePreview[imagePreview.length - 1];
-            URL.revokeObjectURL(lastPreviewUrl);
+            if (String(lastPreviewUrl).startsWith("blob:")) {
+                URL.revokeObjectURL(lastPreviewUrl);
+            }
 
             // Remove the last file from formData if remove function is available
             if (removeLastFileFromFormData && selectedFiles.length > 0) {
