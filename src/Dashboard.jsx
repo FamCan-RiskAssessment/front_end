@@ -20,6 +20,7 @@ function DashBoard() {
     const permissions = location.state?.permissions;
     const [userPhone, setUserPhone] = useState("")
     let role = JSON.parse(localStorage.getItem("roles"))
+    // localStorage.setItem("pagesOneCango", "[]")
     useEffect(() => {
         // let checkPerms = JSON.parse(localStorage.getItem("permissions"))
         role.forEach(r => {
@@ -77,6 +78,7 @@ function DashBoard() {
         navigate("/DashBoard/passChange", { state: { phone: userPhone } })
     }
     const tool_chooser6 = () => {
+        console.log("gotcha ! : ", localStorage.getItem("pagesOneCango"))
         navigate("/DashBoard/supervisorForms", { state: { phone: userPhone } })
     }
     const tool_chooser7 = () => {
@@ -229,6 +231,14 @@ function DashBoard() {
                                                 </span>
                                             </li>
                                         )}
+                                        <li className="tool" onClick={() => tool_chooser5()}>
+                                            <span>
+                                                <img src={tool_pinkSign} alt="tool_picker_pink" />
+                                            </span>
+                                            <span>
+                                                تنظیم پسورد
+                                            </span>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>

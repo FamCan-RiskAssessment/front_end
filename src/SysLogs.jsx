@@ -237,80 +237,83 @@ function SystemLogs() {
       <NavBar account={userPhone} />
       <div className="forms-page-wrapper SL">
         <div className="forms-container SL">
+          <div className="pageTitle">
+            <h2>گزارش سیستم</h2>
+          </div>
           {/* Advanced Filters Section */}
           <div className="log_filters">
             <div className="advanced_filters">
               <h4>فیلترهای پیشرفته</h4>
+              <div className="Filterholder">
+                <div className="filter_row">
+                  <div className="filter_group">
+                    <label>جستجو:</label>
+                    <input
+                      type="text"
+                      placeholder="جستجو..."
+                      value={advancedFilters.search}
+                      onChange={(e) => setAdvancedFilters({ ...advancedFilters, search: e.target.value })}
+                    />
+                  </div>
 
-              <div className="filter_row">
-                <div className="filter_group">
-                  <label>جستجو:</label>
-                  <input
-                    type="text"
-                    placeholder="جستجو..."
-                    value={advancedFilters.search}
-                    onChange={(e) => setAdvancedFilters({ ...advancedFilters, search: e.target.value })}
-                  />
+                  <div className="filter_group">
+                    <label>مرتب سازی بر اساس:</label>
+                    <select
+                      value={advancedFilters.sortBy}
+                      onChange={(e) => setAdvancedFilters({ ...advancedFilters, sortBy: e.target.value })}
+                    >
+                      <option value="">انتخاب کنید</option>
+                      <option value="id">شناسه</option>
+                      <option value="createdAt">تاریخ ایجاد</option>
+                      <option value="action">اکشن</option>
+                    </select>
+                  </div>
                 </div>
 
-                <div className="filter_group">
-                  <label>مرتب سازی بر اساس:</label>
-                  <select
-                    value={advancedFilters.sortBy}
-                    onChange={(e) => setAdvancedFilters({ ...advancedFilters, sortBy: e.target.value })}
-                  >
-                    <option value="">انتخاب کنید</option>
-                    <option value="id">شناسه</option>
-                    <option value="createdAt">تاریخ ایجاد</option>
-                    <option value="action">اکشن</option>
-                  </select>
+                <div className="filter_row">
+                  <div className="filter_group">
+                    <label>اکشن (ID):</label>
+                    <input
+                      type="number"
+                      placeholder="شناسه اکشن"
+                      value={advancedFilters.action}
+                      onChange={(e) => setAdvancedFilters({ ...advancedFilters, action: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="filter_group">
+                    <label>اکتور (ID):</label>
+                    <input
+                      type="number"
+                      placeholder="شناسه اکتور"
+                      value={advancedFilters.actor}
+                      onChange={(e) => setAdvancedFilters({ ...advancedFilters, actor: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="filter_row">
+                  <div className="filter_group">
+                    <label>تاریخ از:</label>
+                    <input
+                      type="text"
+                      placeholder="YYYY-MM-DD"
+                      value={advancedFilters.dateFrom}
+                      onChange={(e) => setAdvancedFilters({ ...advancedFilters, dateFrom: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="filter_group">
+                    <label>تاریخ تا:</label>
+                    <input
+                      type="text"
+                      placeholder="YYYY-MM-DD"
+                      value={advancedFilters.dateTo}
+                      onChange={(e) => setAdvancedFilters({ ...advancedFilters, dateTo: e.target.value })}
+                    />
+                  </div>
                 </div>
               </div>
-
-              <div className="filter_row">
-                <div className="filter_group">
-                  <label>اکشن (ID):</label>
-                  <input
-                    type="number"
-                    placeholder="شناسه اکشن"
-                    value={advancedFilters.action}
-                    onChange={(e) => setAdvancedFilters({ ...advancedFilters, action: e.target.value })}
-                  />
-                </div>
-
-                <div className="filter_group">
-                  <label>اکتور (ID):</label>
-                  <input
-                    type="number"
-                    placeholder="شناسه اکتور"
-                    value={advancedFilters.actor}
-                    onChange={(e) => setAdvancedFilters({ ...advancedFilters, actor: e.target.value })}
-                  />
-                </div>
-              </div>
-
-              <div className="filter_row">
-                <div className="filter_group">
-                  <label>تاریخ از:</label>
-                  <input
-                    type="text"
-                    placeholder="YYYY-MM-DD"
-                    value={advancedFilters.dateFrom}
-                    onChange={(e) => setAdvancedFilters({ ...advancedFilters, dateFrom: e.target.value })}
-                  />
-                </div>
-
-                <div className="filter_group">
-                  <label>تاریخ تا:</label>
-                  <input
-                    type="text"
-                    placeholder="YYYY-MM-DD"
-                    value={advancedFilters.dateTo}
-                    onChange={(e) => setAdvancedFilters({ ...advancedFilters, dateTo: e.target.value })}
-                  />
-                </div>
-              </div>
-
               <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginTop: '10px' }}>
                 <button
                   className="btn_reset_filters"

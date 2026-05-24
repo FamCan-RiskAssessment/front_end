@@ -182,6 +182,12 @@
         "خواهر ناتنی"
       ]
     },
+    "siblingName": {
+      "engName": "siblingName",
+      "inpName": "نام برادر یا خواهر",
+      "type": "text",
+      "placeHolder": "نام"
+    },
     "siblingLifeStatus": {
       "Rname": "siblingLifeStatus",
       "ask": "وضعیت فعلی",
@@ -242,6 +248,12 @@
         "عمو"
       ]
     },
+    "uncleAuntName": {
+      "engName": "uncleAuntName",
+      "inpName": "نام عمه یا عمو",
+      "type": "text",
+      "placeHolder": "نام"
+    },
     "uncleAuntLifeStatus": {
       "Rname": "ameAmoLifeStatus",
       "ask": "وضعیت فعلی",
@@ -301,6 +313,12 @@
         "خاله",
         "دایی"
       ]
+    },
+    "khaleDaiName": {
+      "engName": "khaleDaiName",
+      "inpName": "نام خاله یا دایی",
+      "type": "text",
+      "placeHolder": "نام"
     },
     "khaleDaeiLifeStatus": {
       "Rname": "khaleDaeiLifeStatusx",

@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { APIURL } from "./utils/config";
 import NavBar from "./navBar";
 import "./client_forms.css";
+import { useToast } from "./toaster";
+import ToastProvider from "./toaster";
 import plusSign from './V2Form/plus.svg'
 import leftSign from './V2Form/form_left.png'
 import rightSign from './V2Form/form_right.png'
@@ -21,14 +23,12 @@ import checkFull from './V2Form/checkfull.png'
 function ChangePass() {
   const [innerUserPassword, setInnerUserPassword] = useState("")
   const [innerUserPassR, setInnerUserPassR] = useState("")
-  const [passErr, setPassErr] = useState("")
+  const [passErr, setPassErr] = useState(false)
+  const { addToast } = useToast()
   const navigate = useNavigate();
   const location = useLocation();
   const userPhone = location.state?.phone;
-  let person = {
-    name: "امیر",
-    number: "09338666836"
-  }
+  console.log(passErr)
   const updateUserPass = async (passCode) => {
     try {
       const token = localStorage.getItem("token");
@@ -44,18 +44,38 @@ function ChangePass() {
       });
 
       //   const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "خطا در تغییر رمزعبور");
-
+      if (!res.ok) {
+        addToast({
+          title: "خطا در تغییر رمز،لطفا دوباره تلاش کنید",
+          type: 'error',
+          duration: 4000
+        })
+        return false
+      };
+      return true
     } catch (err) {
       console.error("❌ Error updating pass:", err.message);
     }
   };
 
-  const save_pass = () => {
+  const save_pass = async () => {
     if (innerUserPassword != innerUserPassR) {
-      setPassErr("تکرار پسورد با پسورد  مطابقت ندارد!")
-    } else {
-      updateUserPass(innerUserPassword)
+      addToast({
+        title: "تکرار رمز با رمز جدید مطابقت ندارد",
+        type: 'error',
+        duration: 4000
+      })
+      return;
+    }
+    let NotErr = await updateUserPass(innerUserPassword)
+
+    if (NotErr) {
+      localStorage.setItem("residentEnter", JSON.stringify(true))
+      addToast({
+        title: "رمز شما با موفقیت تغییر کرد",
+        type: 'success',
+        duration: 4000
+      })
       navigate("/adminLogin")
     }
   }
@@ -81,7 +101,7 @@ function ChangePass() {
                 <input type="password" placeholder="تکرار رمز" className="search_bar_input form_search inp_question V2" value={innerUserPassR} onChange={(e) => setInnerUserPassR(e.target.value)} />
               </div>
               <div className="btn_submit_holder">
-                <button className="btn_submit PC" onClick={save_pass}>تغییر رمز</button>
+                <button className="btn_submit PC" onClick={() => save_pass()}>تغییر رمز</button>
               </div>
               {passErr && <div className="error-message" style={{ color: 'red', marginTop: '10px' }}>{passErr}</div>}
             </div>

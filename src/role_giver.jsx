@@ -12,7 +12,7 @@ import leftSign from './V2Form/form_left.png'
 import rightSign from './V2Form/form_right.png'
 import prevSign from './V2Form/arrow_right.svg'
 import settingsSign from './V2Form/settings.svg'
-import { Loader } from "lucide-react";
+import Loader from "./utils/loader";
 import roleAssignSign from './V2Form/roleAssign.svg'
 import kickUserSign from './V2Form/kickUser.svg'
 import filterSign from './V2Form/filterSign.svg'
@@ -258,6 +258,9 @@ function RoleChanger() {
         <NavBar account={userPhone}></NavBar>
         <div className="forms-page-wrapper">
           <div className="forms-container">
+            <div className="pageTitle">
+              <h2>تغییر دسترسی افراد</h2>
+            </div>
             <div className="forms_tools">
               <div className="form_tool">
                 <div className="form_search_bar">
