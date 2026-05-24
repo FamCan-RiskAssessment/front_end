@@ -12,6 +12,8 @@ import prevSign from './V2Form/arrow_right.svg';
 const ModelResults = () => {
     const location = useLocation();
     const userPhone = location.state?.phone;
+    const exact_form = location.state?.form
+    console.log("came with the exact form : ", exact_form)
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
@@ -24,10 +26,7 @@ const ModelResults = () => {
         sortOrder: '',
         search: '',
     })
-    // const mapOforgs = {
-    //     "صعودی": "asc",
-    //     "نزولی": "desc"
-    // }
+
     let role = JSON.parse(localStorage.getItem("roles"))
     let perms = JSON.parse(localStorage.getItem("pagesOneCango"))
     useEffect(() => {
@@ -127,7 +126,12 @@ const ModelResults = () => {
                 setLoading(false);
             }
         };
-        fetchFormIds();
+        if (!exact_form) {
+            fetchFormIds();
+        } else {
+            setData([exact_form])
+            setLoading(false)
+        }
     }, [page, advancedFilters]);
 
     // Function to fetch risk results for a specific model and form
@@ -192,7 +196,7 @@ const ModelResults = () => {
     // Fetch risk results for all models when component loads
     useEffect(() => {
         const fetchAllRisks = async () => {
-            if (data.length > 0) {
+            if (data.length > 0 && !exact_form) {
                 for (const form of data) {
                     await Promise.all([
                         showTheRisks("premm5", form.id),
@@ -202,6 +206,15 @@ const ModelResults = () => {
                         showTheRisks("ccrat", form.id)
                     ]);
                 }
+            }
+            if (data.length > 0 && exact_form) {
+                await Promise.all([
+                    showTheRisks("premm5", exact_form.id),
+                    showTheRisks("gail", exact_form.id),
+                    showTheRisks("bcra", exact_form.id),
+                    showTheRisks("plco", exact_form.id),
+                    showTheRisks("ccrat", exact_form.id)
+                ]);
             }
         };
 
@@ -248,6 +261,9 @@ const ModelResults = () => {
 
                 <div className="forms-page-wrapper">
                     <div className="forms-container MR">
+                        <div className="pageTitle">
+                            <h2>نتایج مدل ها</h2>
+                        </div>
                         <div className="forms_tools">
                             <div className="form_tool">
                                 <div className="form_search_bar">
@@ -296,25 +312,25 @@ const ModelResults = () => {
                         <table className="forms-table">
                             <thead>
                                 <tr>
-                                    <th className="table-header">نام</th>
+                                    <th className="table-header">نام و نام خانوادگی</th>
+                                    <th className="table-header">کد ملی</th>
                                     <th className="table-header">PREMM5</th>
                                     <th className="table-header">GAIL(6 years)</th>
                                     <th className="table-header">BCRA</th>
                                     <th className="table-header">PLCO</th>
                                     <th className="table-header">CCRAT</th>
-                                    <th className="table-header">کد ملی</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {data.map((form, index) => (
                                     <tr key={form.id || index} className="form-row">
                                         <td className="table-cell MR">{form.name || "نامشخص"}</td>
+                                        <td className="table-cell MR">{form.socialSecurityNumber || "نامشخص"}</td>
                                         <td className="table-cell MR">{risks[form.id]?.premm5 ? JSON.stringify(risks[form.id].premm5) : 'در حال بارگذاری...'}</td>
                                         <td className="table-cell MR">{risks[form.id]?.gail ? JSON.stringify(risks[form.id].gail) : 'در حال بارگذاری...'}</td>
                                         <td className="table-cell MR">{risks[form.id]?.bcra ? JSON.stringify(risks[form.id].bcra) : 'در حال بارگذاری...'}</td>
                                         <td className="table-cell MR">{risks[form.id]?.plco ? JSON.stringify(risks[form.id].plco) : 'در حال بارگذاری...'}</td>
                                         <td className="table-cell MR">{risks[form.id]?.ccrat ? JSON.stringify(risks[form.id].ccrat) : 'در حال بارگذاری...'}</td>
-                                        <td className="table-cell MR">{form.socialSecurityNumber || "نامشخص"}</td>
                                     </tr>
                                 ))}
                             </tbody>

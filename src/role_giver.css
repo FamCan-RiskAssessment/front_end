@@ -121,6 +121,10 @@ div>.identifiers {
   /* align-items: center; */
 }
 
+.deleteModal {
+  align-items: center !important;
+}
+
 
 
 .roles .btn-add-new,

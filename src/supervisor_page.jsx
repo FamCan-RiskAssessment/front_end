@@ -13,6 +13,8 @@ import prevSign from './V2Form/arrow_right.svg';
 import settingsSign from './V2Form/settings.svg';
 import roleAssignSign from './V2Form/roleAssign.svg';
 import magnifier from './V2Form/magnifier.svg'
+import Loader from "./utils/loader";
+
 
 
 function SupervisorPage() {
@@ -35,6 +37,7 @@ function SupervisorPage() {
         // let checkPerms = JSON.parse(localStorage.getItem("permissions"))
         role.forEach(r => {
             if (r.name == "مراجعه کننده" || !perms.includes("/DashBoard/supervisorForms")) {
+                console.log("hello to new gen : ", r.name, perms)
                 navigate("/error_page", { state: { error_type: 403 } })
             }
         });
@@ -189,7 +192,7 @@ function SupervisorPage() {
         setPage(1); // Reset to first page when applying filters
     };
 
-    if (loading) return <p className="text-center mt-10">Loading forms...</p>;
+    if (loading) return <Loader></Loader>;
 
     return (
         <>
@@ -198,6 +201,9 @@ function SupervisorPage() {
 
                 <div className="forms-page-wrapper">
                     <div className="forms-container">
+                        <div className="pageTitle">
+                            <h2>ارجاع فرم</h2>
+                        </div>
                         <div className="forms_tools">
                             <div className="form_tool">
                                 <div className="form_search_bar">

@@ -23,7 +23,7 @@ import fileUplode from './V2Form/files.svg'
 import waitSign from './V2Form/timer.png'
 import checkFull from './V2Form/checkfull.png'
 import magnifier from './V2Form/magnifier.svg'
-
+import Loader from "./utils/loader";
 
 
 function FormsPage() {
@@ -153,7 +153,7 @@ function FormsPage() {
       });
   }, [deletedForm, page, advancedFilters]);
   // how to pass the form
-  const userSelectedForm = async (form_id) => {
+  const userSelectedForm = async (form_id, selfCanAPP, famCanAPP) => {
     const token = localStorage.getItem("token");
     let APIARR = [
       "basic",
@@ -204,7 +204,12 @@ function FormsPage() {
       localStorage.setItem("form_id", form_id);
       localStorage.setItem("trueSteps", JSON.stringify(TrueSteps))
       console.log("✅ All stages fetched:", results);
-      navigate("/forms/new");
+      navigate("/forms/new", {
+        state: {
+          SCAPP: selfCanAPP,
+          FCAPP: famCanAPP
+        }
+      });
     } catch (err) {
       console.error("Error fetching forms:", err);
     } finally {
@@ -240,7 +245,7 @@ function FormsPage() {
   }
 
 
-  if (loading) return <p className="text-center mt-10">Loading forms...</p>;
+  if (loading) return <Loader></Loader>;
 
   return (
     <>
@@ -358,17 +363,24 @@ function FormsPage() {
                                     let token = localStorage.getItem("token")
                                     let res = await fetchDataPUT(`form/${form.id}/resubmit`, token, {})
                                   }
+                                  let famcanIn = false
+                                  let selfcanIn = false
                                   if (form.filledForms.familycancer) {
-                                    localStorage.setItem("famcanFilled", JSON.stringify(true))
+                                    console.log("ARE WE HERE FOR SIIII ? ")
+                                    // localStorage.setItem("famcanFilled", JSON.stringify(true))
+                                    famcanIn = true
                                   } else {
-                                    localStorage.setItem("famcanFilled", JSON.stringify(false))
+                                    // localStorage.setItem("famcanFilled", JSON.stringify(false))
+                                    famcanIn = false
                                   }
                                   if (form.filledForms.cancer) {
-                                    localStorage.setItem("selfcanFilled", JSON.stringify(true))
+                                    // localStorage.setItem("selfcanFilled", JSON.stringify(true))
+                                    selfcanIn = true
                                   } else {
-                                    localStorage.setItem("selfcanFilled", JSON.stringify(false))
+                                    // localStorage.setItem("selfcanFilled", JSON.stringify(false))
+                                    selfcanIn = false
                                   }
-                                  userSelectedForm(form.id)
+                                  userSelectedForm(form.id, selfcanIn, famcanIn)
                                 }}
                                 disabled={statusChecker(form.status) == 1 || statusChecker(form.status) == 4 || statusChecker(form.status) == 5 ? null : true}
                               >
@@ -476,7 +488,7 @@ function FormsPage() {
               </span>
             </div>
           </div>
-          <div className="roles Modal">
+          <div className="roles Modal deleteModal">
             <button className="btn-add-new" onClick={() => {
               deleteForm(selectedForm)
               setOpenModalConf(false)

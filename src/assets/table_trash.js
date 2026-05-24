@@ -167,4 +167,45 @@
         "key": "diabetesTreatment",
         "label": "درمان دیابت"
     },
+    {
+        "key": "chronicLungDiseaseType",
+        "label": "نوع بیماری مزمن ریوی"
+    },
+    {
+        "key": "otherCancerHistory",
+        "label": "سابقه سایر سرطان‌ها"
+    },
+    {
+        "key": "lungCancerHistory",
+        "label": "سابقه سرطان ریه"
+    },
+    {
+        "key": "otherCancerFamily",
+        "label": "سایر سرطان‌ها در خانواده"
+    },
+    {
+        "key": "currentSmoking",
+        "label": "سیگار کشیدن فعلی"
+    },
+    {
+        "key": "smokeCurrentAvg",
+        "label": "  نخ سیگار در روز (سر قلیان) حال"
+    },
+    {
+        "key": "secondhandSmoke",
+        "label": "قرار گرفتن در معرض دود سیگار"
+    },
+    {
+        "key": "chronicLungDisease",
+        "label": "بیماری مزمن ریوی"
+    },
+    {
+        "key": "callExpert",
+        "label": "تماس با متخصص",
+        "mapper": "answers"
+    },
+    {
+        "key": "lungDiseaseHistory",
+        "label": "بیماری مزمن ریوی"
+    },
 ]

@@ -180,23 +180,22 @@
   {
     "key": "hrtType",
     "label": "نوع HRT",
-    "gender": 2,
-    "mapper": "answers"
+    "gender": 2
   },
   {
     "key": "oral",
-    "label": "مصرف قرص",
+    "label": "مصرف قرص ضد بارداری",
     "gender": 2,
     "mapper": "answers"
   },
   {
     "key": "oralDuration",
-    "label": "مدت مصرف قرص",
+    "label": "مدت مصرف قرص ضد بارداری",
     "gender": 2
   },
   {
     "key": "oralTwoLastYears",
-    "label": "مصرف قرص در 2 سال گذشته",
+    "label": "مصرف قرص ضد بارداری در 2 سال گذشته",
     "gender": 2,
     "mapper": "answers"
   },
@@ -276,11 +275,6 @@
     "mapper": "answers"
   },
   {
-    "key": "callExpert",
-    "label": "تماس با متخصص",
-    "mapper": "answers"
-  },
-  {
     "key": "birthCountry",
     "label": "کشور تولد"
   },
@@ -306,22 +300,6 @@
     "mapper": "answers"
   },
   {
-    "key": "chronicLungDisease",
-    "label": "بیماری مزمن ریوی"
-  },
-  {
-    "key": "chronicLungDiseaseType",
-    "label": "نوع بیماری مزمن ریوی"
-  },
-  {
-    "key": "lungCancerHistory",
-    "label": "سابقه سرطان ریه"
-  },
-  {
-    "key": "otherCancerHistory",
-    "label": "سابقه سایر سرطان‌ها"
-  },
-  {
     "key": "otherCancerType",
     "label": "نوع سایر سرطان‌ها"
   },
@@ -335,10 +313,6 @@
     "label": "نسبت فرد مبتلا به سرطان ریه"
   },
   {
-    "key": "otherCancerFamily",
-    "label": "سایر سرطان‌ها در خانواده"
-  },
-  {
     "key": "otherCancerFamilyType",
     "label": "نوع سایر سرطان‌های خانوادگی"
   },
@@ -349,10 +323,6 @@
   {
     "key": "occupationalExposure",
     "label": "قرار گرفتن در معرض عوامل شغلی"
-  },
-  {
-    "key": "currentSmoking",
-    "label": "سیگار کشیدن فعلی"
   },
   {
     "key": "smokingStartAgeCurrent",
@@ -370,10 +340,6 @@
     "key": "pastSmoking",
     "label": "سابقه سیگار کشیدن",
     "mapper": "answers"
-  },
-  {
-    "key": "secondhandSmoke",
-    "label": "قرار گرفتن در معرض دود سیگار"
   },
   {
     "key": "secondhandSmokeLocation",
@@ -422,7 +388,8 @@
   },
   {
     "key": "takmilBime",
-    "label": "بیمه تکمیلی"
+    "label": "بیمه تکمیلی",
+    "mapper": "answers"
   },
   {
     "key": "leaveSmoke",
@@ -433,20 +400,12 @@
     "label": "مواد دخانی مورد استفاده"
   },
   {
-    "key": "lungDiseaseHistory",
-    "label": "بیماری مزمن ریوی"
-  },
-  {
     "key": "formType",
     "label": "نوع طرح"
   },
   {
     "key": "smokePastAvg",
     "label": "  نخ سیگار در روز (سر قلیان) گذشته"
-  },
-  {
-    "key": "smokeCurrentAvg",
-    "label": "  نخ سیگار در روز (سر قلیان) حال"
   },
   {
     "key": "bronshit",
@@ -460,7 +419,7 @@
   },
   {
     "key": "lungill",
-    "label": "سابقه ی بیماری ریوی حاد",
+    "label": "سابقه ی بستری به دلیل بیماری ریوی",
     "mapper": "answers"
   },
   {
@@ -525,7 +484,7 @@
   },
   {
     "key": "brotherNumber",
-    "label": "تعداد خواهران"
+    "label": "تعداد برادران"
   },
   {
     "key": "sisNumber",

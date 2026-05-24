@@ -362,7 +362,7 @@
     "engName": "leaveSmoke",
     "type": "number",
     "placeHolder": "xx",
-    "inpName": "چند سال سیگار مصرف میکردید؟"
+    "inpName": "چند سال :"
   },
   "text_smokingStartAge_past": {
     "engName": "smokingStartAgePast",
@@ -384,6 +384,13 @@
       "سیگار الکترونیک و محصولات مشابه",
       "تریاک"
     ],
+    "condition": "if pastSmoking != 'خیر'"
+  },
+  "text_smoke_type": {
+    "engName": "smokeTypePast",
+    "placeHolder": "سیگار،پیپ،قلیان،....",
+    "inpName": "مواد دخانی مورد استعمال : ",
+    "type": "text",
     "condition": "if pastSmoking != 'خیر'"
   },
   "text_cigarettesPerDay_past": {
@@ -445,7 +452,7 @@
   "text_using_past": {
     "engName": "smokePastAvg",
     "placeHolder": "xx",
-    "inpName": " به طور متوسط چه میزان از دخانیات را استفاده می کردید (نخ در روز، سر در روز)",
+    "inpName": "متوسط مصرف در روز : ",
     "type": "number",
     "condition": "if currentSmoking == 'بله'"
   },
