@@ -4,7 +4,6 @@ import "./patient_table.css";
 import { APIARR_TAB, APIARR_Navid, APIURL, formStatusLabels, statusAPIs, stateColors } from "./utils/config";
 import {
     fetchDataGET,
-    fetchDataGETTab,
     fetchDataPOST,
     key_stage_matcher,
     fetchDataGETImg,
@@ -26,6 +25,7 @@ import arrowLeftSign from './V2Form/arrowLeft.svg'
 import leftSign from './V2Form/form_left.png'
 import rightSign from './V2Form/form_right.png'
 import { useNavigate } from "react-router-dom";
+import { NotebookIcon } from "lucide-react";
 
 // Load the Persian header mapping
 const headerMapping = {};
@@ -55,10 +55,8 @@ const convertToPersianText = (value, RM, key) => {
         return value;
     }
     if (mapper_map[key] && RM[mapper_map[key]]) {
-        // console.log(mapper_map, key, mapper_map[key], RM, RM[mapper_map[key]], value, RM[mapper_map[key]][value])
         return getKeyVal(RM[mapper_map[key]], value)
     } else {
-        // console.log(value, RM, key)
         return value
     }
 };
@@ -121,8 +119,6 @@ export default function FilterableTable() {
 
     const userPhone = location.state?.phone;
     // debugs
-    // console.log("we are running on this API : ", apiArray)
-    // console.log("bbbbbbbbbbbbbbbbbbbbbb  : ", RadioMap)
     useEffect(() => {
         let token = localStorage.getItem("token")
         const getMappers = async () => {
@@ -170,7 +166,6 @@ export default function FilterableTable() {
 
 
     const getFieldLabel = (key) => {
-        console.log(gender_map[key])
         if (gender_map[key] == undefined || gender_map[key] == gender) {
             return headerMapping[key] || key; // Return Persian label if available, otherwise return the key itself
         } else {
@@ -178,13 +173,8 @@ export default function FilterableTable() {
         }
     };
 
-    console.log("this is the formType : ", formType)
 
 
-    console.log("here it comes : ", data)
-    console.log(gender)
-    console.log("the detailed family data : ", detailedFamilyCancerData)
-    // console.log("maybe the answer : " , editedData)
     const statuses = ["در حال بررسی", "قبول شده", "رد شده", "تکمیل نشده", "ارسال شده"]
 
     useEffect(() => {
@@ -192,7 +182,6 @@ export default function FilterableTable() {
         const fetchModels = async () => {
             let res = await fetchDataGET("admin/calc/all-models", token)
             setModelList(res.data)
-            // console.log("this is the res for the models : " , res.data)
         }
         fetchModels()
     }, [])
@@ -202,7 +191,6 @@ export default function FilterableTable() {
         const token = localStorage.getItem("token");
         try {
             const response = await fetchDataGET(`admin/form/${formId}/${apiPart}`, token);
-            console.log(backwardEnum(response.data, RadioMap, ["gender", "menopausalStatus", "id"]))
             setFormDetails(prev => ({
                 ...prev,
                 [formId]: {
@@ -247,7 +235,6 @@ export default function FilterableTable() {
 
                 setLoadingDetails(prev => ({ ...prev, [formId]: false }));
             }
-            // console.log("goooooooooooooooooooooooooo : ", formDetails[formId])
             if (formDetails[formId]) {
                 setGender(formDetails[formId]["basic"]["gender"])
             }
@@ -293,7 +280,6 @@ export default function FilterableTable() {
         const token = localStorage.getItem("token");
         try {
             // Convert the field value based on its type
-            console.log("KLKKKKKKKKKKKKKKKKKKKK : ", fieldName, fieldValue)
 
             let processedValue = fieldValue
             if (mapper_map[fieldName] && RadioMap[mapper_map[fieldName]]) {
@@ -517,7 +503,6 @@ export default function FilterableTable() {
 
             // Build endpoint based on role and filters
             const endpoint = buildEndpoint(roleName, page, filter, advancedFilters);
-            console.log("change the endpoint if it is needed : ", endpoint)
             try {
                 const response = await fetch(endpoint, {
                     method: "GET",
@@ -533,31 +518,13 @@ export default function FilterableTable() {
 
                 const result = await response.json();
 
-                console.log("API response:", result);
 
                 if (result && result.data) {
                     setPagiNext(result.data?.pagination?.hasNextPage || false);
                     setPagiPrev(result.data?.pagination?.hasPrevPage || false);
                     setPageCount(result.data?.pagination?.totalPages || 0);
 
-                    const updatedForms = [];
-                    // Process each form from the API exactly once to prevent duplicates
-                    for (const pf of result.data?.data || []) {
-                        let updatedForm = { ...pf }; // Start with base form data
-
-                        // Combine data from all API parts for this specific form
-                        for (const ar of APIARR_TAB) {
-                            const user_part_form = await fetchDataGETTab(`form/${pf.id}/${ar}`, token);
-
-                            // Spread the additional data but keep the original id from pf
-                            updatedForm = { ...updatedForm, ...user_part_form.data, id: pf.id };
-                        }
-
-                        // Add this form only once to the results array
-                        updatedForms.push(updatedForm);
-                    }
-
-                    setData(updatedForms);
+                    setData(result.data.data);
                     if (!run) {
                         setRun(true);
                     }
@@ -666,12 +633,9 @@ export default function FilterableTable() {
         const updatedData = data.map(row =>
             editedData[row.id] ? { ...row, ...editedData[row.id] } : row
         );
-        console.log(updatedData)
         setData(updatedData);
         setFilteredData2(updatedData);
-        // console.log("Saving to DB:", updatedData);
         let token_auth = localStorage.getItem("token")
-        console.log("this is the token man : ", token_auth)
         const matchAndSend = async () => {
             for (const ar of APIARR_TAB) {
                 for (const form_id of Object.keys(editedData)) {
@@ -714,7 +678,6 @@ export default function FilterableTable() {
                                             type: 'success',
                                             duration: 4000
                                         })
-                                        console.log('PUT success:', result);
                                     }
                                 } catch (error) {
                                     console.error('PUT request failed:', error);
@@ -780,7 +743,6 @@ export default function FilterableTable() {
         }
         setSelectedFormId(0)
         setOpenModal(false)
-        console.log("this is the input and model output : ", res)
     }
 
 
@@ -806,9 +768,7 @@ export default function FilterableTable() {
                 };
 
                 setRisks(combinedRisks); // ✅ Now risks contains all keys
-                // console.log("Combined risks:", combinedRisks);
             } else if (model_name == "bcra") {
-                // console.log("this is the bcra pro : " , res)
                 setRisks(res.data)
             } else if (model_name == "gail") {
                 setRisks(res.data)
@@ -817,7 +777,6 @@ export default function FilterableTable() {
             }
         } catch (error) {
             console.error("Failed to fetch risks:", error);
-            console.log("here man !")
             setInnerloading(false)
             setRisks(["ریسک مورد نظر یافت نشد"])
         }
@@ -830,7 +789,6 @@ export default function FilterableTable() {
         let delAns = await fetchDataDELETE(`admin/form/${form_id}/cancer/${canId}`, token)
         setCancerDeled(ar => [...ar, canId])
         if (delAns.ok) {
-            console.log("delete was successful!")
         }
     }
 
@@ -839,7 +797,6 @@ export default function FilterableTable() {
         let delAns = await fetchDataDELETE(`admin/form/${form_id}/familycancer/${canId}`, token)
         setFamilyCancerDeled(ar => [...ar, canId])
         if (delAns.ok) {
-            console.log("delete was successful!")
         }
     }
     // this is for statuses :
@@ -875,7 +832,6 @@ export default function FilterableTable() {
     const getNewStatusFromAPI = (apiEndpoint) => {
         // Find the status key that corresponds to the API endpoint
         const statusKey = Object.keys(statusAPIs).find(key => statusAPIs[key] === apiEndpoint);
-        console.log(statusKey, statusAPIs, apiEndpoint)
         return statusKey ? formStatusLabels[statusKey] : 'وضعیت نامشخص';
     }
 
@@ -1125,7 +1081,6 @@ export default function FilterableTable() {
                                             <div
                                                 className="drawer_header"
                                                 onClick={() => {
-                                                    console.log(" row pain : ", row)
                                                     let apiArray = row.formType == 1 ? APIARR_TAB : APIARR_Navid
                                                     toggleDrawer(row.id, apiArray)
                                                 }}
@@ -1143,19 +1098,34 @@ export default function FilterableTable() {
                                                 </div>
                                                 {/* <h3 className="drawer_title">وضعیت : </h3> */}
                                                 <div className="drawer_controls">
-                                                    <button
-                                                        className="model_enter_btn"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation(); // Prevent triggering the drawer toggle
-                                                            saveTheIdAndOpetions(row.id);
-                                                        }}
-                                                    >
-                                                        <span>
-                                                            <img src={arrowLeftSign} alt="model input" />
-                                                        </span>
-                                                        <span>ورودی به مدل</span>
-
-                                                    </button>
+                                                    <div className="pairer r1">
+                                                        <button
+                                                            className="model_enter_btn"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                navigate('/DashBoard/modelsResults', {
+                                                                    state: { form: row }
+                                                                });
+                                                            }}
+                                                        >
+                                                            <span>
+                                                                <NotebookIcon />
+                                                            </span>
+                                                            نتایج مدل ها
+                                                        </button>
+                                                        <button
+                                                            className="model_enter_btn"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                saveTheIdAndOpetions(row.id);
+                                                            }}
+                                                        >
+                                                            <span>
+                                                                <img src={arrowLeftSign} alt="model input" />
+                                                            </span>
+                                                            <span>ورودی به مدل</span>
+                                                        </button>
+                                                    </div>
                                                     <button className="status_changer model_enter_btn"
                                                         onClick={(e) => {
                                                             e.stopPropagation(); // Prevent triggering the drawer toggle
