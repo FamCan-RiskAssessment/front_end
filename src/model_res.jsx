@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import './model_res.css';
 import NavBar from './navBar';
 import { useLocation } from "react-router-dom";
@@ -21,11 +21,31 @@ const ModelResults = () => {
     const [pagiNext, setPagiNext] = useState(false);
     const [pageCount, setPageCount] = useState(0);
     const [risks, setRisks] = useState({});
+    const [searchInput, setSearchInput] = useState('');
     const [advancedFilters, setAdvancedFilters] = useState({
         sortBy: '',
         sortOrder: '',
         search: '',
     })
+    const skipSearchPageReset = useRef(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setAdvancedFilters(prev => {
+                if (prev.search === searchInput) return prev;
+                return { ...prev, search: searchInput };
+            });
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, [searchInput]);
+
+    useEffect(() => {
+        if (skipSearchPageReset.current) {
+            skipSearchPageReset.current = false;
+            return;
+        }
+        setPage(1);
+    }, [advancedFilters.search]);
 
     let role = JSON.parse(localStorage.getItem("roles"))
     let perms = JSON.parse(localStorage.getItem("pagesOneCango"))
@@ -266,15 +286,13 @@ const ModelResults = () => {
                         </div>
                         <div className="forms_tools">
                             <div className="form_tool">
-                                <div className="form_search_bar">
+                                <div className="form_search_bar model-res-search">
                                     <input
                                         type="text"
                                         className="form_search inp_question V2"
-                                        placeholder="جستجوی تلفن"
-                                        value={advancedFilters.search}
-                                        onChange={(e) => {
-                                            setAdvancedFilters({ ...advancedFilters, search: e.target.value })
-                                        }}
+                                        placeholder="جستجو بر اساس کد ملی"
+                                        value={searchInput}
+                                        onChange={(e) => setSearchInput(e.target.value)}
                                     />
                                 </div>
                                 {/* <button className="magnifier" onClick={() => setAFS()}>

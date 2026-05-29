@@ -79,3 +79,8 @@
 .forms-container.MR {
     overflow-x: scroll;
 }
+
+.forms-container.MR .model-res-search > input {
+    width: 22rem;
+    max-width: 100%;
+}

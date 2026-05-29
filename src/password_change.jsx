@@ -32,7 +32,7 @@ function ChangePass() {
   const updateUserPass = async (passCode) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${APIURL}/admin/users/password`, {
+      const res = await fetch(`${APIURL}/admin/user/password`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

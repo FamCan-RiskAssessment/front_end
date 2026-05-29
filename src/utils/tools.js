@@ -493,7 +493,8 @@ export const endpointMaker = (sort1, sort2, searchD, order, prevendPoint, page, 
     return prevendPoint
   }
   if (!defused && defAdd) {
-    return prevendPoint + `&page=${page}&pageSize=10`
+    const sep = prevendPoint.includes('?') ? '&' : '?'
+    return prevendPoint + `${sep}page=${page}&pageSize=10`
   }
 }
 
