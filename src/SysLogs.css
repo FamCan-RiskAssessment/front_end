@@ -169,6 +169,83 @@
   background-color: #c82333;
 }
 
+.sys-logs-header,
+.log-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.btn_export_logs,
+.btn_export_xlsx {
+  min-width: 140px;
+}
+
+.logs-summary {
+  text-align: center;
+  color: #555;
+  margin: 0.5rem 0 1rem;
+}
+
+.log_filter_actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.logs-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.logs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  background: #fff;
+}
+
+.logs-table th,
+.logs-table td {
+  border: 1px solid #e0e0e0;
+  padding: 0.6rem 0.75rem;
+  text-align: right;
+  vertical-align: top;
+}
+
+.logs-table th {
+  background-color: #f4f4f5;
+  color: #2c3e50;
+  font-weight: bold;
+}
+
+.logs-table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.logs-table tbody tr:hover {
+  background-color: #faf5fc;
+}
+
+.log-row-expanded {
+  background-color: #f3ebf8;
+}
+
+.log-details-cell {
+  max-width: 280px;
+  word-break: break-word;
+}
+
+.logs-summary {
+  text-align: center;
+  color: #555;
+  margin: 0.5rem 0 1rem;
+}
+
 @media (max-width: 768px) {
   .filter_row {
     flex-direction: column;
@@ -180,5 +257,10 @@
 
   .advanced_filters {
     width: 100%;
+  }
+
+  .log-page-header {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
