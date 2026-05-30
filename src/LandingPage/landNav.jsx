@@ -19,7 +19,7 @@ function LandNav() {
                 <button className="callsup">تماس با پشتیبانی</button>
                 <button className="enter hover1" onClick={() => {
                     localStorage.setItem("residentEnter", JSON.stringify(true))
-                    navigate("/adminLogin")
+                    navigate("/login")
                 }}>ورود</button>
             </div>
         </div>

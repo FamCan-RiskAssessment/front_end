@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import './model_res.css';
 import NavBar from './navBar';
 import { useLocation } from "react-router-dom";
-import { APIARR } from "./utils/config";
 import { fetchDataGET, endpointMaker } from "./utils/tools";
 import Loader from "./utils/loader";
 import leftSign from './V2Form/form_left.png';
@@ -15,7 +14,8 @@ const ModelResults = () => {
     const exact_form = location.state?.form
     console.log("came with the exact form : ", exact_form)
     const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [initialLoading, setInitialLoading] = useState(true);
+    const [tableLoading, setTableLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [pagiPrev, setPagiPrev] = useState(false);
     const [pagiNext, setPagiNext] = useState(false);
@@ -28,6 +28,45 @@ const ModelResults = () => {
         search: '',
     })
     const skipSearchPageReset = useRef(true);
+
+    const MODEL_NAMES = ["premm5", "gail", "bcra", "plco", "ccrat"];
+
+    const extractRiskValue = (model_name, resultData) => {
+        if (!resultData) return "-";
+
+        if (model_name === "premm5") {
+            const { p_any } = resultData;
+            return p_any != null ? p_any * 100 : "-";
+        }
+
+        if (model_name === "bcra" || model_name === "gail" || model_name === "plco" || model_name === "ccrat") {
+            if (resultData.AbsRisk) return resultData.AbsRisk;
+            if (model_name === "plco" && resultData.plcom2012_risk_percent != null) {
+                return resultData.plcom2012_risk_percent;
+            }
+            if (resultData.absolute_risk != null) return resultData.absolute_risk;
+        }
+
+        return "-";
+    };
+
+    const processCalcPageResponse = (items) => {
+        const forms = [];
+        const risksMap = {};
+
+        for (const item of items) {
+            const form = item.form;
+            forms.push(form);
+
+            const formRisks = {};
+            for (const model of MODEL_NAMES) {
+                formRisks[model] = extractRiskValue(model, item.results?.[model]);
+            }
+            risksMap[form.id] = formRisks;
+        }
+
+        return { forms, risksMap };
+    };
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -58,101 +97,63 @@ const ModelResults = () => {
         });
     }, [])
 
-    // Function to build endpoint based on user role and filters
-    const buildEndpoint = (roleName, currentPage, currentFilter, filters) => {
-        let endpoint = '';
-
-        // Determine base endpoint based on user role
-        if (roleName === "اپراتور") {
-            endpoint = 'admin/operator-form';
-        } else {
-            endpoint = 'admin/form';
-        }
-
-        // Add additional filters based on specifications
-        const additionalFilters = [];
-
-        // Use endpointMaker to build the full endpoint with pagination and status
-        endpoint = endpointMaker(
+    const buildEndpoint = (currentPage, filters) => {
+        return endpointMaker(
             filters.sortBy,
             "",
             filters.search,
             filters.sortOrder,
-            endpoint,
+            "admin/calc",
             currentPage,
             [],
             true
         );
-
-        // Add status filter if applicable
-        // if (statusId !== null) {
-        // const separator = endpoint.includes('?') ? '&' : '?';
-        // endpoint += `${separator}status=${statusId}`;
-        // }
-
-        if (additionalFilters.length != 0) {
-            additionalFilters.forEach(filter => {
-                if (filter.value !== '' && filter.value !== null && filter.value !== undefined) {
-                    const separator = endpoint.includes('?') ? '&' : '?';
-                    endpoint += `${separator}${filter.key}=${filter.value}`;
-                }
-            });
-        }
-
-
-        return endpoint;
     };
     console.log("here is the format : ", data)
-    // Function to fetch all forms with pagination
     useEffect(() => {
+        if (exact_form) {
+            setData([exact_form]);
+            setInitialLoading(false);
+            return;
+        }
+
+        let cancelled = false;
+
         const fetchFormIds = async () => {
-            let pre_forms = null;
-            let token = localStorage.getItem("token");
-            let role = JSON.parse(localStorage.getItem("roles"));
-            let endpoint = buildEndpoint(role[0].name, page, "", advancedFilters)
-            console.log("check the name : ", role[0]);
+            setTableLoading(true);
 
-            // Fetch forms with pagination
-            pre_forms = await fetchDataGET(`${endpoint}`, token);
+            try {
+                const token = localStorage.getItem("token");
+                const endpoint = buildEndpoint(page, advancedFilters);
+                const pre_forms = await fetchDataGET(endpoint, token);
 
-            console.log("here is the filter : ", pre_forms);
-            setPagiNext(pre_forms.data.pagination.hasNextPage);
-            setPagiPrev(pre_forms.data.pagination.hasPrevPage);
-            setPageCount(pre_forms.data.pagination.totalPages);
+                if (cancelled) return;
 
-            if (pre_forms.status === 200) {
-                // Create a new array to hold the updated forms
-                const updatedForms = [];
+                setPagiNext(pre_forms.data.pagination.hasNextPage);
+                setPagiPrev(pre_forms.data.pagination.hasPrevPage);
+                setPageCount(pre_forms.data.pagination.totalPages);
 
-                // Process each form sequentially (or use Promise.all for parallel)
-                // for (const pf of pre_forms.data.data) {
-                //     let updatedForm = { ...pf }; // Start with a copy of the original form
-
-                //     // Process each API endpoint
-                //     for (const ar of APIARR) {
-                //         try {
-                //             let user_part_form = await fetchDataGET(`form/${pf.id}/${ar}`, token);
-                //             updatedForm = { ...updatedForm, ...user_part_form.data };
-                //         } catch (error) {
-                //             console.error(`Error fetching form ${pf.id} for ${ar}:`, error);
-                //         }
-                //     }
-
-                //     updatedForms.push(updatedForm);
-                // }
-
-                // Update state with the fully updated array
-                setData(pre_forms.data.data);
-                setLoading(false);
+                if (pre_forms.status === 200) {
+                    const { forms, risksMap } = processCalcPageResponse(pre_forms.data.data);
+                    setData(forms);
+                    setRisks(risksMap);
+                }
+            } catch (error) {
+                console.error("Failed to fetch model results:", error);
+            } finally {
+                if (!cancelled) {
+                    setInitialLoading(false);
+                    setTableLoading(false);
+                }
             }
         };
-        if (!exact_form) {
-            fetchFormIds();
-        } else {
-            setData([exact_form])
-            setLoading(false)
-        }
-    }, [page, advancedFilters]);
+
+        fetchFormIds();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [page, advancedFilters, exact_form]);
 
     // Function to fetch risk results for a specific model and form
     const showTheRisks = async (model_name, form_id) => {
@@ -160,47 +161,14 @@ const ModelResults = () => {
             const token = localStorage.getItem("token");
             const res = await fetchDataGET(`admin/calc/${model_name}/${form_id}`, token);
 
-            if (model_name === "premm5") {
-                const the_probs = res.data; // assuming res.data has gene_probs and p_any
-                const { gene_probs, p_any } = the_probs;
-
-                // Merge gene_probs and p_any into a single flat object
-                const combinedRisks = p_any * 100
-
-                setRisks(prev => ({
-                    ...prev,
-                    [form_id]: {
-                        ...prev[form_id],
-                        [model_name]: combinedRisks
-                    }
-                }));
-            } else if (model_name == "bcra" || model_name == "gail" || model_name == "plco" || model_name == "ccrat") {
-                if (res.data.AbsRisk) {
-                    setRisks(prev => ({
-                        ...prev,
-                        [form_id]: {
-                            ...prev[form_id],
-                            [model_name]: res.data.AbsRisk
-                        }
-                    }));
-                } else if (model_name == "plco") {
-                    setRisks(prev => ({
-                        ...prev,
-                        [form_id]: {
-                            ...prev[form_id],
-                            [model_name]: res.data.plcom2012_risk_percent
-                        }
-                    }));
-                } else {
-                    setRisks(prev => ({
-                        ...prev,
-                        [form_id]: {
-                            ...prev[form_id],
-                            [model_name]: res.data.absolute_risk
-                        }
-                    }));
+            const value = extractRiskValue(model_name, res.data);
+            setRisks(prev => ({
+                ...prev,
+                [form_id]: {
+                    ...prev[form_id],
+                    [model_name]: value
                 }
-            }
+            }));
         } catch (error) {
             console.error("Failed to fetch risks:", error);
             setRisks(prev => ({
@@ -213,33 +181,17 @@ const ModelResults = () => {
         }
     };
 
-    // Fetch risk results for all models when component loads
     useEffect(() => {
         const fetchAllRisks = async () => {
-            if (data.length > 0 && !exact_form) {
-                for (const form of data) {
-                    await Promise.all([
-                        showTheRisks("premm5", form.id),
-                        showTheRisks("gail", form.id),
-                        showTheRisks("bcra", form.id),
-                        showTheRisks("plco", form.id),
-                        showTheRisks("ccrat", form.id)
-                    ]);
-                }
-            }
             if (data.length > 0 && exact_form) {
-                await Promise.all([
-                    showTheRisks("premm5", exact_form.id),
-                    showTheRisks("gail", exact_form.id),
-                    showTheRisks("bcra", exact_form.id),
-                    showTheRisks("plco", exact_form.id),
-                    showTheRisks("ccrat", exact_form.id)
-                ]);
+                await Promise.all(
+                    MODEL_NAMES.map(model => showTheRisks(model, exact_form.id))
+                );
             }
         };
 
         fetchAllRisks();
-    }, [data]);
+    }, [data, exact_form]);
 
     // Pagination functions
     const showMore = () => {
@@ -270,7 +222,13 @@ const ModelResults = () => {
         return spans;
     };
 
-    if (loading) {
+    const formatRiskCell = (formId, model) => {
+        const value = risks[formId]?.[model];
+        if (value === undefined) return "در حال بارگذاری...";
+        return value === "-" ? "-" : JSON.stringify(value);
+    };
+
+    if (initialLoading) {
         return <Loader></Loader>;
     }
 
@@ -327,7 +285,19 @@ const ModelResults = () => {
                             </div>
                         </div>
 
-                        <table className="forms-table">
+                        <div className={`model-res-table-wrapper${tableLoading ? " is-loading" : ""}`}>
+                            {tableLoading ? (
+                                <div className="model-res-table-loading" aria-live="polite" aria-busy="true">
+                                    <div className="model-res-table-spinner">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <span>در حال بارگذاری...</span>
+                                </div>
+                            ) : null}
+
+                            <table className="forms-table">
                             <thead>
                                 <tr>
                                     <th className="table-header">نام و نام خانوادگی</th>
@@ -344,15 +314,16 @@ const ModelResults = () => {
                                     <tr key={form.id || index} className="form-row">
                                         <td className="table-cell MR">{form.name || "نامشخص"}</td>
                                         <td className="table-cell MR">{form.socialSecurityNumber || "نامشخص"}</td>
-                                        <td className="table-cell MR">{risks[form.id]?.premm5 ? JSON.stringify(risks[form.id].premm5) : 'در حال بارگذاری...'}</td>
-                                        <td className="table-cell MR">{risks[form.id]?.gail ? JSON.stringify(risks[form.id].gail) : 'در حال بارگذاری...'}</td>
-                                        <td className="table-cell MR">{risks[form.id]?.bcra ? JSON.stringify(risks[form.id].bcra) : 'در حال بارگذاری...'}</td>
-                                        <td className="table-cell MR">{risks[form.id]?.plco ? JSON.stringify(risks[form.id].plco) : 'در حال بارگذاری...'}</td>
-                                        <td className="table-cell MR">{risks[form.id]?.ccrat ? JSON.stringify(risks[form.id].ccrat) : 'در حال بارگذاری...'}</td>
+                                        <td className="table-cell MR">{formatRiskCell(form.id, "premm5")}</td>
+                                        <td className="table-cell MR">{formatRiskCell(form.id, "gail")}</td>
+                                        <td className="table-cell MR">{formatRiskCell(form.id, "bcra")}</td>
+                                        <td className="table-cell MR">{formatRiskCell(form.id, "plco")}</td>
+                                        <td className="table-cell MR">{formatRiskCell(form.id, "ccrat")}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
+                        </div>
 
                         <div className="page_naver">
                             <div className="total_pages">

@@ -1382,7 +1382,7 @@ export default function FilterableTable() {
                                 <div
                                     key={index}
                                     className="role_table"
-                                    onClick={() => sendToCalcModel(m.id)} // pass role directly instead of e.target.value
+                                    onClick={() =>  sendToCalcModel(m.id)} // pass role directly instead of e.target.value
                                 >
                                     {m.name.toUpperCase()}
                                 </div>
