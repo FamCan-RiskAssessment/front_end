@@ -15,6 +15,7 @@ import tehranUni from './assets/logos/لوگو انگلیسی دانشگاه ت�
 import behdasht from './assets/logos/لوگو-وزارت-بهداشت-2-3.jpg';
 import mazandaran from './assets/logos/مازندران.webp';
 import mohavateBehdashti from './assets/logos/معاونت بهداشتی وزارت.jpg';
+import { fetchDataGETNoError } from "./utils/tools";
 import { UserCircle2Icon } from "lucide-react";
 
 function AdminLogin() {
@@ -48,7 +49,19 @@ function AdminLogin() {
                     type: 'success',
                     duration: 4000
                 })
-                navigate("/otp", { state: { phone } });
+                localStorage.setItem("token", data.data.access_token);
+                localStorage.setItem("number", phone);
+                localStorage.setItem("permissions", JSON.stringify(data.data.permissions));
+                localStorage.setItem("roles", JSON.stringify(data.data.roles));
+
+                const userAuthed = await fetchDataGETNoError("admin/profile", data.data.access_token);
+                if (userAuthed.status === 200 || userAuthed.status === 201) {
+                    navigate("/DashBoard");
+                } else if (userAuthed.status === 404) {
+                    navigate("/residentEnter");
+                } else {
+                    navigate("/AppChoose");
+                }
             }
         } catch (err) {
             setError(err.message)
