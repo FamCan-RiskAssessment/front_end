@@ -1636,7 +1636,6 @@ function QuestionsNavid() {
                         <OptionsV2 data_req={"true"} data={part6.options_education} class_change1={"P2"}
                                    class_change2={"P2_inner"}></OptionsV2>
 
-                        {/* <RadioV2 data_req={"true"} data={part6.radio_opts_callExpert} class_change1={"P2"} class_change2={"P2_inner"}></RadioV2> */}
                         <PersonalInfo data_req={"true"} data_inp1={part6.personalInfo.fullName}
                                       data_inp2={part6.personalInfo.mobileNumber1}
                                       data_inp3={part6.personalInfo.mobileNumber2}

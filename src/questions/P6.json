@@ -97,14 +97,6 @@
       "دکتری حرفه‌ای یا تخصصی"
     ]
   },
-  "radio_opts_callExpert": {
-    "Rname": "callExpert",
-    "ask": "آیا تمایل دارید مشاوران ما با استفاده از اطلاعات وارد شده جهت پیگیری با شما تماس بگیرند؟ 📞🤝",
-    "options": [
-      "بله",
-      "خیر"
-    ]
-  },
   "personalInfo": {
     "fullName": {
       "engName": "name",

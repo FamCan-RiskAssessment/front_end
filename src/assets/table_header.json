@@ -220,12 +220,14 @@
   {
     "key": "leavePestan",
     "label": "عمل برداشتن پستان",
-    "gender": 2
+    "gender": 2,
+    "mapper": "answers"
   },
   {
     "key": "leaveTokhmdan",
     "label": "عمل برداشتن تخمدان",
-    "gender": 2
+    "gender": 2,
+    "mapper": "answers"
   },
   {
     "key": "laDeColon",
@@ -270,9 +272,17 @@
     "mapper": "answers"
   },
   {
+    "key": "testGenPictures",
+    "label": "تصاویر گزارش آزمایش ژنتیک"
+  },
+  {
     "key": "fmTestGen",
     "label": "آزمایش ژنتیک خانوادگی",
     "mapper": "answers"
+  },
+  {
+    "key": "fatherTestGenPictures",
+    "label": "تصاویر گزارش آزمایش ژنتیک خانوادگی"
   },
   {
     "key": "birthCountry",
@@ -293,6 +303,15 @@
   {
     "key": "insuranceStatus",
     "label": "وضعیت بیمه"
+  },
+  {
+    "key": "chronicLungDisease",
+    "label": "سابقه بیماری‌های مزمن ریوی",
+    "mapper": "answers"
+  },
+  {
+    "key": "lungDiseaseHistory",
+    "label": "نوع بیماری مزمن ریوی"
   },
   {
     "key": "supplementaryInsurances",

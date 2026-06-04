@@ -335,6 +335,46 @@ export const EnumTaker = async (endP, theVal) => {
   }
 }
 
+const MENOPAUSE_NO_LABELS = [
+  "Premenopausal",
+  "خیر (Premenopausal)",
+  "در اثر مصرف دارو موقتا متوقف شده است",
+  "اطلاع ندارم",
+];
+
+/** True only when patient answered postmenopausal "بله"; drug-temporary stop and "don't know" count as no. */
+export function isMenopauseYes(status, menopausalMap = {}) {
+  if (status === null || status === undefined || status === "") {
+    return false;
+  }
+
+  let label = null;
+  const asString = String(status).trim();
+  if (/^\d+$/.test(asString)) {
+    const id = Number(asString);
+    label = menopausalMap[id] ?? menopausalMap[String(id)] ?? null;
+    if (!label) {
+      const entry = Object.entries(menopausalMap).find(([key]) => Number(key) === id);
+      label = entry?.[1] ?? null;
+    }
+  } else {
+    label = asString;
+  }
+
+  if (!label) {
+    return false;
+  }
+
+  const normalized = label.trim();
+  if (MENOPAUSE_NO_LABELS.some((marker) => normalized.includes(marker))) {
+    return false;
+  }
+  if (normalized.includes("Postmenopausal") || normalized.startsWith("بله")) {
+    return true;
+  }
+  return false;
+}
+
 
 export const formTypeChecker = (forms, type) => {
   let istype = false;

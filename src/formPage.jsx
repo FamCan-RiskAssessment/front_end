@@ -155,63 +155,76 @@ function FormsPage() {
   // how to pass the form
   const userSelectedForm = async (form_id, selfCanAPP, famCanAPP) => {
     const token = localStorage.getItem("token");
-    let APIARR = [
+    // GET paths differ from PUT submit paths (cancerVisit / familycancerVisit are write-only on this API).
+    const APIARR = [
       "basic",
       "generalhealth",
       "mamography",
       "cancer",
       "listfamilycancer",
+      "lungcancer",
       "contact",
-      "lungcancer"
     ];
 
     try {
       setLoading(true);
 
-      // Wait for all fetch requests to complete
       let TrueSteps = [];
+      let anyFailed = false;
       const results = await Promise.all(
-        APIARR.map(async (ar, index) => {
-          const res = await fetch(`${APIURL}/form/${form_id}/${ar}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,
-            },
-          });
+        APIARR.map(async (ar) => {
+          try {
+            const res = await fetch(`${APIURL}/form/${form_id}/${ar}`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            });
 
-          if (!res.ok) {
-            localStorage.setItem("imperfectForm", true)
-            TrueSteps.push(false)
-          } else {
-            localStorage.setItem("imperfectForm", false)
-            console.log("*********************************************", res)
-            TrueSteps.push(true)
+            if (!res.ok) {
+              anyFailed = true;
+              TrueSteps.push(false);
+              return {};
+            }
+
+            const json = await res.json();
+            TrueSteps.push(true);
+            return json?.data && typeof json.data === "object" ? json.data : {};
+          } catch (sectionErr) {
+            console.warn(`Form section fetch failed (${ar}):`, sectionErr);
+            anyFailed = true;
+            TrueSteps.push(false);
+            return {};
           }
-          const json = await res.json();
-          return json.data;
         })
       );
 
-      // Merge all form data into one object
-      let form_data = {};
-      results.forEach(data => {
-        Object.assign(form_data, data);
+      localStorage.setItem("imperfectForm", anyFailed ? "true" : "false");
+
+      const form_data = {};
+      results.forEach((data) => {
+        if (data && typeof data === "object") {
+          Object.assign(form_data, data);
+        }
       });
 
-      // Save after all fetches complete
       localStorage.setItem("form_data", JSON.stringify(form_data));
       localStorage.setItem("form_id", form_id);
-      localStorage.setItem("trueSteps", JSON.stringify(TrueSteps))
-      console.log("✅ All stages fetched:", results);
+      localStorage.setItem("trueSteps", JSON.stringify(TrueSteps));
       navigate("/forms/new", {
         state: {
           SCAPP: selfCanAPP,
-          FCAPP: famCanAPP
-        }
+          FCAPP: famCanAPP,
+        },
       });
     } catch (err) {
       console.error("Error fetching forms:", err);
+      addToast({
+        title: "خطا در بارگذاری فرم. دوباره تلاش کنید.",
+        type: "error",
+        duration: 4000,
+      });
     } finally {
       setLoading(false);
     }

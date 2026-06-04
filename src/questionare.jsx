@@ -28,7 +28,7 @@ import ToastProvider from "./toaster";
 import {
     fetchDataGET, isNumber, formatAndValidateJalali,
     CancerAdder, fetchDataPOSTImg, persianMonths, fetchDataGETImg, fetchDataPUT, dict_transformer, getKeyVal, cancerDictRefiner,
-    nullTracker
+    nullTracker, isMenopauseYes
 } from "./utils/tools";
 import "./form_elements.css"
 import "./responsive_questionare.css"
@@ -42,6 +42,158 @@ function resolveYesNoIdsFromRadioMap(radioMap) {
         return { yesId: yes, noId: no };
     }
     return { yesId: 1, noId: 2 };
+}
+
+/** Fields that keep legacy boolean (not 1/2 enum ids). */
+const YES_NO_FIELD_EXCEPTIONS = new Set(["pastSmoking", "isAtba"]);
+
+function toYesNoEnumId(value, radioMap) {
+    const { yesId, noId } = resolveYesNoIdsFromRadioMap(radioMap);
+    if (value === true || value === "true" || value === yesId || value === 1 || value === "1") {
+        return yesId;
+    }
+    if (value === false || value === "false" || value === noId || value === 2 || value === "2") {
+        return noId;
+    }
+    return value;
+}
+
+/** Map stored answer (id, boolean, or Persian label) to بله/خیر for visibility relators. */
+function presetAnswerToLabel(value, radioMap) {
+    const { yesId, noId } = resolveYesNoIdsFromRadioMap(radioMap);
+    if (value === true || value === yesId || value === 1 || value === "1") return "بله";
+    if (value === false || value === noId || value === 2 || value === "2") return "خیر";
+    const label = radioMap && Object.keys(radioMap).length ? getKeyVal(radioMap, value) : undefined;
+    return label ?? value;
+}
+
+function radioInputMatchesPreset(input, storedValue, radioMap) {
+    if (storedValue === undefined || storedValue === null) return false;
+    if (String(input.value) === String(storedValue)) return true;
+    if (String(input.getAttribute("FaVal") ?? "") === String(storedValue)) return true;
+    const label = getKeyVal(radioMap, storedValue);
+    if (label != null) {
+        if (String(input.getAttribute("FaVal") ?? "") === String(label)) return true;
+        if (radioMap[label] !== undefined && String(input.value) === String(radioMap[label])) return true;
+    }
+    if (storedValue === true) {
+        return (
+            input.getAttribute("FaVal") === "بله" ||
+            input.value === "true" ||
+            String(input.value) === String(radioMap?.["بله"] ?? 1)
+        );
+    }
+    if (storedValue === false) {
+        return (
+            input.getAttribute("FaVal") === "خیر" ||
+            input.value === "false" ||
+            String(input.value) === String(radioMap?.["خیر"] ?? 2)
+        );
+    }
+    return false;
+}
+
+function applyPresetToFormElements(formRefsMap, preset, radioMap, relMap, familyPayload) {
+    if (!preset || typeof preset !== "object") return;
+
+    let masked_cancers = {};
+    try {
+        masked_cancers = cancerDictRefiner(relMap || {}, familyPayload || { data: { familyCancers: [] } });
+    } catch {
+        masked_cancers = {};
+    }
+
+    const formElems = [];
+    Object.keys(formRefsMap).forEach((fk) => {
+        const formNode = formRefsMap[fk]?.current;
+        if (!formNode) return;
+        formNode.querySelectorAll("input, select").forEach((el) => formElems.push(el));
+    });
+
+    formElems.forEach((fE) => {
+        Object.keys(preset).forEach((pfk) => {
+            if (preset[pfk] === undefined) return;
+
+            if (fE.type === "text" || fE.type === "number" || fE.nodeName === "SELECT") {
+                if (pfk === "birthDate" && (fE.name === "birthYear" || fE.name === "birthMonth" || fE.name === "birthDay")) {
+                    const [year, month, day] = preset[pfk].split("T")[0].split("-");
+                    const y = parseInt(year, 10);
+                    const m = parseInt(month, 10);
+                    const d = parseInt(day, 10);
+                    const Mkey = Object.keys(persianMonths).find((k) => persianMonths[k] === m);
+                    if (fE.name === "birthYear") fE.value = y;
+                    if (fE.name === "birthMonth") fE.value = Mkey;
+                    if (fE.name === "birthDay") fE.value = d;
+                } else if (fE.name === pfk) {
+                    if (fE.nodeName === "SELECT" && (preset[pfk] == null || preset[pfk] === "")) {
+                        fE.value = "انتخاب کنید";
+                    } else {
+                        fE.value = preset[pfk];
+                    }
+                    if (pfk === "mediumActivityMonthInYear" || pfk === "hardActivityMonthInYear") {
+                        fE.value = `${preset[pfk]} ماه`;
+                    }
+                    if (pfk === "intendedHrtUse" || pfk === "hrtUseLength") {
+                        fE.value = `${preset[pfk]} سال`;
+                    }
+                    if (pfk === "ageOfFirstBirth") {
+                        fE.value = `${preset[pfk]} سال`;
+                    }
+                    if (pfk === "ghaedeAge") {
+                        fE.value = `${preset[pfk]} سال`;
+                    }
+                    if (fE.nodeName === "SELECT" && pfk === "smokingAge" && preset[pfk] === 0) {
+                        fE.value = "هیچوقت به طور منظم سیگار یا قلیان نکشیده ام";
+                    }
+                }
+            } else if (fE.name === pfk && fE.type === "radio") {
+                fE.checked = radioInputMatchesPreset(fE, preset[pfk], radioMap);
+                if (fE.getAttribute("data-enum")) {
+                    const enumName = fE.getAttribute("data-enum");
+                    const token = localStorage.getItem("token");
+                    fetchDataGET(`enum/${enumName}`, token).then((res) => {
+                        res.data.forEach((en) => {
+                            if (en.id == preset[pfk] && fE.getAttribute("FaVal") == en.name) {
+                                fE.checked = true;
+                            }
+                        });
+                    }).catch(() => {});
+                }
+                if (
+                    fE.name === "cancer" &&
+                    preset[pfk] === true &&
+                    fE.getAttribute("FaVal") === "بله" &&
+                    JSON.parse(localStorage.getItem("selfcanFilled") || "false")
+                ) {
+                    fE.checked = true;
+                }
+                if (
+                    fE.name === "cancer" &&
+                    preset[pfk] === false &&
+                    fE.getAttribute("FaVal") === "خیر" &&
+                    JSON.parse(localStorage.getItem("selfcanFilled") || "false")
+                ) {
+                    fE.checked = true;
+                }
+            } else if (fE.name in cancerRefs && JSON.parse(localStorage.getItem("famcanFilled") || "false")) {
+                const foundTrue = Object.keys(masked_cancers).some((mc) =>
+                    cancerRefs[fE.name].some((cf) => cf === mc && masked_cancers[mc] === "بله")
+                );
+                if (foundTrue && fE.getAttribute("FaVal") === "بله") fE.checked = true;
+                if (!foundTrue && fE.getAttribute("FaVal") === "خیر") fE.checked = true;
+            } else if (fE.name === pfk && fE.type === "file") {
+                if (preset[pfk]) {
+                    fE.setAttribute("data-file-url", JSON.stringify(preset[pfk]));
+                }
+            } else if (fE.name === pfk && fE.type === "checkbox") {
+                fE.checked = preset[pfk] === 1 || preset[pfk] === true;
+            } else if (!(fE.name in preset) && fE.type === "checkbox" && fE.name !== "isAtba") {
+                fE.checked = false;
+            } else if (fE.type === "range" && fE.name === pfk) {
+                fE.value = preset[pfk];
+            }
+        });
+    });
 }
 
 function Questions() {
@@ -61,6 +213,7 @@ function Questions() {
     const [openModalConf, setOpenModalConf] = useState(false)
 
     const [RadioMap, setRadioMap] = useState({})
+    const [MenoMap, setMenoMap] = useState({})
     const [RelMap, setRelMap] = useState({})
     const [catchQuestions, setCatchQuestions] = useState({});
     const [catchAnswers, setCatchAnswers] = useState({});
@@ -83,6 +236,15 @@ function Questions() {
             setRelMap(trueData)
         }
         getRels()
+        const getMeno = async () => {
+            const res = await fetchDataGET("enum/menopausal-statuses", token);
+            const byId = {};
+            (res.data || []).forEach((item) => {
+                byId[item.id] = item.name;
+            });
+            setMenoMap(byId);
+        };
+        getMeno();
         // let temp_dict = {
         //     "بله": 1,
         //     "خیر": 2,
@@ -472,183 +634,91 @@ function Questions() {
         };
     }, [step]);
 
+    // When editing, refresh mamography when opening step 3 (same pattern as generalhealth on step 2).
+    useEffect(() => {
+        if (step !== 3) return;
+        const fid = localStorage.getItem("form_id");
+        if (!fid || fid === "" || fid === "null") return;
+
+        let cancelled = false;
+        (async () => {
+            try {
+                const token = localStorage.getItem("token");
+                const res = await fetchDataGET(`form/${fid}/mamography`, token);
+                const mg = res?.data;
+                if (cancelled || mg == null || typeof mg !== "object") return;
+
+                const prevRaw = localStorage.getItem("form_data");
+                if (!prevRaw || prevRaw === "null") return;
+                const prev = JSON.parse(prevRaw);
+                const merged = { ...prev, ...mg };
+                localStorage.setItem("form_data", JSON.stringify(merged));
+                setFormDataRevision((n) => n + 1);
+            } catch (e) {
+                console.warn("Step 3 mamography fetch failed:", e);
+            }
+        })();
+        return () => {
+            cancelled = true;
+        };
+    }, [step]);
+
+    // When editing, refresh contact (step 7) from the API when opening that step.
+    useEffect(() => {
+        if (step !== 7) return;
+        const fid = localStorage.getItem("form_id");
+        if (!fid || fid === "" || fid === "null") return;
+
+        let cancelled = false;
+        (async () => {
+            try {
+                const token = localStorage.getItem("token");
+                const res = await fetchDataGET(`form/${fid}/contact`, token);
+                const contact = res?.data;
+                if (cancelled || contact == null || typeof contact !== "object") return;
+
+                const prevRaw = localStorage.getItem("form_data");
+                if (!prevRaw || prevRaw === "null") return;
+                const prev = JSON.parse(prevRaw);
+                const merged = { ...prev, ...contact };
+                localStorage.setItem("form_data", JSON.stringify(merged));
+                setFormDataRevision((n) => n + 1);
+            } catch (e) {
+                console.warn("Step 7 contact fetch failed:", e);
+            }
+        })();
+        return () => {
+            cancelled = true;
+        };
+    }, [step]);
 
     useEffect(() => {
-        if (presetform != null && familyCancersPreData != null) {
-            setLoading(true); // Set loading to true when starting to load preset data
+        const raw = localStorage.getItem("form_data");
+        const fid = localStorage.getItem("form_id");
+        if (!raw || raw === "null" || !fid || fid === "" || fid === "null") return;
 
-            const familyPayload =
-                familyCancersPreData &&
-                familyCancersPreData.data &&
-                Array.isArray(familyCancersPreData.data.familyCancers)
-                    ? familyCancersPreData
-                    : EMPTY_FAMILY_CANCER;
-            let masked_cancers = cancerDictRefiner(RelMap, familyPayload);
-            let formElems = []
-            let stepsLoaded = null;
-            try {
-                const ts = localStorage.getItem("trueSteps");
-                if (ts) stepsLoaded = JSON.parse(ts);
-            } catch (_) {
-                stepsLoaded = null;
-            }
-
-            Object.keys(formRefs).forEach(fk => {
-                // if (stepsLoaded[fk]) {
-                let formRaw = formRefs[fk].current.querySelectorAll("input , select")
-                formRaw.forEach(fR => {
-                    formElems.push(fR)
-                });
-                // }
-            })
-            formElems.forEach(fE => {
-                // if (fE.type == "file") {
-                // }
-                Object.keys(presetform).forEach(pfk => {
-                    // Only process if the property exists and is not undefined
-                    if (presetform[pfk] !== undefined) {
-
-                        if (fE.type == "text" || fE.type == "number" || fE.nodeName == "SELECT") {
-                            if (pfk == "birthDate" && (fE.name == "birthYear" || fE.name == "birthMonth" || fE.name == "birthDay")) {
-                                const [year, month, day] = presetform[pfk].split("T")[0].split("-");
-                                const y = parseInt(year);
-                                const m = parseInt(month);
-                                const d = parseInt(day);
-
-                                const Mkey = Object.keys(persianMonths).find(k => persianMonths[k] === m);
-                                // formElems.forEach(elem => {
-                                if (fE.name === "birthYear") {
-                                    fE.value = y;
-                                }
-                                if (fE.name === "birthMonth") {
-                                    fE.value = Mkey;    // since it's a SELECT
-                                }
-                                if (fE.name === "birthDay") {
-                                    fE.value = d;
-                                }
-                                // });
-                            } else if (fE.name == pfk) {
-                                if (fE.nodeName == "SELECT" && (presetform[pfk] == null || presetform[pfk] == "")) {
-                                    fE.value = "انتخاب کنید"
-                                } else {
-                                    fE.value = presetform[pfk]
-                                }
-                                if (pfk == "mediumActivityMonthInYear" || pfk == "hardActivityMonthInYear") {
-                                    fE.value = `${presetform[pfk]} ماه`
-                                }
-                                if (pfk == "intendedHrtUse" || pfk == "hrtUseLength") {
-                                    fE.value = `${presetform[pfk]} سال`
-                                }
-                                if (pfk == "ageOfFirstBirth") {
-                                    fE.value = `${presetform[pfk]} سال`
-                                }
-                                if (pfk == "ghaedeAge") {
-                                    fE.value = `${presetform[pfk]} سال`
-                                }
-                                if (fE.nodeName == "SELECT" && pfk == "smokingAge" && presetform[pfk] == 0) {
-                                    fE.value = "هیچوقت به طور منظم سیگار یا قلیان نکشیده ام"
-                                }
-                            }
-                        } else if (fE.name == pfk && fE.type == "radio") {
-                            if (fE.getAttribute("FaVal") == presetform[pfk]) {
-                                fE.checked = true
-                            } else if (fE.getAttribute("data-enum")) {
-                                let token = localStorage.getItem("token")
-                                const enumFinder = async () => {
-                                    const res = await fetchDataGET(`enum/${fE.getAttribute("data-enum")}`, token);
-                                    res.data.forEach(en => {
-                                        if (en.id == presetform[pfk] && fE.getAttribute("FaVal") == en.name) {
-                                            fE.checked = true
-                                        }
-                                    });
-                                }
-                                enumFinder()
-                            }
-                            if (fE.getAttribute("FaVal") == getKeyVal(RadioMap, presetform[pfk])) {
-                                fE.checked = true
-                            }
-                            if (fE.name == "cancer" && presetform[pfk] == true && fE.getAttribute("FaVal") == "بله" && JSON.parse(localStorage.getItem("selfcanFilled"))) {
-                                fE.checked = true
-                            }
-                            if (fE.name == "cancer" && presetform[pfk] == false && fE.getAttribute("FaVal") == "خیر" && JSON.parse(localStorage.getItem("selfcanFilled"))) {
-                                fE.checked = true
-                            }
-                            // else if (fE.getAttribute("FaVal") == "خیر" && (presetform[pfk] == false || presetform[pfk] == "false")) {
-                            //     fE.checked = true
-                            // }
-                            // else if (presetform[pfk] == null && fE.getAttribute("FaVal") != "بله" && fE.getAttribute("FaVal") != "خیر") {
-                            //     fE.checked = true
-                            // }
-                            // } else if (fE.name == pfk && presetform[pfk] == null && fE.getAttribute("FaVal") != "بله" && fE.getAttribute("FaVal") != "خیر") { //&& localStorage.getItem("imperfectForm") == false
-                            //     fE.checked = true
-                        } else if (fE.name == pfk && fE.type == "file") {
-                            // Handle file inputs - presetform value is a URL to an image
-                            if (presetform[pfk]) {
-                                // Add the image URL to a custom attribute so the FileUploader component can access it
-                                fE.setAttribute('data-file-url', JSON.stringify(presetform[pfk]));
-
-                                // Find the parent container of this file input and locate the image preview if it exists
-                                // const parentContainer = fE.closest('.total_file_uploader');
-                                // if (parentContainer) {
-                                //     // Look for an existing image preview area
-                                //     // let previewContainer = parentContainer.querySelector('.image-preview');
-                                //     // if (!previewContainer) {
-                                //     //     // Create a preview container if it doesn't exist
-                                //     //     previewContainer = document.createElement('div');
-                                //     //     previewContainer.className = 'image-preview';
-                                //     //     parentContainer.appendChild(previewContainer);
-                                //     // }
-
-                                //     // Create and set the image
-                                //     const img = document.createElement('img');
-                                //     img.src = presetform[pfk]; // The URL is the preset value
-                                //     img.alt = 'Preset Image';
-                                //     img.style.maxWidth = '200px';
-                                //     img.style.maxHeight = '200px';
-                                //     img.style.marginTop = '10px';
-                                //     img.style.border = '1px solid #ccc';
-                                //     img.style.borderRadius = '4px';
-
-                                //     // Clear any existing content and add the new image
-                                //     previewContainer.innerHTML = '';
-                                //     previewContainer.appendChild(img);
-                                // }
-                            }
-                        } else if (fE.name == pfk && fE.type == "checkbox") {
-                            if (presetform[pfk] == true) {
-                                fE.checked = true
-                            } else {
-                                fE.checked = false
-                            }
-                        } else if (!(fE.name in presetform) && fE.type == "checkbox") {
-                            fE.checked = false
-                        } else if (fE.type == "range" && fE.name == pfk) {
-                            fE.defaultValue = presetform[pfk]
-                        }
-                    }
-                })
-            });
-
-            // Step 5: family cancer yes/no from familyCancers (uses resolveYesNoIds fallback if answers enum is late)
-            syncStep5FamilyCancerRadios();
-
-            // let token = localStorage.getItem("token")
-            // const selfFunc = async () => {
-            //     const res = await fetchDataGETImg(`form/${id_form}/cancer`, token);
-            //     setSelfCancersPreData(res)
-            // }
-            // selfFunc()
-            // const familyFunc = async () => {
-            //     const res = await fetchDataGETImg(`form/${id_form}/familycancer`, token);
-            //     setFamilyCancersPreData(res)
-            // }
-            // familyFunc()
-
-            // Set loading to false after preset data has been loaded
-            setLoading(false);
+        let preset;
+        try {
+            preset = JSON.parse(raw);
+        } catch {
+            return;
         }
-        // setLoading(true)
-    }, [RadioMap, selfCancersPreData, familyCancersPreData, formDataRevision, syncStep5FamilyCancerRadios])
+        if (!preset || typeof preset !== "object") return;
+
+        setLoading(true);
+        const familyPayload =
+            familyCancersPreData?.data?.familyCancers != null &&
+            Array.isArray(familyCancersPreData.data.familyCancers)
+                ? familyCancersPreData
+                : EMPTY_FAMILY_CANCER;
+
+        const raf = requestAnimationFrame(() => {
+            applyPresetToFormElements(formRefs, preset, RadioMap, RelMap, familyPayload);
+            syncStep5FamilyCancerRadios();
+            setLoading(false);
+        });
+        return () => cancelAnimationFrame(raf);
+    }, [RadioMap, RelMap, familyCancersPreData, formDataRevision, step, syncStep5FamilyCancerRadios])
 
     // Step 5: re-apply defaults when opening this step while editing (DOM + enum timing can miss the main preset pass).
     useEffect(() => {
@@ -657,10 +727,22 @@ function Questions() {
         const raw = localStorage.getItem("form_data");
         if (!fid || fid === "" || fid === "null" || !raw || raw === "null") return;
         const raf = requestAnimationFrame(() => {
+            const raw = localStorage.getItem("form_data");
+            if (raw && raw !== "null") {
+                try {
+                    const preset = JSON.parse(raw);
+                    const familyPayload =
+                        familyCancersPreData?.data?.familyCancers != null &&
+                        Array.isArray(familyCancersPreData.data.familyCancers)
+                            ? familyCancersPreData
+                            : EMPTY_FAMILY_CANCER;
+                    applyPresetToFormElements(formRefs, preset, RadioMap, RelMap, familyPayload);
+                } catch (_) { /* ignore */ }
+            }
             syncStep5FamilyCancerRadios();
         });
         return () => cancelAnimationFrame(raf);
-    }, [step, RadioMap, RelMap, familyCancersPreData, syncStep5FamilyCancerRadios])
+    }, [step, RadioMap, RelMap, familyCancersPreData, formDataRevision, syncStep5FamilyCancerRadios])
 
     useEffect(() => {
         syncStep4SelfCancerFromApi();
@@ -683,43 +765,43 @@ function Questions() {
         // Only update states if the properties exist in presetform
         if (presetform != null) {
             if ('gender' in presetform) setGender(presetform["gender"])
-            if ('drinksAlcohol' in presetform) setIsAlchol(relator_R(getKeyVal(RadioMap, presetform["drinksAlcohol"])))
+            if ('drinksAlcohol' in presetform) setIsAlchol(relator_R(presetAnswerToLabel(presetform["drinksAlcohol"], RadioMap)))
             if ('lastMonthSabzijatMeal' in presetform) setIsSabzi(presetform["lastMonthSabzijatMeal"])
             if ('mediumActivityMonthInYear' in presetform) setIsActivity(presetform["mediumActivityMonthInYear"])
             if ('hardActivityMonthInYear' in presetform) setIsHardActivity(presetform["hardActivityMonthInYear"])
-            if ('smokeAtLeast100' in presetform) setIsSmoke(relator_R(getKeyVal(RadioMap, presetform["smokeAtLeast100"])))
+            if ('smokeAtLeast100' in presetform) setIsSmoke(relator_R(presetAnswerToLabel(presetform["smokeAtLeast100"], RadioMap)))
             if ('smokingAge' in presetform) {
                 if (presetform["smokingAge"] === 0) {
                     setIsSmokeAge("هیچوقت به طور منظم سیگار یا قلیان نکشیده ام")
                 } else {
-                    setIsSmokeAge(relator_R(getKeyVal(RadioMap, presetform["smokingAge"])))
+                    setIsSmokeAge(presetform["smokingAge"])
                 }
             }
-            if ('smokingNow' in presetform) setIsSmokingNow(relator_R(getKeyVal(RadioMap, presetform["smokingNow"])))
+            if ('smokingNow' in presetform) setIsSmokingNow(relator_R(presetAnswerToLabel(presetform["smokingNow"], RadioMap)))
             if ('hasChildren' in presetform) {
-                setIsChild(relator_R(getKeyVal(RadioMap, presetform["hasChildren"])))
+                setIsChild(relator_R(presetAnswerToLabel(presetform["hasChildren"], RadioMap)))
             }
             if ('menopausalStatus' in presetform) setIsAdat(presetform["menopausalStatus"])
-            if ('hrt' in presetform) setIsHRT(relator_R(getKeyVal(RadioMap, presetform["hrt"])))
-            if ('lastFiveYearsHrtUse' in presetform) setIsHRT5(relator_R(getKeyVal(RadioMap, presetform["lastFiveYearsHrtUse"])))
-            if ('oral' in presetform) setIsOral(relator_R(getKeyVal(RadioMap, presetform["oral"])))
-            if ('laDeColon' in presetform) setIsColon(relator_R(getKeyVal(RadioMap, presetform["laDeColon"])))
-            if ('mamoGraphy' in presetform) setIsMamoTest(relator_R(getKeyVal(RadioMap, presetform["mamoGraphy"])))
+            if ('hrt' in presetform) setIsHRT(relator_R(presetAnswerToLabel(presetform["hrt"], RadioMap)))
+            if ('lastFiveYearsHrtUse' in presetform) setIsHRT5(relator_R(presetAnswerToLabel(presetform["lastFiveYearsHrtUse"], RadioMap)))
+            if ('oral' in presetform) setIsOral(relator_R(presetAnswerToLabel(presetform["oral"], RadioMap)))
+            if ('laDeColon' in presetform) setIsColon(relator_R(presetAnswerToLabel(presetform["laDeColon"], RadioMap)))
+            if ('mamoGraphy' in presetform) setIsMamoTest(relator_R(presetAnswerToLabel(presetform["mamoGraphy"], RadioMap)))
             if ('cancer' in presetform) setIsCancer(presetform["cancer"])
-            if ('childCancer' in presetform) setIsChildCncer(relator_R(getKeyVal(RadioMap, presetform["childCancer"])))
-            if ('motherCancer' in presetform) setIsMotherCncer(relator_R(getKeyVal(RadioMap, presetform["motherCancer"])))
-            if ('fatherCancer' in presetform) setIsFatherCncer(relator_R(getKeyVal(RadioMap, presetform["fatherCancer"])))
-            if ('siblingCancer' in presetform) setIsSibsCncer(relator_R(getKeyVal(RadioMap, presetform["siblingCancer"])))
-            if ('ameAmoCancer' in presetform) setIsUncAuntCncer(relator_R(getKeyVal(RadioMap, presetform["ameAmoCancer"])))
-            if ('khaleDaeiCancer' in presetform) setIsUncAunt2Cncer(relator_R(getKeyVal(RadioMap, presetform["khaleDaeiCancer"])))
-            if ('otherRelative' in presetform) setIsOtherCncer(relator_R(getKeyVal(RadioMap, presetform["otherRelative"])))
-            if ('testGen' in presetform) setIsGeneTest(relator_R(getKeyVal(RadioMap, presetform["testGen"])))
-            if ('fmTestGen' in presetform) setIsFamGeneTest(relator_R(getKeyVal(RadioMap, presetform["fmTestGen"])))
-            if ('smokingTypesCurrent' in presetform) setSmokeType(relator_R(getKeyVal(RadioMap, presetform["smokingTypesCurrent"])))
-            if ('smokingTypesPast' in presetform) setSmokeTypePast(relator_R(getKeyVal(RadioMap, presetform["smokingTypesPast"])))
-            if ('lungCancerFamily' in presetform) setFirstDeg(relator_R(getKeyVal(RadioMap, presetform["lungCancerFamily"])))
+            if ('childCancer' in presetform) setIsChildCncer(relator_R(presetAnswerToLabel(presetform["childCancer"], RadioMap)))
+            if ('motherCancer' in presetform) setIsMotherCncer(relator_R(presetAnswerToLabel(presetform["motherCancer"], RadioMap)))
+            if ('fatherCancer' in presetform) setIsFatherCncer(relator_R(presetAnswerToLabel(presetform["fatherCancer"], RadioMap)))
+            if ('siblingCancer' in presetform) setIsSibsCncer(relator_R(presetAnswerToLabel(presetform["siblingCancer"], RadioMap)))
+            if ('ameAmoCancer' in presetform) setIsUncAuntCncer(relator_R(presetAnswerToLabel(presetform["ameAmoCancer"], RadioMap)))
+            if ('khaleDaeiCancer' in presetform) setIsUncAunt2Cncer(relator_R(presetAnswerToLabel(presetform["khaleDaeiCancer"], RadioMap)))
+            if ('otherRelative' in presetform) setIsOtherCncer(relator_R(presetAnswerToLabel(presetform["otherRelative"], RadioMap)))
+            if ('testGen' in presetform) setIsGeneTest(relator_R(presetAnswerToLabel(presetform["testGen"], RadioMap)))
+            if ('fmTestGen' in presetform) setIsFamGeneTest(relator_R(presetAnswerToLabel(presetform["fmTestGen"], RadioMap)))
+            if ('smokingTypesCurrent' in presetform) setSmokeType(relator_R(presetAnswerToLabel(presetform["smokingTypesCurrent"], RadioMap)))
+            if ('smokingTypesPast' in presetform) setSmokeTypePast(relator_R(presetAnswerToLabel(presetform["smokingTypesPast"], RadioMap)))
+            if ('lungCancerFamily' in presetform) setFirstDeg(relator_R(presetAnswerToLabel(presetform["lungCancerFamily"], RadioMap)))
             if ('pastSmoking' in presetform) {
-                setAnySmokePast(relator_R(getKeyVal(RadioMap, presetform["pastSmoking"])))
+                setAnySmokePast(relator_R(presetAnswerToLabel(presetform["pastSmoking"], RadioMap)))
             }
 
             setAfter(true)
@@ -857,6 +939,7 @@ function Questions() {
         }
         return false
     }
+    const relatorMenopause = (state) => isMenopauseYes(state, MenoMap);
     const relator_R = (state) => {
         if (state == "null") {
             return "null";
@@ -886,11 +969,6 @@ function Questions() {
         }
         return state === 1;
     };
-    const the_condition = (state) => {
-        if (state == 3) {
-            return true
-        }
-    }
 
     const relator_gen = (state) => {
         if (state == 2) {
@@ -1099,13 +1177,20 @@ function Questions() {
             let shouldProcess = false;
             let value = '';
 
-            if (type === 'radio' || type === 'checkbox') {
-                if (elem.checked && type == 'radio') {
+            if (type === 'radio') {
+                if (elem.checked) {
                     shouldProcess = true;
                     value = elem.value;
-                } else if (type == 'checkbox' && elem.checked) {
-                    shouldProcess = true
-                    value = elem.checked
+                }
+            } else if (type === 'checkbox') {
+                if (elem.name === 'isAtba') {
+                    if (elem.checked) {
+                        shouldProcess = true;
+                        value = elem.checked;
+                    }
+                } else {
+                    shouldProcess = true;
+                    value = elem.checked;
                 }
             } else if (tagName === 'SELECT') {
                 if ((name == "mediumActivityMonthInYear" || name == "hardActivityMonthInYear" || name == "intendedHrtUse" || name == "hrtUseLength" || name == "ageOfFirstBirth" || name == "ghaedeAge") && (elem.value != "انتخاب کنید" && elem.value != "انتخاب نمایید")) {
@@ -1174,10 +1259,13 @@ function Questions() {
             }
 
             // ✅ Apply transformations for normal fields
-            if (finalValue === "true" && name !== "pastSmoking") {
-                allData[name] = true;
-            } else if (finalValue === "false" && name !== "pastSmoking") {
-                allData[name] = false;
+            if (type === 'checkbox' && !YES_NO_FIELD_EXCEPTIONS.has(name)) {
+                const { yesId, noId } = resolveYesNoIdsFromRadioMap(RadioMap);
+                allData[name] = finalValue === true || finalValue === "true" ? yesId : noId;
+            } else if ((finalValue === "true" || finalValue === true) && !YES_NO_FIELD_EXCEPTIONS.has(name)) {
+                allData[name] = toYesNoEnumId(true, RadioMap);
+            } else if ((finalValue === "false" || finalValue === false) && !YES_NO_FIELD_EXCEPTIONS.has(name)) {
+                allData[name] = toYesNoEnumId(false, RadioMap);
             } else if (finalValue === "null" && name !== "pastSmoking") {
                 allData[name] = null;
                 // pass the fucking data
@@ -1772,7 +1860,7 @@ function Questions() {
                         <>
                             <RadioV2 data_req={"true"} data={part3.radio_opts_menopausal_status} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsAdat} Enum={"menopausal-statuses"} relation={relator_gen(gender)}></RadioV2>
                             {/* <RadioV2 data_req={"true"} data={part3.radio_opts_menopausal_status} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsAdat} relation={relator_gen(gender)}></RadioV2> */}
-                            <OptionsV2 data={part3.combine_option_menopause} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isAdat) && relator_gen(gender)}></OptionsV2>
+                            <OptionsV2 data={part3.combine_option_menopause} class_change1={"P2"} class_change2={"P2_inner"} relation={relatorMenopause(isAdat) && relator_gen(gender)}></OptionsV2>
                         </>
 
                         {/* Inject catch question randomly in step 3 if applicable */}
@@ -1813,10 +1901,10 @@ function Questions() {
                         )} */}
 
                         <>
-                            <RadioV2 data_req={"true"} data={part3.radio_opts_hrt} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT} relation={relator_R(isAdat) && relator_gen(gender)}></RadioV2>
-                            <OptionsV2 data={part3.combine_option_hrt_use_length} class_change1={"P2"} class_change2={"P2_inner"} relation={the_condition(isAdat) || (relator_R(isHRT) && relator_gen(gender))}></OptionsV2>
+                            <RadioV2 data_req={"true"} data={part3.radio_opts_hrt} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT} relation={relatorMenopause(isAdat) && relator_gen(gender)}></RadioV2>
+                            <OptionsV2 data={part3.combine_option_hrt_use_length} class_change1={"P2"} class_change2={"P2_inner"} relation={relatorMenopause(isAdat) && relator_R(isHRT) && relator_gen(gender)}></OptionsV2>
 
-                            <RadioV2 data_req={"true"} data={part3.radio_opts_lastFiveYears_HRT_use} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT5} relation={relator_R(isAdat) && relator_gen(gender) && relator_R(isHRT)}></RadioV2>
+                            <RadioV2 data_req={"true"} data={part3.radio_opts_lastFiveYears_HRT_use} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsHRT5} relation={relatorMenopause(isAdat) && relator_gen(gender) && relator_R(isHRT)}></RadioV2>
 
                             <RadioV2 data_req={"true"} data={part3.radio_opts_HRT_current_use} mapper={RadioMap} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isHRT5) && relator_gen(gender)}></RadioV2>
                             <OptionsV2 data_req={"true"} data={part3.combine_option_intended_HRT_use} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isHRT5) && relator_gen(gender)}></OptionsV2>
@@ -1943,18 +2031,29 @@ function Questions() {
                         {/* )} */}
                     </form>
                     {/* form part 7 */}
-                    <form ref={formRefs[7]} id="form7" style={step == 7 ? null : { display: "none" }} action="" className="question_form">
+                    <form ref={formRefs[7]} id="form7" style={step == 7 ? null : { display: "none" }} action="" className="question_form P2">
                         <div className="form_title">
                             <span>{part7.title}</span>
                             <span> - </span>
                             <span>بخش {`${step}/7`}</span>
                         </div>
-                        <RangeBox data_req={"true"} data={part6.range_bro_count} class_change1={"P2"} class_change2={"P2_inner"}></RangeBox>
-                        <RangeBox data_req={"true"} data={part6.range_sis_count} class_change1={"P2"} class_change2={"P2_inner"}></RangeBox>
-                        <RangeBox data_req={"true"} data={part6.range_ame_count} class_change1={"P2"} class_change2={"P2_inner"}></RangeBox>
-                        <RangeBox data_req={"true"} data={part6.range_amo_count} class_change1={"P2"} class_change2={"P2_inner"}></RangeBox>
-                        <RangeBox data_req={"true"} data={part6.range_khale_count} class_change1={"P2"} class_change2={"P2_inner"}></RangeBox>
-                        <RangeBox data_req={"true"} data={part6.range_dai_count} class_change1={"P2"} class_change2={"P2_inner"}></RangeBox>
+                        {[
+                            part6.range_bro_count,
+                            part6.range_sis_count,
+                            part6.range_ame_count,
+                            part6.range_amo_count,
+                            part6.range_khale_count,
+                            part6.range_dai_count,
+                        ].map((rangeData) => (
+                            <RangeBox
+                                key={rangeData.engName}
+                                data_req={"true"}
+                                data={rangeData}
+                                class_change1={"P2"}
+                                class_change2={"P2_inner"}
+                                preData={presetform?.[rangeData.engName]}
+                            />
+                        ))}
 
                         <RadioV2 data_req={"true"} mapper={RadioMap} data={part6.radio_opts_testGen} class_change1={"P2"} class_change2={"P2_inner"} valueSetter={setIsGeneTest}></RadioV2>
                         <FileUploader data={part6.attachment_testGen} presetUrls={presetform?.[part6.attachment_testGen.name]} class_change1={"P2"} class_change2={"P2_inner"} relation={relator_R(isGeneTest)} fillingFormData={fillingFormData} removeLastFileFromFormData={removeLastFileFromFormData}></FileUploader>
@@ -1964,7 +2063,6 @@ function Questions() {
 
                         <OptionsV2 data_req={"true"} data={part6.options_education} class_change1={"P2"} class_change2={"P2_inner"}></OptionsV2>
 
-                        {/* <Radio data_req={"true"} data={part6.radio_opts_callExpert} class_change1={"P2"} class_change2={"P2_inner"}></Radio> */}
                         <PersonalInfo data_req={"true"} data_inp1={part6.personalInfo.fullName} data_inp2={part6.personalInfo.mobileNumber1} data_inp3={part6.personalInfo.mobileNumber2} data_inp4={part6.personalInfo.province}
                             data_inp5={part6.personalInfo.city} data_inp6={part6.personalInfo.postalCode} data_opt={part6.personalInfo.birthCountry} data_inp7={part6.personalInfo.address}
                             data_check={part6.personalInfo.confidentialityAgreement} typeErr={setTypeErr} typeErr2={setTypeErr2} typeErr3={setTypeErr3}

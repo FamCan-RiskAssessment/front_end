@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import NavBar from "./navBar";
 import "./patient_table.css";
-import { APIARR, APIARR_Navid, APIURL, formStatusLabels, statusAPIs, stateColors } from "./utils/config";
+import { APIARR, APIARR_Navid, APIURL, formStatusLabels, statusAPIs, stateColors, isDetailFieldHidden, sortDetailFieldEntries } from "./utils/config";
 import {
     fetchDataGET, fetchDataGETTab, fetchDataPOST, key_stage_matcher, stageMatcher, fetchDataGETImg, cancerTypeEx, relativeTypeEx,
     fetchDataDELETE, activeStats, fetchDataPUT, dict_transformer, backwardEnum, getKeyVal
@@ -36,12 +36,13 @@ PERSIAN_HEADERS.forEach(item => {
 // Helper function to convert boolean/null values to Persian text
 const convertToPersianText = (value, RM, key) => {
     if (mapper_map[key] && RM[mapper_map[key]]) {
-        // console.log(mapper_map, key, mapper_map[key], RM, RM[mapper_map[key]], value, RM[mapper_map[key]][value])
-        return getKeyVal(RM[mapper_map[key]], value)
-    } else {
-        // console.log(value, RM, key)
-        return value
+        const mapped = getKeyVal(RM[mapper_map[key]], value);
+        if (mapped !== undefined) return mapped;
     }
+    if (typeof value === "boolean") {
+        return value ? "بله" : "خیر";
+    }
+    return value;
 };
 
 // Helper functions are now part of the component state,
@@ -834,7 +835,7 @@ export default function FilterableTable() {
                                     }}
                                     style={{ background: stateColors[Object.keys(formStatusLabels).find(key => formStatusLabels[key] === row.status)] }}
                                 >
-                                    <h3 className="drawer_title">فرم {row.id || rowIndex + 1} - {row.name || "نامشخص"} - وضعیت :  {row.status || "نامشخص"}</h3>
+                                    <h3 className="drawer_title">فرم {row.id || rowIndex + 1} - {row.name || "نامشخص"} - اپراتور: {row.operatorId ?? "-"} - وضعیت :  {row.status || "نامشخص"}</h3>
                                     {/* <h3 className="drawer_title">وضعیت : </h3> */}
                                     <div className="drawer_controls">
                                         <button
@@ -869,7 +870,8 @@ export default function FilterableTable() {
                                             const filteredData = {};
                                             Object.keys(partData).forEach(key => {
                                                 if (key !== "id" && key !== "userID" && key !== "__typename" &&
-                                                    key !== "status" && key !== "createdAt" && key !== "updatedAt") {
+                                                    key !== "status" && key !== "createdAt" && key !== "updatedAt" &&
+                                                    !isDetailFieldHidden(apiPart, key)) {
                                                     filteredData[key] = partData[key];
                                                 }
                                             });
@@ -970,7 +972,7 @@ export default function FilterableTable() {
                                                             {partData.error ? (
                                                                 <p className="error_message">خطا در بارگذاری داده‌ها: {partData.error}</p>
                                                             ) : Object.keys(filteredData).length > 0 ? (
-                                                                Object.entries(filteredData).map(([key, value]) => {
+                                                                sortDetailFieldEntries(apiPart, Object.entries(filteredData)).map(([key, value]) => {
                                                                     const isCurrentlyEditing = editingFormPart === `${row.id}-${apiPart}-${key}`;
                                                                     const editingValue = editingCells[row.id]?.[apiPart]?.[key] !== undefined
                                                                         ? editingCells[row.id]?.[apiPart]?.[key]
@@ -1312,6 +1314,7 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
     const [cancerType, setCancerType] = useState("");
     const [cancerAge, setCancerAge] = useState("");
     const [relativeType, setRelativeType] = useState("");
+    const [relativeName, setRelativeName] = useState("");
     const [lifeStatus, setLifeStatus] = useState(1); // 1 for alive, 0 for deceased
     const [imageFiles, setImageFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
@@ -1344,7 +1347,7 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!cancerType || !cancerAge || (isFamilyCancer && !relativeType)) {
+        if (!cancerType || !cancerAge || (isFamilyCancer && (!relativeType || !relativeName.trim()))) {
             addToast({
                 title: "لطفاً تمام فیلدهای الزامی را پر کنید",
                 type: 'error',
@@ -1378,69 +1381,50 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
                 }
             }
 
-            // Prepare the data for the sender function
-            const relation = isFamilyCancer ? relativeType : null;
             const cancerAgeInt = parseInt(cancerAge);
             const lifeStatusInt = parseInt(lifeStatus);
 
-            // Call the fetchDataPOST function directly similar to cancer_universal.jsx
             let response;
-            if (imageFiles.length > 0) {
-                // Send as form data if there are image files
+            if (isFamilyCancer) {
                 const formData = new FormData();
+                formData.append('relative', relativeTypeId);
+                formData.append('lifeStatus', lifeStatusInt);
+                formData.append('cancerAge', cancerAgeInt);
+                formData.append('cancerType', cancerTypeId);
+                formData.append('name', relativeName.trim());
+                imageFiles.forEach(file => {
+                    formData.append('pictures', file);
+                });
 
-                if (isFamilyCancer) {
-                    formData.append('relative', relativeTypeId);
-                    formData.append('lifeStatus', lifeStatusInt);
-                    formData.append('cancerAge', cancerAgeInt);
-                    formData.append('cancerType', cancerTypeId);
+                response = await fetch(`${APIURL}/admin/form/${formId}/familycancer`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: formData,
+                });
+            } else if (imageFiles.length > 0) {
+                const formData = new FormData();
+                formData.append('cancerAge', cancerAgeInt);
+                formData.append('cancerType', cancerTypeId);
+                imageFiles.forEach(file => {
+                    formData.append('pictures', file);
+                });
 
-                    // Append each image file with the same field name to support multiple files
-                    imageFiles.forEach(file => {
-                        formData.append('pictures', file); // Note: using 'files' plural to handle multiple files
-                    });
-
-                    response = await fetch(`${APIURL}/admin/form/${formId}/familycancer`, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                        },
-                        body: formData,
-                    });
-                } else {
-                    formData.append('cancerAge', cancerAgeInt);
-                    formData.append('cancerType', cancerTypeId);
-
-                    // Append each image file with the same field name to support multiple files
-                    imageFiles.forEach(file => {
-                        formData.append('pictures', file); // Note: using 'files' plural to handle multiple files
-                    });
-
-                    response = await fetch(`${APIURL}/admin/form/${formId}/cancer`, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                        },
-                        body: formData,
-                    });
-                }
+                response = await fetch(`${APIURL}/admin/form/${formId}/cancer`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: formData,
+                });
             } else {
-                // Send as JSON if no image files
-                const payload = isFamilyCancer ?
-                    {
-                        relative: relativeTypeId,
-                        lifeStatus: lifeStatusInt,
-                        cancers: [{
-                            cancerAge: cancerAgeInt,
-                            cancerType: cancerTypeId
-                        }]
-                    } :
-                    {
-                        cancerAge: cancerAgeInt,
-                        cancerType: cancerTypeId
-                    };
+                const payload = {
+                    cancerAge: cancerAgeInt,
+                    cancerType: cancerTypeId,
+                };
 
-                response = await fetch(`${APIURL}/admin/form/${formId}/${isFamilyCancer ? 'familycancer' : 'cancer'}`, {
+                response = await fetch(`${APIURL}/admin/form/${formId}/cancer`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1500,6 +1484,20 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
                                 <option key={id} value={name}>{name}</option>
                             ))}
                         </select>
+                    </div>
+                )}
+
+                {isFamilyCancer && (
+                    <div className="form-group">
+                        <label>نام:</label>
+                        <input
+                            type="text"
+                            value={relativeName}
+                            onChange={(e) => setRelativeName(e.target.value)}
+                            className="form-control"
+                            placeholder="نام بستگان"
+                            required
+                        />
                     </div>
                 )}
 

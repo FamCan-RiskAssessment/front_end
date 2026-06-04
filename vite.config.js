@@ -1,17 +1,18 @@
-import { defineConfig } from 'vite'
+import {defineConfig} from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  server: {
-    host: true,
-    allowedHosts: [
-      'famcan.clinic',
-      'www.famcan.clinic',
-      'famcan.org.ir',
-      'www.famcan.org.ir',
-      'api.famcan.org.ir'
-    ]
-  }
+    plugins: [react()],
+    server: {
+        host: true,
+        allowedHosts: [
+            'famcan.clinic',
+            'www.famcan.clinic',
+            'famcan.org.ir',
+            'www.famcan.org.ir',
+            'api.famcan.org.ir',
+            'famcan-api.darkube.ir',
+            'famcan.darkube.ir'
+        ]
+    }
 })

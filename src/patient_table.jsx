@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import NavBar from "./navBar";
 import "./patient_table.css";
-import { APIARR_TAB, APIARR_Navid, APIURL, formStatusLabels, statusAPIs, stateColors } from "./utils/config";
+import { APIARR_TAB, APIARR_Navid, APIURL, formStatusLabels, statusAPIs, stateColors, HIDDEN_DETAIL_FIELDS, isDetailFieldHidden, sortDetailFieldEntries } from "./utils/config";
 import {
     fetchDataGET,
     fetchDataPOST,
@@ -55,10 +55,13 @@ const convertToPersianText = (value, RM, key) => {
         return value;
     }
     if (mapper_map[key] && RM[mapper_map[key]]) {
-        return getKeyVal(RM[mapper_map[key]], value)
-    } else {
-        return value
+        const mapped = getKeyVal(RM[mapper_map[key]], value);
+        if (mapped !== undefined) return mapped;
     }
+    if (typeof value === "boolean") {
+        return value ? "بله" : "خیر";
+    }
+    return value;
 };
 
 // Helper functions are now part of the component state,
@@ -84,6 +87,7 @@ export default function FilterableTable() {
     const [pagiPrev, setPagiPrev] = useState(false)
     const [pagiNext, setPagiNext] = useState(false)
     const [pageCount, setPageCount] = useState(0)
+    const [totalFormCount, setTotalFormCount] = useState(0)
     const [selectedFormId, setSelectedFormId] = useState(0)
     const [openModal, setOpenModal] = useState(false)
     const [openStatusModal, setOpenStatusModal] = useState(false)
@@ -430,9 +434,6 @@ export default function FilterableTable() {
         formType: '',
         gender: '',
         birthYear: '',
-        drinksAlcohol: '',
-        smokingNow: '',
-        cancer: '',
         filledByOperatorID: ''
     });
 
@@ -462,9 +463,6 @@ export default function FilterableTable() {
             { key: 'formType', value: filters.formType },
             { key: 'gender', value: filters.gender },
             { key: 'birthYear', value: filters.birthYear },
-            { key: 'drinksAlcohol', value: filters.drinksAlcohol },
-            { key: 'smokingNow', value: filters.smokingNow },
-            { key: 'cancer', value: filters.cancer }
         ];
         // Use endpointMaker to build the full endpoint with pagination and status
         endpoint = endpointMaker(
@@ -523,6 +521,12 @@ export default function FilterableTable() {
                     setPagiNext(result.data?.pagination?.hasNextPage || false);
                     setPagiPrev(result.data?.pagination?.hasPrevPage || false);
                     setPageCount(result.data?.pagination?.totalPages || 0);
+                    setTotalFormCount(
+                        result.data?.pagination?.totalItems
+                        ?? result.data?.pagination?.total
+                        ?? result.data?.total
+                        ?? 0
+                    );
 
                     setData(result.data.data);
                     if (!run) {
@@ -863,6 +867,10 @@ export default function FilterableTable() {
                     <div className="forms-container PT">
 
                         <div className="total_patients_holder">
+                            <div className="pageTitle patient_table_summary">
+                                <h2>کاربران ثبت‌نام شده</h2>
+                                <p>تعداد کل فرم‌های ثبت شده: {totalFormCount}</p>
+                            </div>
 
                             <div className="table_controles">
                                 {/* <h3>کنترل داده ها </h3> */}
@@ -967,54 +975,7 @@ export default function FilterableTable() {
 
                                         <div className="filter_row">
                                             <div className="filter_group">
-                                                <label>مصرف الکل:</label>
-                                                <select
-                                                    value={advancedFilters.drinksAlcohol}
-                                                    onChange={(e) => setAdvancedFilters({
-                                                        ...advancedFilters,
-                                                        drinksAlcohol: e.target.value
-                                                    })}
-                                                >
-                                                    <option value="">همه</option>
-                                                    <option value="true">دارد</option>
-                                                    <option value="false">ندارد</option>
-                                                </select>
-                                            </div>
-
-                                            <div className="filter_group">
-                                                <label>سیگار کشیدن:</label>
-                                                <select
-                                                    value={advancedFilters.smokingNow}
-                                                    onChange={(e) => setAdvancedFilters({
-                                                        ...advancedFilters,
-                                                        smokingNow: e.target.value
-                                                    })}
-                                                >
-                                                    <option value="">همه</option>
-                                                    <option value="true">دارد</option>
-                                                    <option value="false">ندارد</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div className="filter_row">
-                                            <div className="filter_group">
-                                                <label>سابقه سرطان:</label>
-                                                <select
-                                                    value={advancedFilters.cancer}
-                                                    onChange={(e) => setAdvancedFilters({
-                                                        ...advancedFilters,
-                                                        cancer: e.target.value
-                                                    })}
-                                                >
-                                                    <option value="">همه</option>
-                                                    <option value="true">دارد</option>
-                                                    <option value="false">ندارد</option>
-                                                </select>
-                                            </div>
-
-                                            <div className="filter_group">
-                                                <label>پر کننده فرم:</label>
+                                                <label>شناسه اپراتور:</label>
                                                 <input
                                                     type="number"
                                                     placeholder="شناسه اپراتور"
@@ -1043,9 +1004,6 @@ export default function FilterableTable() {
                                                         formType: '',
                                                         gender: '',
                                                         birthYear: '',
-                                                        drinksAlcohol: '',
-                                                        smokingNow: '',
-                                                        cancer: '',
                                                         filledByOperatorID: ''
                                                     })
                                                     // setPage(1)
@@ -1089,6 +1047,7 @@ export default function FilterableTable() {
                                                 <div className="drawer_title">
                                                     <span> شماره فرم : {row.id || rowIndex + 1}</span>
                                                     <span>نام : {row.name || "نامشخص"}</span>
+                                                    <span>شناسه اپراتور : {row.operatorId ?? "-"}</span>
                                                     <span
                                                         style={{ background: stateColors[Object.keys(formStatusLabels).find(key => formStatusLabels[key] === row.status)] }}
                                                         className="form_status_show"
@@ -1153,7 +1112,8 @@ export default function FilterableTable() {
                                                         const filteredData = {};
                                                         Object.keys(partData).forEach(key => {
                                                             if (key !== "id" && key !== "userID" && key !== "__typename" &&
-                                                                key !== "status" && key !== "createdAt" && key !== "updatedAt") {
+                                                                key !== "status" && key !== "createdAt" && key !== "updatedAt" &&
+                                                                !isDetailFieldHidden(apiPart, key)) {
                                                                 filteredData[key] = partData[key];
                                                             }
                                                         });
@@ -1257,7 +1217,7 @@ export default function FilterableTable() {
                                                                             <p className="error_message">خطا در بارگذاری
                                                                                 داده‌ها: {partData.error}</p>
                                                                         ) : Object.keys(filteredData).length > 0 ? (
-                                                                            Object.entries(filteredData).map(([key, value]) => {
+                                                                            sortDetailFieldEntries(apiPart, Object.entries(filteredData)).map(([key, value]) => {
                                                                                 const isCurrentlyEditing = editingFormPart === `${row.id}-${apiPart}-${key}`;
                                                                                 const editingValue = editingCells[row.id]?.[apiPart]?.[key] !== undefined
                                                                                     ? editingCells[row.id]?.[apiPart]?.[key]
@@ -1632,6 +1592,7 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
     const [cancerType, setCancerType] = useState("");
     const [cancerAge, setCancerAge] = useState("");
     const [relativeType, setRelativeType] = useState("");
+    const [relativeName, setRelativeName] = useState("");
     const [lifeStatus, setLifeStatus] = useState(1); // 1 for alive, 0 for deceased
     const [imageFiles, setImageFiles] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
@@ -1664,7 +1625,7 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!cancerType || !cancerAge || (isFamilyCancer && !relativeType)) {
+        if (!cancerType || !cancerAge || (isFamilyCancer && (!relativeType || !relativeName.trim()))) {
             addToast({
                 title: "لطفاً تمام فیلدهای الزامی را پر کنید",
                 type: 'error',
@@ -1698,69 +1659,50 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
                 }
             }
 
-            // Prepare the data for the sender function
-            const relation = isFamilyCancer ? relativeType : null;
             const cancerAgeInt = parseInt(cancerAge);
             const lifeStatusInt = parseInt(lifeStatus);
 
-            // Call the fetchDataPOST function directly similar to cancer_universal.jsx
             let response;
-            if (imageFiles.length > 0) {
-                // Send as form data if there are image files
+            if (isFamilyCancer) {
                 const formData = new FormData();
+                formData.append('relative', relativeTypeId);
+                formData.append('lifeStatus', lifeStatusInt);
+                formData.append('cancerAge', cancerAgeInt);
+                formData.append('cancerType', cancerTypeId);
+                formData.append('name', relativeName.trim());
+                imageFiles.forEach(file => {
+                    formData.append('pictures', file);
+                });
 
-                if (isFamilyCancer) {
-                    formData.append('relative', relativeTypeId);
-                    formData.append('lifeStatus', lifeStatusInt);
-                    formData.append('cancerAge', cancerAgeInt);
-                    formData.append('cancerType', cancerTypeId);
+                response = await fetch(`${APIURL}/admin/form/${formId}/familycancer`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: formData,
+                });
+            } else if (imageFiles.length > 0) {
+                const formData = new FormData();
+                formData.append('cancerAge', cancerAgeInt);
+                formData.append('cancerType', cancerTypeId);
+                imageFiles.forEach(file => {
+                    formData.append('pictures', file);
+                });
 
-                    // Append each image file with the same field name to support multiple files
-                    imageFiles.forEach(file => {
-                        formData.append('pictures', file); // Note: using 'files' plural to handle multiple files
-                    });
-
-                    response = await fetch(`${APIURL}/admin/form/${formId}/familycancer`, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                        },
-                        body: formData,
-                    });
-                } else {
-                    formData.append('cancerAge', cancerAgeInt);
-                    formData.append('cancerType', cancerTypeId);
-
-                    // Append each image file with the same field name to support multiple files
-                    imageFiles.forEach(file => {
-                        formData.append('pictures', file); // Note: using 'files' plural to handle multiple files
-                    });
-
-                    response = await fetch(`${APIURL}/admin/form/${formId}/cancer`, {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                        },
-                        body: formData,
-                    });
-                }
+                response = await fetch(`${APIURL}/admin/form/${formId}/cancer`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: formData,
+                });
             } else {
-                // Send as JSON if no image files
-                const payload = isFamilyCancer ?
-                    {
-                        relative: relativeTypeId,
-                        lifeStatus: lifeStatusInt,
-                        cancers: [{
-                            cancerAge: cancerAgeInt,
-                            cancerType: cancerTypeId
-                        }]
-                    } :
-                    {
-                        cancerAge: cancerAgeInt,
-                        cancerType: cancerTypeId
-                    };
+                const payload = {
+                    cancerAge: cancerAgeInt,
+                    cancerType: cancerTypeId,
+                };
 
-                response = await fetch(`${APIURL}/admin/form/${formId}/${isFamilyCancer ? 'familycancer' : 'cancer'}`, {
+                response = await fetch(`${APIURL}/admin/form/${formId}/cancer`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1820,6 +1762,20 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
                                 <option key={id} value={name}>{name}</option>
                             ))}
                         </select>
+                    </div>
+                )}
+
+                {isFamilyCancer && (
+                    <div className="form-group">
+                        <label>نام:</label>
+                        <input
+                            type="text"
+                            value={relativeName}
+                            onChange={(e) => setRelativeName(e.target.value)}
+                            className="form-control"
+                            placeholder="نام بستگان"
+                            required
+                        />
                     </div>
                 )}
 

@@ -200,11 +200,6 @@
         "label": "بیماری مزمن ریوی"
     },
     {
-        "key": "callExpert",
-        "label": "تماس با متخصص",
-        "mapper": "answers"
-    },
-    {
         "key": "lungDiseaseHistory",
         "label": "بیماری مزمن ریوی"
     },

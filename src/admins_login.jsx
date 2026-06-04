@@ -1,38 +1,27 @@
-import { useState } from "react";
+import {useState} from "react";
 import './V2Form/login_pageV3.css'
-import { APIURL } from "./utils/config";
-import { useLocation, useNavigate } from "react-router-dom";
+import {APIURL} from "./utils/config";
+import {useNavigate} from "react-router-dom";
 
-import { useToast } from "./toaster";
-import ToastProvider from "./toaster";
-
-// Import sponsor logos
-import bimeSalamteMan from './assets/logos/bime-salamte-man-icon.png';
-import logoHybrid from './assets/logos/Logo Hybrid 2.png';
-import pajooheshkadeh from './assets/logos/پژوهشکده.png';
-import shahidBeheshti from './assets/logos/شهیدبهشتی.jpg';
-import tehranUni from './assets/logos/لوگو انگلیسی دانشگاه تهران.jpg';
-import behdasht from './assets/logos/لوگو-وزارت-بهداشت-2-3.jpg';
-import mazandaran from './assets/logos/مازندران.webp';
-import mohavateBehdashti from './assets/logos/معاونت بهداشتی وزارت.jpg';
-import { fetchDataGETNoError } from "./utils/tools";
-import { UserCircle2Icon } from "lucide-react";
+import {useToast} from "./toaster";
+import {fetchDataGETNoError} from "./utils/tools";
+import {UserCircle2Icon} from "lucide-react";
 
 function AdminLogin() {
-    const [phone, setphone] = useState('')
-    const [passw, setPassw] = useState('')
+    const [phone, setPhone] = useState('')
+    const [password, setPassword] = useState('')
     const [Err, setError] = useState('')
     const navigate = useNavigate();
-    const { addToast } = useToast()
+    const {addToast} = useToast()
     const form_submitted = async (e) => {
         e.preventDefault();
         try {
             const res = await fetch(`${APIURL}/auth/admin/login`, {
                 method: 'POST',
-                headers: { "Content-Type": "application/json" },
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
                     "phone": phone,
-                    "password": passw
+                    "password": password
                 }),
             })
             const data = await res.json()
@@ -42,7 +31,7 @@ function AdminLogin() {
                     type: 'error',
                     duration: 4000
                 })
-            };
+            }
             if (res.ok) {
                 addToast({
                     title: 'خوش آمدید',
@@ -55,12 +44,10 @@ function AdminLogin() {
                 localStorage.setItem("roles", JSON.stringify(data.data.roles));
 
                 const userAuthed = await fetchDataGETNoError("admin/profile", data.data.access_token);
-                if (userAuthed.status === 200 || userAuthed.status === 201) {
-                    navigate("/DashBoard");
-                } else if (userAuthed.status === 404) {
+                if (userAuthed.status === 404) {
                     navigate("/residentEnter");
                 } else {
-                    navigate("/AppChoose");
+                    navigate("/DashBoard");
                 }
             }
         } catch (err) {
@@ -76,62 +63,40 @@ function AdminLogin() {
     }
 
 
-
     return (
         <>
-            {/* {Err.length != 0 &&
-        <div className= {Err.length != 0 ? "error_container fader" : null}>
-        <span>{Err}</span>
-        <i className="fa fa-ban"></i>
-        </div>
-    } */}
             <div className="login_container">
                 <div className="middles">
-                    {/* <div className="colgroup">
-                        <img src={behdasht} alt="وزارت بهداشت" className="sponsor-logo" />
-                        <img src={mohavateBehdashti} alt="معاونت بهداشتی" className="sponsor-logo" />
-                        <img src={tehranUni} alt="دانشگاه تهران" title="طراحی، تولید و اعتبارسنجی سامانه ریسکسنجی سرطانهای پستان و کولورکتال در جمعیت ایرانی
-(فازهای اول و دوم پروژه ملی پیشگیری فردمحور سرطان). کد طرح: 1404-1-107-91678" className="sponsor-logo" />
-                    </div> */}
                     <div className="middle_form">
                         <h3 className="login_title clear_title">
                             سامانه ی ریسک سنجی و تشخیص سرطان
                         </h3>
                         <div className="form_card">
-                            <UserCircle2Icon color="#cf4776" size={128} />
+                            <UserCircle2Icon color="#cf4776" size={128}/>
                             <h3 className="login_title">صفحه ورود اعضا</h3>
                             <form onSubmit={(e) => form_submitted(e)} className="login_form">
                                 <div className="inp">
                                     <label htmlFor="telephone">تلفن</label>
-                                    <input data-clarity-mask="true" type="text" name="telephone" id="telephone" placeholder="مثال: 09123456789" value={phone} onChange={(e) => setphone(e.target.value)} />
+                                    <input data-clarity-mask="true" type="text" name="telephone" id="telephone"
+                                           placeholder="مثال: 09123456789" value={phone}
+                                           onChange={(e) => setPhone(e.target.value)}/>
                                 </div>
                                 <div className="inp">
                                     <label htmlFor="telephone">رمز ورود</label>
-                                    <input data-clarity-mask="true" type="password" name="password" id="password" placeholder="xxxxxx" value={passw} onChange={(e) => setPassw(e.target.value)} />
+                                    <input data-clarity-mask="true" type="password" name="password" id="password"
+                                           placeholder="xxxxxx" value={password}
+                                           onChange={(e) => setPassword(e.target.value)}/>
                                 </div>
-                                {/* <div className="inp">
-                    <label htmlFor="mellicode">کدملی</label>
-                    <input type="text" name="mellicode" id="mellicode" placeholder="xxxxxxxxxx"/>
-                    </div> */}
                                 <button className="btn_login">ورود</button>
                             </form>
                         </div>
                     </div>
-                    {/* <div className="colgroup">
-                        <img src={bimeSalamteMan} alt="بیمه سلامت من" className="sponsor-logo" />
-                        <img src={shahidBeheshti} alt="دانشگاه شهید بهشتی" title="اعتبارسنجی و بومی سازی مدل های معتبر پیش بینی خطر  سرطان‌ ریه در جمعیت ایرانی (فازهای اول و دوم پروژه ملی پیشگیری فردمحور سرطان) طبقه‌بندی خطر و ثبت موارد. کد طرح: 43017023" className="sponsor-logo" />
-                        <img src={mazandaran} alt="مازندران" className="sponsor-logo" />
-                    </div> */}
                 </div>
-                {/* <div className="rowgroup">
-                    <img src={pajooheshkadeh} alt="پژوهشکده" className="sponsor-logo big-logo" />
-                    <img src={logoHybrid} alt="لوگو هیبرید" className="sponsor-logo big-logo" />
-                </div> */}
             </div>
             <div className="call-holder">
                 <button className="support_call">تماس با پشتیبانی</button>
             </div>
-            <div className="admin_enter" style={{ display: "none" }}>
+            <div className="admin_enter" style={{display: "none"}}>
                 <button className="support_call2" onClick={adminLoginNav}>ورود اعضا</button>
             </div>
             <p className="copy_right">

@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: frontend
+  annotations:
+    # Uncomment and adjust for your ingress controller, e.g. nginx-ingress or traefik
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: famcan.org.ir
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  name: http
+  # tls:
+  #   - hosts:
+  #       - famcan.org.ir
+  #     secretName: frontend-tls

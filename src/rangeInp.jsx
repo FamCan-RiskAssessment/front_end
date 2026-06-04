@@ -6,8 +6,11 @@ function RangeBox({ data_req, data, valueSetter, class_change1, class_change2, r
     // const [Itext , setIText] = useState('')
     const [vol, setVol] = useState(0)
     useEffect(() => {
-        if (preData != undefined || preData != null) {
-            setVol(preData)
+        if (preData !== undefined && preData !== null && preData !== "") {
+            const n = Number(preData);
+            if (!Number.isNaN(n)) {
+                setVol(n);
+            }
         }
     }, [preData])
     if (relation == undefined) {

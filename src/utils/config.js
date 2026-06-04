@@ -6,6 +6,150 @@ export const APIARR = ["basic", "generalhealth", "mamography", "cancerVisit", "f
 export const APIARR_TAB = ["basic", "generalhealth", "mamography", "cancer", "familycancer", "lungcancer", "contact"]
 export const APIARR_Navid = ["basic", "cancerVisit", "familycancerVisit", "navid", "contact"]
 
+/** Admin patient-table detail fields omitted from display (removed from the form UI). */
+export const HIDDEN_DETAIL_FIELDS = new Set(["callExpert"])
+
+/** Display order for the lung cancer section ("سوالات سرطان ریه") in admin patient table. */
+export const LUNG_CANCER_FIELD_ORDER = [
+    "insuranceStatus",
+    "takmilBime",
+    "lungDiseaseHistory",
+    "lungCancerFamily",
+    "lungCancerFamilyRelation",
+    "bronshit",
+    "fibroz",
+    "lungill",
+    "occupationalExposure",
+    "pastSmoking",
+    "leaveSmoke",
+    "smokingTypesPast",
+    "smokePastAvg",
+]
+
+/** Hidden in lung cancer section only (admin patient table). */
+export const LUNG_CANCER_HIDDEN_FIELDS = new Set([
+    "chronicLungDisease",
+    "lungCancerHistory",
+    "otherCancerHistory",
+    "otherCancerType",
+    "otherCancerFamily",
+    "otherCancerFamilyType",
+    "otherCancerFamilyRelation",
+    "currentSmoking",
+    "smokeCurrentAvg",
+    "secondhandSmoke",
+    "secondhandSmokeLocation",
+    "smokeTypePast",
+    "supplementaryInsurances",
+    "smokingStartAgePast",
+    "smokingStartAgeCurrent",
+    "smokingTypesCurrent",
+    "cigarettesPerDayCurrent",
+    "cigarPerDayCurrent",
+    "eCigPerDayCurrent",
+    "pipePerDayCurrent",
+    "chapoghPerDayCurrent",
+    "smokedOpiumPerDayCurrent",
+    "chewedOpiumPerDayCurrent",
+    "hookahPerWeekCurrent",
+    "cigarettesPerDayPast",
+    "cigarPerDayPast",
+    "eCigPerDayPast",
+    "pipePerDayPast",
+    "chapoghPerDayPast",
+    "smokedOpiumPerDayPast",
+    "chewedOpiumPerDayPast",
+    "hookahPerWeekPast",
+    "hypertension",
+    "hypertensionTreatment",
+    "heartDisease",
+    "heartDiseaseTreatment",
+    "diabetes",
+    "diabetesTreatment",
+    "famLungCanDesc",
+    "Csig",
+    "CsigBarg",
+    "Cpip",
+    "Cghel",
+    "Cchop",
+    "Cteryak",
+    "CelecSig",
+    "Psig",
+    "PsigBarg",
+    "Ppip",
+    "Pghel",
+    "Pchop",
+    "Pteryak",
+    "PelecSig",
+])
+
+/** Display order for the contact section ("سوالات اطلاعات کامل فردی") in admin patient table. */
+export const CONTACT_FIELD_ORDER = [
+    "testGen",
+    "testGenPictures",
+    "fmTestGen",
+    "fatherTestGenPictures",
+    "education",
+    "name",
+    "postalCode",
+    "phone2",
+    "phone3",
+    "birthCountry",
+    "country",
+    "province",
+    "city",
+    "address",
+    "brotherNumber",
+    "sisterNumber",
+    "paternalAuntNumber",
+    "paternalUncleNumber",
+    "maternalAuntNumber",
+    "maternalUncleNumber",
+]
+
+const CONTACT_FIELD_ORDER_INDEX = new Map(
+    CONTACT_FIELD_ORDER.map((key, index) => [key, index])
+)
+
+const LUNG_CANCER_FIELD_ORDER_INDEX = new Map(
+    LUNG_CANCER_FIELD_ORDER.map((key, index) => [key, index])
+)
+
+export function isDetailFieldHidden(apiPart, key) {
+    if (HIDDEN_DETAIL_FIELDS.has(key)) {
+        return true
+    }
+    if (apiPart === "lungcancer" && LUNG_CANCER_HIDDEN_FIELDS.has(key)) {
+        return true
+    }
+    return false
+}
+
+function sortByFieldOrder(entries, orderIndex) {
+    return [...entries].sort(([keyA], [keyB]) => {
+        const indexA = orderIndex.get(keyA)
+        const indexB = orderIndex.get(keyB)
+        const rankA = indexA !== undefined ? indexA : Number.MAX_SAFE_INTEGER
+        const rankB = indexB !== undefined ? indexB : Number.MAX_SAFE_INTEGER
+
+        if (rankA !== rankB) {
+            return rankA - rankB
+        }
+
+        return keyA.localeCompare(keyB)
+    })
+}
+
+export function sortDetailFieldEntries(apiPart, entries) {
+    if (apiPart === "contact") {
+        return sortByFieldOrder(entries, CONTACT_FIELD_ORDER_INDEX)
+    }
+    if (apiPart === "lungcancer") {
+        return sortByFieldOrder(entries, LUNG_CANCER_FIELD_ORDER_INDEX)
+    }
+    return entries
+}
+
 
 
 // NEW - USE THIS
