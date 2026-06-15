@@ -34,6 +34,8 @@
   align-content: center;
   background: #f1f1f1;
   gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .no-forms-text {
@@ -345,6 +347,12 @@
 
 /* Responsive styles for forms table */
 @media (max-width: 768px) {
+  .forms-page-wrapper {
+    width: 100% !important;
+    padding: 0.5rem;
+    box-sizing: border-box;
+  }
+
   .forms-page-wrapper.FM {
     width: 95%;
     padding: unset;

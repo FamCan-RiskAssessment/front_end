@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import NavBar from "./navBar";
+import "./client_forms.css";
+import "./form_elements.css";
 import "./patient_table.css";
 import { APIARR_TAB, APIARR_Navid, APIURL, formStatusLabels, statusAPIs, stateColors, HIDDEN_DETAIL_FIELDS, isDetailFieldHidden, sortDetailFieldEntries } from "./utils/config";
 import {
@@ -25,7 +27,7 @@ import arrowLeftSign from './V2Form/arrowLeft.svg'
 import leftSign from './V2Form/form_left.png'
 import rightSign from './V2Form/form_right.png'
 import { useNavigate } from "react-router-dom";
-import { NotebookIcon } from "lucide-react";
+import { Check, NotebookIcon, Pencil, X } from "lucide-react";
 import {
     canAccessDashboardRoute,
     DASHBOARD_ROUTES,
@@ -250,8 +252,7 @@ export default function FilterableTable() {
     //   setGender(formDetails[formId]["basic"]["gender"])
     // }, [formDetails])
 
-    // Function to handle double click on a form field for editing
-    const handleFieldDoubleClick = (formId, apiPart, fieldName, currentValue) => {
+    const startFieldEdit = (formId, apiPart, fieldName, currentValue) => {
         setEditingCells(prev => ({
             ...prev,
             [formId]: {
@@ -263,6 +264,23 @@ export default function FilterableTable() {
             }
         }));
         setEditingFormPart(`${formId}-${apiPart}-${fieldName}`);
+    };
+
+    const cancelFieldEdit = (formId, apiPart, fieldName) => {
+        setEditingFormPart(null);
+        setEditingCells(prev => {
+            const newPrev = { ...prev };
+            if (newPrev[formId]?.[apiPart]) {
+                delete newPrev[formId][apiPart][fieldName];
+                if (Object.keys(newPrev[formId][apiPart]).length === 0) {
+                    delete newPrev[formId][apiPart];
+                }
+                if (Object.keys(newPrev[formId]).length === 0) {
+                    delete newPrev[formId];
+                }
+            }
+            return newPrev;
+        });
     };
 
     // Function to handle changes to edited fields
@@ -1024,7 +1042,7 @@ export default function FilterableTable() {
                                 <button onClick={handleSave} className="btn_question">
                                     ذخیره تغییرات
                                 </button>
-                                <p>برای تغییر دادن هر فیلد دابل کلیک کنید.</p>
+                                <p>برای تغییر هر فیلد، روی دکمه ویرایش کنار آن بزنید.</p>
                             </div>
 
                             {/* Drawer-style interface for form sections */}
@@ -1227,52 +1245,84 @@ export default function FilterableTable() {
                                                                                     return;
                                                                                 }
 
-                                                                                if (key == "formType") {
-                                                                                    value = row.formType == 1 ? "بهار" : "نوید"
-                                                                                }
+                                                                                const isImageField = (key === 'testGenPictures' || key === 'fatherTestGenPictures' || key === 'grandFatherCancerPictures' || key === 'grandMotherCancerPictures' || key === "mamoGraphyPictures") && Array.isArray(value) && value.length > 0;
+                                                                                const displayValue = key == "formType"
+                                                                                    ? (row.formType == 1 ? "بهار" : "نوید")
+                                                                                    : convertToPersianText(value, RadioMap, key);
+
                                                                                 return (
                                                                                     <div key={key} className="data_row">
-                                                                                        <span
-                                                                                            className="data_key">{getFieldLabel(key)}:</span>
-                                                                                        <span
-                                                                                            className="data_value"
-                                                                                            onDoubleClick={() => handleFieldDoubleClick(row.id, apiPart, key, convertToPersianText(value, RadioMap, key))}
-                                                                                        >
+                                                                                        <span className="data_key">{getFieldLabel(key)}:</span>
+                                                                                        <div className="data_value">
                                                                                             {isCurrentlyEditing ? (
-                                                                                                <input
-                                                                                                    type="text"
-                                                                                                    value={editingValue}
-                                                                                                    onChange={(e) => handleFieldChange(row.id, apiPart, key, e.target.value)}
-                                                                                                    onBlur={() => saveFieldToServer(row.id, apiPart, key, editingValue)}
-                                                                                                    onKeyDown={(e) => {
-                                                                                                        if (e.key === 'Enter') {
-                                                                                                            saveFieldToServer(row.id, apiPart, key, editingValue);
-                                                                                                        }
-                                                                                                    }}
-                                                                                                    autoFocus
-                                                                                                    style={{ width: "100%" }}
-                                                                                                />
-                                                                                            ) : (
-                                                                                                // Check if the field is an array of images and render as downloadable links
-                                                                                                (key === 'testGenPictures' || key === 'fatherTestGenPictures' || key === 'grandFatherCancerPictures' || key === 'grandMotherCancerPictures' || key === "mamoGraphyPictures") && Array.isArray(value) && value.length > 0 ? (
-                                                                                                    <div className="image-pictures-container">
-                                                                                                        {value.map((pictureUrl, index) => (
-                                                                                                            <a
-                                                                                                                key={index}
-                                                                                                                href={pictureUrl}
-                                                                                                                target="_blank"
-                                                                                                                rel="noopener noreferrer"
-                                                                                                                className="download-link"
-                                                                                                            >
-                                                                                                                دانلود تصویر {index + 1}
-                                                                                                            </a>
-                                                                                                        ))}
+                                                                                                <div className="field_edit_container">
+                                                                                                    <input
+                                                                                                        type="text"
+                                                                                                        className="field_edit_input"
+                                                                                                        value={editingValue}
+                                                                                                        onChange={(e) => handleFieldChange(row.id, apiPart, key, e.target.value)}
+                                                                                                        onKeyDown={(e) => {
+                                                                                                            if (e.key === 'Enter') {
+                                                                                                                saveFieldToServer(row.id, apiPart, key, editingValue);
+                                                                                                            } else if (e.key === 'Escape') {
+                                                                                                                cancelFieldEdit(row.id, apiPart, key);
+                                                                                                            }
+                                                                                                        }}
+                                                                                                        autoFocus
+                                                                                                    />
+                                                                                                    <div className="field_edit_actions">
+                                                                                                        <button
+                                                                                                            type="button"
+                                                                                                            className="field_edit_btn field_edit_btn--save"
+                                                                                                            aria-label="ذخیره"
+                                                                                                            onClick={() => saveFieldToServer(row.id, apiPart, key, editingValue)}
+                                                                                                        >
+                                                                                                            <Check size={18} />
+                                                                                                        </button>
+                                                                                                        <button
+                                                                                                            type="button"
+                                                                                                            className="field_edit_btn field_edit_btn--cancel"
+                                                                                                            aria-label="لغو"
+                                                                                                            onClick={() => cancelFieldEdit(row.id, apiPart, key)}
+                                                                                                        >
+                                                                                                            <X size={18} />
+                                                                                                        </button>
                                                                                                     </div>
-                                                                                                ) : (
-                                                                                                    convertToPersianText(value, RadioMap, key)
-                                                                                                )
+                                                                                                </div>
+                                                                                            ) : (
+                                                                                                <div className="field_display_container">
+                                                                                                    <span className="field_display_value">
+                                                                                                        {isImageField ? (
+                                                                                                            <div className="image-pictures-container">
+                                                                                                                {value.map((pictureUrl, index) => (
+                                                                                                                    <a
+                                                                                                                        key={index}
+                                                                                                                        href={pictureUrl}
+                                                                                                                        target="_blank"
+                                                                                                                        rel="noopener noreferrer"
+                                                                                                                        className="download-link"
+                                                                                                                    >
+                                                                                                                        دانلود تصویر {index + 1}
+                                                                                                                    </a>
+                                                                                                                ))}
+                                                                                                            </div>
+                                                                                                        ) : (
+                                                                                                            displayValue
+                                                                                                        )}
+                                                                                                    </span>
+                                                                                                    {!isImageField && (
+                                                                                                        <button
+                                                                                                            type="button"
+                                                                                                            className="field_edit_btn field_edit_btn--edit"
+                                                                                                            aria-label="ویرایش"
+                                                                                                            onClick={() => startFieldEdit(row.id, apiPart, key, displayValue)}
+                                                                                                        >
+                                                                                                            <Pencil size={16} />
+                                                                                                        </button>
+                                                                                                    )}
+                                                                                                </div>
                                                                                             )}
-                                                                                        </span>
+                                                                                        </div>
                                                                                     </div>
                                                                                 );
                                                                             })
