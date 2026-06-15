@@ -4,8 +4,13 @@ import NavBar from "./navBar";
 import "./DashBoard.css"
 import formT from "./assets/from_transfer.svg"
 import { useLocation, useNavigate } from "react-router-dom";
-import { permExtractor, fetchDataGET, permissionCategoryComparer } from "./utils/tools"
-import { listOfcategs, listDashBoardUrls } from "./utils/config";
+import {
+    canAccessDashboard,
+    canSetPassword,
+    DASHBOARD_ROUTES,
+    getStoredPermissions,
+    persistDashboardAccess,
+} from "./utils/permissions";
 import homeSign from './V2Form/home.svg'
 import timeSign from './V2Form/time.svg'
 import tool_pinkSign from './V2Form/pink_tool.svg'
@@ -19,49 +24,26 @@ function DashBoard() {
     const [passedUrls, setPassedUrls] = useState([])
     const permissions = location.state?.permissions;
     const [userPhone, setUserPhone] = useState("")
-    let role = JSON.parse(localStorage.getItem("roles"))
-    // localStorage.setItem("pagesOneCango", "[]")
+    const navigate = useNavigate();
+
     useEffect(() => {
-        // let checkPerms = JSON.parse(localStorage.getItem("permissions"))
-        role.forEach(r => {
-            if (r.name == "مراجعه کننده") {
-                navigate("/error_page", { state: { error_type: 401 } })
-            }
-        });
-    }, [])
+        if (!canAccessDashboard()) {
+            navigate("/error_page", { state: { error_type: 401 } })
+        }
+    }, [navigate])
+
     useEffect(() => {
-        let passedUrlsRaw = permissionCategoryComparer(perms, listOfcategs, listDashBoardUrls)
-        localStorage.setItem("pagesOneCango", JSON.stringify(passedUrlsRaw))
+        const permissions = getStoredPermissions()
+        const passedUrlsRaw = persistDashboardAccess(permissions)
         setPassedUrls(passedUrlsRaw)
     }, [perms])
 
-    // useEffect(() => {
-    //     const loadUser = async () =>{
-    //         let token = localStorage.getItem("token")
-    //         let phone = localStorage.getItem("number")
-    //         let data = await fetchDataGET("admin/users" , token)
-    //         let users = data.data.data
-    //         users.forEach(async u => {
-    //             if(u.phone == phone){
-    //                 let permsRaw = await fetchDataGET(`admin/users/${u.id}/roles` , token)
-    //                 // console.log(permsRaw.data[0].permissions)
-    //                 setPerms(permsRaw.data[0].permissions)
-    //                 setUserPhone(u.phone)
-    //             }
-    //         });
-    //     }
-    //     loadUser()
-    // } , [])
-
-
     useEffect(() => {
-        let permissions = JSON.parse(localStorage.getItem("permissions"))
-        let phone = localStorage.getItem("number")
+        const permissions = getStoredPermissions()
+        const phone = localStorage.getItem("number")
         setUserPhone(phone)
         setPerms(permissions)
     }, [])
-
-    const navigate = useNavigate();
     const tool_chooser = () => {
         navigate("/DashBoard/RandP", { state: { phone: userPhone } })
     }
@@ -87,6 +69,12 @@ function DashBoard() {
     const tool_chooser8 = () => {
         navigate("/DashBoard/modelsResults", { state: { phone: userPhone } })
     }
+
+    const userManagementUrls = [DASHBOARD_ROUTES.ROLE_MAKER, DASHBOARD_ROUTES.RAND_P, DASHBOARD_ROUTES.PATIENTS]
+    const showUserManagementSection = userManagementUrls.some((url) => passedUrls.includes(url))
+    const showPasswordTool = canSetPassword(perms)
+    const reportsUrls = [DASHBOARD_ROUTES.MODELS_RESULTS, DASHBOARD_ROUTES.SUPERVISOR_FORMS, DASHBOARD_ROUTES.SYSTEM_LOG]
+    const showReportsSection = reportsUrls.some((url) => passedUrls.includes(url)) || showPasswordTool
 
     return (
         <>
@@ -130,67 +118,70 @@ function DashBoard() {
                 </div> */}
                 <div className="forms-page-wrapper dash">
                     <div className="forms-container dash">
-                        <div className="connector">
-                            <div className="tool_title">
-                                <span>
-                                    <img src={tool_greenSign} alt="tool_picker_green" />
-                                </span>
-                                <h2>مدیریت کاربران و نقش‌ها</h2>
-                            </div>
-                            <div className="user-management">
-                                <div className="tool_list">
-                                    <ul>
-                                        {passedUrls.includes("/DashBoard/roleMaker") && (
-                                            <li className="tool" onClick={() => tool_chooser2()}>
-                                                <span>
-                                                    <img src={tool_pinkSign} alt="tool_picker_pink" />
-                                                </span>
-                                                <span>
-                                                    ساخت، حذف و مدیریت نقش
-                                                </span>
-                                            </li>
-                                        )}
-                                        {passedUrls.includes("/DashBoard/RandP") && (
-                                            <li className="tool" onClick={() => tool_chooser()}>
-                                                <span>
-                                                    <img src={tool_pinkSign} alt="tool_picker_pink" />
-                                                </span>
-                                                <span>
-                                                    تغییر دسترسی افراد
-                                                </span>
-                                            </li>
-                                        )}
+                        {showUserManagementSection && (
+                            <div className="connector">
+                                <div className="tool_title">
+                                    <span>
+                                        <img src={tool_greenSign} alt="tool_picker_green" />
+                                    </span>
+                                    <h2>مدیریت کاربران و نقش‌ها</h2>
+                                </div>
+                                <div className="user-management">
+                                    <div className="tool_list">
+                                        <ul>
+                                            {passedUrls.includes("/DashBoard/roleMaker") && (
+                                                <li className="tool" onClick={() => tool_chooser2()}>
+                                                    <span>
+                                                        <img src={tool_pinkSign} alt="tool_picker_pink" />
+                                                    </span>
+                                                    <span>
+                                                        ساخت، حذف و مدیریت نقش
+                                                    </span>
+                                                </li>
+                                            )}
+                                            {passedUrls.includes("/DashBoard/RandP") && (
+                                                <li className="tool" onClick={() => tool_chooser()}>
+                                                    <span>
+                                                        <img src={tool_pinkSign} alt="tool_picker_pink" />
+                                                    </span>
+                                                    <span>
+                                                        تغییر دسترسی افراد
+                                                    </span>
+                                                </li>
+                                            )}
 
-                                        {/* <li className="tool" onClick={() => tool_chooser4()}>
-                                            <span>
-                                                <img src={tool_pinkSign} alt="tool_picker_pink" />
-                                            </span>
-                                            <span>
-                                                مدیریت کاربران
-                                            </span>
-                                        </li> */}
-                                        {passedUrls.includes("/DashBoard/patients") && (
-                                            <li className="tool" onClick={() => tool_chooser3()}>
+                                            {/* <li className="tool" onClick={() => tool_chooser4()}>
                                                 <span>
                                                     <img src={tool_pinkSign} alt="tool_picker_pink" />
                                                 </span>
                                                 <span>
-                                                    کاربران ثبت‌نام شده
+                                                    مدیریت کاربران
                                                 </span>
-                                            </li>
-                                        )}
-                                        {/* <li className="tool" onClick={() => tool_chooser5()}>
-                                            <span>
-                                                <img src={tool_pinkSign} alt="tool_picker_pink" />
-                                            </span>
-                                            <span>
-                                                تغییر رمز
-                                            </span>
-                                        </li> */}
-                                    </ul>
+                                            </li> */}
+                                            {passedUrls.includes("/DashBoard/patients") && (
+                                                <li className="tool" onClick={() => tool_chooser3()}>
+                                                    <span>
+                                                        <img src={tool_pinkSign} alt="tool_picker_pink" />
+                                                    </span>
+                                                    <span>
+                                                        کاربران ثبت‌نام شده
+                                                    </span>
+                                                </li>
+                                            )}
+                                            {/* <li className="tool" onClick={() => tool_chooser5()}>
+                                                <span>
+                                                    <img src={tool_pinkSign} alt="tool_picker_pink" />
+                                                </span>
+                                                <span>
+                                                    تغییر رمز
+                                                </span>
+                                            </li> */}
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
+                        {showReportsSection && (
                         <div className="connector">
                             <div className="tool_title journs">
                                 <span>
@@ -201,7 +192,7 @@ function DashBoard() {
                             <div className="form-management">
                                 <div className="tool_list">
                                     <ul>
-                                        {/* {passedUrls.includes("/DashBoard/modelsResults") && ( */}
+                                        {passedUrls.includes(DASHBOARD_ROUTES.MODELS_RESULTS) && (
                                         <li className="tool" onClick={() => tool_chooser8()}>
                                             <span>
                                                 <img src={tool_pinkSign} alt="tool_picker_pink" />
@@ -210,8 +201,8 @@ function DashBoard() {
                                                 نتایج مدل‌ها
                                             </span>
                                         </li>
-                                        {/* )} */}
-                                        {passedUrls.includes("/DashBoard/supervisorForms") && (
+                                        )}
+                                        {passedUrls.includes(DASHBOARD_ROUTES.SUPERVISOR_FORMS) && (
                                             <li className="tool" onClick={() => tool_chooser6()}>
                                                 <span>
                                                     <img src={tool_pinkSign} alt="tool_picker_pink" />
@@ -221,7 +212,7 @@ function DashBoard() {
                                                 </span>
                                             </li>
                                         )}
-                                        {passedUrls.includes("/DashBoard/systemLog") && (
+                                        {passedUrls.includes(DASHBOARD_ROUTES.SYSTEM_LOG) && (
                                             <li className="tool" onClick={() => tool_chooser7()}>
                                                 <span>
                                                     <img src={tool_pinkSign} alt="tool_picker_pink" />
@@ -231,6 +222,7 @@ function DashBoard() {
                                                 </span>
                                             </li>
                                         )}
+                                        {showPasswordTool && (
                                         <li className="tool" onClick={() => tool_chooser5()}>
                                             <span>
                                                 <img src={tool_pinkSign} alt="tool_picker_pink" />
@@ -239,10 +231,12 @@ function DashBoard() {
                                                 تنظیم پسورد
                                             </span>
                                         </li>
+                                        )}
                                     </ul>
                                 </div>
                             </div>
                         </div>
+                        )}
                     </div>
                 </div>
 

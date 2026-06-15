@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import { fetchDataGET } from "./utils/tools";
+import {
+  canAccessDashboardRoute,
+  DASHBOARD_ROUTES,
+} from "./utils/permissions";
 import NavBar from "./navBar";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./SysLogs.css";
@@ -77,10 +81,7 @@ function SystemLogs() {
   const [appliedFilters, setAppliedFilters] = useState(EMPTY_FILTERS);
 
   useEffect(() => {
-    const roles = JSON.parse(localStorage.getItem("roles") || "[]");
-    const perms = JSON.parse(localStorage.getItem("pagesOneCango") || "[]");
-    const denied = roles.some((r) => r.name === "مراجعه کننده") || !perms.includes("/DashBoard/systemLog");
-    if (denied) {
+    if (!canAccessDashboardRoute(DASHBOARD_ROUTES.SYSTEM_LOG)) {
       navigate("/error_page", { state: { error_type: 403 } });
     }
   }, [navigate]);

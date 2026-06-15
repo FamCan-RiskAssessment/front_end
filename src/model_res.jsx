@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import './model_res.css';
 import NavBar from './navBar';
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { fetchDataGET, endpointMaker } from "./utils/tools";
+import { canAccessDashboardRoute, DASHBOARD_ROUTES } from "./utils/permissions";
 import Loader from "./utils/loader";
 import leftSign from './V2Form/form_left.png';
 import rightSign from './V2Form/form_right.png';
@@ -10,6 +11,7 @@ import prevSign from './V2Form/arrow_right.svg';
 
 const ModelResults = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const userPhone = location.state?.phone;
     const exact_form = location.state?.form
     console.log("came with the exact form : ", exact_form)
@@ -86,16 +88,11 @@ const ModelResults = () => {
         setPage(1);
     }, [advancedFilters.search]);
 
-    let role = JSON.parse(localStorage.getItem("roles"))
-    let perms = JSON.parse(localStorage.getItem("pagesOneCango"))
     useEffect(() => {
-        // let checkPerms = JSON.parse(localStorage.getItem("permissions"))
-        role.forEach(r => {
-            if (r.name == "مراجعه کننده") {
-                navigate("/error_page", { state: { error_type: 403 } })
-            }
-        });
-    }, [])
+        if (!canAccessDashboardRoute(DASHBOARD_ROUTES.MODELS_RESULTS)) {
+            navigate("/error_page", { state: { error_type: 403 } })
+        }
+    }, [navigate])
 
     const buildEndpoint = (currentPage, filters) => {
         return endpointMaker(

@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 
 import {useToast} from "./toaster";
 import {fetchDataGETNoError} from "./utils/tools";
+import { persistDashboardAccess } from "./utils/permissions";
 import {UserCircle2Icon} from "lucide-react";
 
 function AdminLogin() {
@@ -42,6 +43,7 @@ function AdminLogin() {
                 localStorage.setItem("number", phone);
                 localStorage.setItem("permissions", JSON.stringify(data.data.permissions));
                 localStorage.setItem("roles", JSON.stringify(data.data.roles));
+                persistDashboardAccess(data.data.permissions);
 
                 const userAuthed = await fetchDataGETNoError("admin/profile", data.data.access_token);
                 if (userAuthed.status === 404) {

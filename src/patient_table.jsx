@@ -26,6 +26,11 @@ import leftSign from './V2Form/form_left.png'
 import rightSign from './V2Form/form_right.png'
 import { useNavigate } from "react-router-dom";
 import { NotebookIcon } from "lucide-react";
+import {
+    canAccessDashboardRoute,
+    DASHBOARD_ROUTES,
+    shouldUseOperatorFormEndpoint,
+} from "./utils/permissions";
 
 // Load the Persian header mapping
 const headerMapping = {};
@@ -157,16 +162,11 @@ export default function FilterableTable() {
     }, [])
 
 
-    let role = JSON.parse(localStorage.getItem("roles"))
-    // let perms = JSON.parse(localStorage.getItem("pagesOneCango"))
     useEffect(() => {
-        // let checkPerms = JSON.parse(localStorage.getItem("permissions"))
-        role.forEach(r => {
-            if (r.name == "مراجعه کننده") {
-                navigate("/error_page", { state: { error_type: 403 } })
-            }
-        });
-    }, [])
+        if (!canAccessDashboardRoute(DASHBOARD_ROUTES.PATIENTS)) {
+            navigate("/error_page", { state: { error_type: 403 } })
+        }
+    }, [navigate])
 
 
     const getFieldLabel = (key) => {
@@ -437,12 +437,11 @@ export default function FilterableTable() {
         filledByOperatorID: ''
     });
 
-    // Function to build endpoint based on user role and filters
-    const buildEndpoint = (roleName, currentPage, currentFilter, filters) => {
+    // Function to build endpoint based on permissions and filters
+    const buildEndpoint = (useOperatorForms, currentPage, currentFilter, filters) => {
         let endpoint = '';
 
-        // Determine base endpoint based on user role
-        if (roleName === "اپراتور") {
+        if (useOperatorForms) {
             endpoint = 'admin/operator-form';
         } else {
             endpoint = 'admin/form';
@@ -496,11 +495,9 @@ export default function FilterableTable() {
     useEffect(() => {
         const fetchformIds = async () => {
             let token = localStorage.getItem("token");
-            let role = JSON.parse(localStorage.getItem("roles"));
-            const roleName = role[0]?.name || '';
+            const useOperatorForms = shouldUseOperatorFormEndpoint();
 
-            // Build endpoint based on role and filters
-            const endpoint = buildEndpoint(roleName, page, filter, advancedFilters);
+            const endpoint = buildEndpoint(useOperatorForms, page, filter, advancedFilters);
             try {
                 const response = await fetch(endpoint, {
                     method: "GET",

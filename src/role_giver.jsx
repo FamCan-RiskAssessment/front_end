@@ -3,6 +3,12 @@ import NavBar from "./navBar";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { APIURL, roleColors, sortOptions } from "./utils/config";
+import {
+  canAccessDashboardRoute,
+  DASHBOARD_ROUTES,
+  isAssignableRole,
+  userHasFullAccess,
+} from "./utils/permissions";
 import { useToast } from "./toaster";
 import ToastProvider from "./toaster";
 import { fetchDataGET, endpointMaker } from "./utils/tools";
@@ -43,16 +49,12 @@ function RoleChanger() {
   const navigate = useNavigate();
   const { addToast } = useToast()
   const userPhone = location.state?.phone;
-  let role = JSON.parse(localStorage.getItem("roles"))
-  let perms = JSON.parse(localStorage.getItem("pagesOneCango"))
+
   useEffect(() => {
-    // let checkPerms = JSON.parse(localStorage.getItem("permissions"))
-    role.forEach(r => {
-      if (r.name == "مراجعه کننده" || !perms.includes("/DashBoard/RandP")) {
-        navigate("/error_page", { state: { error_type: 403 } })
-      }
-    });
-  }, [])
+    if (!canAccessDashboardRoute(DASHBOARD_ROUTES.RAND_P)) {
+      navigate("/error_page", { state: { error_type: 403 } })
+    }
+  }, [navigate])
 
   const nextPage = () => {
     if (PagiNext)
@@ -206,7 +208,19 @@ function RoleChanger() {
   }, [users]);
 
   // fetching and posting the new role 
+  const assignableRoles = Roles.filter(isAssignableRole)
+  const isProtectedUser = userHasFullAccess
+
   const updateUserRole = async (role) => {
+    if (!isAssignableRole(role)) {
+      addToast({
+        title: 'امکان اختصاص نقش با دسترسی کامل وجود ندارد',
+        type: 'error',
+        duration: 4000
+      })
+      return
+    }
+
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${APIURL}/admin/user/${parseInt(idchose)}/role`, {
@@ -234,8 +248,11 @@ function RoleChanger() {
       loadRoles();
       console.log("✅ Role updated:", data);
     } catch (err) {
-      console.error("❌ Error updating role:", err.message);
-      console.log(role.id)
+      addToast({
+        title: err.message || 'خطا در تغییر نقش',
+        type: 'error',
+        duration: 4000
+      })
     }
   };
 
@@ -349,7 +366,10 @@ function RoleChanger() {
                           <div className="btn_formPage_holder">
                             <button
                               className="btn-view-form"
+                              disabled={isProtectedUser(user)}
+                              title={isProtectedUser(user) ? 'کاربر با دسترسی کامل قابل تغییر نیست' : undefined}
                               onClick={() => {
+                                if (isProtectedUser(user)) return
                                 setIdchose(user.id);
                                 setOpenModal(true);
                               }}
@@ -415,7 +435,7 @@ function RoleChanger() {
             </div>
           </div>
           <div className="roles">
-            {Roles.map((r, index) => (
+            {assignableRoles.map((r, index) => (
               <div
                 key={index}
                 className="role"

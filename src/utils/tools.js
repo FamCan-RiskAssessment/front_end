@@ -542,18 +542,19 @@ export const endpointMaker = (sort1, sort2, searchD, order, prevendPoint, page, 
 export const permissionCategoryComparer = (recUserAPIPerm, listOfcategs, DashURLs) => {
   let flagForBoss = false
   let whereCanWeGo = []
+  const categories = { ...listOfcategs }
   recUserAPIPerm.forEach(rUAP => {
     if (rUAP.name == "دسترسی کامل") {
       flagForBoss = true
     } else if (!flagForBoss) {
-      if (rUAP.category in listOfcategs) {
-        listOfcategs[rUAP.category] = true
+      if (rUAP.category in categories) {
+        categories[rUAP.category] = true
       }
     }
   });
   if (flagForBoss) {
-    Object.keys(listOfcategs).forEach(lk => {
-      listOfcategs[lk] = true
+    Object.keys(categories).forEach(lk => {
+      categories[lk] = true
     });
   }
   if (flagForBoss) {
@@ -563,7 +564,7 @@ export const permissionCategoryComparer = (recUserAPIPerm, listOfcategs, DashURL
     return whereCanWeGo
   } else {
     Object.keys(DashURLs).forEach(DUK => {
-      if (DUK in listOfcategs && listOfcategs[DUK] === true) {
+      if (DUK in categories && categories[DUK] === true) {
         whereCanWeGo.push(DashURLs[DUK])
       }
     });

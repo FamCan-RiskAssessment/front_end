@@ -2,6 +2,11 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { APIURL, formStatusLabels, stateColors } from "./utils/config";
 import { fetchDataGET, fetchDataPUT, form_ids_finder, getKeyVal } from "./utils/tools";
+import {
+  canAccessDashboardRoute,
+  DASHBOARD_ROUTES,
+  findOperatorRoleId,
+} from "./utils/permissions";
 import "./client_forms.css";
 import "./supervisor.css";
 import NavBar from "./navBar";
@@ -31,17 +36,13 @@ function SupervisorPage() {
     const [pagiPrev, setPagiPrev] = useState(false);
     const [pagiNext, setPagiNext] = useState(false);
     const [pageCount, setPageCount] = useState(0);
-    let role = JSON.parse(localStorage.getItem("roles"))
-    let perms = JSON.parse(localStorage.getItem("pagesOneCango"))
+    const navigate = useNavigate();
+
     useEffect(() => {
-        // let checkPerms = JSON.parse(localStorage.getItem("permissions"))
-        role.forEach(r => {
-            if (r.name == "مراجعه کننده" || !perms.includes("/DashBoard/supervisorForms")) {
-                console.log("hello to new gen : ", r.name, perms)
-                navigate("/error_page", { state: { error_type: 403 } })
-            }
-        });
-    }, [])
+        if (!canAccessDashboardRoute(DASHBOARD_ROUTES.SUPERVISOR_FORMS)) {
+            navigate("/error_page", { state: { error_type: 403 } })
+        }
+    }, [navigate])
     // State for advanced filters
     const [advancedFilters, setAdvancedFilters] = useState({
         sortBy: '',
@@ -49,7 +50,6 @@ function SupervisorPage() {
         search: '',
     });
     const [tempSearch, setTempSearch] = useState(''); // Temporary storage for search input
-    const navigate = useNavigate();
     const { addToast } = useToast();
     let userPhone = localStorage.getItem("number");
     console.log(formInfos)
@@ -125,11 +125,7 @@ function SupervisorPage() {
         const OPRoleIdFetch = async () => {
             try {
                 let fetched = await fetchDataGET("admin/role", token);
-                fetched.data.forEach(fd => {
-                    if (fd.name == "اپراتور") {
-                        setOPRoleId(fd.id);
-                    }
-                });
+                setOPRoleId(findOperatorRoleId(fetched.data));
             } catch (error) {
                 console.error("Error fetching role:", error);
             }

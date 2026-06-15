@@ -5,6 +5,7 @@ import { useToast } from "./toaster";
 import ToastProvider from "./toaster";
 import { fetchDataGET, fetchDataDELETE } from './utils/tools';
 import { APIURL } from './utils/config';
+import { canAccessDashboardRoute, DASHBOARD_ROUTES } from './utils/permissions';
 import "./client_forms.css";
 import plusSign from './V2Form/plus.svg'
 import leftSign from './V2Form/form_left.png'
@@ -29,16 +30,12 @@ function RoleMaker() {
   const location = useLocation();
   const { addToast } = useToast()
   const userPhone = location.state?.phone;
-  let role = JSON.parse(localStorage.getItem("roles"))
-  let perms = JSON.parse(localStorage.getItem("pagesOneCango"))
+
   useEffect(() => {
-    // let checkPerms = JSON.parse(localStorage.getItem("permissions"))
-    role.forEach(r => {
-      if (r.name == "مراجعه کننده" || r.name != "سوپر ادمین") {
-        navigate("/error_page", { state: { error_type: 403 } })
-      }
-    });
-  }, [])
+    if (!canAccessDashboardRoute(DASHBOARD_ROUTES.ROLE_MAKER)) {
+      navigate("/error_page", { state: { error_type: 403 } })
+    }
+  }, [navigate])
   useEffect(() => {
     const fetchRoles = async () => {
       let token = localStorage.getItem("token")

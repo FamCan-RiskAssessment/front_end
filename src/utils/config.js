@@ -203,9 +203,11 @@ export const cancerRefs = {
     "khaleDaeiCancer": ["دایی", "خاله"],
 }
 
+export const SUPER_ADMIN_ROLE_NAME = "سوپر ادمین"
+
 export const roleColors = {
     "مراجعه کننده": "red",
-    "سوپر ادمین": "#6155F5",
+    [SUPER_ADMIN_ROLE_NAME]: "#6155F5",
     "اپراتور": "#66C2A5",
     "مدیر": "#0088FF"
 }
@@ -225,7 +227,8 @@ export const listOfcategs = {
     "مدیریت دسترسی": false,
     "مدیریت فرم ها": false,
     "مدیریت اپراتور ها": false,
-    "مدیریت لاگ ها": false
+    "مدیریت لاگ ها": false,
+    "مدیریت پروفایل": false
 }
 export const listDashBoardUrls = {
     "مدیریت مراجعه کنندگان": "/DashBoard/patients",

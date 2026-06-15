@@ -120,6 +120,10 @@
     "label": "قلیان روزانه (گذشته)"
   },
   {
+    "key": "countGheliandailyPast",
+    "label": "قلیان روزانه (گذشته)"
+  },
+  {
     "key": "ghaedeAge",
     "label": "سن اولین قاعدگی",
     "gender": 2
@@ -204,6 +208,11 @@
     "label": "ماموگرافی",
     "gender": 2,
     "mapper": "answers"
+  },
+  {
+    "key": "mamoGraphyPictures",
+    "label": "تصاویر گزارش ماموگرافی",
+    "gender": 2
   },
   {
     "key": "falop",

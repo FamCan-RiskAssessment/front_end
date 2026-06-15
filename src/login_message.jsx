@@ -4,6 +4,7 @@ import { APIURL } from "./utils/config";
 import { useToast } from "./toaster";
 import ToastProvider from "./toaster";
 import { fetchDataGET, fetchDataGETNoError, fetchDataPOST } from "./utils/tools";
+import { persistDashboardAccess } from "./utils/permissions";
 import otpSign from './V2Form/otpSign.svg'
 import tool_pinkSign from './V2Form/pink_tool.svg'
 
@@ -56,6 +57,7 @@ function LoginMessage() {
       localStorage.setItem("number", phone)
       localStorage.setItem("permissions", JSON.stringify(data.data.permissions))
       localStorage.setItem("roles", JSON.stringify(data.data.roles))
+      persistDashboardAccess(data.data.permissions)
       let userAuthed = await fetchDataGETNoError("admin/profile", data.data.access_token)
       console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
       console.log(localStorage.getItem("residentEnter") && (userAuthed.status == 200 || userAuthed.status == 201))

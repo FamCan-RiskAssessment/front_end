@@ -15,6 +15,7 @@ import Loader from "./utils/loader";
 import CancerField from "./cancer_universal";
 import part4 from './questions/P4.json'
 import part5 from './questions/P5.json'
+import { shouldUseOperatorFormEndpoint } from "./utils/permissions";
 
 // Load the Persian header mapping
 const headerMapping = {};
@@ -412,11 +413,10 @@ export default function FilterableTable() {
         const fetchformIds = async () => {
             let pre_forms = null
             let token = localStorage.getItem("token")
-            let role = JSON.parse(localStorage.getItem("roles"))
-            console.log("check the name : ", role[0])
-            if (filter == "All" && role[0].name == "اپراتور") {
+            const useOperatorForms = shouldUseOperatorFormEndpoint()
+            if (filter == "All" && useOperatorForms) {
                 pre_forms = await fetchDataGET(`admin/operator-form?page=${page}&pageSize=10`, token)
-            } else if (filter == "All" && role[0].name != "اپراتور") {
+            } else if (filter == "All" && !useOperatorForms) {
                 let stid = 0
                 statuses.forEach((s, i) => {
                     if (s == filter) {
@@ -425,7 +425,7 @@ export default function FilterableTable() {
                 });
                 console.log("used Operator1")
                 pre_forms = await fetchDataGET(`admin/form?page=${page}&pageSize=10`, token)
-            } else if (filter != "All" && role[0].name != "اپراتور") {
+            } else if (filter != "All" && !useOperatorForms) {
                 pre_forms = await fetchDataGET(`admin/form?page=${page}&pageSize=10&status=${stid}`, token)
             } else {
                 let stid = 0

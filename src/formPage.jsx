@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { APIURL } from "./utils/config";
-import { permExtractor, fetchDataGET, fetchDataDELETE, formTypeChecker, statusChecker, fetchDataPUT, fetchDataGETNoError } from "./utils/tools";
+import { fetchDataGET, fetchDataDELETE, formTypeChecker, statusChecker, fetchDataPUT, fetchDataGETNoError } from "./utils/tools";
+import {
+  canAccessDashboard,
+  canCreateFormForUser,
+} from "./utils/permissions";
 import UQs from './utils/utilQs.json'
 import "./client_forms.css"
 import ToastProvider from "./toaster";
@@ -35,7 +39,7 @@ function FormsPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [perms, setPerms] = useState([])
-  const [role, setRole] = useState("")
+  const [showAdminPanel, setShowAdminPanel] = useState(false)
   const [page, setPage] = useState(1)
   const [pagiPrev, setPagiPrev] = useState(false)
   const [PagiNext, setPagiNext] = useState(false)
@@ -104,10 +108,9 @@ function FormsPage() {
 
   // user info
   useEffect(() => {
-    let permissions = JSON.parse(localStorage.getItem("permissions"))
+    const permissions = JSON.parse(localStorage.getItem("permissions") || "[]")
     setPerms(permissions)
-    let role = JSON.parse(localStorage.getItem("roles"))
-    setRole(role[0].name)
+    setShowAdminPanel(canAccessDashboard(permissions))
   }, [])
 
 
@@ -279,7 +282,7 @@ function FormsPage() {
             </div>
             <h3 className="forms-title">لیست فرم‌های شما</h3>
             <div className="help_bar_part3">
-              {role != "مراجعه کننده" ? (
+              {showAdminPanel ? (
                 <button className="btn-view-form top align_items" onClick={() => checkNewUser()}>
                   <span>پنل کاربری</span>
                   <img src={panelSign} alt="home" />
@@ -469,7 +472,7 @@ function FormsPage() {
             </div>
             <div className="add-new-wrapper">
 
-              {JSON.parse(localStorage.getItem("roles"))[0].id == 3 ?
+              {canCreateFormForUser() ?
                 <button className="btn-add-new-oprator" onClick={handleAddNewForPatient}>
                   فرم جدید برای کاربر دیگر
                 </button>
