@@ -194,6 +194,49 @@ export const stateColors = {
     7: "#0070c0"
 }
 
+/** Normalize API/list status (numeric id or Persian label) to display label. */
+export function resolveFormStatusLabel(status) {
+    if (status === null || status === undefined || status === "") {
+        return null;
+    }
+
+    if (typeof status === "number" && formStatusLabels[status]) {
+        return formStatusLabels[status];
+    }
+
+    const asNumber = Number(status);
+    if (!Number.isNaN(asNumber) && formStatusLabels[asNumber]) {
+        return formStatusLabels[asNumber];
+    }
+
+    if (typeof status === "string") {
+        const trimmed = status.trim();
+        if (Object.values(formStatusLabels).includes(trimmed)) {
+            return trimmed;
+        }
+        if (trimmed) {
+            return trimmed;
+        }
+    }
+
+    return null;
+}
+
+/** Resolve stateColors key from a status label or numeric id. */
+export function getFormStatusColorKey(status) {
+    const label = resolveFormStatusLabel(status);
+    if (!label) {
+        return null;
+    }
+    const key = Object.keys(formStatusLabels).find((k) => formStatusLabels[k] === label);
+    return key ?? null;
+}
+
+export function getFormStatusColor(status) {
+    const key = getFormStatusColorKey(status);
+    return key ? stateColors[key] : "#888";
+}
+
 export const cancerRefs = {
     "childCancer": ["فرزند پسر", "فرزند دختر"],
     "motherCancer": ["مادر"],

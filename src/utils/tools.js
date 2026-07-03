@@ -1,6 +1,7 @@
 // import { Aod } from "@mui/icons-material";
 import { APIURL, formStatusLabels, sortOptions, statusAPIs } from "./config";
 import jalaali from 'jalaali-js';
+import { shouldUseOperatorFormEndpoint } from "./permissions";
 
 
 export const permExtractor = (perms, permCheck) => {
@@ -111,6 +112,30 @@ export const fetchDataGET = async (endpoint, token_auth) => {
 
   return data;
 };
+
+/** Load a single form row from admin list endpoints (status lives here, not on /basic). */
+export async function fetchAdminFormRowById(formId, token_auth) {
+  const base = shouldUseOperatorFormEndpoint() ? "admin/operator-form" : "admin/form";
+  let page = 1;
+
+  while (page <= 50) {
+    const result = await fetchDataGET(
+      `${base}?page=${page}&pageSize=100&sortBy=id&sortOrder=desc`,
+      token_auth
+    );
+    const items = result.data?.data ?? [];
+    const match = items.find((row) => Number(row.id) === Number(formId));
+    if (match) {
+      return match;
+    }
+    if (!result.data?.pagination?.hasNextPage) {
+      break;
+    }
+    page += 1;
+  }
+
+  return null;
+}
 
 export const fetchDataGETNoError = async (endpoint, token_auth) => {
   const res = await fetch(`${APIURL}/${endpoint}`, {

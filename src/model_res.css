@@ -76,8 +76,22 @@
     text-align: center;
 } */
 
+.forms-page-wrapper.MR {
+    width: 100%;
+    max-width: 1200px;
+    margin-inline: auto;
+    padding: 1rem 1.5rem 2rem;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    min-width: 0;
+}
+
 .forms-container.MR {
-    overflow-x: scroll;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    min-width: 0;
 }
 
 .forms-container.MR .model-res-search > input {
@@ -103,9 +117,42 @@
     justify-content: center;
 }
 
+.forms-container.MR .forms_tools {
+    margin-bottom: 1.25rem;
+}
+
 .model-res-table-wrapper {
     position: relative;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
+}
+
+.model-res-table-wrapper.is-loading {
     min-height: 12rem;
+}
+
+.forms-container.MR .model-res-table-wrapper .forms-table {
+    width: max-content;
+    min-width: 100%;
+    border-collapse: collapse;
+}
+
+.forms-container.MR .model-res-table-wrapper .forms-table th,
+.forms-container.MR .model-res-table-wrapper .forms-table td {
+    white-space: nowrap;
+}
+
+.forms-container.MR .model-res-table-wrapper .forms-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #fff;
 }
 
 .model-res-table-wrapper.is-loading .forms-table {
@@ -157,5 +204,53 @@
 
     40% {
         transform: scale(1);
+    }
+}
+
+@media (max-width: 768px) {
+    .forms_page_holder:has(.forms-page-wrapper.MR) {
+        overflow-x: hidden;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .forms-page-wrapper.MR {
+        padding: 0.5rem;
+        min-height: unset;
+    }
+
+    .forms-container.MR {
+        padding: 1rem;
+    }
+
+    .forms-container.MR .forms_tools {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .forms-container.MR .form_tool {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .forms-container.MR .model-res-search > input {
+        width: 100%;
+    }
+
+    .model-res-table-wrapper {
+        overflow-x: auto;
+        overflow-y: visible;
+        max-height: none;
+        min-height: 0;
+        height: auto;
+        border: 1px solid #ececec;
+        border-radius: 10px;
+        background: #fff;
+    }
+
+    .forms-container.MR .model-res-table-wrapper .forms-table thead th {
+        position: static;
     }
 }

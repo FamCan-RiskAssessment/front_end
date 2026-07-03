@@ -7,6 +7,7 @@ import { fetchDataGET, fetchDataDELETE } from './utils/tools';
 import { APIURL } from './utils/config';
 import { canAccessDashboardRoute, DASHBOARD_ROUTES } from './utils/permissions';
 import "./client_forms.css";
+import "./role_giver.css";
 import plusSign from './V2Form/plus.svg'
 import leftSign from './V2Form/form_left.png'
 import rightSign from './V2Form/form_right.png'
@@ -193,10 +194,9 @@ function RoleMaker() {
     <>
       <div className="forms_page_holder">
         <NavBar account={userPhone}></NavBar>
-        <div className="forms-page-wrapper">
-          <div className="forms-container" style={{ display: 'flex', flexDirection: 'row', gap: '2rem', alignItems: 'flex-start' }}>
-            {/* Left side: Table of existing roles */}
-            <div style={{ flex: '1', minWidth: '40%' }}>
+        <div className="forms-page-wrapper role-maker-page">
+          <div className="forms-container role-maker-layout">
+            <div className="role-maker-panel role-maker-panel--form">
               <div className="title-holder">
                 <h1>ساخت نقش جدید</h1>
                 <p className="subtitle">انتخاب دسترسی‌ها و ایجاد نقش برای مدیریت بهتر</p>
@@ -216,7 +216,7 @@ function RoleMaker() {
 
                 <div className="perm_section">
                   <h2 className="perm_title">لیست دسترسی‌ها</h2>
-                  <div className="perm_holder" style={{ maxHeight: '300px', overflowY: 'auto', padding: '10px', border: '1px solid #ddd', borderRadius: '8px' }}>
+                  <div className="perm_holder perm_holder--scroll">
                     {permissions.map((perm, index) => (
                       <label key={perm.engName} className="checkbox-card" htmlFor={perm.engName}>
                         <input
@@ -246,27 +246,12 @@ function RoleMaker() {
 
 
 
-            {/* Right side: Form to create new role */}
-            <div style={{ flex: '1', minWidth: '40%' }}>
-              <div className="forms_tools">
-                <div className="form_tool">
-                  <div className="form_search_bar">
-                    <input type="text" className="form_search inp_question V2" placeholder="جستجو" />
-                  </div>
-                  <div className="sorter">
-                    <select name="roleSort" id="" className="select_optionsV2">
-                      <option value="انتخاب کنید">انتخاب کنید</option>
-                      <option value="جدید ترین">جدید ترین</option>
-                      <option value="قدیمی ترین">قدیمی ترین</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
+            <div className="role-maker-panel role-maker-panel--list">
               {roles.length === 0 ? (
                 <p className="no-forms-text">نقشی یافت نشد.</p>
               ) : (
-                <table className="forms-table">
+                <div className="role-maker-table-wrapper">
+                <table className="forms-table role-maker-table">
                   <thead>
                     <tr>
                       <th className="table-header">نام نقش</th>
@@ -291,6 +276,7 @@ function RoleMaker() {
                     ))}
                   </tbody>
                 </table>
+                </div>
               )}
             </div>
           </div>
