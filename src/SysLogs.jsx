@@ -197,7 +197,7 @@ function SystemLogs() {
       <NavBar account={userPhone} />
       <div className="forms-page-wrapper SL">
         <div className="forms-container SL">
-          <div className="pageTitle log-page-header">
+          <div className="log-page-header">
             <h2>گزارش فعالیت کاربران</h2>
             <button
               type="button"

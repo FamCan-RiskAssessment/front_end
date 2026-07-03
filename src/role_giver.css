@@ -210,12 +210,12 @@ div>.identifiers {
   backdrop-filter: blur(10px);
   border-radius: 1.5rem;
   padding: 2rem;
-  width: 90%;
-  max-width: 800px;
-  /* box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); */
+  width: 100%;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  box-sizing: border-box;
 }
 
 /* Input group */
@@ -438,4 +438,214 @@ div>.identifiers {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Role changer (user access) page */
+.forms-page-wrapper.role-giver-page {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: 1rem 1.5rem 2rem;
+  background: #f1f1f1;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  min-width: 0;
+  min-height: unset;
+}
+
+.forms-container.RG {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.role-giver-header {
+  width: 100%;
+  margin: 0 0 0.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ececec;
+}
+
+.role-giver-header h2 {
+  margin: 0;
+  padding: 0;
+  border: none;
+  width: auto;
+  font-size: 1.35rem;
+  line-height: 1.4;
+  color: #4b006e;
+  text-align: right;
+}
+
+.forms-container.RG .forms_tools {
+  margin-bottom: 1.25rem;
+}
+
+.role-giver-table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: visible;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+}
+
+.forms-container.RG .role-giver-table-wrapper .forms-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+}
+
+.forms-container.RG .role-giver-table-wrapper .forms-table th,
+.forms-container.RG .role-giver-table-wrapper .forms-table td {
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .forms_page_holder:has(.forms-page-wrapper.role-giver-page) {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .forms-page-wrapper.role-giver-page {
+    padding: 0.5rem;
+  }
+
+  .forms-container.RG {
+    padding: 1rem;
+    border-radius: 1rem;
+  }
+
+  .forms-container.RG .forms_tools {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .forms-container.RG .form_tool {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .forms-container.RG .form_search_bar > input {
+    width: 100%;
+  }
+
+  .forms-container.RG .select_optionsV2 {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .role-giver-header h2 {
+    text-align: center;
+    font-size: 1.15rem;
+  }
+
+  .role-giver-table-wrapper {
+    border: 1px solid #ececec;
+    border-radius: 10px;
+    background: #fff;
+  }
+}
+
+/* Role maker page layout */
+.forms-page-wrapper.role-maker-page {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: 1rem 1.5rem 2rem;
+  box-sizing: border-box;
+}
+
+.forms-container.role-maker-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 2rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.role-maker-panel {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.role-maker-panel--list .role-maker-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.role-maker-table {
+  width: 100%;
+  min-width: 280px;
+}
+
+.perm_holder.perm_holder--scroll {
+  width: 100% !important;
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+  align-content: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .forms-container.role-maker-layout {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 1.5rem;
+  }
+
+  .role-maker-panel--form {
+    order: 1;
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  .role-maker-panel--list {
+    order: 2;
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  .perm_holder.perm_holder--scroll {
+    max-height: min(45vh, 360px);
+  }
+}
+
+@media (max-width: 768px) {
+  .forms-page-wrapper.role-maker-page {
+    padding: 0.5rem;
+    min-height: unset;
+  }
+
+  .forms-container.role-maker-layout {
+    padding: 1rem;
+    border-radius: 1rem;
+  }
+
+  .role_form {
+    width: 100%;
+    max-width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .perm_holder.perm_holder--scroll {
+    max-height: min(40vh, 300px);
+  }
 }

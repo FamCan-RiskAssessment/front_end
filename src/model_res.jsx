@@ -234,7 +234,7 @@ const ModelResults = () => {
             <div className="forms_page_holder">
                 <NavBar account={userPhone}></NavBar>
 
-                <div className="forms-page-wrapper">
+                <div className="forms-page-wrapper MR">
                     <div className="forms-container MR">
                         <div className="pageTitle">
                             <h2>نتایج مدل ها</h2>

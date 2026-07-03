@@ -93,6 +93,35 @@ function radioInputMatchesPreset(input, storedValue, radioMap) {
     return false;
 }
 
+/** Merge a step's submitted fields into localStorage so going back shows saved values, not stale cache. */
+function mergeSubmittedDataIntoFormCache(submittedData) {
+    if (!submittedData || typeof submittedData !== "object") return false;
+    if (Object.keys(submittedData).length === 0) return false;
+    try {
+        const prevRaw = localStorage.getItem("form_data");
+        const prev =
+            prevRaw && prevRaw !== "null" ? JSON.parse(prevRaw) : {};
+        const merged = { ...prev, ...submittedData };
+        localStorage.setItem("form_data", JSON.stringify(merged));
+        return true;
+    } catch (e) {
+        console.warn("Failed to merge submitted data into form cache:", e);
+        return false;
+    }
+}
+
+function isValidStoredFormId(id) {
+    return id != null && id !== "" && id !== "null";
+}
+
+/** Editing uses localStorage form_id; new forms use the id returned from step 1 POST. */
+function resolveFormIdForSubmit(presetform, id_form, createdFormId) {
+    if (presetform != null && isValidStoredFormId(id_form)) {
+        return id_form;
+    }
+    return createdFormId;
+}
+
 function applyPresetToFormElements(formRefsMap, preset, radioMap, relMap, familyPayload) {
     if (!preset || typeof preset !== "object") return;
 
@@ -442,7 +471,7 @@ function Questions() {
     }, [step]);
 
     useEffect(() => {
-        if (presetform != null && id_form != null && id_form !== "" && id_form !== "null") {
+        if (presetform != null && isValidStoredFormId(id_form)) {
             setCreatedFormId(id_form);
         }
     }, [id_form]);
@@ -762,53 +791,58 @@ function Questions() {
 
 
     useEffect(() => {
-        // Only update states if the properties exist in presetform
-        if (presetform != null) {
-            if ('gender' in presetform) setGender(presetform["gender"])
-            if ('drinksAlcohol' in presetform) setIsAlchol(relator_R(presetAnswerToLabel(presetform["drinksAlcohol"], RadioMap)))
-            if ('lastMonthSabzijatMeal' in presetform) setIsSabzi(presetform["lastMonthSabzijatMeal"])
-            if ('mediumActivityMonthInYear' in presetform) setIsActivity(presetform["mediumActivityMonthInYear"])
-            if ('hardActivityMonthInYear' in presetform) setIsHardActivity(presetform["hardActivityMonthInYear"])
-            if ('smokeAtLeast100' in presetform) setIsSmoke(relator_R(presetAnswerToLabel(presetform["smokeAtLeast100"], RadioMap)))
-            if ('smokingAge' in presetform) {
-                if (presetform["smokingAge"] === 0) {
-                    setIsSmokeAge("هیچوقت به طور منظم سیگار یا قلیان نکشیده ام")
-                } else {
-                    setIsSmokeAge(presetform["smokingAge"])
-                }
-            }
-            if ('smokingNow' in presetform) setIsSmokingNow(relator_R(presetAnswerToLabel(presetform["smokingNow"], RadioMap)))
-            if ('hasChildren' in presetform) {
-                setIsChild(relator_R(presetAnswerToLabel(presetform["hasChildren"], RadioMap)))
-            }
-            if ('menopausalStatus' in presetform) setIsAdat(presetform["menopausalStatus"])
-            if ('hrt' in presetform) setIsHRT(relator_R(presetAnswerToLabel(presetform["hrt"], RadioMap)))
-            if ('lastFiveYearsHrtUse' in presetform) setIsHRT5(relator_R(presetAnswerToLabel(presetform["lastFiveYearsHrtUse"], RadioMap)))
-            if ('oral' in presetform) setIsOral(relator_R(presetAnswerToLabel(presetform["oral"], RadioMap)))
-            if ('laDeColon' in presetform) setIsColon(relator_R(presetAnswerToLabel(presetform["laDeColon"], RadioMap)))
-            if ('mamoGraphy' in presetform) setIsMamoTest(relator_R(presetAnswerToLabel(presetform["mamoGraphy"], RadioMap)))
-            if ('cancer' in presetform) setIsCancer(presetform["cancer"])
-            if ('childCancer' in presetform) setIsChildCncer(relator_R(presetAnswerToLabel(presetform["childCancer"], RadioMap)))
-            if ('motherCancer' in presetform) setIsMotherCncer(relator_R(presetAnswerToLabel(presetform["motherCancer"], RadioMap)))
-            if ('fatherCancer' in presetform) setIsFatherCncer(relator_R(presetAnswerToLabel(presetform["fatherCancer"], RadioMap)))
-            if ('siblingCancer' in presetform) setIsSibsCncer(relator_R(presetAnswerToLabel(presetform["siblingCancer"], RadioMap)))
-            if ('ameAmoCancer' in presetform) setIsUncAuntCncer(relator_R(presetAnswerToLabel(presetform["ameAmoCancer"], RadioMap)))
-            if ('khaleDaeiCancer' in presetform) setIsUncAunt2Cncer(relator_R(presetAnswerToLabel(presetform["khaleDaeiCancer"], RadioMap)))
-            if ('otherRelative' in presetform) setIsOtherCncer(relator_R(presetAnswerToLabel(presetform["otherRelative"], RadioMap)))
-            if ('testGen' in presetform) setIsGeneTest(relator_R(presetAnswerToLabel(presetform["testGen"], RadioMap)))
-            if ('fmTestGen' in presetform) setIsFamGeneTest(relator_R(presetAnswerToLabel(presetform["fmTestGen"], RadioMap)))
-            if ('smokingTypesCurrent' in presetform) setSmokeType(relator_R(presetAnswerToLabel(presetform["smokingTypesCurrent"], RadioMap)))
-            if ('smokingTypesPast' in presetform) setSmokeTypePast(relator_R(presetAnswerToLabel(presetform["smokingTypesPast"], RadioMap)))
-            if ('lungCancerFamily' in presetform) setFirstDeg(relator_R(presetAnswerToLabel(presetform["lungCancerFamily"], RadioMap)))
-            if ('pastSmoking' in presetform) {
-                setAnySmokePast(relator_R(presetAnswerToLabel(presetform["pastSmoking"], RadioMap)))
-            }
+        const raw = localStorage.getItem("form_data");
+        let cachedPreset = null;
+        try {
+            cachedPreset = raw && raw !== "null" ? JSON.parse(raw) : null;
+        } catch {
+            return;
+        }
+        if (cachedPreset == null) return;
 
-            setAfter(true)
-
+        if ('gender' in cachedPreset) setGender(cachedPreset["gender"])
+        if ('drinksAlcohol' in cachedPreset) setIsAlchol(relator_R(presetAnswerToLabel(cachedPreset["drinksAlcohol"], RadioMap)))
+        if ('lastMonthSabzijatMeal' in cachedPreset) setIsSabzi(cachedPreset["lastMonthSabzijatMeal"])
+        if ('mediumActivityMonthInYear' in cachedPreset) setIsActivity(cachedPreset["mediumActivityMonthInYear"])
+        if ('hardActivityMonthInYear' in cachedPreset) setIsHardActivity(cachedPreset["hardActivityMonthInYear"])
+        if ('smokeAtLeast100' in cachedPreset) setIsSmoke(relator_R(presetAnswerToLabel(cachedPreset["smokeAtLeast100"], RadioMap)))
+        if ('smokingAge' in cachedPreset) {
+            if (cachedPreset["smokingAge"] === 0) {
+                setIsSmokeAge("هیچوقت به طور منظم سیگار یا قلیان نکشیده ام")
+            } else {
+                setIsSmokeAge(cachedPreset["smokingAge"])
+            }
+        }
+        if ('smokingNow' in cachedPreset) setIsSmokingNow(relator_R(presetAnswerToLabel(cachedPreset["smokingNow"], RadioMap)))
+        if ('hasChildren' in cachedPreset) {
+            setIsChild(relator_R(presetAnswerToLabel(cachedPreset["hasChildren"], RadioMap)))
+        }
+        if ('menopausalStatus' in cachedPreset) setIsAdat(cachedPreset["menopausalStatus"])
+        if ('hrt' in cachedPreset) setIsHRT(relator_R(presetAnswerToLabel(cachedPreset["hrt"], RadioMap)))
+        if ('lastFiveYearsHrtUse' in cachedPreset) setIsHRT5(relator_R(presetAnswerToLabel(cachedPreset["lastFiveYearsHrtUse"], RadioMap)))
+        if ('oral' in cachedPreset) setIsOral(relator_R(presetAnswerToLabel(cachedPreset["oral"], RadioMap)))
+        if ('laDeColon' in cachedPreset) setIsColon(relator_R(presetAnswerToLabel(cachedPreset["laDeColon"], RadioMap)))
+        if ('mamoGraphy' in cachedPreset) setIsMamoTest(relator_R(presetAnswerToLabel(cachedPreset["mamoGraphy"], RadioMap)))
+        if ('cancer' in cachedPreset) setIsCancer(cachedPreset["cancer"])
+        if ('childCancer' in cachedPreset) setIsChildCncer(relator_R(presetAnswerToLabel(cachedPreset["childCancer"], RadioMap)))
+        if ('motherCancer' in cachedPreset) setIsMotherCncer(relator_R(presetAnswerToLabel(cachedPreset["motherCancer"], RadioMap)))
+        if ('fatherCancer' in cachedPreset) setIsFatherCncer(relator_R(presetAnswerToLabel(cachedPreset["fatherCancer"], RadioMap)))
+        if ('siblingCancer' in cachedPreset) setIsSibsCncer(relator_R(presetAnswerToLabel(cachedPreset["siblingCancer"], RadioMap)))
+        if ('ameAmoCancer' in cachedPreset) setIsUncAuntCncer(relator_R(presetAnswerToLabel(cachedPreset["ameAmoCancer"], RadioMap)))
+        if ('khaleDaeiCancer' in cachedPreset) setIsUncAunt2Cncer(relator_R(presetAnswerToLabel(cachedPreset["khaleDaeiCancer"], RadioMap)))
+        if ('otherRelative' in cachedPreset) setIsOtherCncer(relator_R(presetAnswerToLabel(cachedPreset["otherRelative"], RadioMap)))
+        if ('testGen' in cachedPreset) setIsGeneTest(relator_R(presetAnswerToLabel(cachedPreset["testGen"], RadioMap)))
+        if ('fmTestGen' in cachedPreset) setIsFamGeneTest(relator_R(presetAnswerToLabel(cachedPreset["fmTestGen"], RadioMap)))
+        if ('smokingTypesCurrent' in cachedPreset) setSmokeType(relator_R(presetAnswerToLabel(cachedPreset["smokingTypesCurrent"], RadioMap)))
+        if ('smokingTypesPast' in cachedPreset) setSmokeTypePast(relator_R(presetAnswerToLabel(cachedPreset["smokingTypesPast"], RadioMap)))
+        if ('lungCancerFamily' in cachedPreset) setFirstDeg(relator_R(presetAnswerToLabel(cachedPreset["lungCancerFamily"], RadioMap)))
+        if ('pastSmoking' in cachedPreset) {
+            setAnySmokePast(relator_R(presetAnswerToLabel(cachedPreset["pastSmoking"], RadioMap)))
         }
 
-    }, [RadioMap, formDataRevision])
+        setAfter(true)
+
+    }, [RadioMap, formDataRevision, step])
 
     useEffect(() => {
         setLoading(false)
@@ -1317,7 +1351,7 @@ function Questions() {
         const urlBase = `${APIURL}/form`;
         let url, method, headers;
         if (step === 1) {
-            if (presetform != null && (id_form != null || id_form != "null")) {
+            if (presetform != null && isValidStoredFormId(id_form)) {
                 url = `${urlBase}/${id_form}/${APIARR[step - 1]}`;
                 method = 'PUT';
                 headers = {
@@ -1337,13 +1371,7 @@ function Questions() {
                 }
             }
         } else if (step == 4 || step == 5) {
-            const editFormId =
-                presetform != null &&
-                id_form != null &&
-                id_form !== "" &&
-                id_form !== "null"
-                    ? id_form
-                    : createdFormId;
+            const editFormId = resolveFormIdForSubmit(presetform, id_form, createdFormId);
             url = `${urlBase}/${editFormId}/${APIARR[step - 1]}`;
             method = 'POST';
             headers = {
@@ -1352,11 +1380,8 @@ function Questions() {
             }
             sendData = null  // ✅ No body for steps 4/5
         } else {
-            if (presetform != null && step != 4) {
-                url = `${urlBase}/${id_form}/${APIARR[step - 1]}`;
-            } else {
-                url = `${urlBase}/${createdFormId}/${APIARR[step - 1]}`;
-            }
+            const formIdForPut = resolveFormIdForSubmit(presetform, id_form, createdFormId);
+            url = `${urlBase}/${formIdForPut}/${APIARR[step - 1]}`;
             method = 'PUT';
             headers = {
                 "Content-Type": "application/json",
@@ -1383,6 +1408,9 @@ function Questions() {
             const json = await res.json();
             setLoading(false)
             if (json.status == 200 || json.status == 201) {
+                if (mergeSubmittedDataIntoFormCache(allData)) {
+                    setFormDataRevision((n) => n + 1);
+                }
                 if (step === 7) {
                     try {
                         const token = localStorage.getItem("token");
@@ -1447,7 +1475,9 @@ function Questions() {
                 })
             }
             if (step === 1 && json.data?.form?.id) {
-                setCreatedFormId(json.data.form.id);
+                const newFormId = json.data.form.id;
+                setCreatedFormId(newFormId);
+                localStorage.setItem("form_id", String(newFormId));
             }
         } catch (e) {
             if (step == 4 || step == 5) {

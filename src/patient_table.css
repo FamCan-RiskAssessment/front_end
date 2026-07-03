@@ -353,14 +353,28 @@ td {
 
 .patient_table_summary {
     width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem 1.25rem;
+    margin-bottom: 0.75rem !important;
     text-align: center;
-    margin-bottom: 0.5rem;
+}
+
+.patient_table_summary h2 {
+    width: auto;
+    margin: 0;
+    padding: 0;
+    border-bottom: none;
 }
 
 .patient_table_summary p {
-    margin: 0.35rem 0 0;
+    margin: 0;
     color: #4b006e;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .form_section_drawer {
@@ -745,6 +759,10 @@ td {
         font-size: 1.1rem;
     }
 
+    .patient_table_summary h2 {
+        font-size: 1.1rem;
+    }
+
     .table_tools {
         flex-direction: column;
     }
@@ -1064,13 +1082,6 @@ td {
     margin-bottom: 1rem;
     color: #8f005a;
     text-align: center;
-}
-
-@media (min-width: 1180px) {
-    .Filterholder {
-        display: flex;
-        gap: 3rem;
-    }
 }
 
 .filter_row {

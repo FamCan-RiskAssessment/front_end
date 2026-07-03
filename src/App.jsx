@@ -10,6 +10,7 @@ import DashBoard from './Dashboard'
 import RoleMaker from './RoleMaker'
 import FormsPage from './formPage'
 import FilterableTable from './patient_table'
+import PatientDetail from './patient_detail'
 import RoleHierarchyTree from './users_tree'
 import AdminLogin_page from './admins_login'
 import ChangePass from './password_change'
@@ -56,6 +57,7 @@ function App() {
           <Route path='/DashBoard/RoleMaker' element={<RoleMaker></RoleMaker>}></Route>
           <Route path='/DashBoard' element={<DashBoard></DashBoard>}></Route>
           <Route path='/DashBoard/patients' element={<FilterableTable></FilterableTable>}></Route>
+          <Route path='/DashBoard/patients/:formId' element={<PatientDetail></PatientDetail>}></Route>
           <Route path="/DashBoard/passChange" element={<ChangePass></ChangePass>}></Route>
           {/* <Route path='/DashBoard/usersTree' element={<RoleHierarchyTree></RoleHierarchyTree>}></Route> */}
           <Route path='/DashBoard/supervisorForms' element={<SupervisorPage></SupervisorPage>}></Route>
