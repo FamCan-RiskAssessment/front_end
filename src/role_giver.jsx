@@ -273,9 +273,9 @@ function RoleChanger() {
     <>
       <div className="forms_page_holder">
         <NavBar account={userPhone}></NavBar>
-        <div className="forms-page-wrapper">
-          <div className="forms-container">
-            <div className="pageTitle">
+        <div className="forms-page-wrapper role-giver-page">
+          <div className="forms-container RG">
+            <div className="role-giver-header">
               <h2>تغییر دسترسی افراد</h2>
             </div>
             <div className="forms_tools">
@@ -335,7 +335,8 @@ function RoleChanger() {
             {users.length === 0 ? (
               <p className="no-forms-text">کاربری یافت نشد.</p>
             ) : (
-              <table className="forms-table">
+              <div className="role-giver-table-wrapper">
+              <table className="forms-table role-giver-table">
                 <thead>
                   <tr>
                     <th className="table-header RG">شماره ملی</th>
@@ -392,6 +393,7 @@ function RoleChanger() {
                   })}
                 </tbody>
               </table>
+              </div>
             )}
             <div className="page_naver">
               <div className="total_pages">

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./defnav.css"
 import { fetchDataGET } from "./utils/tools";
 import exitSign from './V2Form/exit.svg'
@@ -29,54 +29,53 @@ function NavBar({ account }) {
     } catch (error) {
         nameRole = "";
     }
-    // Get current date and time
     const now = new Date();
     const persianDate = now.toLocaleDateString('fa-IR');
     const timeString = now.toLocaleTimeString('fa-IR');
     const persianDateTime = `${persianDate} - ${timeString}`;
 
     return (
-        <div
-            className="help_bar_container"
-        >
-            <div className="top-layer">
-                <div className="help_bar_parts_container">
-                    <div className="help_bar_part1">
-                        <h3>
-                            <img src={timeSign} alt="time_sign" />
-                            <span style={{ marginRight: '8px', fontSize: '0.9em', color: '#666' }}>ورود : {persianDateTime}</span>
-                        </h3>
-                    </div>
-                    <h3 className="forms-title">ابزار های مدیریت کاربران</h3>
-                    <div className="help_bar_part3">
-                        <button className="btn-view-form top align_items" onClick={() => navigate("/Dashboard")}>
-                            <span>صفحه ی اصلی</span>
-                            <img src={homeSign} alt="home" />
-                        </button>
-                    </div>
+        <div className="help_bar_container admin_navbar">
+            <div className="admin_navbar__header">
+                <h3 className="admin_navbar__title">ابزار های مدیریت کاربران</h3>
+                <div className="admin_navbar__datetime">
+                    <img src={timeSign} alt="time_sign" />
+                    <span>ورود: {persianDateTime}</span>
                 </div>
             </div>
-            <div className="bottom-layer">
-                <div className="help_bar_parts_container">
-                    <div className="help_bar_part1 Nav">
-                        <span>خوش آمدید</span>
-                        {userName && (
-                            <span>{userName}</span>
-                        )}
-                        <span>{account}</span>
-                        <span className="RoleSpan">{nameRole}</span>
-                    </div>
-                    <div className="help_bar_part3 dash_bot">
-                        <button className="dash_exit_btn" onClick={() => navigate("/forms")}>
-                            <img className="formPageSign" src={formSign} alt="formPage" />
-                            <span>صفحه ی فرم ها</span>
-                        </button>
-                        <button className="dash_exit_btn" onClick={() => navigate("/")}>
-                            <img src={exitSign} alt="exit_sign" />
-                            <span>خروج</span>
-                        </button>
-                    </div>
-                </div>
+
+            <div className="admin_navbar__user">
+                <span className="admin_navbar__welcome">خوش آمدید</span>
+                {userName && <span className="admin_navbar__name">{userName}</span>}
+                {account && <span className="admin_navbar__phone">{account}</span>}
+                {nameRole && <span className="admin_navbar__role">{nameRole}</span>}
+            </div>
+
+            <div className="admin_navbar__actions">
+                <button
+                    type="button"
+                    className="admin_navbar__btn admin_navbar__btn--primary"
+                    onClick={() => navigate("/Dashboard")}
+                >
+                    <img src={homeSign} alt="" />
+                    <span>صفحه ی اصلی</span>
+                </button>
+                <button
+                    type="button"
+                    className="admin_navbar__btn"
+                    onClick={() => navigate("/forms")}
+                >
+                    <img src={formSign} alt="" />
+                    <span>صفحه ی فرم ها</span>
+                </button>
+                <button
+                    type="button"
+                    className="admin_navbar__btn admin_navbar__btn--danger"
+                    onClick={() => navigate("/")}
+                >
+                    <img src={exitSign} alt="" />
+                    <span>خروج</span>
+                </button>
             </div>
         </div>
     )

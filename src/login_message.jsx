@@ -7,10 +7,13 @@ import { fetchDataGET, fetchDataGETNoError, fetchDataPOST } from "./utils/tools"
 import { persistDashboardAccess } from "./utils/permissions";
 import otpSign from './V2Form/otpSign.svg'
 import tool_pinkSign from './V2Form/pink_tool.svg'
+import './V2Form/login_pageV3.css'
 
 function LoginMessage() {
   const [otpDigits, setOtpDigits] = useState(['', '', '', '', '', '']);
   const [Err, setError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isResending, setIsResending] = useState(false)
   const location = useLocation();
   const navigate = useNavigate();
   const phone = location.state?.phone || ""; // ✅ get phone from state
@@ -18,11 +21,14 @@ function LoginMessage() {
   const adminNumber = "09123456789"
   const { addToast } = useToast()
   const inputRefs = useRef([]);
+  const isBusy = isSubmitting || isResending;
 
 
 
   const OTP = async (e) => {
     e.preventDefault();
+    if (isBusy) return;
+
     const otpCode = otpDigits.join('');
     if (otpCode.length !== 6) {
       addToast({
@@ -33,6 +39,7 @@ function LoginMessage() {
       return;
     }
 
+    setIsSubmitting(true);
     try {
       const res = await fetch(`${APIURL}/auth/verify-otp`, {
         method: 'POST',
@@ -44,14 +51,14 @@ function LoginMessage() {
       });
 
       const data = await res.json();
-      console.log(data)
       if (!res.ok) {
         addToast({
           title: data.message || "لطفا کد ارسال شده را به درستی وارد کنید",
           type: 'error',
           duration: 4000
         })
-      };
+        return;
+      }
 
       localStorage.setItem("token", data.data.access_token);
       localStorage.setItem("number", phone)
@@ -59,16 +66,12 @@ function LoginMessage() {
       localStorage.setItem("roles", JSON.stringify(data.data.roles))
       persistDashboardAccess(data.data.permissions)
       let userAuthed = await fetchDataGETNoError("admin/profile", data.data.access_token)
-      console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
-      console.log(localStorage.getItem("residentEnter") && (userAuthed.status == 200 || userAuthed.status == 201))
-      console.log(localStorage.getItem("residentEnter"), (userAuthed.status == 200 || userAuthed.status == 201))
       if (JSON.parse(localStorage.getItem("residentEnter")) && (userAuthed.status == 200 || userAuthed.status == 201)) {
         addToast({
           title: 'با موفقیت وارد شدید',
           type: 'success',
           duration: 4000
         })
-        // navigate("/forms");
         navigate("/DashBoard")
       } else {
         navigate("/AppChoose");
@@ -76,10 +79,13 @@ function LoginMessage() {
 
     } catch (err) {
       setError(err.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleInputChange = (index, value) => {
+    if (isBusy) return;
     if (value && !/^\d$/.test(value)) return; // Only allow digits
 
     const newDigits = [...otpDigits];
@@ -93,12 +99,14 @@ function LoginMessage() {
   };
 
   const handleKeyDown = (index, e) => {
+    if (isBusy) return;
     if (e.key === 'Backspace' && !otpDigits[index] && index > 0) {
       inputRefs.current[index - 1].focus();
     }
   };
 
   const handlePaste = (e) => {
+    if (isBusy) return;
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text').slice(0, 6);
     if (!/^\d+$/.test(pastedData)) return;
@@ -127,25 +135,32 @@ function LoginMessage() {
   const seconds = String(timeLeft % 60).padStart(2, "0");
 
   const VerifyAgain = async () => {
-    let token = localStorage.getItem("token")
-    let payload = {
-      phone: phone
-    }
-    let res = await fetchDataPOST("auth/login", token, payload)
-    if (res.status == 200) {
-      addToast({
-        title: "کد تایید برای شما ارسال شد .",
-        type: 'success',
-        duration: 4000
-      })
-      setTimeLeft(150)
-    } else {
-      addToast({
-        title: "خطا در ارسال کد لطفا دوباره تلاش کنیدُُ",
-        type: 'error',
-        duration: 4000
+    if (isBusy) return;
 
-      })
+    setIsResending(true);
+    try {
+      let token = localStorage.getItem("token")
+      let payload = {
+        phone: phone
+      }
+      let res = await fetchDataPOST("auth/login", token, payload)
+      if (res.status == 200) {
+        addToast({
+          title: "کد تایید برای شما ارسال شد .",
+          type: 'success',
+          duration: 4000
+        })
+        setTimeLeft(150)
+      } else {
+        addToast({
+          title: "خطا در ارسال کد لطفا دوباره تلاش کنیدُُ",
+          type: 'error',
+          duration: 4000
+
+        })
+      }
+    } finally {
+      setIsResending(false);
     }
   }
 
@@ -183,6 +198,7 @@ function LoginMessage() {
                     inputMode="numeric"
                     maxLength={1}
                     value={digit}
+                    disabled={isBusy}
                     onChange={(e) => handleInputChange(index, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(index, e)}
                     ref={(el) => (inputRefs.current[index] = el)}
@@ -194,9 +210,20 @@ function LoginMessage() {
             <div className="desc middeler">
               <span> &nbsp; {minutes}:{seconds}</span>
             </div>
-            <button className="btn_login LogM">ورود</button>
+            <button type="submit" className="btn_login LogM" disabled={isBusy}>
+              {isSubmitting && <span className="btn_login_spinner" aria-hidden="true" />}
+              {isSubmitting ? 'در حال ورود...' : 'ورود'}
+            </button>
             {minutes == "00" && seconds == "00" && (
-              <button type="button" className="btn_disabled btn_login LogM" onClick={() => VerifyAgain()}>ارسال دوباره</button>
+              <button
+                type="button"
+                className="btn_disabled btn_login LogM"
+                disabled={isBusy}
+                onClick={() => VerifyAgain()}
+              >
+                {isResending && <span className="btn_login_spinner" aria-hidden="true" />}
+                {isResending ? 'در حال ارسال...' : 'ارسال دوباره'}
+              </button>
             )}
           </form>
         </div>

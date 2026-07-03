@@ -19,10 +19,14 @@ import {Phone} from "lucide-react";
 function Login_pageV3() {
     const [phone, setphone] = useState('')
     const [Err, setError] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
     const navigate = useNavigate();
     const {addToast} = useToast()
-    const form_submitted = async (e) => {
-        e.preventDefault();
+    const handleLogin = async (e) => {
+        e?.preventDefault?.();
+        if (isLoading) return;
+
+        setIsLoading(true);
         try {
             const res = await fetch(`${APIURL}/auth/login`, {
                 method: 'POST',
@@ -36,22 +40,29 @@ function Login_pageV3() {
                     type: 'error',
                     duration: 4000
                 })
+                return;
             }
-            ;
-            if (res.ok) {
-                addToast({
-                    title: 'خوش آمدید',
-                    type: 'success',
-                    duration: 4000
-                })
-                navigate("/otp", {state: {phone}});
-                ;
-            }
+
+            addToast({
+                title: 'خوش آمدید',
+                type: 'success',
+                duration: 4000
+            })
+            navigate("/otp", {state: {phone}});
         } catch (err) {
             setError(err.message)
             setTimeout(() => {
                 setError('')
             }, 3000)
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    const handlePhoneKeyDown = (e) => {
+        if (e.key === 'Enter' && !isLoading) {
+            e.preventDefault();
+            e.currentTarget.form?.requestSubmit();
         }
     }
 
@@ -83,18 +94,26 @@ function Login_pageV3() {
                         <div className="form_card">
                             <Phone color="#cf4776" size={128}/>
                             <h3 className="login_title">برای شروع، شماره تلفن خود را وارد کنید.</h3>
-                            <form onSubmit={(e) => form_submitted(e)} className="login_form">
+                            <form onSubmit={handleLogin} className="login_form">
                                 <div className="inp">
                                     <label htmlFor="telephone">تلفن</label>
-                                    <input data-clarity-mask="true" type="text" name="telephone" id="telephone"
+                                    <input data-clarity-mask="true" type="tel" name="telephone" id="telephone"
                                            placeholder="مثال: 09123456789" value={phone}
-                                           onChange={(e) => setphone(e.target.value)}/>
+                                           inputMode="tel"
+                                           enterKeyHint="go"
+                                           autoComplete="tel"
+                                           disabled={isLoading}
+                                           onChange={(e) => setphone(e.target.value)}
+                                           onKeyDown={handlePhoneKeyDown}/>
                                 </div>
                                 {/* <div className="inp">
                     <label htmlFor="mellicode">کدملی</label>
                     <input type="text" name="mellicode" id="mellicode" placeholder="xxxxxxxxxx"/>
                     </div> */}
-                                <button className="btn_login">ورود</button>
+                                <button type="submit" className="btn_login" disabled={isLoading}>
+                                    {isLoading && <span className="btn_login_spinner" aria-hidden="true" />}
+                                    {isLoading ? 'در حال ورود...' : 'ورود'}
+                                </button>
                             </form>
                         </div>
                     </div>

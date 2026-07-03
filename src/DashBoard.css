@@ -155,6 +155,62 @@
   align-items: center;
 }
 
+.forms_page_holder {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+@media (max-width: 1024px) {
+  .forms-page-wrapper.dash {
+    width: 100% !important;
+    max-width: 100%;
+    padding: 0.75rem;
+    box-sizing: border-box;
+  }
+
+  .forms-container.dash {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    width: 100%;
+    max-width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .connector {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .user-management,
+  .form-management {
+    width: 100% !important;
+    max-width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .tool_title {
+    padding: 0.85rem 1rem;
+  }
+
+  .tool_title > span {
+    padding: 0.65rem;
+  }
+
+  .tool_title > h2 {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+}
+
 @media (min-width:768px) and (max-width:1300px) {
   .forms-container.dash {
     flex-direction: column;
@@ -163,7 +219,7 @@
 
   .user-management,
   .form-management {
-    width: unset !important;
+    width: 100% !important;
   }
 }
 
@@ -180,6 +236,62 @@
 
   .tool_card_holder {
     width: unset;
+  }
+
+  .forms-page-wrapper.dash {
+    width: 100% !important;
+    padding: 0.5rem;
+    box-sizing: border-box;
+  }
+
+  .forms-container.dash {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .connector {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .help_bar_container {
+    width: 100% !important;
+  }
+
+  .help_bar_parts_container {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .help_bar_part1.Nav {
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+  }
+
+  .help_bar_part3.dash_bot {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .user-management,
+  .form-management {
+    width: 100%;
+    max-width: 100%;
+    padding: 0.85rem;
+  }
+
+  .tool {
+    padding: 0.85rem;
+    gap: 0.65rem;
+  }
+
+  .tool > span:last-child {
+    font-size: 0.9rem;
+    line-height: 1.45;
+    text-align: right;
   }
 
   .nav-item:nth-child(2),
@@ -216,32 +328,66 @@
 
 .forms-container.dash {
   display: flex;
-  justify-content: space-around;
+  justify-content: stretch;
+  align-items: stretch;
+  flex-wrap: wrap;
   width: 100%;
-  max-width: unset !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+  gap: 1.5rem;
 }
 
 .forms-page-wrapper.dash {
-  width: 60%;
-  max-width: unset !important;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: unset !important;
+  box-sizing: border-box;
 }
 
 .user-management,
 .form-management {
-  padding: 1rem 2rem;
+  padding: 1rem 1.5rem;
   border-radius: 10px;
-  width: 20rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .connector {
   display: flex;
   flex-direction: column;
+  flex: 1 1 calc(50% - 0.75rem);
+  min-width: min(100%, 18rem);
+  width: 100%;
+  max-width: 100%;
   box-shadow: 5px 5px 10px rgb(0, 0, 0, 0.2);
   border-radius: 10px;
+}
+
+@media (min-width: 1025px) {
+  .forms-container.dash {
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+
+  .connector {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .tool_list > ul {
+    width: 100%;
+  }
+
+  .tool {
+    width: 100%;
+    box-sizing: border-box;
+  }
 }
 
 .tool_title>h2 {
@@ -257,6 +403,8 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .tool_title>span {
@@ -267,6 +415,10 @@
   padding: 1rem;
 }
 
+.tool_list {
+  width: 100%;
+}
+
 .tool_list>ul {
   margin: 0;
   padding: 0;
@@ -274,6 +426,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  width: 100%;
 }
 
 .tool {
