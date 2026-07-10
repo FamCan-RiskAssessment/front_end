@@ -1,6 +1,8 @@
 import { APIURL, formStatusLabels, sortOptions, statusAPIs } from "./config";
 import jalaali from 'jalaali-js';
 import { shouldUseOperatorFormEndpoint } from "./permissions";
+import { apiFetch } from "../api/client";
+import { getEnumCached } from "../api/enums";
 
 
 export const permExtractor = (perms, permCheck) => {
@@ -96,21 +98,8 @@ export const stageMatcher = (inStage, outStage) => {
 }
 
 
-export const fetchDataGET = async (endpoint, token_auth) => {
-  const res = await fetch(`${APIURL}/${endpoint}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': `Bearer ${token_auth}`
-    },
-
-  });
-
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "Request failed");
-
-  return data;
-};
+export const fetchDataGET = (endpoint, token_auth) =>
+  apiFetch(endpoint, { token: token_auth });
 
 /** Load a single form row from admin list endpoints (status lives here, not on /basic). */
 export async function fetchAdminFormRowById(formId, token_auth) {
@@ -136,150 +125,90 @@ export async function fetchAdminFormRowById(formId, token_auth) {
   return null;
 }
 
-export const fetchDataGETNoError = async (endpoint, token_auth) => {
-  const res = await fetch(`${APIURL}/${endpoint}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': `Bearer ${token_auth}`
-    },
-
-  });
-
-  const data = await res.json();
-  return data;
-};
+export const fetchDataGETNoError = (endpoint, token_auth) =>
+  apiFetch(endpoint, { token: token_auth, throwOnError: false });
 
 export const fetchDataGETTab = async (endpoint, token_auth) => {
-  const res = await fetch(`${APIURL}/${endpoint}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      'Authorization': `Bearer ${token_auth}`
-    },
-
-  });
-
+  const res = await apiFetch(endpoint, { token: token_auth, parse: "response" });
   const data = await res.json();
   if (res.ok && "formType" in data.data) {
-    delete data.data.formType
+    delete data.data.formType;
   }
-  // if (!res.ok) throw new Error(data.message || "Request failed");
-
   return data;
 };
-// utils/fetchItemWithImage.js
-// utils/fetchCancerList.js
-export const fetchDataGETImg = async (endpoint, token) => {
-  const res = await fetch(`${APIURL}/${endpoint}`, { // adjust endpoint as needed
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
-  });
 
+export const fetchDataGETImg = async (endpoint, token) => {
+  const res = await apiFetch(endpoint, {
+    token,
+    contentType: "none",
+    parse: "response",
+  });
   if (!res.ok) {
     throw new Error(`Failed to fetch cancers: ${res.status} ${res.statusText}`);
   }
-
-  const data = await res.json();
-  return data; // { status: 200, message: "OK", data: { cancer: true, cancers: [...] } }
+  return res.json(); // { status: 200, message: "OK", data: { cancer: true, cancers: [...] } }
 };
 
-
-
 export const fetchDataDELETE = async (endpoint, token_auth) => {
-  const res = await fetch(`${APIURL}/${endpoint}`, {
+  const res = await apiFetch(endpoint, {
     method: "DELETE",
-    headers: {
-      'Authorization': `Bearer ${token_auth}`,
-    },
+    token: token_auth,
+    contentType: "none",
+    parse: "response",
   });
 
-  // Note: DELETE responses may or may not have a body.
-  // We try to parse JSON, but handle cases where it might be empty.
+  // DELETE responses may or may not have a JSON body.
   let data = {};
   if (res.headers.get("content-type")?.includes("application/json")) {
     data = await res.json();
   }
-
   if (!res.ok) {
     throw new Error(data.message || "DELETE request failed");
   }
-
-  return data; // May be empty object if no JSON response
+  return data;
 };
 
-
-
-export const fetchDataPUT = async (endpoint, token_auth, bodyData) => {
-  console.log(bodyData)
-  const res = await fetch(`${APIURL}/${endpoint}`, {
+export const fetchDataPUT = (endpoint, token_auth, bodyData) =>
+  apiFetch(endpoint, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token_auth}`,
-    },
-    body: JSON.stringify(bodyData), // Send the updated data in the request body
+    token: token_auth,
+    body: bodyData,
+    errorMessage: "PUT request failed",
   });
 
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "PUT request failed");
-  console.log("this is th data in the tools : ", data)
-  return data;
-};
-
-
-export const fetchDataPOST = async (endpoint, token_auth, bodyData, passErr) => {
-  // console.log(bodyData);
-  const res = await fetch(`${APIURL}/${endpoint}`, {
+export const fetchDataPOST = (endpoint, token_auth, bodyData, passErr) =>
+  apiFetch(endpoint, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token_auth}`,
-    },
-    body: JSON.stringify(bodyData),
+    token: token_auth,
+    body: bodyData,
+    // Legacy semantics: only throws when passErr is explicitly false.
+    throwOnError: passErr == false,
+    errorMessage: "POST request failed",
   });
-  const data = await res.json();
-  if (!res.ok && passErr == false) throw new Error(data.message || "POST request failed");
-  console.log("this is the data in the tools: ", data);
-  return data;
-};
 
-
-export const fetchDataPOSTImg = async (endpoint, token_auth, bodyData) => {
+export const fetchDataPOSTImg = (endpoint, token_auth, bodyData) => {
   const formData = new FormData();
-  console.log("dataCancersssssss : ", endpoint, bodyData)
-  // Append all fields - handle arrays of files by appending each item with the same field name
+  // Append all fields - arrays of files append each item under the same key
   for (const key in bodyData) {
     if (bodyData[key] !== null && bodyData[key] !== undefined) {
       if (Array.isArray(bodyData[key])) {
-        // If the value is an array (e.g., multiple files), append each item with the same key
         bodyData[key].forEach(item => {
           if (item !== null && item !== undefined) {
             formData.append(key, item);
           }
         });
       } else {
-        // If it's a single item, append normally
         formData.append(key, bodyData[key]);
       }
     }
   }
 
-  const res = await fetch(`${APIURL}/${endpoint}`, {
+  return apiFetch(endpoint, {
     method: "POST",
-    headers: {
-      "Authorization": `Bearer ${token_auth}`,
-      // ❌ Don't set Content-Type manually — fetch sets it automatically for FormData
-    },
+    token: token_auth,
     body: formData,
+    errorMessage: "POST request failed",
   });
-
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "POST request failed");
-  console.log("this is the data in the tools: ", data);
-  return data;
 };
 
 
@@ -313,8 +242,7 @@ export const extractYear = (dateString) => {
 
 export const cancerTypeEx = async (can, rev) => {
   try {
-    let token = localStorage.getItem("token");
-    let res = await fetchDataGET("enum/cancer-types", token);
+    let res = await getEnumCached("cancer-types");
     if (res && res.data && res.data[can - 1]) {
       return res.data[can - 1].name;
     } else {
@@ -328,8 +256,7 @@ export const cancerTypeEx = async (can, rev) => {
 
 export const relativeTypeEx = async (rel, rev) => {
   try {
-    let token = localStorage.getItem("token");
-    let res = await fetchDataGET("enum/relatives", token);
+    let res = await getEnumCached("relatives");
     if (res && res.data && res.data[rel - 1]) {
       return res.data[rel - 1].name;
     } else {
@@ -344,8 +271,8 @@ export const relativeTypeEx = async (rel, rev) => {
 
 export const EnumTaker = async (endP, theVal) => {
   try {
-    let token = localStorage.getItem("token")
-    let res = await fetchDataGET(`${endP}`, token)
+    // endP arrives as "enum/<name>"; strip the prefix for the shared enum cache
+    let res = await getEnumCached(endP.replace(/^enum\//, ""))
     if (res.data) {
       const foundItem = res.data.find(d => d.name == theVal);
       if (foundItem) {

@@ -1,57 +1,45 @@
-import { useEffect, useState } from "react";
-import { fetchDataGET, dict_transformer } from "../../utils/tools";
+import { useMemo } from "react";
+import { useQueries } from "@tanstack/react-query";
+import { enumQueryOptions } from "../../api/enums";
+import { dict_transformer } from "../../utils/tools";
 
+const ENUM_NAMES = ["answers", "relatives", "genders", "menopausal-statuses", "cancer-types"];
+
+/**
+ * Loads the patient-detail enum maps through the shared enum cache.
+ * Return shape is identical to the legacy hook:
+ * { radioMap, cancerTypesMap, relativeTypesMap, loading }
+ */
 export function usePatientEnums() {
-    const [radioMap, setRadioMap] = useState({});
-    const [cancerTypesMap, setCancerTypesMap] = useState({});
-    const [relativeTypesMap, setRelativeTypesMap] = useState({});
-    const [loading, setLoading] = useState(true);
+    const results = useQueries({ queries: ENUM_NAMES.map(enumQueryOptions) });
+    const [answersQ, relativesQ, gendersQ, menopausalQ, cancerTypesQ] = results;
+    const loading = results.some((r) => r.isLoading);
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-
-        const loadEnums = async () => {
-            try {
-                const [ansMap, relMap, genMap, menoMap, cancerTypesRes, relativeTypesRes] = await Promise.all([
-                    fetchDataGET("enum/answers", token),
-                    fetchDataGET("enum/relatives", token),
-                    fetchDataGET("enum/genders", token),
-                    fetchDataGET("enum/menopausal-statuses", token),
-                    fetchDataGET("enum/cancer-types", token),
-                    fetchDataGET("enum/relatives", token),
-                ]);
-
-                setRadioMap({
-                    answers: dict_transformer(ansMap.data),
-                    relatives: dict_transformer(relMap.data),
-                    gender: dict_transformer(genMap.data),
-                    menopausalMap: dict_transformer(menoMap.data),
-                });
-
-                if (cancerTypesRes?.data) {
-                    const cancerMap = {};
-                    cancerTypesRes.data.forEach((cancer, index) => {
-                        cancerMap[index + 1] = cancer.name;
-                    });
-                    setCancerTypesMap(cancerMap);
-                }
-
-                if (relativeTypesRes?.data) {
-                    const relativeMap = {};
-                    relativeTypesRes.data.forEach((relative, index) => {
-                        relativeMap[index + 1] = relative.name;
-                    });
-                    setRelativeTypesMap(relativeMap);
-                }
-            } catch (error) {
-                console.error("Error loading patient enums:", error);
-            } finally {
-                setLoading(false);
-            }
+    const radioMap = useMemo(() => {
+        if (!answersQ.data || !relativesQ.data || !gendersQ.data || !menopausalQ.data) return {};
+        return {
+            answers: dict_transformer(answersQ.data.data),
+            relatives: dict_transformer(relativesQ.data.data),
+            gender: dict_transformer(gendersQ.data.data),
+            menopausalMap: dict_transformer(menopausalQ.data.data),
         };
+    }, [answersQ.data, relativesQ.data, gendersQ.data, menopausalQ.data]);
 
-        loadEnums();
-    }, []);
+    const cancerTypesMap = useMemo(() => {
+        const map = {};
+        cancerTypesQ.data?.data?.forEach((cancer, index) => {
+            map[index + 1] = cancer.name;
+        });
+        return map;
+    }, [cancerTypesQ.data]);
+
+    const relativeTypesMap = useMemo(() => {
+        const map = {};
+        relativesQ.data?.data?.forEach((relative, index) => {
+            map[index + 1] = relative.name;
+        });
+        return map;
+    }, [relativesQ.data]);
 
     return { radioMap, cancerTypesMap, relativeTypesMap, loading };
 }

@@ -1,4 +1,5 @@
 import {useState, useRef, useEffect} from "react";
+import { getEnumCached } from "../api/enums";
 import InputBox from "../input_box";
 import InputBoxV2 from "../input_boxV2";
 import Radio from "../radio";
@@ -224,14 +225,14 @@ function QuestionsNavid() {
     useEffect(() => {
         let token = localStorage.getItem("token")
         const getAns = async () => {
-            const ansMap = await fetchDataGET("enum/answers", token)
+            const ansMap = await getEnumCached("answers")
             let trueData = dict_transformer(ansMap.data)
             setRadioMap(trueData)
             // console.log(ansMap)
         }
         getAns()
         const getRels = async () => {
-            const res = await fetchDataGET(`enum/relatives`, token);
+            const res = await getEnumCached("relatives");
             let trueData = dict_transformer(res.data)
             setRelMap(trueData)
         }
@@ -380,7 +381,7 @@ function QuestionsNavid() {
                             } else if (fE.getAttribute("data-enum")) {
                                 let token = localStorage.getItem("token")
                                 const enumFinder = async () => {
-                                    const res = await fetchDataGET(`enum/${fE.getAttribute("data-enum")}`, token);
+                                    const res = await getEnumCached(fE.getAttribute("data-enum"));
                                     res.data.forEach(en => {
                                         if (en.id == presetform[pfk] && fE.getAttribute("FaVal") == en.name) {
                                             fE.checked = true
@@ -516,7 +517,7 @@ function QuestionsNavid() {
                     const familyCancerRes = await fetchDataGETImg(`form/${id_form}/familycancer`, token);
                     const familyCancerData = familyCancerRes.data?.familyCancers || [];
                     // Fetch relatives enum to map relative IDs to names
-                    const relativesEnumRes = await fetchDataGET(`enum/relatives`, token);
+                    const relativesEnumRes = await getEnumCached("relatives");
                     const relativesEnum = relativesEnumRes.data || [];
 
                     // Create a map from relative ID to relative name
@@ -898,7 +899,7 @@ function QuestionsNavid() {
             const enumName = elem.getAttribute('data-enum');
             if (enumName && value && type !== "file") {
                 try {
-                    const res = await fetchDataGET(`enum/${enumName}`, token_auth);
+                    const res = await getEnumCached(enumName);
                     const match = res.data.find(r => r.name === value);
                     if (match) {
                         finalValue = match.id;
@@ -1112,7 +1113,7 @@ function QuestionsNavid() {
         let cancerVal = 0;
 
         try {
-            const res = await fetchDataGET(`enum/cancer-types`, token);
+            const res = await getEnumCached("cancer-types");
             const match = res.data.find(r => r.name === rawCancer);
             if (match) {
                 cancerVal = match.id;
@@ -1179,7 +1180,7 @@ function QuestionsNavid() {
         let firstVal;
 
         try {
-            const res = await fetchDataGET(`enum/cancer-types`, token);
+            const res = await getEnumCached("cancer-types");
             const match = res.data.find(r => r.name === rawCancer);
             if (match) {
                 cancerVal = match.id;
@@ -1189,7 +1190,7 @@ function QuestionsNavid() {
         }
 
         try {
-            const res = await fetchDataGET(`enum/relatives`, token);
+            const res = await getEnumCached("relatives");
             const match = res.data.find(r => r.name === nameOrRel);
             if (match) {
                 firstVal = match.id;

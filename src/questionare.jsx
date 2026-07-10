@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { getEnumCached } from "./api/enums";
 import InputBox from "./input_box";
 import Radio from "./radio";
 import CheckBox from "./checkbox";
@@ -179,7 +180,7 @@ function applyPresetToFormElements(formRefsMap, preset, radioMap, relMap, family
                 if (fE.getAttribute("data-enum")) {
                     const enumName = fE.getAttribute("data-enum");
                     const token = localStorage.getItem("token");
-                    fetchDataGET(`enum/${enumName}`, token).then((res) => {
+                    getEnumCached(enumName).then((res) => {
                         res.data.forEach((en) => {
                             if (en.id == preset[pfk] && fE.getAttribute("FaVal") == en.name) {
                                 fE.checked = true;
@@ -253,19 +254,19 @@ function Questions() {
     useEffect(() => {
         let token = localStorage.getItem("token")
         const getAns = async () => {
-            const ansMap = await fetchDataGET("enum/answers", token)
+            const ansMap = await getEnumCached("answers")
             let trueData = dict_transformer(ansMap.data)
             setRadioMap(trueData)
         }
         getAns()
         const getRels = async () => {
-            const res = await fetchDataGET(`enum/relatives`, token);
+            const res = await getEnumCached("relatives");
             let trueData = dict_transformer(res.data)
             setRelMap(trueData)
         }
         getRels()
         const getMeno = async () => {
-            const res = await fetchDataGET("enum/menopausal-statuses", token);
+            const res = await getEnumCached("menopausal-statuses");
             const byId = {};
             (res.data || []).forEach((item) => {
                 byId[item.id] = item.name;
@@ -420,7 +421,7 @@ function Questions() {
     useEffect(() => {
         let token = localStorage.getItem("token")
         const innerFunc = async () => {
-            const res = await fetchDataGET(`enum/relatives`, token);
+            const res = await getEnumCached("relatives");
         }
         innerFunc()
     }, [])
@@ -859,7 +860,7 @@ function Questions() {
     //                 const familyCancerRes = await fetchDataGETImg(`form/${id_form}/familycancer`, token);
     //                 const familyCancerData = familyCancerRes.data?.familyCancers || [];
     //                 // Fetch relatives enum to map relative IDs to names
-    //                 const relativesEnumRes = await fetchDataGET(`enum/relatives`, token);
+    //                 const relativesEnumRes = await getEnumCached("relatives");
     //                 const relativesEnum = relativesEnumRes.data || [];
 
     //                 // Create a map from relative ID to relative name
@@ -1265,7 +1266,7 @@ function Questions() {
             const enumName = elem.getAttribute('data-enum');
             if (enumName && value && type !== "file") {
                 try {
-                    const res = await fetchDataGET(`enum/${enumName}`, token_auth);
+                    const res = await getEnumCached(enumName);
                     const match = res.data.find(r => r.name === value);
                     if (match) {
                         finalValue = match.id;
@@ -1496,7 +1497,7 @@ function Questions() {
         let cancerVal = 0;
 
         try {
-            const res = await fetchDataGET(`enum/cancer-types`, token);
+            const res = await getEnumCached("cancer-types");
             const match = res.data.find(r => r.name === rawCancer);
             if (match) {
                 cancerVal = match.id;
@@ -1561,7 +1562,7 @@ function Questions() {
         let firstVal;
 
         try {
-            const res = await fetchDataGET(`enum/cancer-types`, token);
+            const res = await getEnumCached("cancer-types");
             const match = res.data.find(r => r.name === rawCancer);
             if (match) {
                 cancerVal = match.id;
@@ -1571,7 +1572,7 @@ function Questions() {
         }
 
         try {
-            const res = await fetchDataGET(`enum/relatives`, token);
+            const res = await getEnumCached("relatives");
             const match = res.data.find(r => r.name === nameOrRel);
             if (match) {
                 firstVal = match.id;
