@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react'
 import { useLocation, useNavigate } from "react-router-dom";
 import NavBar from './navBar'
 import { useToast } from "./toaster";
-import ToastProvider from "./toaster";
 import { fetchDataGET, fetchDataDELETE } from './utils/tools';
 import { APIURL } from './utils/config';
 import { canAccessDashboardRoute, DASHBOARD_ROUTES } from './utils/permissions';

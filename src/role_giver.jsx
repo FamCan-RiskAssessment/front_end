@@ -10,7 +10,6 @@ import {
   userHasFullAccess,
 } from "./utils/permissions";
 import { useToast } from "./toaster";
-import ToastProvider from "./toaster";
 import { fetchDataGET, endpointMaker } from "./utils/tools";
 import "./role_giver.css"
 import "./client_forms.css"

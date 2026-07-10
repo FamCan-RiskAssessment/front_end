@@ -4,7 +4,6 @@ import { APIURL } from "../utils/config";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useToast } from "../toaster";
-import ToastProvider from "../toaster";
 import { User, IdCard, Building } from "lucide-react";
 import { fetchDataPOST } from "../utils/tools";
 

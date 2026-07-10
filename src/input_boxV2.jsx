@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { fetchDataPOST, isNumber, persianToEnglishDigits } from "./utils/tools";
 import { useToast } from "./toaster";
-import ToastProvider from "./toaster";
 
 function InputBoxV2({ data_req, data, valueSetter, value, class_change1, class_change2, relation, colRef, typeErr, limit, postalSetter }) {
     // const [Itext , setIText] = useState('')

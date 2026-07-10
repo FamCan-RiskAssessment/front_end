@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { APIURL } from "./utils/config";
 import { useToast } from "./toaster";
-import ToastProvider from "./toaster";
 import { fetchDataGET, fetchDataGETNoError, fetchDataPOST } from "./utils/tools";
 import { persistDashboardAccess } from "./utils/permissions";
 import otpSign from './V2Form/otpSign.svg'

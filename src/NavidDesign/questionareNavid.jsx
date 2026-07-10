@@ -23,7 +23,6 @@ import CQs from '../questions/catchQs.json'
 import {useLocation, useNavigate} from "react-router-dom";
 import {APIURL, cancerRefs} from "../utils/config";
 import {useToast} from "../toaster";
-import ToastProvider from "../toaster";
 import {
     fetchDataGET,
     isNumber,

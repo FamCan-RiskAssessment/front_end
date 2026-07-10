@@ -5,7 +5,6 @@ import { canSetPassword } from "./utils/permissions";
 import NavBar from "./navBar";
 import "./client_forms.css";
 import { useToast } from "./toaster";
-import ToastProvider from "./toaster";
 import plusSign from './V2Form/plus.svg'
 import leftSign from './V2Form/form_left.png'
 import rightSign from './V2Form/form_right.png'

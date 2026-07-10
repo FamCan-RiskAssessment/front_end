@@ -3,7 +3,6 @@ import "./OtpOperatorPage.css";
 import { fetchDataPOST } from "./utils/tools";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import ToastProvider from "./toaster";
 import { useToast } from "./toaster";
 
 export default function OtpPage({ onSubmit }) {

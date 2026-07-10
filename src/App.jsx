@@ -1,8 +1,5 @@
-import { useState } from 'react'
 import './App.css'
 import RoleChanger from './role_giver'
-import Login_page from './login_page'
-import Login_page2 from './login_page2'
 import Login_pageV3 from './V2Form/login_pageV3'
 import LoginMessage from './login_message'
 import Questions from './questionare'
@@ -25,9 +22,7 @@ import ChooseApp from './program_choice'
 import FormsPageNavid from './NavidDesign/formPageNavid'
 import QuestionsNavid from './NavidDesign/questionareNavid'
 import LandingPage from './LandingPage/totalLand'
-import GatePage from './V2Form/gatePage'
 import ResidentRegister from './V2Form/resident_login'
-import AboutUs from './LandingPage/aboutUs'
 import FormEnd from './formEndPage'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 function App() {
@@ -39,13 +34,7 @@ function App() {
 
           <Route path="/" element={<LandingPage></LandingPage>}></Route>
 
-          {/* <Route path="/login" element={<Login_page2></Login_page2>}></Route> */}
           <Route path="/login" element={<Login_pageV3></Login_pageV3>}></Route>
-          {/* <Route path="/aboutUs" element={<Login_pageV3></Login_pageV3>}></Route> */}
-
-
-          {/* <Route path="/gate" element={<GatePage></GatePage>}></Route> */}
-
 
           <Route path="/adminLogin" element={<AdminLogin_page></AdminLogin_page>}></Route>
           <Route path="/error" element={<ErrorShower></ErrorShower>}></Route>
@@ -80,8 +69,6 @@ function App() {
           <Route path='*' element={<ErrorShower errorType={404}></ErrorShower>}></Route>
         </Routes>
       </Router>
-      {/* <RoleChanger></RoleChanger> */}
-      {/* <Questions></Questions> */}
     </>
   )
 }
