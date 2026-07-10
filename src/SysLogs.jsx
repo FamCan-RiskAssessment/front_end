@@ -1,10 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import { fetchDataGET } from "./utils/tools";
-import {
-  canAccessDashboardRoute,
-  DASHBOARD_ROUTES,
-} from "./utils/permissions";
 import NavBar from "./navBar";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./SysLogs.css";
@@ -79,12 +75,6 @@ function SystemLogs() {
 
   const [draftFilters, setDraftFilters] = useState(EMPTY_FILTERS);
   const [appliedFilters, setAppliedFilters] = useState(EMPTY_FILTERS);
-
-  useEffect(() => {
-    if (!canAccessDashboardRoute(DASHBOARD_ROUTES.SYSTEM_LOG)) {
-      navigate("/error", { state: { error_type: 403 } });
-    }
-  }, [navigate]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");

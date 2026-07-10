@@ -5,7 +5,6 @@ import "./DashBoard.css"
 import formT from "./assets/from_transfer.svg"
 import { useNavigate } from "react-router-dom";
 import {
-    canAccessDashboard,
     canSetPassword,
     DASHBOARD_ROUTES,
     getStoredPermissions,
@@ -24,12 +23,6 @@ function DashBoard() {
     const [passedUrls, setPassedUrls] = useState([])
     const userPhone = useAuthStore((s) => s.number) || ""
     const navigate = useNavigate();
-
-    useEffect(() => {
-        if (!canAccessDashboard()) {
-            navigate("/error", { state: { error_type: 401 } })
-        }
-    }, [navigate])
 
     useEffect(() => {
         const permissions = getStoredPermissions()

@@ -2,11 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { APIURL, formStatusLabels, stateColors } from "./utils/config";
 import { fetchDataGET, fetchDataPUT, form_ids_finder, getKeyVal } from "./utils/tools";
-import {
-  canAccessDashboardRoute,
-  DASHBOARD_ROUTES,
-  findOperatorRoleId,
-} from "./utils/permissions";
+import { findOperatorRoleId } from "./utils/permissions";
 import "./client_forms.css";
 import "./supervisor.css";
 import NavBar from "./navBar";
@@ -37,11 +33,6 @@ function SupervisorPage() {
     const [pageCount, setPageCount] = useState(0);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (!canAccessDashboardRoute(DASHBOARD_ROUTES.SUPERVISOR_FORMS)) {
-            navigate("/error", { state: { error_type: 403 } })
-        }
-    }, [navigate])
     // State for advanced filters
     const [advancedFilters, setAdvancedFilters] = useState({
         sortBy: '',

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { APIURL } from "./utils/config";
-import { canSetPassword } from "./utils/permissions";
 import NavBar from "./navBar";
 import "./client_forms.css";
 import { useToast } from "./toaster";
@@ -29,11 +28,6 @@ function ChangePass() {
   const location = useLocation();
   const userPhone = location.state?.phone;
 
-  useEffect(() => {
-    if (!canSetPassword()) {
-      navigate("/error", { state: { error_type: 403 } });
-    }
-  }, [navigate]);
   const updateUserPass = async (passCode) => {
     try {
       const token = localStorage.getItem("token");

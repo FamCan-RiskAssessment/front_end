@@ -3,12 +3,7 @@ import NavBar from "./navBar";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { APIURL, roleColors, sortOptions } from "./utils/config";
-import {
-  canAccessDashboardRoute,
-  DASHBOARD_ROUTES,
-  isAssignableRole,
-  userHasFullAccess,
-} from "./utils/permissions";
+import { isAssignableRole, userHasFullAccess } from "./utils/permissions";
 import { useToast } from "./toaster";
 import { fetchDataGET, endpointMaker } from "./utils/tools";
 import "./role_giver.css"
@@ -48,12 +43,6 @@ function RoleChanger() {
   const navigate = useNavigate();
   const { addToast } = useToast()
   const userPhone = location.state?.phone;
-
-  useEffect(() => {
-    if (!canAccessDashboardRoute(DASHBOARD_ROUTES.RAND_P)) {
-      navigate("/error", { state: { error_type: 403 } })
-    }
-  }, [navigate])
 
   const nextPage = () => {
     if (PagiNext)

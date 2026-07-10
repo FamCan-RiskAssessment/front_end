@@ -3,7 +3,6 @@ import './model_res.css';
 import NavBar from './navBar';
 import { useLocation, useNavigate } from "react-router-dom";
 import { fetchDataGET, endpointMaker } from "./utils/tools";
-import { canAccessDashboardRoute, DASHBOARD_ROUTES } from "./utils/permissions";
 import Loader from "./utils/loader";
 import leftSign from './V2Form/form_left.png';
 import rightSign from './V2Form/form_right.png';
@@ -87,12 +86,6 @@ const ModelResults = () => {
         }
         setPage(1);
     }, [advancedFilters.search]);
-
-    useEffect(() => {
-        if (!canAccessDashboardRoute(DASHBOARD_ROUTES.MODELS_RESULTS)) {
-            navigate("/error", { state: { error_type: 403 } })
-        }
-    }, [navigate])
 
     const buildEndpoint = (currentPage, filters) => {
         return endpointMaker(

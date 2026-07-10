@@ -25,7 +25,6 @@ import {
     READONLY_META_FIELDS,
 } from "./utils/patientFieldConfig";
 import { useToast } from "./toaster";
-import { canAccessDashboardRoute, DASHBOARD_ROUTES } from "./utils/permissions";
 import "./client_forms.css";
 import "./form_elements.css";
 import "./patient_table.css";
@@ -107,12 +106,6 @@ export default function PatientDetail() {
         actionsInitialData,
         { cancerTypesMap, relativeTypesMap, onStatusUpdated: handleStatusUpdated }
     );
-
-    useEffect(() => {
-        if (!canAccessDashboardRoute(DASHBOARD_ROUTES.PATIENTS)) {
-            navigate("/error", { state: { error_type: 403 } });
-        }
-    }, [navigate]);
 
     const loadForm = useCallback(async () => {
         const token = localStorage.getItem("token");

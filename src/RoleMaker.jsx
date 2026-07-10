@@ -4,7 +4,6 @@ import NavBar from './navBar'
 import { useToast } from "./toaster";
 import { fetchDataGET, fetchDataDELETE } from './utils/tools';
 import { APIURL } from './utils/config';
-import { canAccessDashboardRoute, DASHBOARD_ROUTES } from './utils/permissions';
 import "./client_forms.css";
 import "./role_giver.css";
 import plusSign from './V2Form/plus.svg'
@@ -31,11 +30,6 @@ function RoleMaker() {
   const { addToast } = useToast()
   const userPhone = location.state?.phone;
 
-  useEffect(() => {
-    if (!canAccessDashboardRoute(DASHBOARD_ROUTES.ROLE_MAKER)) {
-      navigate("/error", { state: { error_type: 403 } })
-    }
-  }, [navigate])
   useEffect(() => {
     const fetchRoles = async () => {
       let token = localStorage.getItem("token")

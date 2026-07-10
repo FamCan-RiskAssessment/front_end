@@ -7,11 +7,7 @@ import { usePatientEnums } from "./components/patient/usePatientEnums";
 import { usePatientActions } from "./components/patient/usePatientActions";
 import { APIURL, formStatusLabels, stateColors } from "./utils/config";
 import { endpointMaker } from "./utils/tools";
-import {
-    canAccessDashboardRoute,
-    DASHBOARD_ROUTES,
-    shouldUseOperatorFormEndpoint,
-} from "./utils/permissions";
+import { shouldUseOperatorFormEndpoint } from "./utils/permissions";
 import leftSign from "./V2Form/form_left.png";
 import rightSign from "./V2Form/form_right.png";
 import "./client_forms.css";
@@ -94,12 +90,6 @@ export default function FilterableTable() {
         cancerTypesMap,
         relativeTypesMap,
     });
-
-    useEffect(() => {
-        if (!canAccessDashboardRoute(DASHBOARD_ROUTES.PATIENTS)) {
-            navigate("/error", { state: { error_type: 403 } });
-        }
-    }, [navigate]);
 
     useEffect(() => {
         const fetchForms = async () => {
