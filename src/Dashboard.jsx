@@ -28,7 +28,7 @@ function DashBoard() {
 
     useEffect(() => {
         if (!canAccessDashboard()) {
-            navigate("/error_page", { state: { error_type: 401 } })
+            navigate("/error", { state: { error_type: 401 } })
         }
     }, [navigate])
 

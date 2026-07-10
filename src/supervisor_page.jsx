@@ -39,7 +39,7 @@ function SupervisorPage() {
 
     useEffect(() => {
         if (!canAccessDashboardRoute(DASHBOARD_ROUTES.SUPERVISOR_FORMS)) {
-            navigate("/error_page", { state: { error_type: 403 } })
+            navigate("/error", { state: { error_type: 403 } })
         }
     }, [navigate])
     // State for advanced filters

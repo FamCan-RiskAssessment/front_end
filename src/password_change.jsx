@@ -31,7 +31,7 @@ function ChangePass() {
 
   useEffect(() => {
     if (!canSetPassword()) {
-      navigate("/error_page", { state: { error_type: 403 } });
+      navigate("/error", { state: { error_type: 403 } });
     }
   }, [navigate]);
   const updateUserPass = async (passCode) => {

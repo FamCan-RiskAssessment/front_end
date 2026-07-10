@@ -110,7 +110,7 @@ export default function PatientDetail() {
 
     useEffect(() => {
         if (!canAccessDashboardRoute(DASHBOARD_ROUTES.PATIENTS)) {
-            navigate("/error_page", { state: { error_type: 403 } });
+            navigate("/error", { state: { error_type: 403 } });
         }
     }, [navigate]);
 

@@ -90,7 +90,7 @@ const ModelResults = () => {
 
     useEffect(() => {
         if (!canAccessDashboardRoute(DASHBOARD_ROUTES.MODELS_RESULTS)) {
-            navigate("/error_page", { state: { error_type: 403 } })
+            navigate("/error", { state: { error_type: 403 } })
         }
     }, [navigate])
 
