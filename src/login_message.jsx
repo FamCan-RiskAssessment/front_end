@@ -4,6 +4,7 @@ import { APIURL } from "./utils/config";
 import { useToast } from "./toaster";
 import { fetchDataGET, fetchDataGETNoError, fetchDataPOST } from "./utils/tools";
 import { persistDashboardAccess } from "./utils/permissions";
+import { useAuthStore } from "./stores/authStore";
 import otpSign from './V2Form/otpSign.svg'
 import tool_pinkSign from './V2Form/pink_tool.svg'
 import './V2Form/login_pageV3.css'
@@ -59,10 +60,12 @@ function LoginMessage() {
         return;
       }
 
-      localStorage.setItem("token", data.data.access_token);
-      localStorage.setItem("number", phone)
-      localStorage.setItem("permissions", JSON.stringify(data.data.permissions))
-      localStorage.setItem("roles", JSON.stringify(data.data.roles))
+      useAuthStore.getState().setSession({
+        token: data.data.access_token,
+        number: phone,
+        permissions: data.data.permissions,
+        roles: data.data.roles,
+      });
       persistDashboardAccess(data.data.permissions)
       let userAuthed = await fetchDataGETNoError("admin/profile", data.data.access_token)
       if (JSON.parse(localStorage.getItem("residentEnter")) && (userAuthed.status == 200 || userAuthed.status == 201)) {

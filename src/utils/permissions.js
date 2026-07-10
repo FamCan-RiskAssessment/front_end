@@ -1,5 +1,6 @@
 import { listOfcategs, listDashBoardUrls } from "./config";
 import { permissionCategoryComparer } from "./tools";
+import { useAuthStore } from "../stores/authStore";
 
 export const PERMISSIONS = {
   FULL_ACCESS: "دسترسی کامل",
@@ -27,6 +28,9 @@ export const DASHBOARD_ROUTES = {
 };
 
 export function getStoredPermissions() {
+  const fromStore = useAuthStore.getState().permissions;
+  if (Array.isArray(fromStore) && fromStore.length > 0) return fromStore;
+  // Fallback for values written outside the store (pre-migration sessions).
   try {
     return JSON.parse(localStorage.getItem("permissions") || "[]");
   } catch {
@@ -72,11 +76,14 @@ export function getAccessibleDashboardUrls(permissions = getStoredPermissions())
 
 export function persistDashboardAccess(permissions = getStoredPermissions()) {
   const urls = getAccessibleDashboardUrls(permissions);
-  localStorage.setItem("pagesOneCango", JSON.stringify(urls));
+  useAuthStore.getState().setDashboardUrls(urls);
   return urls;
 }
 
 export function getStoredDashboardUrls() {
+  const fromStore = useAuthStore.getState().pagesOneCango;
+  if (Array.isArray(fromStore) && fromStore.length > 0) return fromStore;
+  // Fallback for values written outside the store (pre-migration sessions).
   try {
     return JSON.parse(localStorage.getItem("pagesOneCango") || "[]");
   } catch {

@@ -5,6 +5,10 @@ import './index.css'
 import ToastProvider from './toaster.jsx'
 import App from './App.jsx'
 import { queryClient } from './api/queryClient.js'
+import { setTokenProvider } from './api/client.js'
+import { useAuthStore } from './stores/authStore.js'
+
+setTokenProvider(() => useAuthStore.getState().token)
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

@@ -3,7 +3,7 @@ import RoleChanger from "./role_giver";
 import NavBar from "./navBar";
 import "./DashBoard.css"
 import formT from "./assets/from_transfer.svg"
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
     canAccessDashboard,
     canSetPassword,
@@ -11,6 +11,7 @@ import {
     getStoredPermissions,
     persistDashboardAccess,
 } from "./utils/permissions";
+import { useAuthStore } from "./stores/authStore";
 import homeSign from './V2Form/home.svg'
 import timeSign from './V2Form/time.svg'
 import tool_pinkSign from './V2Form/pink_tool.svg'
@@ -19,11 +20,9 @@ import exitSign from './V2Form/exit.svg'
 
 
 function DashBoard() {
-    const location = useLocation();
     const [perms, setPerms] = useState([])
     const [passedUrls, setPassedUrls] = useState([])
-    const permissions = location.state?.permissions;
-    const [userPhone, setUserPhone] = useState("")
+    const userPhone = useAuthStore((s) => s.number) || ""
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -39,10 +38,7 @@ function DashBoard() {
     }, [perms])
 
     useEffect(() => {
-        const permissions = getStoredPermissions()
-        const phone = localStorage.getItem("number")
-        setUserPhone(phone)
-        setPerms(permissions)
+        setPerms(getStoredPermissions())
     }, [])
     const tool_chooser = () => {
         navigate("/DashBoard/RandP", { state: { phone: userPhone } })
@@ -60,7 +56,6 @@ function DashBoard() {
         navigate("/DashBoard/passChange", { state: { phone: userPhone } })
     }
     const tool_chooser6 = () => {
-        console.log("gotcha ! : ", localStorage.getItem("pagesOneCango"))
         navigate("/DashBoard/supervisorForms", { state: { phone: userPhone } })
     }
     const tool_chooser7 = () => {
