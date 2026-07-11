@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import InputBox from "./input_box";
-import Radio from "./radio";
-import CheckBox from "./checkbox";
-import RadioV2 from "./RadioV2";
-import OptionsV2 from "./optionV2";
-import InputBoxV2 from "./input_boxV2";
+import { InputBox } from "./components/ui/InputBox";
+import { Radio } from "./components/ui/Radio";
+import CheckBox from "./components/ui/CheckBox";
+import { RadioV2 } from "./components/ui/Radio";
+import { OptionsV2 } from "./components/ui/Option";
+import { InputBoxV2 } from "./components/ui/InputBox";
 
 function PersonalInfo({ data_req, data_inp1, data_inp2, data_inp3, data_inp4, data_inp5, data_inp6, data_inp7, data_opt, data_check, typeErr, typeErr2, typeErr3, addressPreset }) {
     const [postalCodeRes, setPostalCodeRes] = useState({})

@@ -1,17 +1,17 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { getEnumCached } from "./api/enums";
-import InputBox from "./input_box";
-import Radio from "./radio";
-import CheckBox from "./checkbox";
-import Options from "./option";
+import { InputBox } from "./components/ui/InputBox";
+import { Radio } from "./components/ui/Radio";
+import CheckBox from "./components/ui/CheckBox";
+import { Options } from "./components/ui/Option";
 import CancerField from "./cancer_universal";
-import FileUploader from "./file_uploader";
+import FileUploader from "./components/ui/FileUploader";
 import PersonalInfo from "./personal_info";
-import RadioV2 from "./RadioV2";
-import OptionsV2 from "./optionV2";
-import InputBoxV2 from "./input_boxV2";
+import { RadioV2 } from "./components/ui/Radio";
+import { OptionsV2 } from "./components/ui/Option";
+import { InputBoxV2 } from "./components/ui/InputBox";
 import Loader from "./utils/loader";
-import RangeBox from "./rangeInp";
+import RangeBox from "./components/ui/RangeInput";
 import prevSign from './V2Form/arrow_right.svg'
 import homeSign from './V2Form/home.svg'
 import part1 from './questions/P1.json'

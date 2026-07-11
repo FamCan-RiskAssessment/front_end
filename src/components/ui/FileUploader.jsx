@@ -111,7 +111,6 @@ function FileUploader({ data, class_change1, class_change2, handleFileChange, re
                         accept="image/*"
                         onChange={(e) => {
                             handleFileChangeWithPreview(e)
-                            console.log(e)
                         }}
                         multiple  // Add this to allow multiple file selection
                     />

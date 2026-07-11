@@ -1,9 +1,7 @@
-import { useState } from "react";
-import checkSign from './V2Form/Check.svg'
+import checkSign from '../../V2Form/Check.svg'
 
 function CheckBox({ data_req, data, checker, atba, classChange1, classChange2, roleMaker_class, multicheck, checkArray, relation }) {
     const effectiveDataReq = data_req ? data_req : "false";
-    console.log(data, "  : -----------------------------------")
     return (
         <>
             <div className={`form_element ${classChange1}`} style={relation == true || relation == undefined ? { display: null } : { display: "none" }}>
@@ -15,13 +13,6 @@ function CheckBox({ data_req, data, checker, atba, classChange1, classChange2, r
 
                         {data.options.map((opt, index) =>
                             <>
-                                {/* {opt.length == 2 && (
-                                    <>
-                                        <input type="checkbox" className="check_box" name={opt} id={opt} value={opt[1]} onChange={(e) => checker?.(e.target.value, e.target.checked)} />
-                                        <label htmlFor={opt}>{opt[0]}</label>
-
-                                    </>
-                                )} */}
                                 {opt.length != 0 && (
                                     <>
                                         <label className={`checkbox-card ${roleMaker_class}`} htmlFor={opt.engName}>

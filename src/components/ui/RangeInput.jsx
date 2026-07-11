@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import { isNumber } from "./utils/tools";
-import plusSign from './V2Form/plus.svg'
-import minusSign from './V2Form/minusSign.svg'
+import plusSign from '../../V2Form/plus.svg'
+import minusSign from '../../V2Form/minusSign.svg'
 function RangeBox({ data_req, data, valueSetter, class_change1, class_change2, relation, preData }) {
-    // const [Itext , setIText] = useState('')
     const [vol, setVol] = useState(0)
     useEffect(() => {
         if (preData !== undefined && preData !== null && preData !== "") {

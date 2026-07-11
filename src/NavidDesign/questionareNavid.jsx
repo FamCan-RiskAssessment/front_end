@@ -1,14 +1,14 @@
 import {useState, useRef, useEffect} from "react";
 import { getEnumCached } from "../api/enums";
-import InputBox from "../input_box";
-import InputBoxV2 from "../input_boxV2";
-import Radio from "../radio";
-// import RadioV2 from "../RadioV2";
-import CheckBox from "../checkbox";
-import Options from "../option";
-import OptionsV2 from "../optionV2";
+import { InputBox } from "../components/ui/InputBox";
+import { InputBoxV2 } from "../components/ui/InputBox";
+import { Radio } from "../components/ui/Radio";
+// import { RadioV2 } from "../components/ui/Radio";
+import CheckBox from "../components/ui/CheckBox";
+import { Options } from "../components/ui/Option";
+import { OptionsV2 } from "../components/ui/Option";
 import CancerField from "../cancer_universal";
-import FileUploader from "../file_uploader";
+import FileUploader from "../components/ui/FileUploader";
 import PersonalInfo from "../personal_info";
 import Loader from "../utils/loader";
 import prevSign from '../V2Form/arrow_right.svg'
@@ -41,7 +41,7 @@ import {
 } from "../utils/tools";
 // import "./form_elementsNavid.css"
 import "../responsive_questionare.css"
-import RadioV2 from "../RadioV2";
+import { RadioV2 } from "../components/ui/Radio";
 
 // import { set } from "animejs";
 function QuestionsNavid() {
