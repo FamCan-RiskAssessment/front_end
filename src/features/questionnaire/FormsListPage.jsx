@@ -1,49 +1,76 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import { APIURL } from "./utils/config";
-import { fetchDataGET, fetchDataDELETE, formTypeChecker, statusChecker, fetchDataPUT, fetchDataGETNoError } from "./utils/tools";
+import { APIURL } from "../../utils/config";
+import { fetchDataDELETE, formTypeChecker, statusChecker, fetchDataPUT, fetchDataGETNoError } from "../../utils/tools";
 import {
   canAccessDashboard,
   canCreateFormForUser,
-} from "./utils/permissions";
-import UQs from './utils/utilQs.json'
-import "./client_forms.css"
-import { useToast } from "./toaster";
-import plusSign from './V2Form/plus.svg'
-import plusWSign from './V2Form/plusW.svg'
-import leftSign from './V2Form/form_left.png'
-import rightSign from './V2Form/form_right.png'
-import prevSign from './V2Form/arrow_right.svg'
-import homeSign from './V2Form/home.svg'
-import panelSign from './V2Form/panelSign.svg'
-import eyeSign from './V2Form/view.svg'
-import settingsSign from './V2Form/settings.svg'
-import deleteSign from './V2Form/trashCan.svg'
-import subSign from './V2Form/checkSub.svg'
-import restoreSign from './V2Form/restore.svg'
-import fileUplode from './V2Form/files.svg'
-import waitSign from './V2Form/timer.png'
-import checkFull from './V2Form/checkfull.png'
-import magnifier from './V2Form/magnifier.svg'
-import Loader from "./utils/loader";
+} from "../../utils/permissions";
+import "../../client_forms.css"
+import { useToast } from "../../toaster";
+import plusWSign from '../../V2Form/plusW.svg'
+import leftSign from '../../V2Form/form_left.png'
+import rightSign from '../../V2Form/form_right.png'
+import prevSign from '../../V2Form/arrow_right.svg'
+import panelSign from '../../V2Form/panelSign.svg'
+import eyeSign from '../../V2Form/view.svg'
+import deleteSign from '../../V2Form/trashCan.svg'
+import subSign from '../../V2Form/checkSub.svg'
+import restoreSign from '../../V2Form/restore.svg'
+import fileUplode from '../../V2Form/files.svg'
+import waitSign from '../../V2Form/timer.png'
+import checkFull from '../../V2Form/checkfull.png'
+import magnifier from '../../V2Form/magnifier.svg'
+import Loader from "../../utils/loader";
 
+/**
+ * The Bahar and Navid forms-list pages were ~95% identical forks; every
+ * behavioral difference between them lives in this variant table.
+ *
+ * - formType: which rows of GET /form belong to this flow
+ * - loadParts: form sections fetched into the draft before editing
+ *   (GET paths differ from PUT submit paths — cancerVisit / familycancerVisit
+ *   are write-only on this API)
+ * - newFormRoute: the questionnaire page for this flow
+ * - cancerFlagsVia: how "already filled cancer sections" reaches the
+ *   questionnaire — Bahar passes navigate() state (SCAPP/FCAPP), Navid
+ *   writes the famcanFilled/selfcanFilled localStorage flags
+ * - loadingFallback / modal classes: visual differences kept as-is
+ */
+const VARIANTS = {
+  bahar: {
+    formType: 1,
+    loadParts: ["basic", "generalhealth", "mamography", "cancer", "listfamilycancer", "lungcancer", "contact"],
+    newFormRoute: "/forms/new",
+    cancerFlagsVia: "state",
+    loadingFallback: <Loader></Loader>,
+    modalClass: "role_modal",
+    modalActionsClass: "roles Modal deleteModal",
+  },
+  navid: {
+    formType: 2,
+    loadParts: ["basic", "cancer", "familycancer", "contact", "navid"],
+    newFormRoute: "/formsNavid/new",
+    cancerFlagsVia: "storage",
+    loadingFallback: <p className="text-center mt-10">Loading forms...</p>,
+    modalClass: "role_modal QPage",
+    modalActionsClass: "roles Modal",
+  },
+};
 
-function FormsPage() {
+function FormsListPage({ variant = "bahar" }) {
+  const cfg = VARIANTS[variant];
   const [forms, setForms] = useState([]);
   const [deletedForm, setDeletedForm] = useState(0)
   const [openModalConf, setOpenModalConf] = useState(false)
   const [selectedForm, setSelectedForm] = useState(0)
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const location = useLocation();
-  const [perms, setPerms] = useState([])
   const [showAdminPanel, setShowAdminPanel] = useState(false)
   const [page, setPage] = useState(1)
   const [pagiPrev, setPagiPrev] = useState(false)
   const [PagiNext, setPagiNext] = useState(false)
   const [pageCount, setPageCount] = useState(0)
-  const [opOpts, setOpOpts] = useState(false)
 
   // State for advanced filters
   const [advancedFilters, setAdvancedFilters] = useState({
@@ -56,16 +83,13 @@ function FormsPage() {
   const nextPage = () => {
     if (PagiNext)
       setPage(p => p + 1)
-
   }
   const prevPage = () => {
     if (pagiPrev)
       setPage(p => p - 1)
   }
 
-
   const { addToast } = useToast()
-  console.log(forms)
 
   const lineMaker = (total_page) => {
     let spans = []
@@ -77,26 +101,15 @@ function FormsPage() {
 
   // Function to build endpoint based on filters
   const buildEndpoint = (currentPage, filters) => {
-    let endpoint = 'form';
-
-    // Build query parameters
     const queryParams = [];
-
-    // Add pagination
     queryParams.push(`page=${currentPage}`);
-
-    // Add sorting and search filters
     if (filters.sortBy) queryParams.push(`sortBy=${filters.sortBy}`);
     if (filters.sortOrder) queryParams.push(`sortOrder=${filters.sortOrder}`);
     if (filters.search) queryParams.push(`search=${filters.search}`);
-
-    // Join query parameters with '&'
-    const queryString = queryParams.join('&');
-    return `form?${queryString}`;
+    return `form?${queryParams.join('&')}`;
   };
 
   const applyFilters = () => {
-    // Update the main search filter with the temporary value
     setAdvancedFilters(prev => ({
       ...prev,
       search: tempSearch
@@ -104,14 +117,11 @@ function FormsPage() {
     setPage(1); // Reset to first page when applying filters
   };
 
-
   // user info
   useEffect(() => {
     const permissions = JSON.parse(localStorage.getItem("permissions") || "[]")
-    setPerms(permissions)
     setShowAdminPanel(canAccessDashboard(permissions))
   }, [])
-
 
   const deleteForm = async (form_id) => {
     let token = localStorage.getItem("token")
@@ -126,23 +136,21 @@ function FormsPage() {
     }
   }
 
-  // 🔹 fetch user's forms on mount
+  // fetch user's forms on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
-    // Build endpoint with filters
     const endpoint = buildEndpoint(page, advancedFilters);
 
     fetch(`${APIURL}/${endpoint}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // ✅ token auth
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => res.json())
       .then((json) => {
-        // console.log("fucking data : " , json)
-        setForms(json.data.data || []); // assuming API returns { data: [...] }
+        setForms(json.data.data || []);
         setDeletedForm(0)
         setPagiPrev(json.data.pagination.hasPrevPage)
         setPagiNext(json.data.pagination.hasNextPage)
@@ -154,19 +162,10 @@ function FormsPage() {
         setLoading(false);
       });
   }, [deletedForm, page, advancedFilters]);
-  // how to pass the form
+
+  /** Load every section of an existing form into the draft, then open the questionnaire. */
   const userSelectedForm = async (form_id, selfCanAPP, famCanAPP) => {
     const token = localStorage.getItem("token");
-    // GET paths differ from PUT submit paths (cancerVisit / familycancerVisit are write-only on this API).
-    const APIARR = [
-      "basic",
-      "generalhealth",
-      "mamography",
-      "cancer",
-      "listfamilycancer",
-      "lungcancer",
-      "contact",
-    ];
 
     try {
       setLoading(true);
@@ -174,7 +173,7 @@ function FormsPage() {
       let TrueSteps = [];
       let anyFailed = false;
       const results = await Promise.all(
-        APIARR.map(async (ar) => {
+        cfg.loadParts.map(async (ar) => {
           try {
             const res = await fetch(`${APIURL}/form/${form_id}/${ar}`, {
               method: "GET",
@@ -214,12 +213,16 @@ function FormsPage() {
       localStorage.setItem("form_data", JSON.stringify(form_data));
       localStorage.setItem("form_id", form_id);
       localStorage.setItem("trueSteps", JSON.stringify(TrueSteps));
-      navigate("/forms/new", {
-        state: {
-          SCAPP: selfCanAPP,
-          FCAPP: famCanAPP,
-        },
-      });
+      if (cfg.cancerFlagsVia === "state") {
+        navigate(cfg.newFormRoute, {
+          state: {
+            SCAPP: selfCanAPP,
+            FCAPP: famCanAPP,
+          },
+        });
+      } else {
+        navigate(cfg.newFormRoute);
+      }
     } catch (err) {
       console.error("Error fetching forms:", err);
       addToast({
@@ -232,13 +235,12 @@ function FormsPage() {
     }
   };
 
-
   const handleAddNew = () => {
     localStorage.setItem("form_data", null)
     localStorage.setItem("form_id", null)
     localStorage.setItem("operatorUserId", null)
     localStorage.setItem("userNeededAdress", null)
-    navigate("/forms/new"); // redirect to form creation page
+    navigate(cfg.newFormRoute); // redirect to form creation page
   };
 
   const handleAddNewForPatient = () => {
@@ -253,23 +255,27 @@ function FormsPage() {
     } else if (res.status == 200 || res.status == 201) {
       navigate("/Dashboard")
     }
-    // else if (role == "سوپر ادمین") {
-    //   navigate("/Dashboard")
-    // }
-    console.log("]]]]]]]]]]]]]]]]]] : ", res)
   }
 
+  /** Row click: mark which cancer sections are already filled, then load the form. */
+  const openForm = async (form) => {
+    if (statusChecker(form.status) == 5) {
+      let token = localStorage.getItem("token")
+      await fetchDataPUT(`form/${form.id}/resubmit`, token, {})
+    }
+    const famcanIn = Boolean(form.filledForms.familycancer);
+    const selfcanIn = Boolean(form.filledForms.cancer);
+    if (cfg.cancerFlagsVia === "storage") {
+      localStorage.setItem("famcanFilled", JSON.stringify(famcanIn))
+      localStorage.setItem("selfcanFilled", JSON.stringify(selfcanIn))
+    }
+    userSelectedForm(form.id, selfcanIn, famcanIn)
+  }
 
-  if (loading) return <Loader></Loader>;
+  if (loading) return cfg.loadingFallback;
 
   return (
     <>
-      {/* <div className="dashboard_btns">
-        {role != "بیمار" ? (<button className="btn_submit place_independently" onClick={() => {
-          navigate('/DashBoard', { state: { permissions: perms } })
-        }}>ورود به پنل</button>) : null}
-        <button className="btn_submit spider" onClick={() => navigate("/login")}>خروج</button>
-      </div> */}
       <div className="forms_page_holder">
         <div
           className="help_bar_container"
@@ -349,7 +355,7 @@ function FormsPage() {
               </div>
             </div>
 
-            {forms.length === 0 && !formTypeChecker(forms, 1) ? (
+            {forms.length === 0 && !formTypeChecker(forms, cfg.formType) ? (
               <p className="no-forms-text">فرمی ثبت نشده است.</p>
             ) : (
               <table className="forms-table">
@@ -362,8 +368,8 @@ function FormsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {forms.map((  form, index) => {
-                    if (form.formType == 1) {
+                  {forms.map((form, index) => {
+                    if (form.formType == cfg.formType) {
                       return (
                         <tr key={form.id} className="form-row">
                           <td className="table-cell FM">{index + 1}</td>
@@ -373,30 +379,7 @@ function FormsPage() {
                             <div className="btn_formPage_holder">
                               <button
                                 className="btn-view-form"
-                                onClick={async () => {
-                                  if (statusChecker(form.status) == 5) {
-                                    let token = localStorage.getItem("token")
-                                    let res = await fetchDataPUT(`form/${form.id}/resubmit`, token, {})
-                                  }
-                                  let famcanIn = false
-                                  let selfcanIn = false
-                                  if (form.filledForms.familycancer) {
-                                    console.log("ARE WE HERE FOR SIIII ? ")
-                                    // localStorage.setItem("famcanFilled", JSON.stringify(true))
-                                    famcanIn = true
-                                  } else {
-                                    // localStorage.setItem("famcanFilled", JSON.stringify(false))
-                                    famcanIn = false
-                                  }
-                                  if (form.filledForms.cancer) {
-                                    // localStorage.setItem("selfcanFilled", JSON.stringify(true))
-                                    selfcanIn = true
-                                  } else {
-                                    // localStorage.setItem("selfcanFilled", JSON.stringify(false))
-                                    selfcanIn = false
-                                  }
-                                  userSelectedForm(form.id, selfcanIn, famcanIn)
-                                }}
+                                onClick={() => openForm(form)}
                                 disabled={statusChecker(form.status) == 1 || statusChecker(form.status) == 4 || statusChecker(form.status) == 5 ? null : true}
                               >
 
@@ -429,19 +412,12 @@ function FormsPage() {
                                   }
                                 })()}
                               </button>
-                              {/* <div className="setting_holder"> */}
-                              {/* <img src={settingsSign} alt="form settings" /> */}
-                              {/* {opOpts && ( */}
-                              {/* <div className="settings"> */}
                               <button className="btn-view-form" onClick={() => {
                                 setOpenModalConf(true)
                                 setSelectedForm(form.id)
                               }}>
                                 <img src={deleteSign} alt="form delete" />
                               </button>
-                              {/* </div> */}
-                              {/* // )} */}
-                              {/* </div> */}
                             </div>
                           </td>
                         </tr>
@@ -458,9 +434,9 @@ function FormsPage() {
               </div>
               <div className="page_line">
                 <img src={rightSign} className="arrows" alt="rightSign" onClick={() => setPage(a => a - 1)} />
-                {lineMaker(pageCount).map((p, index) => {
+                {lineMaker(pageCount).map((p) => {
                   return (
-                    <span className="page_num" style={page == p + 1 ? { background: "#eee", } : null} onClick={() => setPage(p + 1)}>
+                    <span key={p} className="page_num" style={page == p + 1 ? { background: "#eee", } : null} onClick={() => setPage(p + 1)}>
                       {p + 1}
                     </span>
                   )
@@ -492,7 +468,7 @@ function FormsPage() {
         </div>
       </div>
       {openModalConf && (
-        <div className="role_modal">
+        <div className={cfg.modalClass}>
           <div className="modal_header">
             <h3>آیا می خواهید فرم را حذف کنید ؟ </h3>
             <div className="modal_close" onClick={() => {
@@ -503,7 +479,7 @@ function FormsPage() {
               </span>
             </div>
           </div>
-          <div className="roles Modal deleteModal">
+          <div className={cfg.modalActionsClass}>
             <button className="btn-add-new" onClick={() => {
               deleteForm(selectedForm)
               setOpenModalConf(false)
@@ -517,4 +493,4 @@ function FormsPage() {
   );
 }
 
-export default FormsPage;
+export default FormsListPage;

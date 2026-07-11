@@ -5,7 +5,7 @@ import LoginMessage from './login_message'
 import Questions from './questionare'
 import DashBoard from './Dashboard'
 import RoleMaker from './RoleMaker'
-import FormsPage from './formPage'
+import FormsListPage from './features/questionnaire/FormsListPage'
 import FilterableTable from './patient_table'
 import PatientDetail from './patient_detail'
 import RoleHierarchyTree from './users_tree'
@@ -19,7 +19,6 @@ import ModelResults from './model_res'
 import OperatorUserMobile from './userMobile'
 import AttentionPage from './attentionPage'
 import ChooseApp from './program_choice'
-import FormsPageNavid from './NavidDesign/formPageNavid'
 import QuestionsNavid from './NavidDesign/questionareNavid'
 import LandingPage from './LandingPage/totalLand'
 import ResidentRegister from './V2Form/resident_login'
@@ -53,7 +52,7 @@ function App() {
           <Route path="/error" element={<ErrorShower></ErrorShower>}></Route>
 
           <Route path="/otp" element={<LoginMessage></LoginMessage>}></Route>
-          <Route path="/forms" element={<FormsPage></FormsPage>}></Route>
+          <Route path="/forms" element={<FormsListPage variant="bahar" />}></Route>
           <Route path='/forms/new' element={<Questions></Questions>}></Route>
           <Route path='/DashBoard/RandP' element={guarded(DASHBOARD_ROUTES.RAND_P, <RoleChanger></RoleChanger>)}></Route>
           <Route path='/DashBoard/RoleMaker' element={guarded(DASHBOARD_ROUTES.ROLE_MAKER, <RoleMaker></RoleMaker>)}></Route>
@@ -71,7 +70,7 @@ function App() {
           <Route path='/residentEnter' element={<ResidentRegister></ResidentRegister>}></Route>
           <Route path='/operator/userMobile' element={<OperatorUserMobile></OperatorUserMobile>}></Route>
           <Route path='/AppChoose' element={<ChooseApp></ChooseApp>}></Route>
-          <Route path='/formsNavid' element={<FormsPageNavid></FormsPageNavid>}></Route>
+          <Route path='/formsNavid' element={<FormsListPage variant="navid" />}></Route>
           <Route path='/formsNavid/new' element={<QuestionsNavid></QuestionsNavid>}></Route>
           <Route path='/formEnd' element={<FormEnd></FormEnd>}></Route>
 
