@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { APIURL } from "./utils/config";
-import NavBar from "./components/layout/NavBar";
-import "./client_forms.css";
-import { useToast } from "./toaster";
-import plusSign from './V2Form/plus.svg'
-import leftSign from './V2Form/form_left.png'
-import rightSign from './V2Form/form_right.png'
-import prevSign from './V2Form/arrow_right.svg'
-import homeSign from './V2Form/home.svg'
-import panelSign from './V2Form/panelSign.svg'
-import settingsSign from './V2Form/settings.svg'
-import deleteSign from './V2Form/trashCan.svg'
-import subSign from './V2Form/checkSub.svg'
-import restoreSign from './V2Form/restore.svg'
-import fileUplode from './V2Form/files.svg'
-import waitSign from './V2Form/timer.png'
-import checkFull from './V2Form/checkfull.png'
+import { APIURL } from "../../utils/config";
+import NavBar from "../../components/layout/NavBar";
+import "../../client_forms.css";
+import { useToast } from "../../toaster";
+import plusSign from '../../V2Form/plus.svg'
+import leftSign from '../../V2Form/form_left.png'
+import rightSign from '../../V2Form/form_right.png'
+import prevSign from '../../V2Form/arrow_right.svg'
+import homeSign from '../../V2Form/home.svg'
+import panelSign from '../../V2Form/panelSign.svg'
+import settingsSign from '../../V2Form/settings.svg'
+import deleteSign from '../../V2Form/trashCan.svg'
+import subSign from '../../V2Form/checkSub.svg'
+import restoreSign from '../../V2Form/restore.svg'
+import fileUplode from '../../V2Form/files.svg'
+import waitSign from '../../V2Form/timer.png'
+import checkFull from '../../V2Form/checkfull.png'
 
 
 function ChangePass() {

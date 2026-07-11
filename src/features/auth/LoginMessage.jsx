@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { APIURL } from "./utils/config";
-import { useToast } from "./toaster";
-import { fetchDataGET, fetchDataGETNoError, fetchDataPOST } from "./utils/tools";
-import { persistDashboardAccess } from "./utils/permissions";
-import { useAuthStore } from "./stores/authStore";
-import otpSign from './V2Form/otpSign.svg'
-import tool_pinkSign from './V2Form/pink_tool.svg'
-import './V2Form/login_pageV3.css'
+import { APIURL } from "../../utils/config";
+import { useToast } from "../../toaster";
+import { fetchDataGET, fetchDataGETNoError, fetchDataPOST } from "../../utils/tools";
+import { persistDashboardAccess } from "../../utils/permissions";
+import { useAuthStore } from "../../stores/authStore";
+import otpSign from '../../V2Form/otpSign.svg'
+import tool_pinkSign from '../../V2Form/pink_tool.svg'
+import './LoginPage.css'
 
 function LoginMessage() {
   const [otpDigits, setOtpDigits] = useState(['', '', '', '', '', '']);

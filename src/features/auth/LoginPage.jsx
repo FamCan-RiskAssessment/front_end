@@ -1,19 +1,19 @@
 import {useState} from "react";
-import './login_pageV3.css'
-import {APIURL} from "../utils/config";
+import './LoginPage.css'
+import {APIURL} from "../../utils/config";
 import {useNavigate} from "react-router-dom";
 
-import {useToast} from "../toaster";
+import {useToast} from "../../toaster";
 
 // Import sponsor logos
-import bimeSalamteMan from '../assets/logos/bime-salamte-man-icon.png';
-import logoHybrid from '../assets/logos/Logo Hybrid 2.png';
-import pajooheshkadeh from '../assets/logos/پژوهشکده.png';
-import shahidBeheshti from '../assets/logos/شهیدبهشتی.jpg';
-import tehranUni from '../assets/logos/لوگو انگلیسی دانشگاه تهران.jpg';
-import behdasht from '../assets/logos/لوگو-وزارت-بهداشت-2-3.jpg';
-import mazandaran from '../assets/logos/مازندران.webp';
-import mohavateBehdashti from '../assets/logos/معاونت بهداشتی وزارت.jpg';
+import bimeSalamteMan from '../../assets/logos/bime-salamte-man-icon.png';
+import logoHybrid from '../../assets/logos/Logo Hybrid 2.png';
+import pajooheshkadeh from '../../assets/logos/پژوهشکده.png';
+import shahidBeheshti from '../../assets/logos/شهیدبهشتی.jpg';
+import tehranUni from '../../assets/logos/لوگو انگلیسی دانشگاه تهران.jpg';
+import behdasht from '../../assets/logos/لوگو-وزارت-بهداشت-2-3.jpg';
+import mazandaran from '../../assets/logos/مازندران.webp';
+import mohavateBehdashti from '../../assets/logos/معاونت بهداشتی وزارت.jpg';
 import {Phone} from "lucide-react";
 
 function Login_pageV3() {

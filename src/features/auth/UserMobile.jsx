@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useToast } from "./toaster";
-import { fetchDataPOST, isNumber } from "./utils/tools";
+import { useToast } from "../../toaster";
+import { fetchDataPOST, isNumber } from "../../utils/tools";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 

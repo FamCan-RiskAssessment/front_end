@@ -1,12 +1,12 @@
 import {useState} from "react";
-import './V2Form/login_pageV3.css'
-import {APIURL} from "./utils/config";
+import './LoginPage.css'
+import {APIURL} from "../../utils/config";
 import {useNavigate} from "react-router-dom";
 
-import {useToast} from "./toaster";
-import {fetchDataGETNoError} from "./utils/tools";
-import { persistDashboardAccess } from "./utils/permissions";
-import { useAuthStore } from "./stores/authStore";
+import {useToast} from "../../toaster";
+import {fetchDataGETNoError} from "../../utils/tools";
+import { persistDashboardAccess } from "../../utils/permissions";
+import { useAuthStore } from "../../stores/authStore";
 import {UserCircle2Icon} from "lucide-react";
 
 function AdminLogin() {
