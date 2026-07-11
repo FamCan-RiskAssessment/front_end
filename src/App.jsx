@@ -20,7 +20,7 @@ import OperatorUserMobile from './features/auth/UserMobile'
 import AttentionPage from './attentionPage'
 import ChooseApp from './program_choice'
 import QuestionsNavid from './NavidDesign/questionareNavid'
-import LandingPage from './LandingPage/totalLand'
+import LandingPage from './features/landing/totalLand'
 import ResidentRegister from './features/auth/ResidentLogin'
 import FormEnd from './formEndPage'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";

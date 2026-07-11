@@ -30,16 +30,16 @@ import 'swiper/css/thumbs';
 // Optional: custom styles for thumbnails
 import './SwiperThumbs.css'; // see CSS below
 
-import '../VazirFontFace.css'
+import '../../VazirFontFace.css'
 import './responsiveLanding.css'
-import bimeSalamteMan from '../assets/logos/bime-salamte-man-icon.png';
-import logoHybrid from '../assets/logos/Logo Hybrid 2.png';
-import pajooheshkadeh from '../assets/logos/پژوهشکده.png';
-import shahidBeheshti from '../assets/logos/شهیدبهشتی.jpg';
-import tehranUni from '../assets/logos/لوگو انگلیسی دانشگاه تهران.jpg';
-import behdasht from '../assets/logos/لوگو-وزارت-بهداشت-2-3.jpg';
-import mazandaran from '../assets/logos/مازندران.webp';
-import mohavateBehdashti from '../assets/logos/معاونت بهداشتی وزارت.jpg';
+import bimeSalamteMan from '../../assets/logos/bime-salamte-man-icon.png';
+import logoHybrid from '../../assets/logos/Logo Hybrid 2.png';
+import pajooheshkadeh from '../../assets/logos/پژوهشکده.png';
+import shahidBeheshti from '../../assets/logos/شهیدبهشتی.jpg';
+import tehranUni from '../../assets/logos/لوگو انگلیسی دانشگاه تهران.jpg';
+import behdasht from '../../assets/logos/لوگو-وزارت-بهداشت-2-3.jpg';
+import mazandaran from '../../assets/logos/مازندران.webp';
+import mohavateBehdashti from '../../assets/logos/معاونت بهداشتی وزارت.jpg';
 
 import altIm from './altIm.svg'
 
