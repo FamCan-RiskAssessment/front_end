@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import NavBar from "./navBar";
-import Loader from "./utils/loader";
-import PatientFormActions from "./components/patient/PatientFormActions";
-import PatientSectionForm from "./components/patient/PatientSectionForm";
-import PatientCancerSection from "./components/patient/PatientCancerSection";
-import { usePatientEnums } from "./components/patient/usePatientEnums";
-import { usePatientActions, savePatientSection } from "./components/patient/usePatientActions";
+import NavBar from "../../navBar";
+import Loader from "../../utils/loader";
+import PatientFormActions from "./PatientFormActions";
+import PatientSectionForm from "./PatientSectionForm";
+import PatientCancerSection from "./PatientCancerSection";
+import { usePatientEnums } from "./usePatientEnums";
+import { usePatientActions, savePatientSection } from "./usePatientActions";
 import {
     APIARR_TAB,
     APIARR_Navid,
@@ -14,8 +14,8 @@ import {
     isDetailFieldHidden,
     resolveFormStatusLabel,
     sortDetailFieldEntries,
-} from "./utils/config";
-import { fetchAdminFormRowById, fetchDataGET } from "./utils/tools";
+} from "../../utils/config";
+import { fetchAdminFormRowById, fetchDataGET } from "../../utils/tools";
 import {
     PART_NAMES_BAHAR,
     PART_NAMES_NAVID,
@@ -23,12 +23,12 @@ import {
     formatValueForEdit,
     isFieldVisibleForGender,
     READONLY_META_FIELDS,
-} from "./utils/patientFieldConfig";
-import { useToast } from "./toaster";
-import "./client_forms.css";
-import "./form_elements.css";
-import "./patient_table.css";
-import "./patient_detail.css";
+} from "../../utils/patientFieldConfig";
+import { useToast } from "../../toaster";
+import "../../client_forms.css";
+import "../../form_elements.css";
+import "./PatientTable.css";
+import "./PatientDetail.css";
 
 const SELF_CANCER_PARTS = new Set(["cancer", "cancerVisit"]);
 const FAMILY_CANCER_PARTS = new Set(["familycancer", "familycancerVisit"]);

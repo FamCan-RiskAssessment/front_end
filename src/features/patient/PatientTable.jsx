@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import NavBar from "./navBar";
-import Loader from "./utils/loader";
-import PatientFormActions from "./components/patient/PatientFormActions";
-import { usePatientEnums } from "./components/patient/usePatientEnums";
-import { usePatientActions } from "./components/patient/usePatientActions";
-import { APIURL, formStatusLabels, stateColors } from "./utils/config";
-import { endpointMaker } from "./utils/tools";
-import { shouldUseOperatorFormEndpoint } from "./utils/permissions";
-import leftSign from "./V2Form/form_left.png";
-import rightSign from "./V2Form/form_right.png";
-import "./client_forms.css";
-import "./form_elements.css";
-import "./patient_table.css";
-import "./patient_detail.css";
+import NavBar from "../../navBar";
+import Loader from "../../utils/loader";
+import PatientFormActions from "./PatientFormActions";
+import { usePatientEnums } from "./usePatientEnums";
+import { usePatientActions } from "./usePatientActions";
+import { APIURL, formStatusLabels, stateColors } from "../../utils/config";
+import { endpointMaker } from "../../utils/tools";
+import { shouldUseOperatorFormEndpoint } from "../../utils/permissions";
+import leftSign from "../../V2Form/form_left.png";
+import rightSign from "../../V2Form/form_right.png";
+import "../../client_forms.css";
+import "../../form_elements.css";
+import "./PatientTable.css";
+import "./PatientDetail.css";
 
 const statuses = ["در حال بررسی", "قبول شده", "رد شده", "تکمیل نشده", "ارسال شده"];
 
