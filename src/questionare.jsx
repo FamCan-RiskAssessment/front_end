@@ -22,6 +22,8 @@ import part5 from './questions/P5.json'
 import part6 from './questions/P6.json'
 import part7 from './questions/P7.json'
 import CQs from './questions/catchQs.json'
+import { makeFormFileHandlers } from "./features/questionnaire/formFiles";
+import { injectCatchQuestion, validateCatchAnswer, getRequiredValue } from "./features/questionnaire/catchQuestions";
 import { useLocation, useNavigate } from "react-router-dom";
 import { APIURL, cancerRefs } from "./utils/config";
 import { useToast } from "./toaster";
@@ -249,6 +251,7 @@ function Questions() {
     const [step3AttentionCorrect, setStep3AttentionCorrect] = useState(0);
     const formDataRef = useRef(new FormData()); // Keep formData in a ref so FileUploaders can access it
     const fileArraysRef = useRef({}); // Keep track of file arrays by field name
+    const { fillingFormData, removeLastFileFromFormData } = makeFormFileHandlers(formDataRef, fileArraysRef);
 
     // Enum properties:
     useEffect(() => {
@@ -283,61 +286,8 @@ function Questions() {
 
 
     // Function to allow FileUploader components to add files to the shared formData
-    const fillingFormData = (fieldName, file) => {
-        formDataRef.current.append(fieldName, file);
-
-        // Also track in our separate file arrays structure
-        if (!fileArraysRef.current[fieldName]) {
-            fileArraysRef.current[fieldName] = [];
-        }
-        fileArraysRef.current[fieldName].push(file);
-
-
-        for (let pair of formDataRef.current.entries()) {
-            // Removed logging
-        }
-    };
 
     // Function to allow FileUploader components to remove the last file from the shared formData
-    const removeLastFileFromFormData = (fieldName) => {
-        // Get the file array for this field
-        const fieldFiles = fileArraysRef.current[fieldName] || [];
-
-        if (fieldFiles.length > 0) {
-            // Remove the last file from our tracking array
-            fieldFiles.pop();
-
-            // Rebuild the formData by getting all values for each field
-            const newFormData = new FormData();
-            const fieldsMap = new Map(); // To collect values by field name
-
-            // Collect all values by field name
-            for (let [key, value] of formDataRef.current.entries()) {
-                if (!fieldsMap.has(key)) {
-                    fieldsMap.set(key, []);
-                }
-                fieldsMap.get(key).push(value);
-            }
-
-            // Rebuild the formData, removing the last value for the specified field
-            for (let [fieldNameKey, valuesArray] of fieldsMap) {
-                if (fieldNameKey === fieldName && valuesArray.length > 0) {
-                    // For the target field, add all values except the last one
-                    for (let i = 0; i < valuesArray.length - 1; i++) {
-                        newFormData.append(fieldNameKey, valuesArray[i]);
-                    }
-                } else {
-                    // For other fields, add all values
-                    for (let value of valuesArray) {
-                        newFormData.append(fieldNameKey, value);
-                    }
-                }
-            }
-
-            // Update the ref
-            formDataRef.current = newFormData;
-        }
-    };
 
     // const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -427,43 +377,6 @@ function Questions() {
     }, [])
 
     // Function to inject catch questions into specified forms
-    const injectCatchQuestions = () => {
-        // Only inject catch questions for steps 2, 3, and 6
-        if (![2, 3, 6].includes(step)) return;
-
-        // Select a random catch question
-        const randomIndex = Math.floor(Math.random() * CQs.length);
-        const selectedCatchQuestion = { ...CQs[randomIndex] };
-
-        // Handle special case for catchSum question type
-        if (selectedCatchQuestion.useName === "catchSum") {
-            const num1 = Math.floor(Math.random() * 10) + 1; // Random number between 1-10
-            const num2 = Math.floor(Math.random() * 10) + 1; // Random number between 1-10
-            const sum = num1 + num2;
-
-            // Update the question with the random numbers
-            selectedCatchQuestion.inpName = `${num1} + ${num2} = ?`;
-            selectedCatchQuestion.correctAnswer = sum; // Store the correct answer
-
-            // Update state to track this specific catch question's answer
-            setCatchAnswers(prev => ({
-                ...prev,
-                [`catchSum_${step}`]: sum
-            }));
-        } else if (selectedCatchQuestion.ans !== undefined) {
-            // For other questions, store the correct answer
-            setCatchAnswers(prev => ({
-                ...prev,
-                [selectedCatchQuestion.useName]: selectedCatchQuestion.ans
-            }));
-        }
-
-        // Store the catch question for the current step
-        setCatchQuestions(prev => ({
-            ...prev,
-            [step]: selectedCatchQuestion
-        }));
-    };
 
     // useEffect to inject catch questions when step changes
     useEffect(() => {
@@ -1014,9 +927,6 @@ function Questions() {
 
 
     // I do not know but you should 
-    function getValue(obj, st, name) {
-        return obj[st]?.[name];
-    }
 
     const clearServerValidationHighlights = (FP) => {
         if (!FP?.current) return;
@@ -1645,22 +1555,10 @@ function Questions() {
     //     setatba(val)
     // }
     // Function to validate catch question answers
-    const validateCatchQuestion = (stepNum) => {
-        if (!catchQuestions[stepNum]) return true; // No catch question for this step
 
-        const catchQ = catchQuestions[stepNum];
-        const userAnswer = catchAnswers[`catch_${catchQ.useName}`];
-
-        if (catchQ.useName === "catchSum") {
-            // Special handling for catchSum - compare with calculated sum
-            const correctAnswer = catchAnswers[`catchSum_${stepNum}`];
-            return userAnswer !== undefined && parseInt(userAnswer) === correctAnswer;
-        } else {
-            // For other questions, compare with the stored answer
-            const correctAnswer = catchQ.ans;
-            return userAnswer !== undefined && userAnswer === correctAnswer;
-        }
-    };
+    const injectCatchQuestions = () => injectCatchQuestion({ step, setCatchAnswers, setCatchQuestions });
+    const validateCatchQuestion = (stepNum) => validateCatchAnswer({ catchQuestions, catchAnswers, stepNum });
+    const getValue = getRequiredValue;
 
     const nexter = () => {
         // Update attentionCorrect for step 3 based on catch question answer
