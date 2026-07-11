@@ -1,7 +1,7 @@
 import { UncontrolledTreeEnvironment, Tree, StaticTreeDataProvider } from 'react-complex-tree';
 import 'react-complex-tree/lib/style-modern.css';
-import './custom_tree.css'
-import NavBar from './navBar';
+import './UsersTree.css'
+import NavBar from '../../components/layout/NavBar';
 import { useState , useMemo } from 'react';
 import { useLocation } from "react-router-dom";
 

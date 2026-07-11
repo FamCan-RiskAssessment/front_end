@@ -1,22 +1,22 @@
 import { useState, useEffect } from "react";
-import NavBar from "./navBar";
+import NavBar from "../../components/layout/NavBar";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { APIURL, roleColors, sortOptions } from "./utils/config";
-import { isAssignableRole, userHasFullAccess } from "./utils/permissions";
-import { useToast } from "./toaster";
-import { fetchDataGET, endpointMaker } from "./utils/tools";
-import "./role_giver.css"
-import "./client_forms.css"
-import leftSign from './V2Form/form_left.png'
-import rightSign from './V2Form/form_right.png'
-import prevSign from './V2Form/arrow_right.svg'
-import settingsSign from './V2Form/settings.svg'
-import Loader from "./utils/loader";
-import roleAssignSign from './V2Form/roleAssign.svg'
-import kickUserSign from './V2Form/kickUser.svg'
-import filterSign from './V2Form/filterSign.svg'
-import magnifier from './V2Form/magnifier.svg'
+import { APIURL, roleColors, sortOptions } from "../../utils/config";
+import { isAssignableRole, userHasFullAccess } from "../../utils/permissions";
+import { useToast } from "../../toaster";
+import { fetchDataGET, endpointMaker } from "../../utils/tools";
+import "./RoleGiver.css"
+import "../../client_forms.css"
+import leftSign from '../../V2Form/form_left.png'
+import rightSign from '../../V2Form/form_right.png'
+import prevSign from '../../V2Form/arrow_right.svg'
+import settingsSign from '../../V2Form/settings.svg'
+import Loader from "../../utils/loader";
+import roleAssignSign from '../../V2Form/roleAssign.svg'
+import kickUserSign from '../../V2Form/kickUser.svg'
+import filterSign from '../../V2Form/filterSign.svg'
+import magnifier from '../../V2Form/magnifier.svg'
 
 
 function RoleChanger() {

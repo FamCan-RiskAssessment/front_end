@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
-import RoleChanger from "./role_giver";
-import NavBar from "./navBar";
-import "./DashBoard.css"
-import formT from "./assets/from_transfer.svg"
+import RoleChanger from "./RoleGiver";
+import NavBar from "../../components/layout/NavBar";
+import "./Dashboard.css"
+import formT from "../../assets/from_transfer.svg"
 import { useNavigate } from "react-router-dom";
 import {
     canSetPassword,
     DASHBOARD_ROUTES,
     getStoredPermissions,
     persistDashboardAccess,
-} from "./utils/permissions";
-import { useAuthStore } from "./stores/authStore";
-import homeSign from './V2Form/home.svg'
-import timeSign from './V2Form/time.svg'
-import tool_pinkSign from './V2Form/pink_tool.svg'
-import tool_greenSign from './V2Form/green_tool.svg'
-import exitSign from './V2Form/exit.svg'
+} from "../../utils/permissions";
+import { useAuthStore } from "../../stores/authStore";
+import homeSign from '../../V2Form/home.svg'
+import timeSign from '../../V2Form/time.svg'
+import tool_pinkSign from '../../V2Form/pink_tool.svg'
+import tool_greenSign from '../../V2Form/green_tool.svg'
+import exitSign from '../../V2Form/exit.svg'
 
 
 function DashBoard() {

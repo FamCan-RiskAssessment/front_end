@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import NavBar from "../../navBar";
+import NavBar from "../../components/layout/NavBar";
 import Loader from "../../utils/loader";
 import PatientFormActions from "./PatientFormActions";
 import PatientSectionForm from "./PatientSectionForm";

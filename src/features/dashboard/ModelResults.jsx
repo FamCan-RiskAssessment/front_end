@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import './model_res.css';
-import NavBar from './navBar';
+import './ModelResults.css';
+import NavBar from '../../components/layout/NavBar';
 import { useLocation, useNavigate } from "react-router-dom";
-import { fetchDataGET, endpointMaker } from "./utils/tools";
-import Loader from "./utils/loader";
-import leftSign from './V2Form/form_left.png';
-import rightSign from './V2Form/form_right.png';
-import prevSign from './V2Form/arrow_right.svg';
+import { fetchDataGET, endpointMaker } from "../../utils/tools";
+import Loader from "../../utils/loader";
+import leftSign from '../../V2Form/form_left.png';
+import rightSign from '../../V2Form/form_right.png';
+import prevSign from '../../V2Form/arrow_right.svg';
 
 const ModelResults = () => {
     const location = useLocation();

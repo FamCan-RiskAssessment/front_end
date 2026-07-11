@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./defnav.css"
-import { fetchDataGET } from "./utils/tools";
-import exitSign from './V2Form/exit.svg'
-import timeSign from './V2Form/time.svg'
-import homeSign from './V2Form/home.svg'
-import formSign from './V2Form/formPageSign.svg'
+import "./NavBar.css"
+import { fetchDataGET } from "../../utils/tools";
+import exitSign from '../../V2Form/exit.svg'
+import timeSign from '../../V2Form/time.svg'
+import homeSign from '../../V2Form/home.svg'
+import formSign from '../../V2Form/formPageSign.svg'
 
 function NavBar({ account }) {
     const navigate = useNavigate();

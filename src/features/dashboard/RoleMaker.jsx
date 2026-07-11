@@ -1,18 +1,18 @@
 import { useState, useEffect, useRef } from 'react'
 import { useLocation, useNavigate } from "react-router-dom";
-import NavBar from './navBar'
-import { useToast } from "./toaster";
-import { fetchDataGET, fetchDataDELETE } from './utils/tools';
-import { APIURL } from './utils/config';
-import "./client_forms.css";
-import "./role_giver.css";
-import plusSign from './V2Form/plus.svg'
-import leftSign from './V2Form/form_left.png'
-import rightSign from './V2Form/form_right.png'
-import prevSign from './V2Form/arrow_right.svg'
-import settingsSign from './V2Form/settings.svg'
-import deleteSign from './V2Form/trashCan.svg'
-import checkSign from './V2Form/Check.svg'
+import NavBar from '../../components/layout/NavBar'
+import { useToast } from "../../toaster";
+import { fetchDataGET, fetchDataDELETE } from '../../utils/tools';
+import { APIURL } from '../../utils/config';
+import "../../client_forms.css";
+import "./RoleGiver.css";
+import plusSign from '../../V2Form/plus.svg'
+import leftSign from '../../V2Form/form_left.png'
+import rightSign from '../../V2Form/form_right.png'
+import prevSign from '../../V2Form/arrow_right.svg'
+import settingsSign from '../../V2Form/settings.svg'
+import deleteSign from '../../V2Form/trashCan.svg'
+import checkSign from '../../V2Form/Check.svg'
 
 function RoleMaker() {
   const [clicked, setClicked] = useState(false)

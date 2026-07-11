@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import * as XLSX from "xlsx";
-import { fetchDataGET } from "./utils/tools";
-import NavBar from "./navBar";
+import { fetchDataGET } from "../../utils/tools";
+import NavBar from "../../components/layout/NavBar";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./SysLogs.css";
-import "./client_forms.css";
-import leftSign from "./V2Form/form_left.png";
-import rightSign from "./V2Form/form_right.png";
+import "../../client_forms.css";
+import leftSign from "../../V2Form/form_left.png";
+import rightSign from "../../V2Form/form_right.png";
 
 const PAGE_SIZE = 15;
 const EXPORT_PAGE_SIZE = 200;

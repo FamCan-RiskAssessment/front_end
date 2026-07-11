@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { APIURL } from "./utils/config";
-import NavBar from "./navBar";
+import NavBar from "./components/layout/NavBar";
 import "./client_forms.css";
 import { useToast } from "./toaster";
 import plusSign from './V2Form/plus.svg'
