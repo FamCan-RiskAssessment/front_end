@@ -1,10 +1,10 @@
 import {useState} from "react";
 import './LoginPage.css'
-import {APIURL} from "../../utils/config";
 import {useNavigate} from "react-router-dom";
 
 import {useToast} from "../../components/ui/Toast";
 import {fetchDataGETNoError} from "../../utils/tools";
+import {adminLogin} from "../../api/auth";
 import { persistDashboardAccess } from "../../utils/permissions";
 import { useAuthStore } from "../../stores/authStore";
 import {UserCircle2Icon} from "lucide-react";
@@ -23,14 +23,7 @@ function AdminLogin() {
 
         setIsLoading(true);
         try {
-            const res = await fetch(`${APIURL}/auth/admin/login`, {
-                method: 'POST',
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    phone,
-                    password,
-                }),
-            })
+            const res = await adminLogin(phone, password)
             const data = await res.json()
             if (!res.ok) {
                 addToast({

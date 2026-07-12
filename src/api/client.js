@@ -47,7 +47,7 @@ export async function apiFetch(endpoint, options = {}) {
 
   const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
 
-  const finalHeaders = { Authorization: `Bearer ${token}`, ...headers };
+  const finalHeaders = { ...(token ? { Authorization: `Bearer ${token}` } : {}), ...headers };
   const wantsJsonContentType =
     contentType === "json" || (contentType === "auto" && !isFormData);
   if (wantsJsonContentType) {

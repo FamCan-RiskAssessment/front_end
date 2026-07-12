@@ -1,9 +1,9 @@
 import {useState} from "react";
 import './LoginPage.css'
-import {APIURL} from "../../utils/config";
 import {useNavigate} from "react-router-dom";
 
 import {useToast} from "../../components/ui/Toast";
+import {login} from "../../api/auth";
 
 // Import sponsor logos
 import bimeSalamteMan from '../../assets/logos/bime-salamte-man-icon.png';
@@ -28,11 +28,7 @@ function Login_pageV3() {
 
         setIsLoading(true);
         try {
-            const res = await fetch(`${APIURL}/auth/login`, {
-                method: 'POST',
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({phone}),
-            })
+            const res = await login(phone)
             const data = await res.json()
             if (!res.ok) {
                 addToast({

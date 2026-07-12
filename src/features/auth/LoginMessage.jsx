@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { APIURL } from "../../utils/config";
 import { useToast } from "../../components/ui/Toast";
 import { fetchDataGET, fetchDataGETNoError, fetchDataPOST } from "../../utils/tools";
 import { persistDashboardAccess } from "../../utils/permissions";
 import { useAuthStore } from "../../stores/authStore";
+import { verifyOtp } from "../../api/auth";
 import otpSign from '../../V2Form/otpSign.svg'
 import tool_pinkSign from '../../V2Form/pink_tool.svg'
 import './LoginPage.css'
@@ -41,14 +41,7 @@ function LoginMessage() {
 
     setIsSubmitting(true);
     try {
-      const res = await fetch(`${APIURL}/auth/verify-otp`, {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          phone: phone,
-          otp: otpCode
-        }),
-      });
+      const res = await verifyOtp(phone, otpCode);
 
       const data = await res.json();
       if (!res.ok) {
