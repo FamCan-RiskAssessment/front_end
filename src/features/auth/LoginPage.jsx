@@ -3,7 +3,7 @@ import './LoginPage.css'
 import {APIURL} from "../../utils/config";
 import {useNavigate} from "react-router-dom";
 
-import {useToast} from "../../toaster";
+import {useToast} from "../../components/ui/Toast";
 
 // Import sponsor logos
 import bimeSalamteMan from '../../assets/logos/bime-salamte-man-icon.png';

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { fetchDataPOST, isNumber, persianToEnglishDigits } from "../../utils/tools";
-import { useToast } from "../../toaster";
+import { useToast } from "./Toast";
 
 /**
  * Text/number input used across the questionnaires. Two visual variants

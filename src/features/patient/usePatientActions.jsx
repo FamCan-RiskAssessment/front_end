@@ -6,7 +6,7 @@ import {
     fetchDataPOST,
     fetchDataPUT,
 } from "../../utils/tools";
-import { useToast } from "../../toaster";
+import { useToast } from "../../components/ui/Toast";
 import PatientModals, {
     deleteCancerRecord,
     deleteFamilyCancerRecord,

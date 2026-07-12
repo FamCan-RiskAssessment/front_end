@@ -3,7 +3,7 @@ import './LoginPage.css'
 import {APIURL} from "../../utils/config";
 import {useNavigate} from "react-router-dom";
 
-import {useToast} from "../../toaster";
+import {useToast} from "../../components/ui/Toast";
 import {fetchDataGETNoError} from "../../utils/tools";
 import { persistDashboardAccess } from "../../utils/permissions";
 import { useAuthStore } from "../../stores/authStore";

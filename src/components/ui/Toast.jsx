@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useRef, useCallback, memo } from 'react';
-import './toast_css.css';
-import checkIcon from "./assets/check_sign.svg"
-import crossIcon from "./assets/error_sign.svg"
-import loadIcon from "./V2Form/toastLoading.svg"
+import './Toast.css';
+import checkIcon from "../../assets/check_sign.svg"
+import crossIcon from "../../assets/error_sign.svg"
+import loadIcon from "../../V2Form/toastLoading.svg"
 const ToastContext = createContext();
 
 let idCounter = 0;

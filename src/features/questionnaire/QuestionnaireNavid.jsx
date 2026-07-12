@@ -10,7 +10,7 @@ import { OptionsV2 } from "../../components/ui/Option";
 import CancerField from "./CancerUniversal";
 import FileUploader from "../../components/ui/FileUploader";
 import PersonalInfo from "./PersonalInfo";
-import Loader from "../../utils/loader";
+import Loader from "../../components/ui/Loader";
 import prevSign from '../../V2Form/arrow_right.svg'
 import homeSign from '../../V2Form/home.svg'
 import part1 from '../../questions/P1.json'
@@ -25,7 +25,7 @@ import { makeFormFileHandlers } from "./formFiles";
 import { injectCatchQuestion, validateCatchAnswer, getRequiredValue } from "./catchQuestions";
 import {useLocation, useNavigate} from "react-router-dom";
 import {APIURL, cancerRefs} from "../../utils/config";
-import {useToast} from "../../toaster";
+import {useToast} from "../../components/ui/Toast";
 import {
     fetchDataGET,
     isNumber,

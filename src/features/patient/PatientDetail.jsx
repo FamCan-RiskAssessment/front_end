@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import NavBar from "../../components/layout/NavBar";
-import Loader from "../../utils/loader";
+import Loader from "../../components/ui/Loader";
 import PatientFormActions from "./PatientFormActions";
 import PatientSectionForm from "./PatientSectionForm";
 import PatientCancerSection from "./PatientCancerSection";
@@ -24,7 +24,7 @@ import {
     isFieldVisibleForGender,
     READONLY_META_FIELDS,
 } from "../../utils/patientFieldConfig";
-import { useToast } from "../../toaster";
+import { useToast } from "../../components/ui/Toast";
 import "../../client_forms.css";
 import "../../form_elements.css";
 import "./PatientTable.css";

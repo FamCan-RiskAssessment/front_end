@@ -3,7 +3,7 @@ import './LoginPage.css'
 import { APIURL } from "../../utils/config";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { useToast } from "../../toaster";
+import { useToast } from "../../components/ui/Toast";
 import { User, IdCard, Building } from "lucide-react";
 import { fetchDataPOST } from "../../utils/tools";
 

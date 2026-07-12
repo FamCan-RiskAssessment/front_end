@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./loader.css"
+import "./Loader.css"
 function Loader({ message }) {
     return (
         <>

@@ -3,7 +3,7 @@ import "./UserVerification.css";
 import { fetchDataPOST } from "../../utils/tools";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { useToast } from "../../toaster";
+import { useToast } from "../../components/ui/Toast";
 
 export default function OtpPage({ onSubmit }) {
     const inputsRef = useRef([]);

@@ -7,7 +7,7 @@ import {
   canCreateFormForUser,
 } from "../../utils/permissions";
 import "../../client_forms.css"
-import { useToast } from "../../toaster";
+import { useToast } from "../../components/ui/Toast";
 import plusWSign from '../../V2Form/plusW.svg'
 import leftSign from '../../V2Form/form_left.png'
 import rightSign from '../../V2Form/form_right.png'
@@ -21,7 +21,7 @@ import fileUplode from '../../V2Form/files.svg'
 import waitSign from '../../V2Form/timer.png'
 import checkFull from '../../V2Form/checkfull.png'
 import magnifier from '../../V2Form/magnifier.svg'
-import Loader from "../../utils/loader";
+import Loader from "../../components/ui/Loader";
 
 /**
  * The Bahar and Navid forms-list pages were ~95% identical forks; every

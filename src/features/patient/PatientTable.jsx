@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import NavBar from "../../components/layout/NavBar";
-import Loader from "../../utils/loader";
+import Loader from "../../components/ui/Loader";
 import PatientFormActions from "./PatientFormActions";
 import { usePatientEnums } from "./usePatientEnums";
 import { usePatientActions } from "./usePatientActions";

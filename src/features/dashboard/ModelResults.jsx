@@ -3,7 +3,7 @@ import './ModelResults.css';
 import NavBar from '../../components/layout/NavBar';
 import { useLocation, useNavigate } from "react-router-dom";
 import { fetchDataGET, endpointMaker } from "../../utils/tools";
-import Loader from "../../utils/loader";
+import Loader from "../../components/ui/Loader";
 import leftSign from '../../V2Form/form_left.png';
 import rightSign from '../../V2Form/form_right.png';
 import prevSign from '../../V2Form/arrow_right.svg';

@@ -8,7 +8,7 @@ import { OptionsV2 } from "../../components/ui/Option";
 import uploadSign from '../../V2Form/upload.svg'
 import trashSign from '../../V2Form/trashCan.svg'
 import { isNumber, fetchDataGET, fetchDataDELETE, fetchDataGETImg } from "../../utils/tools";
-import { useToast } from "../../toaster";
+import { useToast } from "../../components/ui/Toast";
 
 function CancerField({
     data_req,

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { APIURL } from "../../utils/config";
 import NavBar from "../../components/layout/NavBar";
 import "../../client_forms.css";
-import { useToast } from "../../toaster";
+import { useToast } from "../../components/ui/Toast";
 import plusSign from '../../V2Form/plus.svg'
 import leftSign from '../../V2Form/form_left.png'
 import rightSign from '../../V2Form/form_right.png'

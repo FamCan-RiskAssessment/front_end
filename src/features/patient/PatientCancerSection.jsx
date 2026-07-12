@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
-import { useToast } from "../../toaster";
+import { useToast } from "../../components/ui/Toast";
 import {
     createFamilyCancer,
     createSelfCancer,

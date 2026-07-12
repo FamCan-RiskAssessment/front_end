@@ -6,14 +6,14 @@ import { findOperatorRoleId } from "../../utils/permissions";
 import "../../client_forms.css";
 import "./SupervisorPage.css";
 import NavBar from "../../components/layout/NavBar";
-import { useToast } from "../../toaster";
+import { useToast } from "../../components/ui/Toast";
 import leftSign from '../../V2Form/form_left.png';
 import rightSign from '../../V2Form/form_right.png';
 import prevSign from '../../V2Form/arrow_right.svg';
 import settingsSign from '../../V2Form/settings.svg';
 import roleAssignSign from '../../V2Form/roleAssign.svg';
 import magnifier from '../../V2Form/magnifier.svg'
-import Loader from "../../utils/loader";
+import Loader from "../../components/ui/Loader";
 
 
 

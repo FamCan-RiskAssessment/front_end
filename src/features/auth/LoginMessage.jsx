@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { APIURL } from "../../utils/config";
-import { useToast } from "../../toaster";
+import { useToast } from "../../components/ui/Toast";
 import { fetchDataGET, fetchDataGETNoError, fetchDataPOST } from "../../utils/tools";
 import { persistDashboardAccess } from "../../utils/permissions";
 import { useAuthStore } from "../../stores/authStore";

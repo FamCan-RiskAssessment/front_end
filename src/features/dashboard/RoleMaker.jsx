@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useLocation, useNavigate } from "react-router-dom";
 import NavBar from '../../components/layout/NavBar'
-import { useToast } from "../../toaster";
+import { useToast } from "../../components/ui/Toast";
 import { fetchDataGET, fetchDataDELETE } from '../../utils/tools';
 import { APIURL } from '../../utils/config';
 import "../../client_forms.css";

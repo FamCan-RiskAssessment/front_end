@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { APIURL } from "../../utils/config";
 import { fetchDataDELETE, fetchDataGETImg } from "../../utils/tools";
-import { useToast } from "../../toaster";
-import Loader from "../../utils/loader";
+import { useToast } from "../../components/ui/Toast";
+import Loader from "../../components/ui/Loader";
 
 function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relativeTypesMap }) {
     const [cancerType, setCancerType] = useState("");

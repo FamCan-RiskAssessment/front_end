@@ -10,7 +10,7 @@ import PersonalInfo from "./PersonalInfo";
 import { RadioV2 } from "../../components/ui/Radio";
 import { OptionsV2 } from "../../components/ui/Option";
 import { InputBoxV2 } from "../../components/ui/InputBox";
-import Loader from "../../utils/loader";
+import Loader from "../../components/ui/Loader";
 import RangeBox from "../../components/ui/RangeInput";
 import prevSign from '../../V2Form/arrow_right.svg'
 import homeSign from '../../V2Form/home.svg'
@@ -26,7 +26,7 @@ import { makeFormFileHandlers } from "./formFiles";
 import { injectCatchQuestion, validateCatchAnswer, getRequiredValue } from "./catchQuestions";
 import { useLocation, useNavigate } from "react-router-dom";
 import { APIURL, cancerRefs } from "../../utils/config";
-import { useToast } from "../../toaster";
+import { useToast } from "../../components/ui/Toast";
 import {
     fetchDataGET, isNumber, formatAndValidateJalali,
     CancerAdder, fetchDataPOSTImg, persianMonths, fetchDataGETImg, fetchDataPUT, dict_transformer, getKeyVal, cancerDictRefiner,
