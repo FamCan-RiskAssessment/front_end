@@ -1045,13 +1045,6 @@ function Questions() {
                 }
             }
         });
-        if (reqErr) {
-            addToast({
-                title: "لطفا تمامی سوال ها را پر کنید",
-                type: 'error',
-                duration: 4000
-            })
-        }
         let pass1 = go1.some((el) => el == false)  // true if there are invalid non-radio inputs
         let pass2 = go2.some((el) => el == false)  // true if there are invalid radio groups
         let pass3 = go3.some((el) => el == false)  // true if there are invalid checkbox groups
