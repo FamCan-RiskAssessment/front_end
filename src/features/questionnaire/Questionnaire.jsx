@@ -1,39 +1,39 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { getEnumCached } from "./api/enums";
-import { InputBox } from "./components/ui/InputBox";
-import { Radio } from "./components/ui/Radio";
-import CheckBox from "./components/ui/CheckBox";
-import { Options } from "./components/ui/Option";
-import CancerField from "./cancer_universal";
-import FileUploader from "./components/ui/FileUploader";
-import PersonalInfo from "./personal_info";
-import { RadioV2 } from "./components/ui/Radio";
-import { OptionsV2 } from "./components/ui/Option";
-import { InputBoxV2 } from "./components/ui/InputBox";
-import Loader from "./utils/loader";
-import RangeBox from "./components/ui/RangeInput";
-import prevSign from './V2Form/arrow_right.svg'
-import homeSign from './V2Form/home.svg'
-import part1 from './questions/P1.json'
-import part2 from './questions/P2.json'
-import part3 from './questions/P3.json'
-import part4 from './questions/P4.json'
-import part5 from './questions/P5.json'
-import part6 from './questions/P6.json'
-import part7 from './questions/P7.json'
-import CQs from './questions/catchQs.json'
-import { makeFormFileHandlers } from "./features/questionnaire/formFiles";
-import { injectCatchQuestion, validateCatchAnswer, getRequiredValue } from "./features/questionnaire/catchQuestions";
+import { getEnumCached } from "../../api/enums";
+import { InputBox } from "../../components/ui/InputBox";
+import { Radio } from "../../components/ui/Radio";
+import CheckBox from "../../components/ui/CheckBox";
+import { Options } from "../../components/ui/Option";
+import CancerField from "./CancerUniversal";
+import FileUploader from "../../components/ui/FileUploader";
+import PersonalInfo from "./PersonalInfo";
+import { RadioV2 } from "../../components/ui/Radio";
+import { OptionsV2 } from "../../components/ui/Option";
+import { InputBoxV2 } from "../../components/ui/InputBox";
+import Loader from "../../utils/loader";
+import RangeBox from "../../components/ui/RangeInput";
+import prevSign from '../../V2Form/arrow_right.svg'
+import homeSign from '../../V2Form/home.svg'
+import part1 from '../../questions/P1.json'
+import part2 from '../../questions/P2.json'
+import part3 from '../../questions/P3.json'
+import part4 from '../../questions/P4.json'
+import part5 from '../../questions/P5.json'
+import part6 from '../../questions/P6.json'
+import part7 from '../../questions/P7.json'
+import CQs from '../../questions/catchQs.json'
+import { makeFormFileHandlers } from "./formFiles";
+import { injectCatchQuestion, validateCatchAnswer, getRequiredValue } from "./catchQuestions";
 import { useLocation, useNavigate } from "react-router-dom";
-import { APIURL, cancerRefs } from "./utils/config";
-import { useToast } from "./toaster";
+import { APIURL, cancerRefs } from "../../utils/config";
+import { useToast } from "../../toaster";
 import {
     fetchDataGET, isNumber, formatAndValidateJalali,
     CancerAdder, fetchDataPOSTImg, persianMonths, fetchDataGETImg, fetchDataPUT, dict_transformer, getKeyVal, cancerDictRefiner,
     nullTracker, isMenopauseYes
-} from "./utils/tools";
-import "./form_elements.css"
-import "./responsive_questionare.css"
+} from "../../utils/tools";
+import "../../form_elements.css"
+import "../../responsive_questionare.css"
 // import { set } from "animejs";
 
 /** Yes/No answer enum ids for RadioV2; fall back when enum/answers has not loaded yet. */

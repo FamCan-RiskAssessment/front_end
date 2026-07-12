@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { InputBox } from "./components/ui/InputBox";
-import { Options } from "./components/ui/Option";
-import { Radio } from "./components/ui/Radio";
-import { RadioV2 } from "./components/ui/Radio";
-import { InputBoxV2 } from "./components/ui/InputBox";
-import { OptionsV2 } from "./components/ui/Option";
-import uploadSign from './V2Form/upload.svg'
-import trashSign from './V2Form/trashCan.svg'
-import { isNumber, fetchDataGET, fetchDataDELETE, fetchDataGETImg } from "./utils/tools";
-import { useToast } from "./toaster";
+import { InputBox } from "../../components/ui/InputBox";
+import { Options } from "../../components/ui/Option";
+import { Radio } from "../../components/ui/Radio";
+import { RadioV2 } from "../../components/ui/Radio";
+import { InputBoxV2 } from "../../components/ui/InputBox";
+import { OptionsV2 } from "../../components/ui/Option";
+import uploadSign from '../../V2Form/upload.svg'
+import trashSign from '../../V2Form/trashCan.svg'
+import { isNumber, fetchDataGET, fetchDataDELETE, fetchDataGETImg } from "../../utils/tools";
+import { useToast } from "../../toaster";
 
 function CancerField({
     data_req,
