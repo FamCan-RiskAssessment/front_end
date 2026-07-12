@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./error_style.css"
+import "./ErrorPage.css"
 import { useLocation, useNavigate } from "react-router-dom";
 
 function ErrorShower({ errorType }) {

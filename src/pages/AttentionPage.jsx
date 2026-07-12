@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import "./attentionPage.css";
+import "./AttentionPage.css";
 
 export default function AttentionPage() {
     const navigate = useNavigate();

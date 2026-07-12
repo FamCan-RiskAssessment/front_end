@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import './program_choice.css'
+import './ProgramChoice.css'
 
 
 function ChooseApp() {

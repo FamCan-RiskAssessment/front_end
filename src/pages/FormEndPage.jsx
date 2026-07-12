@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import checkimg from './V2Form/checkSub.svg'
+import checkimg from '../V2Form/checkSub.svg'
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 function FormEnd() {
