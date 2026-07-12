@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import NavBar from '../../components/layout/NavBar'
 import { useToast } from "../../components/ui/Toast";
 import { fetchDataGET, fetchDataDELETE } from '../../utils/tools';
-import { APIURL } from '../../utils/config';
+import { apiFetch } from '../../api/client';
 import "../../client_forms.css";
 import "./RoleGiver.css";
 import plusSign from '../../V2Form/plus.svg'
@@ -57,15 +57,7 @@ function RoleMaker() {
   useEffect(() => {
     const fetchPermissions = async () => {
       try {
-        // ✅ Get token from localStorage (or context)
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${APIURL}/admin/permission`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}` // ✅ attach token here
-          }
-        });
+        const response = await apiFetch("admin/permission", { parse: "response" });
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -118,19 +110,15 @@ function RoleMaker() {
   const collectAndSend = async (e) => {
     e.preventDefault();
     try {
-      const token_auth = localStorage.getItem("token");
       const bodyData = {
         name: roleName,
         permissionIDs: permArray.map((id) => Number(id)), // ensure numbers
       };
 
-      const res = await fetch(`${APIURL}/admin/role`, {
+      const res = await apiFetch("admin/role", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token_auth}`,
-        },
-        body: JSON.stringify(bodyData),
+        body: bodyData,
+        parse: "response",
       });
 
       let data;

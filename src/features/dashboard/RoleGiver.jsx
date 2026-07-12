@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import NavBar from "../../components/layout/NavBar";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { APIURL, roleColors, sortOptions } from "../../utils/config";
+import { roleColors, sortOptions } from "../../utils/config";
 import { isAssignableRole, userHasFullAccess } from "../../utils/permissions";
 import { useToast } from "../../components/ui/Toast";
 import { fetchDataGET, endpointMaker } from "../../utils/tools";
+import { apiFetch } from "../../api/client";
 import "./RoleGiver.css"
 import "../../client_forms.css"
 import leftSign from '../../V2Form/form_left.png'
@@ -75,18 +76,10 @@ function RoleChanger() {
   useEffect(() => {
     const fetchUsers = async () => {
       console.log(userSort)
-      let endPoint = endpointMaker(userSort, RoleIdFinder(roleIdSort, Roles), searchedUser, searchOrder, `${APIURL}/admin/user`, page, [], true)
+      let endPoint = endpointMaker(userSort, RoleIdFinder(roleIdSort, Roles), searchedUser, searchOrder, "admin/user", page, [], true)
       console.log("here what you have done : ", endPoint)
       try {
-        // ✅ Get token from localStorage (or context)
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${endPoint}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}` // ✅ attach token here
-          }
-        });
+        const response = await apiFetch(endPoint, { parse: "response" });
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -113,15 +106,7 @@ function RoleChanger() {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        // ✅ Get token from localStorage (or context)
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${APIURL}/admin/role`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}` // ✅ attach token here
-          }
-        });
+        const response = await apiFetch("admin/role", { parse: "response" });
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -142,17 +127,9 @@ function RoleChanger() {
   // the role fetcher
   const fetchUserRole = async (user_id) => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(
-        `${APIURL}/admin/user/${parseInt(user_id)}/role`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await apiFetch(`admin/user/${parseInt(user_id)}/role`, {
+        parse: "response",
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -210,16 +187,10 @@ function RoleChanger() {
     }
 
     try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${APIURL}/admin/user/${parseInt(idchose)}/role`, {
+      const res = await apiFetch(`admin/user/${parseInt(idchose)}/role`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          "roleIDs": [role.id]
-        }),
+        body: { roleIDs: [role.id] },
+        parse: "response",
       });
 
       const data = await res.json();
