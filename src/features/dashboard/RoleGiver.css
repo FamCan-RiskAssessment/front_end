@@ -404,13 +404,17 @@ div>.identifiers {
 }
 
 .filter_btn {
-  background-color: white;
-  color: #E34E81;
+  background-color: var(--color-main);
+  color: white;
   display: flex;
   align-items: center;
   gap: 1rem;
   box-shadow: 5px 5px 20px rgb(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+}
+
+.filter_btn img {
+  filter: brightness(0) invert(1);
 }
 
 .magnifier {
@@ -431,7 +435,7 @@ div>.identifiers {
 }
 
 .filter_btn:hover {
-  background-color: #eee;
+  background-color: var(--color-hover);
 }
 
 .filter_btn>span {

@@ -317,7 +317,7 @@
 
 .page_naver {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   gap: 5rem;
   margin-top: 2rem;
