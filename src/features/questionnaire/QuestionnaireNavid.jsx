@@ -24,7 +24,8 @@ import CQs from '../../questions/catchQs.json'
 import { makeFormFileHandlers } from "./formFiles";
 import { injectCatchQuestion, validateCatchAnswer, getRequiredValue } from "./catchQuestions";
 import {useLocation, useNavigate} from "react-router-dom";
-import {APIURL, cancerRefs} from "../../utils/config";
+import {cancerRefs} from "../../utils/config";
+import { apiFetch } from "../../api/client";
 import {useToast} from "../../components/ui/Toast";
 import {
     fetchDataGET,
@@ -914,68 +915,50 @@ function QuestionsNavid() {
         }
 
 
-        // ✅ Set URL and method logic
-        const urlBase = `${APIURL}/form`;
-        let url, method, headers;
+        // ✅ Set relative endpoint and method logic
+        let endpoint, method, contentType;
         if (step === 1) {
             if (presetform != null && (id_form != null || id_form != "null")) {
-                url = `${urlBase}/${id_form}/${APIARR[step - 1]}`;
+                endpoint = `form/${id_form}/${APIARR[step - 1]}`;
                 method = 'PUT';
-                headers = {
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${token_auth}`
-                }
             } else {
                 if (localStorage.getItem("userNeededAdress").length != 0 && localStorage.getItem("userNeededAdress") != "null") {
-                    url = `${APIURL}/${localStorage.getItem("userNeededAdress")}`
+                    endpoint = localStorage.getItem("userNeededAdress")
                 } else {
-                    url = `${urlBase}/${APIARR[step - 1]}`;
+                    endpoint = `form/${APIARR[step - 1]}`;
                 }
                 method = 'POST';
-                headers = {
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${token_auth}`
-                }
             }
         } else if (step == 2 || step == 3) {
             if (presetform != null) {
-                url = `${urlBase}/${id_form}/${APIARR[step - 1]}`;
+                endpoint = `form/${id_form}/${APIARR[step - 1]}`;
             } else {
-                url = `${urlBase}/${createdFormId}/${APIARR[step - 1]}`;
+                endpoint = `form/${createdFormId}/${APIARR[step - 1]}`;
             }
             method = 'POST';
-            headers = {
-                // "Content-Type": "application/json",
-                'Authorization': `Bearer ${token_auth}`
-            }
+            contentType = 'none'; // ⚠️ No Content-Type
             sendData = null  // ✅ No body for steps 2/3 (cancer steps)
-            console.log("urrrrrrrrrrrrrrrrrrrL from cancers : ", url)
+            console.log("urrrrrrrrrrrrrrrrrrrL from cancers : ", endpoint)
         } else {
             if (presetform != null) {
-                url = `${urlBase}/${id_form}/${APIARR[step - 1]}`;
+                endpoint = `form/${id_form}/${APIARR[step - 1]}`;
             } else {
-                url = `${urlBase}/${createdFormId}/${APIARR[step - 1]}`;
+                endpoint = `form/${createdFormId}/${APIARR[step - 1]}`;
             }
             method = 'PUT';
-            headers = {
-                "Content-Type": "application/json",
-                'Authorization': `Bearer ${token_auth}`
-            }
             if (step == 5) {
-                headers = {
-                    'Authorization': `Bearer ${token_auth}`, // ⚠️ No Content-Type
-                }
+                contentType = 'none'; // ⚠️ No Content-Type — body is FormData, apiFetch auto-detects
             }
         }
 
         try {
-            const res = await fetch(url, {
+            const res = await apiFetch(endpoint, {
                 method,
-                headers,
-                // headers: {
-                //     'Authorization': `Bearer ${token_auth}`, // ⚠️ No Content-Type
-                // },
-                ...(sendData !== null && {body: sendData}), // ✅ Only include body if not null
+                token: token_auth,
+                contentType,
+                parse: "response",
+                // ✅ Only include body if not null; JSON branches pass the object (apiFetch stringifies)
+                ...(sendData !== null && {body: (step == 5) ? currentFormData : allData}),
             });
             // Reset formData for this submission
             formDataRef.current = new FormData();

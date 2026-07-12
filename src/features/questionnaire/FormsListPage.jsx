@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { APIURL } from "../../utils/config";
 import { fetchDataDELETE, formTypeChecker, statusChecker, fetchDataPUT, fetchDataGETNoError } from "../../utils/tools";
+import { apiFetch } from "../../api/client";
 import {
   canAccessDashboard,
   canCreateFormForUser,
@@ -138,16 +138,9 @@ function FormsListPage({ variant = "bahar" }) {
 
   // fetch user's forms on mount
   useEffect(() => {
-    const token = localStorage.getItem("token");
     const endpoint = buildEndpoint(page, advancedFilters);
 
-    fetch(`${APIURL}/${endpoint}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    apiFetch(endpoint, { parse: "response" })
       .then((res) => res.json())
       .then((json) => {
         setForms(json.data.data || []);
@@ -165,8 +158,6 @@ function FormsListPage({ variant = "bahar" }) {
 
   /** Load every section of an existing form into the draft, then open the questionnaire. */
   const userSelectedForm = async (form_id, selfCanAPP, famCanAPP) => {
-    const token = localStorage.getItem("token");
-
     try {
       setLoading(true);
 
@@ -175,13 +166,7 @@ function FormsListPage({ variant = "bahar" }) {
       const results = await Promise.all(
         cfg.loadParts.map(async (ar) => {
           try {
-            const res = await fetch(`${APIURL}/form/${form_id}/${ar}`, {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            });
+            const res = await apiFetch(`form/${form_id}/${ar}`, { parse: "response" });
 
             if (!res.ok) {
               anyFailed = true;

@@ -25,7 +25,8 @@ import CQs from '../../questions/catchQs.json'
 import { makeFormFileHandlers } from "./formFiles";
 import { injectCatchQuestion, validateCatchAnswer, getRequiredValue } from "./catchQuestions";
 import { useLocation, useNavigate } from "react-router-dom";
-import { APIURL, cancerRefs } from "../../utils/config";
+import { cancerRefs } from "../../utils/config";
+import { apiFetch } from "../../api/client";
 import { useToast } from "../../components/ui/Toast";
 import {
     fetchDataGET, isNumber, formatAndValidateJalali,
@@ -1257,61 +1258,43 @@ function Questions() {
         }
 
 
-        // ✅ Set URL and method logic
-        const urlBase = `${APIURL}/form`;
-        let url, method, headers;
+        // ✅ Set relative endpoint and method logic
+        let endpoint, method, contentType;
         if (step === 1) {
             if (presetform != null && isValidStoredFormId(id_form)) {
-                url = `${urlBase}/${id_form}/${APIARR[step - 1]}`;
+                endpoint = `form/${id_form}/${APIARR[step - 1]}`;
                 method = 'PUT';
-                headers = {
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${token_auth}`
-                }
             } else {
                 if (localStorage.getItem("userNeededAdress").length != 0 && localStorage.getItem("userNeededAdress") != "null") {
-                    url = `${APIURL}/${localStorage.getItem("userNeededAdress")}`
+                    endpoint = localStorage.getItem("userNeededAdress")
                 } else {
-                    url = `${urlBase}/${APIARR[step - 1]}`;
+                    endpoint = `form/${APIARR[step - 1]}`;
                 }
                 method = 'POST';
-                headers = {
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${token_auth}`
-                }
             }
         } else if (step == 4 || step == 5) {
             const editFormId = resolveFormIdForSubmit(presetform, id_form, createdFormId);
-            url = `${urlBase}/${editFormId}/${APIARR[step - 1]}`;
+            endpoint = `form/${editFormId}/${APIARR[step - 1]}`;
             method = 'POST';
-            headers = {
-                // "Content-Type": "application/json",
-                'Authorization': `Bearer ${token_auth}`
-            }
+            contentType = 'none'; // ⚠️ No Content-Type
             sendData = null  // ✅ No body for steps 4/5
         } else {
             const formIdForPut = resolveFormIdForSubmit(presetform, id_form, createdFormId);
-            url = `${urlBase}/${formIdForPut}/${APIARR[step - 1]}`;
+            endpoint = `form/${formIdForPut}/${APIARR[step - 1]}`;
             method = 'PUT';
-            headers = {
-                "Content-Type": "application/json",
-                'Authorization': `Bearer ${token_auth}`
-            }
             if (step == 3 || step == 7) {
-                headers = {
-                    'Authorization': `Bearer ${token_auth}`, // ⚠️ No Content-Type
-                }
+                contentType = 'none'; // ⚠️ No Content-Type — body is FormData, apiFetch auto-detects
             }
         }
 
         try {
-            const res = await fetch(url, {
+            const res = await apiFetch(endpoint, {
                 method,
-                headers,
-                // headers: {
-                //     'Authorization': `Bearer ${token_auth}`, // ⚠️ No Content-Type
-                // },
-                ...(sendData !== null && { body: sendData }), // ✅ Only include body if not null
+                token: token_auth,
+                contentType,
+                parse: "response",
+                // ✅ Only include body if not null; JSON branches pass the object (apiFetch stringifies)
+                ...(sendData !== null && { body: (step == 3 || step == 7) ? currentFormData : allData }),
             });
             // Reset formData for this submission
             formDataRef.current = new FormData();
