@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { APIURL } from "../../utils/config";
 import { fetchDataDELETE, fetchDataGETImg } from "../../utils/tools";
+import { createFamilyCancer, createSelfCancer } from "./patientCancerApi";
 import { useToast } from "../../components/ui/Toast";
 import Loader from "../../components/ui/Loader";
 
@@ -67,38 +67,23 @@ function CancerAddForm({ formId, isFamilyCancer, onClose, cancerTypesMap, relati
             let response;
 
             if (isFamilyCancer) {
-                const formData = new FormData();
-                formData.append("relative", relativeTypeId);
-                formData.append("lifeStatus", lifeStatusInt);
-                formData.append("cancerAge", cancerAgeInt);
-                formData.append("cancerType", cancerTypeId);
-                formData.append("name", relativeName.trim());
-                imageFiles.forEach((file) => formData.append("pictures", file));
-
-                response = await fetch(`${APIURL}/admin/form/${formId}/familycancer`, {
-                    method: "POST",
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: formData,
-                });
-            } else if (imageFiles.length > 0) {
-                const formData = new FormData();
-                formData.append("cancerAge", cancerAgeInt);
-                formData.append("cancerType", cancerTypeId);
-                imageFiles.forEach((file) => formData.append("pictures", file));
-
-                response = await fetch(`${APIURL}/admin/form/${formId}/cancer`, {
-                    method: "POST",
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: formData,
-                });
-            } else {
-                response = await fetch(`${APIURL}/admin/form/${formId}/cancer`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
+                response = await createFamilyCancer(
+                    formId,
+                    token,
+                    {
+                        relativeTypeId,
+                        lifeStatus: lifeStatusInt,
+                        cancerAge: cancerAgeInt,
+                        cancerTypeId,
+                        name: relativeName,
                     },
-                    body: JSON.stringify({ cancerAge: cancerAgeInt, cancerType: cancerTypeId }),
+                    imageFiles
+                );
+            } else {
+                response = await createSelfCancer(formId, token, {
+                    cancerTypeId,
+                    cancerAge: cancerAgeInt,
+                    imageFiles,
                 });
             }
 

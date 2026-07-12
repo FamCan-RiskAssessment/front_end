@@ -5,8 +5,9 @@ import Loader from "../../components/ui/Loader";
 import PatientFormActions from "./PatientFormActions";
 import { usePatientEnums } from "./usePatientEnums";
 import { usePatientActions } from "./usePatientActions";
-import { APIURL, formStatusLabels, stateColors } from "../../utils/config";
+import { formStatusLabels, stateColors } from "../../utils/config";
 import { endpointMaker } from "../../utils/tools";
+import { apiFetch } from "../../api/client";
 import { shouldUseOperatorFormEndpoint } from "../../utils/permissions";
 import leftSign from "../../V2Form/form_left.png";
 import rightSign from "../../V2Form/form_right.png";
@@ -40,7 +41,7 @@ function buildEndpoint(useOperatorForms, currentPage, currentFilter, filters) {
         filters.filledByOperatorID,
         filters.search,
         filters.sortOrder,
-        `${APIURL}/${endpoint}`,
+        endpoint,
         currentPage,
         additionalFilters,
         true
@@ -93,19 +94,12 @@ export default function FilterableTable() {
 
     useEffect(() => {
         const fetchForms = async () => {
-            const token = localStorage.getItem("token");
             const useOperatorForms = shouldUseOperatorFormEndpoint();
             const endpoint = buildEndpoint(useOperatorForms, page, filter, advancedFilters);
 
             setLoading(true);
             try {
-                const response = await fetch(endpoint, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                const response = await apiFetch(endpoint, { parse: "response" });
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);

@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
-import { formStatusLabels, statusAPIs, APIURL } from "../../utils/config";
+import { formStatusLabels, statusAPIs } from "../../utils/config";
 import {
     activeStats,
     fetchDataGET,
     fetchDataPOST,
     fetchDataPUT,
 } from "../../utils/tools";
+import { apiFetch } from "../../api/client";
 import { useToast } from "../../components/ui/Toast";
 import PatientModals, {
     deleteCancerRecord,
@@ -246,7 +247,6 @@ export function usePatientActions(
 }
 
 export async function savePatientSection(formId, apiPart, payload) {
-    const token = localStorage.getItem("token");
     const entries = Object.entries(payload);
 
     if (entries.length === 0) {
@@ -255,13 +255,10 @@ export async function savePatientSection(formId, apiPart, payload) {
 
     let lastResult = null;
     for (const [fieldName, fieldValue] of entries) {
-        const response = await fetch(`${APIURL}/admin/form/${formId}/${apiPart}`, {
+        const response = await apiFetch(`admin/form/${formId}/${apiPart}`, {
             method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ [fieldName]: fieldValue }),
+            body: { [fieldName]: fieldValue },
+            parse: "response",
         });
 
         const result = await response.json();

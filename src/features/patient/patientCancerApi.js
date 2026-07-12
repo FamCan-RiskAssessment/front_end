@@ -1,4 +1,4 @@
-import { APIURL } from "../../utils/config";
+import { apiFetch } from "../../api/client";
 import { fetchDataDELETE, fetchDataGETImg } from "../../utils/tools";
 
 export async function fetchSelfCancerList(formId, token) {
@@ -56,23 +56,22 @@ export async function createSelfCancer(formId, token, { cancerTypeId, cancerAge,
         formData.append("cancerAge", parseInt(cancerAge, 10));
         formData.append("cancerType", cancerTypeId);
         imageFiles.forEach((file) => formData.append("pictures", file));
-        return fetch(`${APIURL}/admin/form/${formId}/cancer`, {
+        return apiFetch(`admin/form/${formId}/cancer`, {
             method: "POST",
-            headers: { Authorization: `Bearer ${token}` },
+            token,
             body: formData,
+            parse: "response",
         });
     }
 
-    return fetch(`${APIURL}/admin/form/${formId}/cancer`, {
+    return apiFetch(`admin/form/${formId}/cancer`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
+        token,
+        body: {
             cancerAge: parseInt(cancerAge, 10),
             cancerType: cancerTypeId,
-        }),
+        },
+        parse: "response",
     });
 }
 
@@ -85,10 +84,11 @@ export async function createFamilyCancer(formId, token, payload, imageFiles = []
     formData.append("name", payload.name.trim());
     imageFiles.forEach((file) => formData.append("pictures", file));
 
-    return fetch(`${APIURL}/admin/form/${formId}/familycancer`, {
+    return apiFetch(`admin/form/${formId}/familycancer`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
+        token,
         body: formData,
+        parse: "response",
     });
 }
 
